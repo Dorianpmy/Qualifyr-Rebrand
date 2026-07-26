@@ -1,0 +1,43 @@
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  color: var(--text-accent);
+  text-decoration: none;
+  border-radius: var(--radius-xs);
+}
+
+.label {
+  position: relative;
+}
+
+/* Le soulignement se trace de gauche à droite. Il est présent au repos
+   sous forme de trait discret : le lien n'est jamais signalé par la seule
+   couleur, condition d'accessibilité. */
+.label::after {
+  content: '';
+  position: absolute;
+  inset-block-end: -0.18em;
+  inset-inline-start: 0;
+  inline-size: 100%;
+  block-size: 1px;
+  background-color: currentcolor;
+  opacity: 0.35;
+  transform-origin: left;
+  transition:
+    opacity var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.link:hover .label::after {
+  opacity: 1;
+}
+
+.quiet {
+  color: var(--text-primary);
+}
+
+.inverse {
+  color: var(--color-sand);
+}

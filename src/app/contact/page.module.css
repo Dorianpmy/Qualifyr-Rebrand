@@ -1,0 +1,60 @@
+/* Composition propre à la page Contact : deux colonnes serrées, formulaire à
+   droite, orientation et coordonnées à gauche. Volontairement plus dense et
+   plus courte que le diagnostic. */
+
+.layout {
+  display: grid;
+  gap: var(--space-8);
+  margin-block-start: var(--space-8);
+}
+
+.aside {
+  display: grid;
+  gap: var(--space-6);
+  align-content: start;
+}
+
+.orient {
+  display: grid;
+  gap: var(--space-4);
+  max-inline-size: 44ch;
+  color: var(--text-secondary);
+}
+
+.channels {
+  display: grid;
+  gap: var(--space-4);
+  padding-block-start: var(--space-5);
+  border-block-start: var(--border-width) solid var(--rule-hairline);
+}
+
+.channel {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.channelLabel {
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.channelValue {
+  font-family: var(--family-display);
+  font-size: var(--text-lg);
+}
+
+.noChannel {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+@media (min-width: 62rem) {
+  .layout {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 6fr);
+    gap: var(--space-10);
+    align-items: start;
+  }
+}

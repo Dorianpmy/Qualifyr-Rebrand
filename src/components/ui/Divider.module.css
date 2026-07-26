@@ -1,0 +1,29 @@
+.divider {
+  block-size: 0;
+  border: 0;
+  border-block-start: var(--border-width) solid var(--rule-hairline);
+}
+
+.accent {
+  border-block-start-color: var(--rule-accent);
+}
+
+.inverse {
+  border-block-start-color: var(--rule-inverse);
+}
+
+.short {
+  inline-size: var(--space-9);
+}
+
+.spacedSm {
+  margin-block: var(--space-6);
+}
+
+.spacedMd {
+  margin-block: var(--space-8);
+}
+
+.spacedLg {
+  margin-block: var(--section-gap-tight);
+}

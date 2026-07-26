@@ -1,0 +1,58 @@
+.heading {
+  display: grid;
+  gap: var(--space-5);
+}
+
+/* Composition asymétrique : le titre occupe la colonne large, le chapô se
+   décale sous lui plutôt qu'à côté — respiration de magazine. */
+.title {
+  max-inline-size: 20ch;
+  margin: 0;
+}
+
+.level1 {
+  font-size: var(--text-5xl);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  max-inline-size: 16ch;
+}
+
+.level2 {
+  font-size: var(--text-3xl);
+}
+
+.level3 {
+  font-size: var(--text-2xl);
+}
+
+.lead {
+  max-inline-size: var(--measure);
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+}
+
+.aside {
+  display: grid;
+  gap: var(--space-5);
+}
+
+@media (min-width: 62rem) {
+  .split {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--space-9);
+    align-items: end;
+  }
+
+  .split .title {
+    grid-column: 1;
+  }
+
+  .split .aside {
+    grid-column: 2;
+    padding-block-end: var(--space-2);
+  }
+}
+
+.inverse .lead {
+  color: var(--text-inverse-secondary);
+}

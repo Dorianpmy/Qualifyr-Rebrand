@@ -1,0 +1,102 @@
+/* Frise du parcours client.
+   Mobile : séquence verticale, reliée par un trait continu.
+   Bureau : grille de trois rangées, chaque rangée reliée par un filet.
+   Aucun défilement horizontal, à aucun palier. */
+
+.track {
+  display: grid;
+  gap: 0;
+  counter-reset: none;
+}
+
+.step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+  padding-block: var(--space-5);
+}
+
+/* Trait de liaison vertical, interrompu sur la dernière étape. */
+.step::before {
+  content: '';
+  position: absolute;
+  inset-block: 1.7em 0;
+  inset-inline-start: 0.3rem;
+  inline-size: 1px;
+  background-color: var(--rule-hairline);
+}
+
+.step:last-child::before {
+  display: none;
+}
+
+.marker {
+  position: relative;
+  display: block;
+  inline-size: var(--space-2);
+  block-size: var(--space-2);
+  margin-block-start: 0.55em;
+  border-radius: var(--radius-full);
+  background-color: var(--color-brass);
+}
+
+.number {
+  font-size: var(--text-3xs);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-secondary);
+}
+
+.label {
+  margin-block-start: var(--space-2);
+  font-family: var(--family-display);
+  font-size: var(--text-lg);
+  line-height: 1.25;
+  color: var(--text-primary);
+}
+
+.head {
+  display: grid;
+  gap: var(--space-1);
+}
+
+@media (min-width: 48rem) {
+  .track {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: var(--space-6);
+  }
+
+  .step {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+    padding-block: var(--space-6) var(--space-7);
+    border-block-start: 1px solid var(--rule-hairline);
+  }
+
+  /* Le trait vertical disparaît : c'est le filet supérieur qui relie. */
+  .step::before {
+    display: none;
+  }
+
+  .marker {
+    margin-block-start: 0;
+    margin-block-end: var(--space-1);
+  }
+
+  .label {
+    margin-block-start: 0;
+    max-inline-size: 22ch;
+  }
+}
+
+@media (min-width: 62rem) {
+  .track {
+    column-gap: var(--space-8);
+  }
+
+  .label {
+    font-size: var(--text-xl);
+  }
+}

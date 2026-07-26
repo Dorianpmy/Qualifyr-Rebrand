@@ -1,0 +1,155 @@
+.base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  min-block-size: 2.875rem; /* 46px — cible tactile confortable */
+  padding: 0.8125rem 1.625rem;
+  font-family: var(--family-text);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  line-height: 1.2;
+  letter-spacing: 0.005em;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  /* Un libellé long ne peut jamais dépasser son conteneur. */
+  max-inline-size: 100%;
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-xs);
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.base:hover:not(:disabled):not([aria-disabled='true']) {
+  transform: translateY(-1px);
+}
+
+.base:active:not(:disabled):not([aria-disabled='true']) {
+  transform: translateY(0);
+}
+
+/* --- Variante principale : charbon plein --- */
+.primary {
+  background-color: var(--color-ink);
+  border-color: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.primary:hover:not(:disabled):not([aria-disabled='true']) {
+  background-color: var(--color-espresso);
+  border-color: var(--color-espresso);
+}
+
+/* --- Variante secondaire : contour contrasté --- */
+.secondary {
+  background-color: transparent;
+  border-color: var(--rule-strong);
+  color: var(--text-primary);
+}
+
+.secondary:hover:not(:disabled):not([aria-disabled='true']) {
+  border-color: var(--color-ink);
+  background-color: var(--surface-raised);
+}
+
+/* --- Variante texte : aucun fond, soulignement au survol --- */
+.text {
+  min-block-size: 2.75rem;
+  padding-inline: 0;
+  background-color: transparent;
+  color: var(--text-primary);
+}
+
+.text .label {
+  position: relative;
+}
+
+.text .label::after {
+  content: '';
+  position: absolute;
+  inset-block-end: -0.22em;
+  inset-inline-start: 0;
+  inline-size: 100%;
+  block-size: 1px;
+  background-color: var(--color-brass);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.text:hover:not(:disabled) .label::after {
+  transform: scaleX(1);
+}
+
+/* --- Variante sur fond sombre --- */
+.inverse {
+  background-color: var(--color-paper);
+  border-color: var(--color-paper);
+  color: var(--color-ink);
+}
+
+.inverse:hover:not(:disabled):not([aria-disabled='true']) {
+  background-color: var(--color-ivory);
+  border-color: var(--color-ivory);
+}
+
+/* --- États --- */
+.base:disabled,
+.base[aria-disabled='true'] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.base[data-loading='true'] {
+  cursor: progress;
+}
+
+.spinner {
+  inline-size: 1em;
+  block-size: 1em;
+  flex-shrink: 0;
+  border: 1.25px solid currentcolor;
+  border-block-start-color: transparent;
+  border-radius: var(--radius-full);
+  animation: spin 720ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mouvement réduit : la rotation est remplacée par un repère statique,
+   l'information reste portée par le texte « Envoi en cours ». */
+/* Sous 26rem, un libellé long doit pouvoir passer à la ligne plutôt que
+   provoquer un débordement horizontal. */
+@media (max-width: 29.999rem) {
+  .base {
+    white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+    border-block-start-color: currentcolor;
+    opacity: 0.5;
+  }
+
+  .base:hover {
+    transform: none;
+  }
+}
+
+/* Le trait du bouton texte apparaît instantanément. */
+@media (prefers-reduced-motion: reduce) {
+  .text .label::after {
+    transition: none;
+  }
+}

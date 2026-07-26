@@ -1,0 +1,33 @@
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--family-text);
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-medium);
+  line-height: 1.2;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* Le filet de laiton est la signature du sur-titre. Un seul par section. */
+.eyebrow::before {
+  content: '';
+  flex: 0 0 auto;
+  inline-size: var(--space-6);
+  block-size: 1px;
+  background-color: var(--color-brass);
+}
+
+.bare::before {
+  display: none;
+}
+
+.numbered {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.inverse {
+  color: var(--text-inverse-secondary);
+}

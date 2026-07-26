@@ -1,0 +1,39 @@
+.section {
+  padding-block: var(--section-gap);
+}
+
+.tight {
+  padding-block: var(--section-gap-tight);
+}
+
+.flush {
+  padding-block: 0;
+}
+
+/* Surfaces. L'alternance ivoire / blanc chaud / charbon porte le rythme
+   éditorial du site : une seule section charbon par page. */
+.page {
+  background-color: var(--surface-page);
+}
+
+.raised {
+  background-color: var(--surface-raised);
+}
+
+.sunken {
+  background-color: var(--surface-sunken);
+}
+
+.inverse {
+  background-color: var(--surface-inverse);
+  color: var(--text-inverse);
+}
+
+/* Filet de séparation, alternative aux changements de fond. */
+.ruled {
+  border-block-start: var(--border-width) solid var(--rule-hairline);
+}
+
+.inverse.ruled {
+  border-block-start-color: var(--rule-inverse);
+}

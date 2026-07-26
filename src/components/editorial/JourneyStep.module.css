@@ -1,0 +1,61 @@
+/* Les six étapes du parcours : une séquence, pas une grille de cartes.
+   Chaque étape est une ligne, séparée par un filet pleine largeur. */
+.step {
+  display: grid;
+  gap: var(--space-3);
+  padding-block: var(--space-6);
+  border-block-start: var(--border-width) solid var(--rule-hairline);
+}
+
+.step:last-child {
+  border-block-end: var(--border-width) solid var(--rule-hairline);
+}
+
+.number {
+  font-family: var(--family-text);
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-brass-deep);
+}
+
+.label {
+  margin: 0;
+  font-family: var(--family-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-snug);
+}
+
+.body {
+  max-inline-size: 52ch;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+@media (min-width: 48rem) {
+  .step {
+    grid-template-columns: 4rem minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-6);
+    align-items: baseline;
+    padding-block: var(--space-7);
+  }
+
+  .number {
+    padding-block-start: 0.35em;
+  }
+}
+
+.inverse {
+  border-block-start-color: var(--rule-inverse);
+}
+
+.inverse:last-child {
+  border-block-end-color: var(--rule-inverse);
+}
+
+.inverse .body {
+  color: var(--text-inverse-secondary);
+}

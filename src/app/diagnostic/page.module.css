@@ -1,0 +1,86 @@
+/* Composition propre à la page Diagnostic : ouverture courte, explication de
+   la suite, puis le formulaire sur une largeur de lecture confortable. */
+
+.hero {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.heroLead {
+  max-inline-size: 48ch;
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+}
+
+@media (min-width: 62rem) {
+  .hero {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: var(--space-9);
+    align-items: end;
+  }
+}
+
+.steps {
+  display: grid;
+  gap: var(--space-5);
+  margin-block-start: var(--section-gap-tight);
+}
+
+.step {
+  display: grid;
+  gap: var(--space-3);
+  padding-block-start: var(--space-5);
+  border-block-start: var(--border-width) solid var(--rule-hairline);
+}
+
+.stepNumber {
+  font-size: var(--text-3xs);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-brass-deep);
+}
+
+.stepTitle {
+  margin: 0;
+  font-family: var(--family-display);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-regular);
+}
+
+.stepBody {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+@media (min-width: 48rem) {
+  .steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+}
+
+.formLayout {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.formAside {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+@media (min-width: 62rem) {
+  .formLayout {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    gap: var(--space-9);
+    align-items: start;
+  }
+
+  .formAside {
+    position: sticky;
+    inset-block-start: calc(var(--header-height) + var(--space-6));
+  }
+}

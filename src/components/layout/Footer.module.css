@@ -1,0 +1,90 @@
+.footer {
+  padding-block: var(--space-10) calc(var(--space-6) + var(--safe-bottom));
+  background-color: var(--surface-inverse);
+  color: var(--text-inverse);
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-8);
+  padding-block-end: var(--space-8);
+  border-block-end: var(--border-width) solid var(--rule-inverse);
+}
+
+.positioning {
+  max-inline-size: 32ch;
+  margin-block-start: var(--space-5);
+  font-family: var(--family-display);
+  font-size: var(--text-lg);
+  line-height: var(--leading-normal);
+  color: var(--text-inverse);
+}
+
+.domain {
+  margin-block-start: var(--space-5);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  color: var(--text-inverse-secondary);
+}
+
+.columnTitle {
+  margin-block-end: var(--space-4);
+  font-family: var(--family-text);
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-brass);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.link {
+  display: inline-block;
+  min-block-size: 1.75rem;
+  font-size: var(--text-sm);
+  text-decoration: none;
+  color: var(--text-inverse);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.link:hover {
+  color: var(--color-sand);
+  text-decoration: underline;
+  text-underline-offset: 0.22em;
+}
+
+.channelValue {
+  font-size: var(--text-sm);
+  color: var(--text-inverse);
+}
+
+.baseline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  justify-content: space-between;
+  padding-block-start: var(--space-6);
+  font-size: var(--text-2xs);
+  color: var(--text-inverse-secondary);
+}
+
+/* Colonnes adaptatives : la colonne « Contact » n'existe que si un canal est
+   réellement renseigné. Une grille à nombre fixe de colonnes laisserait donc
+   une piste vide. `auto-fit` s'ajuste au nombre réel d'enfants. */
+@media (min-width: 48rem) {
+  .grid {
+    grid-template-columns: minmax(0, 1.5fr) repeat(auto-fit, minmax(9rem, 1fr));
+    gap: var(--space-8) var(--space-7);
+  }
+}
+
+@media (min-width: 62rem) {
+  .grid {
+    gap: var(--space-9);
+  }
+}

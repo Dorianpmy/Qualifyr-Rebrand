@@ -1,0 +1,51 @@
+.quote {
+  display: grid;
+  gap: var(--space-5);
+  margin: 0;
+  max-inline-size: 28ch;
+}
+
+/* Pas de guillemets décoratifs surdimensionnés : le seul effet est un filet
+   de laiton en amorce et une typographie large. */
+.rule {
+  inline-size: var(--space-9);
+  block-size: 1px;
+  background-color: var(--color-brass);
+}
+
+.text {
+  margin: 0;
+  font-family: var(--family-display);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-regular);
+  line-height: 1.25;
+  letter-spacing: var(--tracking-snug);
+  text-wrap: balance;
+}
+
+.attribution {
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+.name {
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+}
+
+.centered {
+  max-inline-size: 32ch;
+  margin-inline: auto;
+  justify-items: center;
+  text-align: center;
+}
+
+.inverse .attribution {
+  color: var(--text-inverse-secondary);
+}
+
+.inverse .name {
+  color: var(--text-inverse);
+}

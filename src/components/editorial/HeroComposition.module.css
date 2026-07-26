@@ -1,0 +1,203 @@
+/* Composition éditoriale du hero.
+   Ce n'est pas une capture de logiciel : c'est une planche de direction
+   artistique qui montre les moments que le parcours relie. Aucune donnée
+   n'est simulée — pas de prix, pas de date, pas de nom de client. */
+
+.composition {
+  position: relative;
+  display: grid;
+  gap: var(--space-5);
+  margin: 0;
+}
+
+/* ---------- Panneau charbon : la séquence des moments ---------- */
+
+.panel {
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-6) var(--space-5) var(--space-7);
+  background-color: var(--color-ink);
+  color: var(--text-inverse);
+  border-radius: var(--radius-sm);
+}
+
+/* Deux traits obliques très discrets : le reflet d'une carrosserie
+   fraîchement polie. Aucun dégradé, aucun halo. */
+.sheen,
+.sheenSecond {
+  position: absolute;
+  inset-block-start: -20%;
+  inline-size: 1px;
+  block-size: 140%;
+  background-color: var(--color-paper);
+  opacity: 0.08;
+  transform: rotate(18deg);
+  pointer-events: none;
+}
+
+.sheen {
+  inset-inline-end: 22%;
+}
+
+.sheenSecond {
+  inset-inline-end: 18%;
+  opacity: 0.05;
+}
+
+.panelLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-sand);
+}
+
+.panelLabel::before {
+  content: '';
+  inline-size: var(--space-5);
+  block-size: 1px;
+  background-color: var(--color-brass);
+}
+
+.moments {
+  display: grid;
+  margin-block-start: var(--space-5);
+}
+
+.moment {
+  display: grid;
+  grid-template-columns: 2.25rem 1fr;
+  gap: var(--space-3);
+  align-items: baseline;
+  padding-block: var(--space-3);
+  border-block-start: var(--border-width) solid var(--rule-inverse);
+}
+
+.moment:first-child {
+  border-block-start: 0;
+}
+
+.momentNumber {
+  font-size: var(--text-3xs);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-brass);
+}
+
+.momentLabel {
+  font-family: var(--family-display);
+  font-size: var(--text-lg);
+  line-height: 1.25;
+}
+
+/* ---------- Fiche ivoire : la structure d'une demande ---------- */
+
+.card {
+  padding: var(--space-5);
+  background-color: var(--color-paper);
+  border: 1px solid var(--rule-hairline);
+  border-radius: var(--radius-sm);
+}
+
+.cardLabel {
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.fields {
+  display: grid;
+  gap: var(--space-3);
+  margin-block-start: var(--space-4);
+}
+
+.field {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.fieldLabel {
+  font-size: var(--text-2xs);
+  color: var(--text-secondary);
+}
+
+/* Champ volontairement vide : on montre la structure d'une demande,
+   jamais une demande fictive remplie. */
+.fieldRule {
+  block-size: 1px;
+  background-color: var(--rule-hairline);
+}
+
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-1);
+  margin-block-start: var(--space-5);
+  padding-block-start: var(--space-4);
+  border-block-start: 1px solid var(--rule-hairline);
+}
+
+.day {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-2xs);
+  color: var(--text-secondary);
+}
+
+.dayBar {
+  inline-size: 100%;
+  block-size: var(--space-5);
+  border: 1px solid var(--rule-hairline);
+  border-radius: var(--radius-xs);
+}
+
+.dayBarActive {
+  border-color: var(--color-brass-deep);
+  background-color: var(--color-sand);
+}
+
+.caption {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+/* ---------- Composition décalée à partir de 62rem ---------- */
+
+@media (min-width: 48rem) {
+  .composition {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: var(--space-5);
+    align-items: start;
+  }
+
+  .panel {
+    grid-column: 1;
+    padding: var(--space-7) var(--space-6) var(--space-8);
+  }
+
+  .card {
+    grid-column: 2;
+    margin-block-start: var(--space-8);
+  }
+
+  .caption {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 62rem) {
+  .composition {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  }
+
+  .card {
+    margin-block-start: var(--space-10);
+    margin-inline-start: calc(var(--space-6) * -1);
+  }
+}

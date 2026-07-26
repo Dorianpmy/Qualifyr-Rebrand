@@ -1,0 +1,89 @@
+/* Composition propre à la page Réalisations : une entrée par bande pleine
+   largeur, numérotée. La structure accepte d'autres projets sans changer de
+   mise en page — il n'y a pas de grille à remplir. */
+
+.list {
+  display: grid;
+  gap: var(--section-gap-tight);
+  margin-block-start: var(--section-gap-tight);
+}
+
+.entry {
+  display: grid;
+  gap: var(--space-6);
+  padding-block-start: var(--space-6);
+  border-block-start: var(--border-width) solid var(--rule-hairline);
+}
+
+.entryIndex {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.entryNumber {
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--color-brass-deep);
+}
+
+.entryBody {
+  display: grid;
+  gap: var(--space-5);
+  align-content: start;
+}
+
+.entryTitle {
+  max-inline-size: 20ch;
+  margin: 0;
+  font-family: var(--family-display);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-snug);
+}
+
+.entrySummary {
+  max-inline-size: 52ch;
+  color: var(--text-secondary);
+}
+
+.deliverables {
+  display: grid;
+}
+
+.deliverable {
+  padding-block: var(--space-3);
+  border-block-start: var(--border-width) solid var(--rule-hairline);
+  font-size: var(--text-sm);
+}
+
+.entryAction {
+  margin-block-start: var(--space-2);
+}
+
+.note {
+  max-inline-size: 60ch;
+  margin-block-start: var(--space-8);
+  padding-block-start: var(--space-5);
+  border-block-start: var(--border-width) solid var(--rule-hairline);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+@media (min-width: 62rem) {
+  .entry {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-9);
+    align-items: start;
+  }
+
+  .entryIndex {
+    grid-column: 1 / -1;
+  }
+
+}

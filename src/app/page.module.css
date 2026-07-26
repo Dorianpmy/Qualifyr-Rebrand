@@ -1,0 +1,161 @@
+/* ============================ HERO ============================ */
+
+.hero {
+  display: grid;
+  gap: var(--space-8);
+  padding-block: clamp(2rem, 1rem + 4vw, 4.5rem) 0;
+}
+
+.heroText {
+  display: grid;
+  gap: var(--space-5);
+  align-content: start;
+}
+
+.heroTitle {
+  max-inline-size: 13ch;
+  margin: 0;
+}
+
+.heroBody {
+  max-inline-size: 46ch;
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-block-start: var(--space-2);
+}
+
+/* Ligne éditoriale : une phrase rythmée par des points médians,
+   surtout pas une liste de fonctionnalités. */
+.heroLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-3);
+  margin-block-start: var(--space-6);
+  padding-block-start: var(--space-5);
+  border-block-start: 1px solid var(--rule-hairline);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+}
+
+.heroLineSeparator {
+  color: var(--color-brass-deep);
+}
+
+/* Le hero ne se scinde qu'à partir de 1280px.
+   Entre 992 et 1279, la colonne de droite devenait trop étroite pour la
+   composition : les libellés du parcours passaient tous à la ligne. Empilé,
+   le hero laisse à la planche toute la largeur — plus généreux, plus lisible. */
+@media (min-width: 80rem) {
+  .hero {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-9);
+    align-items: start;
+    padding-block-start: clamp(3rem, 1rem + 5vw, 5.5rem);
+  }
+
+  .heroComposition {
+    padding-block-start: var(--space-4);
+  }
+}
+
+/* ========================== SECTIONS ========================== */
+
+.blocks {
+  display: grid;
+  gap: var(--space-6);
+  margin-block-start: var(--section-gap-tight);
+}
+
+@media (min-width: 48rem) {
+  .blocks {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+}
+
+.pillars {
+  display: grid;
+  gap: var(--space-7);
+  margin-block-start: var(--section-gap-tight);
+}
+
+@media (min-width: 48rem) {
+  .pillars {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+}
+
+.offerGrid {
+  display: grid;
+  gap: var(--space-6);
+  margin-block-start: var(--section-gap-tight);
+}
+
+@media (min-width: 48rem) {
+  .offerGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6) var(--space-8);
+  }
+}
+
+@media (min-width: 62rem) {
+  .offerGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.spaced {
+  margin-block-start: var(--section-gap-tight);
+}
+
+
+/* ---------- Méthode ---------- */
+
+.methodLayout {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.methodSteps {
+  display: grid;
+}
+
+.methodAction {
+  margin-block-start: var(--space-6);
+}
+
+@media (min-width: 62rem) {
+  .methodLayout {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-9);
+    align-items: start;
+  }
+}
+
+/* ---------- FAQ ---------- */
+
+.faqLayout {
+  display: grid;
+  gap: var(--space-7);
+}
+
+@media (min-width: 62rem) {
+  .faqLayout {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    gap: var(--space-9);
+    align-items: start;
+  }
+}
+
+/* ---------- Réalisation ---------- */
+
+

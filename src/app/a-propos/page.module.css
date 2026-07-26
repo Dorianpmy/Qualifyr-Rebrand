@@ -1,0 +1,123 @@
+/* Composition propre à la page À propos : ouverture pleine largeur en
+   typographie de lecture, puis une colonne de manifeste et une bande
+   « ce que nous ne faisons pas » en négatif. */
+
+.intro {
+  display: grid;
+  gap: var(--space-5);
+  max-inline-size: 62ch;
+  margin-block-start: var(--space-8);
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+}
+
+.philosophy {
+  display: grid;
+  gap: var(--space-8);
+  margin-block-start: var(--section-gap-tight);
+}
+
+.principle {
+  display: grid;
+  gap: var(--space-4);
+  padding-block-start: var(--space-5);
+  border-block-start: var(--border-width) solid var(--rule-hairline);
+}
+
+.principleNumber {
+  font-size: var(--text-3xs);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-brass-deep);
+}
+
+.principleTitle {
+  max-inline-size: 18ch;
+  margin: 0;
+  font-family: var(--family-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-snug);
+}
+
+.principleBody {
+  max-inline-size: 56ch;
+  color: var(--text-secondary);
+}
+
+@media (min-width: 62rem) {
+  .principle {
+    grid-template-columns: 3rem minmax(0, 4fr) minmax(0, 6fr);
+    gap: var(--space-6);
+    align-items: start;
+    padding-block: var(--space-6) var(--space-2);
+  }
+
+  .principleTitle {
+    max-inline-size: none;
+  }
+}
+
+/* --------------------- Manière de travailler --------------------- */
+
+.ways {
+  display: grid;
+  gap: var(--space-6);
+  margin-block-start: var(--section-gap-tight);
+}
+
+@media (min-width: 48rem) {
+  .ways {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ------------------ Ce que nous ne faisons pas ------------------- */
+
+.refusalsLayout {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.refusals {
+  display: grid;
+}
+
+.refusal {
+  display: grid;
+  gap: var(--space-2);
+  padding-block: var(--space-5);
+  border-block-start: var(--border-width) solid var(--rule-inverse);
+}
+
+.refusal:last-child {
+  border-block-end: var(--border-width) solid var(--rule-inverse);
+}
+
+.refusalTitle {
+  margin: 0;
+  font-family: var(--family-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-snug);
+}
+
+.refusalBody {
+  max-inline-size: 56ch;
+  font-size: var(--text-sm);
+  color: var(--text-inverse-secondary);
+}
+
+@media (min-width: 62rem) {
+  .refusalsLayout {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    gap: var(--space-9);
+    align-items: start;
+  }
+
+  .refusal {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-6);
+    align-items: baseline;
+  }
+}

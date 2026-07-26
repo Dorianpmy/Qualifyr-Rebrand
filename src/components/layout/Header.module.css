@@ -1,0 +1,112 @@
+.header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--z-header);
+  /* Voile ivoire à 88 % : le contenu défile derrière sans jamais nuire à la
+     lisibilité. Ni flou, ni saturation, ni glassmorphism — seulement de la
+     transparence. Repli opaque là où `color-mix` n'est pas pris en charge. */
+  background-color: var(--surface-page);
+  border-block-end: var(--border-width) solid transparent;
+  transition: border-color var(--duration-base) var(--ease-out);
+}
+
+@supports (background-color: color-mix(in srgb, red 50%, transparent)) {
+  .header {
+    background-color: color-mix(in srgb, var(--color-ivory) 88%, transparent);
+  }
+}
+
+/* Le filet n'apparaît qu'une fois la page défilée : au repos, l'en-tête se
+   fond dans la page. */
+.scrolled {
+  border-block-end-color: var(--rule-hairline);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  min-block-size: var(--header-height);
+  padding-block-start: var(--safe-top);
+}
+
+.brand {
+  text-decoration: none;
+  border-radius: var(--radius-xs);
+}
+
+.nav {
+  display: none;
+}
+
+.navList {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.navLink {
+  position: relative;
+  display: inline-block;
+  padding-block: var(--space-2);
+  font-size: var(--text-sm);
+  text-decoration: none;
+  color: var(--text-secondary);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.navLink::after {
+  content: '';
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: 0;
+  inline-size: 100%;
+  block-size: 1px;
+  background-color: var(--color-brass);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.navLink:hover {
+  color: var(--text-primary);
+}
+
+.navLink:hover::after {
+  transform: scaleX(1);
+}
+
+/* Page active : couleur pleine et filet permanent — l'indication ne repose
+   pas sur la seule couleur. */
+.navLink[aria-current='page'] {
+  color: var(--text-primary);
+}
+
+.navLink[aria-current='page']::after {
+  transform: scaleX(1);
+  background-color: var(--color-ink);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.cta {
+  display: none;
+}
+
+@media (min-width: 62rem) {
+  .nav,
+  .cta {
+    display: block;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navLink::after {
+    transition: none;
+  }
+}

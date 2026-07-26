@@ -1,0 +1,62 @@
+.list {
+  display: grid;
+  border-block-start: var(--border-width) solid var(--rule-hairline);
+}
+
+.item {
+  border-block-end: var(--border-width) solid var(--rule-hairline);
+}
+
+/* `<details>`/`<summary>` : accessible nativement au clavier et aux lecteurs
+   d'écran, fonctionnel sans JavaScript. Aucune dépendance, aucun ARIA à
+   maintenir à la main. */
+.summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-5);
+  min-block-size: 3.5rem;
+  padding-block: var(--space-5);
+  font-family: var(--family-display);
+  font-size: var(--text-xl);
+  line-height: var(--leading-snug);
+  cursor: pointer;
+  list-style: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.summary:hover {
+  color: var(--text-accent);
+}
+
+.summary:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.indicator {
+  flex: 0 0 auto;
+  color: var(--color-brass-deep);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.item[open] .indicator {
+  transform: rotate(45deg);
+}
+
+.answer {
+  max-inline-size: 60ch;
+  padding-block-end: var(--space-6);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .indicator {
+    transition: none;
+  }
+}

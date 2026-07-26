@@ -1,0 +1,115 @@
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: 2.75rem;
+  min-inline-size: 2.75rem;
+  padding-inline: var(--space-2);
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-primary);
+  border-radius: var(--radius-xs);
+}
+
+.panel {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--surface-page);
+  overscroll-behavior: contain;
+  overflow-y: auto;
+  /* Zones sûres iOS : encoche en haut, barre d'accueil en bas. */
+  padding-block: calc(var(--safe-top) + var(--space-4)) calc(var(--safe-bottom) + var(--space-8));
+  padding-inline: max(var(--gutter), var(--safe-left)) max(var(--gutter), var(--safe-right));
+}
+
+.panelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-block-size: calc(var(--header-height) - var(--space-4));
+}
+
+.close {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: 2.75rem;
+  min-inline-size: 2.75rem;
+  padding-inline: var(--space-2);
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-primary);
+  border-radius: var(--radius-xs);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  margin-block-start: var(--space-6);
+}
+
+.item {
+  border-block-end: var(--border-width) solid var(--rule-hairline);
+}
+
+.item:first-child {
+  border-block-start: var(--border-width) solid var(--rule-hairline);
+}
+
+.link {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  min-block-size: 3.5rem;
+  padding-block: var(--space-5);
+  font-family: var(--family-display);
+  font-size: var(--text-2xl);
+  line-height: 1.1;
+  text-decoration: none;
+  color: var(--text-primary);
+}
+
+.index {
+  font-family: var(--family-text);
+  font-size: var(--text-3xs);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-secondary);
+}
+
+.link[aria-current='page'] .index {
+  color: var(--color-brass-deep);
+}
+
+.link[aria-current='page'] .linkLabel {
+  color: var(--text-accent);
+}
+
+.foot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-block-start: auto;
+  padding-block-start: var(--space-9);
+}
+
+.footNote {
+  max-inline-size: 46ch;
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+@media (min-width: 62rem) {
+  .trigger,
+  .panel {
+    display: none;
+  }
+}

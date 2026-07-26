@@ -1,0 +1,73 @@
+/* Logo Qualifyr — verrouillage horizontal : la marque à gauche, le mot à droite.
+   Le lockup empilé de l'original (Q au-dessus, mot en dessous) serait trop haut
+   pour un en-tête de 72 px. La variante `stacked` le restitue là où la hauteur
+   n'est pas contrainte. */
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--logo-gap, 0.62em);
+  font-size: var(--logo-size, var(--text-xl));
+  line-height: 1;
+  color: var(--text-primary);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.mark {
+  flex: 0 0 auto;
+  inline-size: 1.42em;
+  block-size: auto;
+}
+
+.words {
+  display: grid;
+  gap: 0.22em;
+}
+
+.name {
+  font-family: var(--family-display);
+  font-size: 0.86em;
+  font-weight: var(--weight-regular);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.suffix {
+  font-family: var(--family-text);
+  font-size: 0.4em;
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  /* Compense l'interlettrage : le mot reste optiquement aligné à gauche. */
+  text-indent: 0.16em;
+}
+
+/* --- Variantes --- */
+
+.large {
+  --logo-size: var(--text-3xl);
+}
+
+.stacked {
+  flex-direction: column;
+  gap: 0.5em;
+  text-align: center;
+}
+
+.stacked .mark {
+  inline-size: 2.4em;
+}
+
+.stacked .suffix {
+  text-indent: 0.32em;
+}
+
+.inverse {
+  color: var(--text-inverse);
+}
+
+.inverse .suffix {
+  color: var(--text-inverse-secondary);
+}

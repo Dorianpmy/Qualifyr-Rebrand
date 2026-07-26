@@ -1,0 +1,76 @@
+/* Panneau de projet.
+   Deux états : avec logo réel, ou composition typographique en attendant.
+   Le second n'est pas un placeholder — c'est une mise en page finie, qui tient
+   seule et ne se signale pas comme provisoire. */
+
+.plate {
+  display: grid;
+  gap: var(--space-5);
+  align-content: center;
+  justify-items: start;
+  min-block-size: 15rem;
+  padding: var(--space-7) var(--space-6);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.sand {
+  background-color: var(--surface-sunken);
+}
+
+.ink {
+  background-color: var(--color-ink);
+  color: var(--text-inverse);
+}
+
+.meta {
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.ink .meta {
+  color: var(--color-sand);
+}
+
+.rule {
+  inline-size: var(--space-8);
+  block-size: 1px;
+  background-color: var(--color-brass);
+}
+
+.name {
+  font-family: var(--family-display);
+  font-size: var(--text-3xl);
+  line-height: 1.05;
+  letter-spacing: var(--tracking-tight);
+}
+
+.logo {
+  inline-size: auto;
+  max-inline-size: min(100%, 18rem);
+  block-size: auto;
+  max-block-size: 5rem;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.large {
+  min-block-size: 20rem;
+}
+
+@media (min-width: 62rem) {
+  .plate {
+    padding: var(--space-8) var(--space-7);
+  }
+
+  .large {
+    min-block-size: 28rem;
+  }
+
+  .large .name {
+    font-size: var(--text-4xl);
+  }
+}

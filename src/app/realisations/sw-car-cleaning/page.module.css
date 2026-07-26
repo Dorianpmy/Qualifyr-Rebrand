@@ -1,0 +1,239 @@
+/* ============================== HERO ============================== */
+
+.hero {
+  display: grid;
+  gap: var(--space-8);
+  margin-block-start: var(--space-8);
+}
+
+.heroText {
+  display: grid;
+  gap: var(--space-5);
+  align-content: end;
+}
+
+.heroTitle {
+  max-inline-size: 12ch;
+  margin: 0;
+}
+
+.heroSubtitle {
+  max-inline-size: 44ch;
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+}
+
+.heroLink {
+  margin-block-start: var(--space-2);
+}
+
+@media (min-width: 62rem) {
+  .hero {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-9);
+    align-items: end;
+  }
+}
+
+/* ============================ CONTEXTE ============================ */
+
+.contextLayout {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.contextText {
+  display: grid;
+  gap: var(--space-4);
+  max-inline-size: 62ch;
+  color: var(--text-secondary);
+}
+
+.aspects {
+  display: grid;
+  align-content: start;
+}
+
+.aspect {
+  display: grid;
+  gap: var(--space-1);
+  padding-block: var(--space-4);
+  border-block-start: var(--border-width) solid var(--rule-hairline);
+}
+
+.aspect:last-child {
+  border-block-end: var(--border-width) solid var(--rule-hairline);
+}
+
+.aspectLabel {
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.aspectValue {
+  font-family: var(--family-display);
+  font-size: var(--text-lg);
+}
+
+@media (min-width: 62rem) {
+  .contextLayout {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    gap: var(--space-9);
+    align-items: start;
+  }
+}
+
+/* ============================ OBJECTIFS =========================== */
+
+
+.objectives {
+  display: grid;
+  margin-block-start: var(--section-gap-tight);
+}
+
+.objective {
+  display: grid;
+  gap: var(--space-3);
+  padding-block: var(--space-5);
+  border-block-start: var(--border-width) solid var(--rule-hairline);
+}
+
+.objective:last-child {
+  border-block-end: var(--border-width) solid var(--rule-hairline);
+}
+
+.objectiveNumber {
+  font-size: var(--text-3xs);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-brass-deep);
+}
+
+.objectiveTitle {
+  margin: 0;
+  font-family: var(--family-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-snug);
+}
+
+.objectiveBody {
+  max-inline-size: 56ch;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+@media (min-width: 48rem) {
+  .objective {
+    grid-template-columns: 3rem minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-5);
+    align-items: baseline;
+    padding-block: var(--space-6);
+  }
+}
+
+/* ============================ LIVRABLES =========================== */
+
+.deliverables {
+  display: grid;
+  gap: var(--space-7);
+  margin-block-start: var(--section-gap-tight);
+}
+
+.deliverable {
+  display: grid;
+  gap: var(--space-4);
+  padding-block-start: var(--space-5);
+  border-block-start: var(--border-width) solid var(--rule-inverse);
+}
+
+.deliverableNumber {
+  font-size: var(--text-3xs);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-brass);
+}
+
+.deliverableTitle {
+  max-inline-size: 16ch;
+  margin: 0;
+  font-family: var(--family-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-snug);
+}
+
+.deliverableBody {
+  max-inline-size: 48ch;
+  font-size: var(--text-sm);
+  color: var(--text-inverse-secondary);
+}
+
+@media (min-width: 48rem) {
+  .deliverables {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+}
+
+/* ========================== ENSEIGNEMENT ========================== */
+
+.lessonLayout {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.lessonBody {
+  max-inline-size: 56ch;
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+}
+
+.links {
+  display: grid;
+  margin-block-start: var(--space-6);
+}
+
+.link {
+  display: grid;
+  gap: var(--space-2);
+  padding-block: var(--space-5);
+  border-block-start: var(--border-width) solid var(--rule-hairline);
+}
+
+.linkTitle {
+  margin: 0;
+  font-family: var(--family-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-regular);
+}
+
+.linkBody {
+  max-inline-size: 54ch;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+@media (min-width: 48rem) {
+  .link {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 6fr);
+    gap: var(--space-6);
+    align-items: baseline;
+  }
+}
+
+@media (min-width: 62rem) {
+  .lessonLayout {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-9);
+    align-items: start;
+  }
+
+  .links {
+    grid-column: 1 / -1;
+    margin-block-start: var(--space-4);
+  }
+}

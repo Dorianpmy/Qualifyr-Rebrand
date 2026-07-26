@@ -1,0 +1,64 @@
+.panel {
+  display: grid;
+  gap: var(--space-6);
+  padding-block-start: var(--space-6);
+  border-block-start: var(--border-width) solid var(--rule-hairline);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--family-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-regular);
+}
+
+.intro {
+  max-inline-size: 46ch;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.channels {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.channel {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.channelLabel {
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.channelValue {
+  font-family: var(--family-display);
+  font-size: var(--text-lg);
+}
+
+.fallback {
+  display: grid;
+  gap: var(--space-4);
+  justify-items: start;
+}
+
+@media (min-width: 48rem) {
+  .panel {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: var(--space-8);
+  }
+}
+
+.inverse {
+  border-block-start-color: var(--rule-inverse);
+}
+
+.inverse .intro,
+.inverse .channelLabel {
+  color: var(--text-inverse-secondary);
+}

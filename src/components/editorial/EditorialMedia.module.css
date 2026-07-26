@@ -1,0 +1,63 @@
+.figure {
+  margin: 0;
+  display: grid;
+  gap: var(--space-4);
+}
+
+.frame {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--surface-sunken);
+  /* Aucun rayon : l'image est un bloc franc, comme une page de magazine. */
+  border-radius: var(--radius-none);
+}
+
+.portrait {
+  aspect-ratio: 4 / 5;
+}
+
+.landscape {
+  aspect-ratio: 3 / 2;
+}
+
+.panorama {
+  aspect-ratio: 16 / 9;
+}
+
+.image {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+.zoom:hover .image {
+  transform: scale(1.02);
+}
+
+.caption {
+  display: flex;
+  gap: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+/* Petite annotation typographique, dans l'esprit d'une légende de magazine. */
+.captionMark {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-brass-deep);
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .image {
+    transition: none;
+  }
+
+  .zoom:hover .image {
+    transform: none;
+  }
+}

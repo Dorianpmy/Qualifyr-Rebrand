@@ -1,0 +1,160 @@
+/* Composition propre à la page Méthode : une ouverture large, puis quatre
+   blocs en diptyque décalé, alternant les surfaces. */
+
+.hero {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.heroLead {
+  max-inline-size: 52ch;
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+}
+
+.index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-6);
+  margin-block-start: var(--space-6);
+  padding-block-start: var(--space-5);
+  border-block-start: var(--border-width) solid var(--rule-hairline);
+}
+
+.indexItem {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+.indexNumber {
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-brass-deep);
+}
+
+@media (min-width: 62rem) {
+  .hero {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: var(--space-9);
+    align-items: end;
+  }
+
+  .index {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------------------------- Étapes ---------------------------- */
+
+.step {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.stepIntro {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+}
+
+.stepNumber {
+  font-size: var(--text-3xs);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-brass-deep);
+}
+
+.stepTitle {
+  margin: 0;
+  font-family: var(--family-display);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-snug);
+}
+
+.stepBody {
+  max-inline-size: 44ch;
+  color: var(--text-secondary);
+}
+
+.stepListLabel {
+  margin-block-end: var(--space-4);
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.stepList {
+  display: grid;
+}
+
+.stepItem {
+  display: grid;
+  grid-template-columns: var(--space-4) minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: baseline;
+  padding-block: var(--space-3);
+  border-block-start: var(--border-width) solid var(--rule-hairline);
+  font-size: var(--text-sm);
+}
+
+.stepItem::before {
+  content: '';
+  inline-size: var(--space-3);
+  block-size: 1px;
+  background-color: var(--color-brass);
+  transform: translateY(-0.35em);
+}
+
+@media (min-width: 62rem) {
+  .step {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-9);
+    align-items: start;
+  }
+}
+
+/* ---------------------------- Outils ---------------------------- */
+
+.tools {
+  display: grid;
+  gap: var(--space-7);
+}
+
+.toolsText {
+  display: grid;
+  gap: var(--space-4);
+  max-inline-size: 60ch;
+  color: var(--text-secondary);
+}
+
+.principles {
+  display: grid;
+  gap: var(--space-6);
+  margin-block-start: var(--space-6);
+}
+
+@media (min-width: 48rem) {
+  .principles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 62rem) {
+  .tools {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-9);
+    align-items: start;
+  }
+
+  .principles {
+    grid-column: 1 / -1;
+    margin-block-start: var(--space-4);
+  }
+}

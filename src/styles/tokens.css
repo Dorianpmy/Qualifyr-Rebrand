@@ -1,0 +1,162 @@
+/* =========================================================================
+   Qualifyr Agence — jetons de design
+   Source de vérité unique. Aucune valeur de couleur, d'espacement ou de
+   typographie ne doit être écrite en dur ailleurs dans le projet.
+   Référence : docs/03-direction-artistique.md
+   ========================================================================= */
+
+:root {
+  /* ---------------------------------------------------------------------
+     Couleurs — palette chaude et éditoriale.
+     Interdits absolus : vert, mauve, violet, bleu électrique, cyan,
+     dégradé bleu-violet, néon, halo. Toutes les teintes ci-dessous se
+     situent entre 13° et 43° (rouge chaud → ambre).
+     --------------------------------------------------------------------- */
+  --color-ink: #171513;
+  --color-espresso: #2a211c;
+  --color-ivory: #f5f0e7;
+  --color-paper: #fffdf8;
+  --color-sand: #dccfbd;
+  --color-stone: #a99d90;
+  --color-brass: #b08a52;
+  --color-copper: #a9573f;
+  --color-muted: #70675f;
+  --color-border: #ded5c9;
+
+  /* Variantes dérivées, calculées pour l'accessibilité.
+     Ratios mesurés sur --color-ivory (#f5f0e7).
+       ink       16.04:1   texte courant
+       espresso  13.88:1   texte courant
+       muted      4.88:1   texte secondaire (AA)
+       copper     4.49:1   sous le seuil AA — interdit en petit texte
+       brass      2.80:1   décoratif uniquement
+       stone      2.34:1   décoratif uniquement
+       border     1.28:1   séparateur décoratif uniquement */
+  --color-copper-deep: #8b452f; /* 6.19:1 sur ivory — liens et texte d'accent */
+  --color-brass-deep: #7f6237; /* 4.99:1 sur ivory — texte d'accent laiton */
+  --color-border-strong: #70675f; /* 4.88:1 — contours porteurs de sens (WCAG 1.4.11) */
+
+  /* Rôles sémantiques : c'est ce que les composants consomment. */
+  --surface-page: var(--color-ivory);
+  --surface-raised: var(--color-paper);
+  --surface-sunken: var(--color-sand);
+  --surface-inverse: var(--color-ink);
+
+  --text-primary: var(--color-ink);
+  --text-secondary: var(--color-muted);
+  --text-accent: var(--color-copper-deep);
+  --text-inverse: var(--color-ivory);
+  --text-inverse-secondary: var(--color-stone);
+
+  --rule-hairline: var(--color-border);
+  --rule-strong: var(--color-border-strong);
+  --rule-accent: var(--color-brass);
+  --rule-inverse: rgb(245 240 231 / 16%);
+
+  --focus-ring: var(--color-ink);
+  --focus-ring-inverse: var(--color-paper);
+
+  /* États de formulaire — chauds, jamais rouge vif ni vert.
+     Jamais porteurs d'information à eux seuls : toujours doublés d'un texte. */
+  --state-error: #8b452f;
+  --state-error-surface: #f6e7e0;
+  --state-success: #4a3f2a;
+  --state-success-surface: #efeadc;
+
+  /* ---------------------------------------------------------------------
+     Typographie — deux familles, chargées localement via next/font/local.
+     --font-serif et --font-sans sont injectées par src/lib/fonts.ts.
+     --------------------------------------------------------------------- */
+  --family-display: var(--font-serif), Georgia, 'Times New Roman', serif;
+  --family-text: var(--font-sans), system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Échelle fluide, base 16px, mobile 360px → desktop 1280px */
+  --text-3xs: 0.75rem;
+  --text-2xs: 0.8125rem;
+  --text-xs: 0.875rem;
+  --text-sm: 0.9375rem;
+  --text-base: clamp(1.0625rem, 0.98rem + 0.3vw, 1.125rem);
+  --text-lg: clamp(1.125rem, 1.04rem + 0.4vw, 1.3125rem);
+  --text-xl: clamp(1.25rem, 1.1rem + 0.7vw, 1.5rem);
+  --text-2xl: clamp(1.5rem, 1.3rem + 0.9vw, 1.875rem);
+  --text-3xl: clamp(1.875rem, 1.5rem + 1.7vw, 2.75rem);
+  --text-4xl: clamp(2.25rem, 1.6rem + 2.9vw, 3.5rem);
+  --text-5xl: clamp(2.25rem, 1.35rem + 4.5vw, 4.5rem);
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  --leading-tight: 1.05;
+  --leading-snug: 1.18;
+  --leading-normal: 1.4;
+  --leading-relaxed: 1.65;
+
+  --tracking-tight: -0.02em;
+  --tracking-snug: -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.12em;
+
+  /* ---------------------------------------------------------------------
+     Espacement — base 4px
+     --------------------------------------------------------------------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 2.5rem;
+  --space-8: 3rem;
+  --space-9: 4rem;
+  --space-10: 5rem;
+  --space-11: 6rem;
+  --space-12: 8rem;
+  --space-13: 10rem;
+  --space-14: 12.5rem;
+
+  /* Rythme vertical entre sections */
+  --section-gap: clamp(5rem, 3rem + 8vw, 10rem);
+  --section-gap-tight: clamp(3rem, 2rem + 4vw, 5rem);
+
+  /* ---------------------------------------------------------------------
+     Mise en page
+     --------------------------------------------------------------------- */
+  --container-max: 78.75rem; /* 1260px */
+  --container-reading: 45rem; /* 720px */
+  --measure: 64ch;
+  --gutter: clamp(1.25rem, 0.6rem + 2.8vw, 3rem);
+
+  /* ---------------------------------------------------------------------
+     Bordures, rayons, ombres — arêtes franches, ombres quasi nulles.
+     Aucune ombre colorée, aucun halo.
+     --------------------------------------------------------------------- */
+  --border-width: 1px;
+  --radius-none: 0;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-full: 999px;
+
+  --shadow-subtle: 0 1px 2px rgb(23 21 19 / 6%);
+  --shadow-raised: 0 2px 8px rgb(23 21 19 / 7%);
+
+  /* ---------------------------------------------------------------------
+     Mouvement
+     --------------------------------------------------------------------- */
+  --duration-fast: 180ms;
+  --duration-base: 320ms;
+  --duration-slow: 480ms;
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* Divers */
+  --header-height: 4.5rem;
+  --z-header: 100;
+  --z-overlay: 200;
+
+  /* Zones sûres iOS — valent 0 partout ailleurs. */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}

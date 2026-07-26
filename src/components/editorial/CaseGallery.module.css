@@ -1,0 +1,74 @@
+/* Galerie de projet.
+   Grands visuels, légendes discrètes, alternance bureau / téléphone,
+   respirations généreuses. Aucun carrousel : tout est visible en défilant. */
+
+.gallery {
+  display: grid;
+  gap: var(--section-gap-tight);
+}
+
+.item {
+  display: grid;
+  gap: var(--space-5);
+  margin: 0;
+}
+
+.frame {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--surface-sunken);
+  border-radius: var(--radius-sm);
+}
+
+.desktopFrame {
+  aspect-ratio: 16 / 10;
+}
+
+.mobileFrame {
+  aspect-ratio: 9 / 16;
+  max-inline-size: 22rem;
+}
+
+.image {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.caption {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+.captionMark {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-brass-deep);
+}
+
+/* Les visuels mobiles se placent en regard, pas en pleine largeur. */
+@media (min-width: 62rem) {
+  .mobile {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-8);
+    align-items: center;
+  }
+
+  .mobile .caption {
+    align-self: center;
+    max-inline-size: 34ch;
+    font-size: var(--text-sm);
+  }
+
+  /* Un visuel mobile sur deux passe à droite : rythme de magazine.
+     `order` plutôt que `direction: rtl`, qui inverserait aussi la
+     ponctuation et le sens de lecture des légendes. */
+  .offset .frame {
+    order: 2;
+  }
+}
