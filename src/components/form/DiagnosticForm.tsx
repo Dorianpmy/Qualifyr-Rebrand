@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/Button';
 import { TextLink } from '@/components/ui/TextLink';
 import {
+  activityOptions,
   bookingMethodOptions,
   consent as consentContent,
   formLabels,
@@ -31,6 +32,8 @@ import styles from './form.module.css';
 const ID = 'diagnostic';
 
 const initialValues = {
+  activity: '',
+  activityDetails: '',
   fullName: '',
   company: '',
   email: '',
@@ -48,6 +51,8 @@ const initialValues = {
 
 /** Ordre de lecture du formulaire, utilisé pour cibler la première erreur. */
 const fieldOrder = [
+  'activity',
+  'activityDetails',
   'company',
   'area',
   'seniority',
@@ -64,6 +69,8 @@ const fieldOrder = [
 
 /** Libellés lisibles pour le résumé d'erreurs. */
 const labels: Record<string, string> = {
+  activity: 'Votre activité',
+  activityDetails: 'Précisions sur votre activité',
   fullName: 'Prénom et nom',
   company: 'Nom de l’entreprise',
   email: 'Adresse e-mail',
@@ -120,6 +127,24 @@ export function DiagnosticForm() {
     setValue('bookingMethods', next);
   };
 
+  const detailsContent =
+    values.activity === 'conciergerie'
+      ? {
+          label: 'Votre type de conciergerie',
+          hint: 'Précisez le type d’accompagnement, vos zones ou destinations et les demandes que vous recevez.',
+        }
+      : values.activity === 'nettoyage-auto-mobile' || values.activity === 'detailing-domicile'
+        ? {
+            label: 'Vos prestations automobiles',
+            hint: 'Précisez les types de véhicules, votre zone d’intervention et vos prestations principales.',
+          }
+        : values.activity === 'autre'
+          ? {
+              label: 'Votre activité',
+              hint: 'Décrivez-la brièvement. Ce choix ne signifie pas que Qualifyr acceptera automatiquement le projet.',
+            }
+          : null;
+
   return (
     <form className={styles.form} onSubmit={submit} noValidate>
       <ErrorSummary
@@ -130,6 +155,40 @@ export function DiagnosticForm() {
       />
 
       <Fieldset legend="Votre activité" number="01">
+        <Field id={`${ID}-activity`} label={labels.activity ?? ''} error={errors.activity}>
+          <Select
+            id={`${ID}-activity`}
+            name="activity"
+            value={values.activity}
+            onChange={(value) => {
+              setValue('activity', value);
+              setValue('activityDetails', '');
+            }}
+            options={activityOptions}
+            error={errors.activity}
+          />
+        </Field>
+
+        {detailsContent ? (
+          <Field
+            id={`${ID}-activityDetails`}
+            label={detailsContent.label}
+            hint={detailsContent.hint}
+            optional
+            error={errors.activityDetails}
+          >
+            <TextArea
+              id={`${ID}-activityDetails`}
+              name="activityDetails"
+              rows={3}
+              value={values.activityDetails}
+              onChange={(value) => setValue('activityDetails', value)}
+              hasHint
+              error={errors.activityDetails}
+            />
+          </Field>
+        ) : null}
+
         <FieldRow>
           <Field id={`${ID}-company`} label={labels.company ?? ''} error={errors.company}>
             <TextInput

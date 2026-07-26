@@ -8,6 +8,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
  */
 
 const validDiagnostic = {
+  activity: 'nettoyage-auto-mobile',
+  activityDetails: 'Citadines et utilitaires légers.',
   fullName: 'Camille Rousseau',
   company: 'Éclat Mobile',
   email: 'camille@eclat-mobile.fr',

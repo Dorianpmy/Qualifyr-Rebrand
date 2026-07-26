@@ -13,13 +13,12 @@
 
 export const aboutPage = {
   eyebrow: 'À propos',
-  title:
-    'Qualifyr aide les entreprises de nettoyage automobile à mieux transformer leur savoir-faire en activité.',
+  title: 'Qualifyr aide deux métiers de service à transformer leur savoir-faire en activité.',
   lead: 'Le travail est déjà là. Ce qui manque souvent, c’est ce qui le relie à la prochaine réservation.',
 } as const;
 
 export const aboutIntro = [
-  'Qualifyr n’accompagne qu’un seul métier : le nettoyage automobile mobile et le detailing à domicile. Ce n’est pas une spécialisation affichée, c’est une contrainte de travail. Les déplacements, les zones, les types de véhicules, l’accès à l’eau et à l’électricité, la durée réelle d’une prestation : nous n’avons pas besoin de vous les faire expliquer.',
+  'Qualifyr accompagne deux verticales précises : le nettoyage automobile mobile, avec le detailing à domicile, et les conciergeries. Nous ne cherchons pas à servir tous les métiers. Nous adaptons une même méthode aux véhicules, zones et créneaux d’un côté, aux besoins, séjours, destinations et demandes d’accompagnement de l’autre.',
   'Nous travaillons à distance, ce qui permet d’intervenir où que vous soyez sans facturer des déplacements qui n’apportent rien. Les échanges sont directs, en français simple, avec la personne qui construit réellement le parcours.',
 ] as const;
 
@@ -42,7 +41,7 @@ export const philosophy = [
   {
     number: '04',
     title: 'Le même soin que le vôtre',
-    body: 'Vous rendez un véhicule sans traces ni oublis. Nous appliquons ce niveau d’exigence à ce que nous livrons : finition, lisibilité, rapidité d’affichage, confort sur téléphone.',
+    body: 'Vous livrez une prestation ou un accompagnement sans laisser de place au flou. Nous appliquons ce niveau d’exigence à ce que nous construisons : finition, lisibilité, rapidité d’affichage, confort sur téléphone.',
   },
 ] as const;
 

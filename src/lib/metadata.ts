@@ -16,7 +16,7 @@ export const openGraphImage = {
   url: '/images/og/qualifyr-og.png',
   width: 1200,
   height: 630,
-  alt: 'Qualifyr Agence — Développez votre activité de nettoyage automobile',
+  alt: 'Qualifyr Agence — Développez votre activité de services',
   type: 'image/png',
 } as const;
 

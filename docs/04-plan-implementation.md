@@ -334,7 +334,8 @@ Aucune autre dépendance sans justification écrite dans ce document.
 
 ## 7. Formulaires — implémentation
 
-**Deux formulaires en service** : `Diagnostic` (12 champs, 3 groupes) et `Contact` (5 champs).
+**Deux formulaires en service** : `Diagnostic` (choix d'activité obligatoire et question
+complémentaire adaptée, 3 groupes) et `Contact` (5 champs).
 
 ### 7.1 Validation
 
@@ -441,7 +442,7 @@ Vercel, jamais dans le dépôt.
 
 ### 7.9 Tests
 
-47 tests, `npm run test`.
+48 tests, `npm run test`.
 
 - `tests/validation.test.ts` — nettoyage, champs obligatoires, e-mails invalides, bornes de
   taille, URL facultative, consentement, champ piège, agrégation des erreurs.
@@ -475,7 +476,8 @@ automobile mobile**, jamais aux automobilistes. Aucune requête du type
 
 ### 8.2 Image de partage
 
-`public/images/og/qualifyr-og.png` — 1200 × 630, 47 Ko. Composition **originale** :
+`public/images/og/qualifyr-og.png` — 1200 × 630. Composition **originale**, régénérée pour
+les deux verticales :
 fond ivoire, wordmark `qualifyr` en Newsreader avec son point de laiton, titre court en serif,
 panneau charbon portant la séquence du parcours, un reflet oblique très discret.
 
@@ -515,10 +517,12 @@ Le contenu répond naturellement aux intentions visées, **sans répétition art
 
 | Intention | Page qui la sert |
 |---|---|
-| développer une entreprise de nettoyage automobile | Accueil, À propos |
+| développer une activité de services | Accueil, À propos |
+| accompagnement pour conciergerie | Accueil, Méthode, À propos |
 | site pour lavage auto à domicile | Méthode §Construire, Réalisations |
-| prise de rendez-vous nettoyage automobile | Méthode §Construire, FAQ |
+| prise de rendez-vous pour une activité de services | Méthode §Construire, FAQ |
 | réservation detailing automobile | Accueil §Parcours client, Offre |
+| qualification d'une demande de conciergerie | Accueil §Parcours client, Diagnostic |
 | parcours client lavage automobile | Accueil §Parcours client, Méthode |
 | visibilité locale nettoyage automobile | Accueil §Être trouvé, Méthode §Clarifier |
 

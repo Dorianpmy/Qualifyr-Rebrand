@@ -2,9 +2,9 @@ import { heroMoments } from '@/content/home';
 import styles from './HeroComposition.module.css';
 
 const requestFields = [
-  'Véhicule',
+  'Besoin',
   'Prestation',
-  'Adresse d’intervention',
+  'Adresse ou destination',
   'Zone couverte',
   'Créneau souhaité',
 ] as const;
@@ -15,7 +15,7 @@ const days = ['L', 'M', 'M', 'J', 'V', 'S', 'D'] as const;
  * Composition éditoriale du hero.
  *
  * Elle donne à voir les moments que le parcours relie — découverte locale,
- * formule, véhicule, adresse, réservation, confirmation, avis — sous la forme
+ * offre, besoin, informations, réservation, confirmation, avis — sous la forme
  * d'une planche de direction artistique.
  *
  * **Ce n'est pas une interface.** Aucune donnée n'est simulée : la fiche montre

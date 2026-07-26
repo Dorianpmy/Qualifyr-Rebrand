@@ -312,7 +312,7 @@ sur le score « Total Blocking Time » d'un audit Lighthouse mobile.
 ## 10. Commandes
 
 ```
-npm run test       ✓ 47 tests, 2 fichiers
+npm run test       ✓ 48 tests, 2 fichiers
 npm run lint       ✓ aucune erreur, aucun avertissement
 npm run typecheck  ✓ aucune erreur
 npm run build      ✓ 13 pages statiques + 2 routes API

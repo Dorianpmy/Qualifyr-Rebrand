@@ -1,4 +1,5 @@
 import {
+  activityOptions,
   bookingMethodOptions,
   labelFor,
   priorityOptions,
@@ -53,6 +54,8 @@ export function diagnosticNotification(data: DiagnosticData, receivedAt: Date) {
       line('Téléphone', data.phone),
     ]),
     block('Activité', [
+      line('Type d’activité', labelFor(activityOptions, data.activity)),
+      line('Précisions', data.activityDetails),
       line('Entreprise', data.company),
       line('Zone couverte', data.area),
       line('Ancienneté', labelFor(seniorityOptions, data.seniority)),
@@ -134,7 +137,7 @@ export function acknowledgement(
     '',
     '—',
     'Qualifyr Agence',
-    'Nettoyage automobile mobile et detailing à domicile',
+    'Nettoyage automobile mobile et conciergeries',
     options.siteUrl,
   ].join('\n');
 

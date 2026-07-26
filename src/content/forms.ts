@@ -10,6 +10,13 @@ export type SelectOption = {
   readonly label: string;
 };
 
+export const activityOptions = [
+  { value: 'nettoyage-auto-mobile', label: 'Nettoyage automobile mobile' },
+  { value: 'detailing-domicile', label: 'Detailing à domicile' },
+  { value: 'conciergerie', label: 'Conciergerie' },
+  { value: 'autre', label: 'Autre activité' },
+] as const satisfies readonly SelectOption[];
+
 export const seniorityOptions = [
   { value: 'lancement', label: 'Je lance mon activité' },
   { value: 'moins-1-an', label: 'Moins d’un an' },

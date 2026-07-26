@@ -28,7 +28,7 @@ export const methodDetails: readonly MethodDetail[] = [
       'Votre activité et la façon dont vous la décrivez aujourd’hui',
       'Votre zone d’intervention et vos déplacements',
       'Vos prestations, de la plus courte à la plus complète',
-      'Les types de véhicules que vous traitez',
+      'Les véhicules, séjours, destinations ou besoins concernés',
       'Vos clients actuels et ceux que vous aimeriez avoir',
       'Les demandes que vous recevez, et celles qui n’aboutissent pas',
       'Votre organisation : agenda, matériel, disponibilités',
@@ -104,6 +104,17 @@ export const toolsSection = {
     },
   ],
 } as const;
+
+export const verticalAdaptations = [
+  {
+    title: 'Nettoyage automobile mobile',
+    body: 'Le parcours peut qualifier le véhicule, la formule, l’adresse d’intervention, la zone couverte et le créneau avant de confirmer, rappeler puis demander un avis.',
+  },
+  {
+    title: 'Conciergeries',
+    body: 'Le parcours peut présenter l’accompagnement, recueillir les informations sur le besoin, le séjour ou la destination, organiser l’échange et assurer un suivi clair.',
+  },
+] as const;
 
 export const methodCta = {
   eyebrow: 'La suite',

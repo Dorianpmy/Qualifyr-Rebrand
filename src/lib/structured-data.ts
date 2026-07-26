@@ -39,6 +39,8 @@ export function organization() {
     knowsAbout: [
       'Nettoyage automobile mobile',
       'Detailing à domicile',
+      'Conciergerie',
+      'Organisation de services',
       'Parcours client',
       'Prise de rendez-vous',
     ],

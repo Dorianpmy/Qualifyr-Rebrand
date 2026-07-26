@@ -32,6 +32,7 @@ import {
   pillars,
   problems,
   reassurance,
+  sectors,
 } from '@/content/home';
 import { buildMetadata } from '@/lib/metadata';
 import styles from './page.module.css';
@@ -78,6 +79,23 @@ export default function HomePage() {
         </Container>
       </Section>
 
+      <Section surface="raised" ruled spacing="tight">
+        <Container>
+          <SectionHeading
+            eyebrow="Deux verticales"
+            title="Deux métiers, une même exigence : simplifier le parcours client."
+            lead="Une méthode commune, adaptée aux contraintes concrètes de chaque activité."
+          />
+          <div className={styles.blocks}>
+            {sectors.map((sector) => (
+              <EditorialCard key={sector.title} title={sector.title}>
+                {sector.body}
+              </EditorialCard>
+            ))}
+          </div>
+        </Container>
+      </Section>
+
       {/* -------------------- 2 · Le problème -------------------- */}
       <Section>
         <Container>
@@ -85,7 +103,7 @@ export default function HomePage() {
             split
             eyebrow="Le constat"
             title="Un excellent résultat ne suffit pas si réserver reste compliqué."
-            lead="Vous pouvez fournir une prestation irréprochable et malgré tout perdre des clients si vos formules sont difficiles à comprendre, si votre zone d’intervention n’est pas claire ou si la prise de rendez-vous demande trop d’échanges."
+            lead="Vous pouvez fournir une prestation ou un accompagnement irréprochable et malgré tout perdre des demandes si votre offre est difficile à comprendre, si les informations sont dispersées ou si la prise de contact demande trop d’échanges."
           />
           <div className={styles.blocks}>
             {problems.map((item) => (
@@ -141,7 +159,7 @@ export default function HomePage() {
             split
             eyebrow="Le parcours Qualifyr"
             title="Un seul accompagnement autour de votre développement."
-            lead="Nous ne livrons pas simplement une page sur internet. Nous construisons ce qui relie votre savoir-faire à vos prochaines réservations."
+            lead="Nous ne livrons pas simplement une page sur internet. Nous construisons ce qui relie votre savoir-faire à vos prochaines demandes et réservations."
           />
           <div className={styles.offerGrid}>
             {offer.map((item) => (

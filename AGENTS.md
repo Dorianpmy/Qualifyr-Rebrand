@@ -42,15 +42,20 @@ avec ces documents. Si un besoin nouveau apparaît, on met à jour le document c
 
 ---
 
-## 2. Cible unique
+## 2. Deux verticales officielles
 
-Qualifyr Agence est une agence spécialisée dans le **développement des entreprises de
-nettoyage automobile mobile et des professionnels du detailing à domicile**.
+Qualifyr Agence est spécialisée dans le développement de deux types d'entreprises :
 
-- La V1 du site s'adresse **uniquement** à ce métier.
-- Aucune autre verticale ne doit apparaître sur le site.
+- le **nettoyage automobile mobile et le detailing à domicile** ;
+- les **conciergeries**.
+
+- La V1 du site s'adresse **uniquement** à ces deux verticales.
+- Aucune troisième verticale ne doit apparaître sans validation explicite.
 - Pas de page « Solutions » listant d'autres métiers.
 - Pas de mention « tous les artisans », « toutes les TPE », « tous secteurs ».
+- Le terme « conciergerie » reste large : voyage, séjour, organisation de services,
+  installation ou expatriation, gestion et coordination selon le contexte. Aucun service
+  précis n'est attribué à un client sans preuve réelle.
 
 ---
 
@@ -67,8 +72,9 @@ Qualifyr **n'est pas** :
 - une agence publicitaire ;
 - une entreprise servant tous les artisans.
 
-Qualifyr ne vend pas principalement « un site internet ». Qualifyr vend un **parcours
-complet** permettant à une entreprise de nettoyage automobile mobile :
+Qualifyr ne vend pas principalement « un site internet ». Qualifyr vend une **offre commune,
+adaptée aux contraintes de chacun des deux métiers** : un parcours complet permettant à une
+entreprise :
 
 - d'être trouvée ;
 - d'être comprise ;
@@ -77,11 +83,11 @@ complet** permettant à une entreprise de nettoyage automobile mobile :
 - d'obtenir des avis ;
 - de favoriser les nouvelles réservations.
 
-**Promesse principale** : « Faites grandir votre activité de nettoyage automobile. »
+**Promesse principale** : « Faites grandir votre activité de services. »
 
 **Texte d'explication principal** : « Qualifyr construit le parcours qui vous aide à être
-trouvé, choisi, réservé puis recommandé, sans multiplier les outils ni compliquer votre
-quotidien. »
+trouvé, compris, choisi, réservé puis recommandé, sans multiplier les outils ni compliquer
+votre quotidien. »
 
 **Offre principale** : « Le parcours Qualifyr » (nom provisoire).
 

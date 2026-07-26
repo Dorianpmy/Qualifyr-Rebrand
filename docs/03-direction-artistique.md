@@ -243,9 +243,11 @@ organiques.
 
 ## 8. Traitement des images
 
-- **Sujets** : véhicules en cours de soin, gestes de travail, matières (cuir, carrosserie
-  nette, microfibre, mousse, reflets), plans rapprochés de détail. Jamais de photos de bureau,
-  de poignée de main, de graphiques ou de personnes en costume.
+- **Sujets** : véhicules en cours de soin, gestes de travail, matières et détails ; pour la
+  conciergerie, lieux, objets préparés, gestes d'accueil ou de coordination uniquement quand
+  les images correspondent à une activité réelle et autorisée. Jamais de photo générique
+  laissant croire à un client, de bureau, de poignée de main, de graphique ou de personne en
+  costume.
 - **Lumière** : naturelle, chaude, latérale. Pas de flash direct, pas d'éclairage de studio froid.
 - **Étalonnage** : blancs légèrement crème, noirs remontés vers le brun, saturation contenue,
   grain léger acceptable. Une seule recette d'étalonnage pour tout le site.

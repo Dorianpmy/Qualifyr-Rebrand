@@ -15,15 +15,15 @@ export const brand = {
   wordmarkSuffix: 'Agence',
 
   /** Promesse principale. Titre principal de l'accueil. */
-  promise: 'Faites grandir votre activité de nettoyage automobile.',
+  promise: 'Faites grandir votre activité de services.',
 
   /** Texte d'explication principal, systématiquement associé à la promesse. */
   explanation:
-    'Qualifyr construit le parcours qui vous aide à être trouvé, choisi, réservé puis recommandé, sans multiplier les outils ni compliquer votre quotidien.',
+    'Qualifyr construit le parcours qui vous aide à être trouvé, compris, choisi, réservé puis recommandé, sans multiplier les outils ni compliquer votre quotidien.',
 
   /** Formulation courte, pour le pied de page et les métadonnées. */
   descriptor:
-    'Agence spécialisée dans le développement des entreprises de nettoyage automobile mobile et des professionnels du detailing à domicile.',
+    'Agence spécialisée dans le développement des entreprises de nettoyage automobile mobile et des conciergeries.',
 
   /** Nom provisoire de l'offre unique. */
   offerName: 'Le parcours Qualifyr',
@@ -47,7 +47,7 @@ export const collaboration = [
   {
     number: '01',
     title: 'Cadrage',
-    body: 'Nous partons de votre activité réelle : vos prestations, votre zone, vos véhicules, vos contraintes de déplacement.',
+    body: 'Nous partons de votre activité réelle : vos prestations, votre zone, vos demandes, vos réservations et vos contraintes de terrain.',
   },
   {
     number: '02',
@@ -75,4 +75,3 @@ export const primaryCta = {
   label: 'Parler de mon activité',
   href: '/diagnostic',
 } as const;
-

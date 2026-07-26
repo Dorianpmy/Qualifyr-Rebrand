@@ -1,5 +1,10 @@
 import { z } from 'zod';
-import { bookingMethodOptions, priorityOptions, seniorityOptions } from '@/content/forms';
+import {
+  activityOptions,
+  bookingMethodOptions,
+  priorityOptions,
+  seniorityOptions,
+} from '@/content/forms';
 
 /**
  * Schémas de validation partagés entre le client et le serveur.
@@ -102,6 +107,8 @@ const antiSpam = {
 };
 
 export const diagnosticSchema = z.object({
+  activity: enumFrom(activityOptions, 'Choisissez votre activité.'),
+  activityDetails: optionalText(1000).optional().default(''),
   fullName: text(2, 120, 'Indiquez votre prénom et votre nom.'),
   company: text(2, 120, 'Indiquez le nom de votre entreprise.'),
   email,

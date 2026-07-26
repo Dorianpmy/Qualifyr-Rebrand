@@ -7,7 +7,13 @@ import { EditorialCard } from '@/components/editorial/EditorialCard';
 import { SectionHeading } from '@/components/editorial/SectionHeading';
 import { Eyebrow } from '@/components/ui/Eyebrow';
 
-import { methodCta, methodDetails, methodPage, toolsSection } from '@/content/methode';
+import {
+  methodCta,
+  methodDetails,
+  methodPage,
+  toolsSection,
+  verticalAdaptations,
+} from '@/content/methode';
 import { buildMetadata } from '@/lib/metadata';
 import styles from './page.module.css';
 
@@ -69,6 +75,23 @@ export default function MethodePage() {
           </Container>
         </Section>
       ))}
+
+      <Section ruled spacing="tight">
+        <Container>
+          <SectionHeading
+            eyebrow="Adaptation par métier"
+            title="Une méthode commune. Deux parcours concrets."
+            lead="Nous conservons les mêmes étapes, puis adaptons les informations et les moments de décision à votre activité."
+          />
+          <div className={styles.principles}>
+            {verticalAdaptations.map((vertical) => (
+              <EditorialCard key={vertical.title} title={vertical.title}>
+                {vertical.body}
+              </EditorialCard>
+            ))}
+          </div>
+        </Container>
+      </Section>
 
       <Section surface="sunken">
         <Container>

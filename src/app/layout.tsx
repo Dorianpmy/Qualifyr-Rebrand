@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   // Base de toutes les URL relatives : canonical, Open Graph, images.
   metadataBase: new URL(site.url),
   title: {
-    default: 'Qualifyr — Développez votre activité de nettoyage automobile',
+    default: 'Qualifyr — Développez votre activité de services',
     template: `%s — ${brand.fullName}`,
   },
   description: brand.descriptor,

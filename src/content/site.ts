@@ -33,22 +33,21 @@ type PageMeta = {
  * Métadonnées par route.
  *
  * Titres et descriptions **uniques**, rédigés à la main, sans répétition
- * artificielle de mots-clés. Les intentions visées sont B2B : développer une
- * entreprise de nettoyage automobile, prise de rendez-vous, réservation
- * detailing, parcours client, visibilité locale. Elles sont servies par le
+ * artificielle de mots-clés. Les intentions visées sont B2B et portent sur le
+ * développement des deux verticales officielles. Elles sont servies par le
  * contenu réel des pages, pas par une accumulation de termes.
  */
 export const pageMeta: Readonly<Record<Route, PageMeta>> = {
   '/': {
-    title: 'Qualifyr — Développez votre activité de nettoyage automobile',
+    title: 'Qualifyr — Développez votre activité de services',
     description:
-      'Qualifyr aide les entreprises de nettoyage automobile mobile à être mieux trouvées, plus facilement réservées et davantage recommandées.',
+      'Qualifyr aide les entreprises de nettoyage automobile mobile et les conciergeries à rendre leur parcours client plus clair, plus simple et plus efficace.',
     priority: 1,
   },
   '/methode': {
     title: 'Notre méthode — Qualifyr',
     description:
-      'Découvrez comment Qualifyr structure le parcours client des entreprises de nettoyage automobile mobile, de la découverte à la nouvelle réservation.',
+      'Découvrez comment Qualifyr structure le parcours client des entreprises de nettoyage automobile mobile et des conciergeries, de la découverte à la recommandation.',
     priority: 0.9,
   },
   '/realisations': {
@@ -66,11 +65,11 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
   '/a-propos': {
     title: 'À propos — Qualifyr',
     description:
-      'Une agence dédiée à un seul métier : le nettoyage automobile mobile et le detailing à domicile. Notre façon de travailler, et ce que nous refusons de faire.',
+      'Une agence dédiée à deux verticales : le nettoyage automobile mobile et les conciergeries. Notre façon de travailler, et ce que nous refusons de faire.',
     priority: 0.6,
   },
   '/diagnostic': {
-    title: 'Diagnostic activité nettoyage automobile — Qualifyr',
+    title: 'Diagnostic de votre activité de services — Qualifyr',
     description:
       'Présentez votre fonctionnement actuel et identifiez les points qui peuvent compliquer la compréhension, la réservation ou la fidélisation.',
     priority: 0.9,
@@ -84,7 +83,7 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
   '/mentions-legales': {
     title: 'Mentions légales — Qualifyr',
     description:
-      'Informations relatives à l’éditeur et à l’hébergeur du site de Qualifyr Agence, agence spécialisée dans le nettoyage automobile mobile.',
+      'Informations relatives à l’éditeur et à l’hébergeur du site de Qualifyr Agence.',
     priority: 0.2,
   },
   '/politique-de-confidentialite': {

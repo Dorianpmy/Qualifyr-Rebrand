@@ -3,6 +3,11 @@
 Reconstruction complète du site de Qualifyr Agence, depuis un dépôt vide.
 Branche `feature/qualifyr-rebrand-v1`. **Rien n'est déployé, le domaine n'est pas connecté.**
 
+**Évolution de positionnement — 27 juillet 2026 :** Qualifyr conserve une offre unique,
+`Le parcours Qualifyr`, désormais adaptée à deux verticales officielles : nettoyage
+automobile mobile / detailing à domicile et conciergeries. Aucun faux projet de
+conciergerie n'a été ajouté ; SW Carcleaning reste la réalisation réelle publiée.
+
 ---
 
 ## 1. Les neuf phases de fabrication
@@ -32,12 +37,12 @@ de ce dépôt et ne sont donc pas reproduits ici comme s'ils étaient consultabl
 
 | Route | Rôle |
 |---|---|
-| `/` | Accueil, 10 sections |
+| `/` | Accueil, présentation des deux verticales et parcours commun |
 | `/methode` | Les quatre temps, détaillés |
 | `/realisations` | Liste des projets |
 | `/realisations/sw-car-cleaning` | Étude de cas, 5 sections |
 | `/a-propos` | Philosophie, façon de travailler, ce que nous refusons |
-| `/diagnostic` | Formulaire de qualification, 12 champs |
+| `/diagnostic` | Formulaire de qualification avec choix obligatoire de l'activité |
 | `/contact` | Formulaire court, 5 champs |
 | `/mentions-legales` | Éditeur, hébergement, propriété intellectuelle |
 | `/politique-de-confidentialite` | Neuf sections, sommaire ancré |
@@ -135,7 +140,7 @@ de ce dépôt et ne sont donc pas reproduits ici comme s'ils étaient consultabl
    de débit est en mémoire : non partagée entre instances, vidée à chaque démarrage à froid.
 3. **Pas de Content-Security-Policy.** Une CSP stricte imposerait un `nonce` sur le script
    d'amorçage et les blocs JSON-LD. À traiter après le premier aperçu, pas à l'aveugle.
-4. **Aucun test de bout en bout.** 47 tests unitaires couvrent la validation et les routes,
+4. **Aucun test de bout en bout.** 48 tests unitaires couvrent la validation et les routes,
    notamment les messages français lorsque des champs requis sont totalement absents.
    Playwright + axe restent à ajouter si le besoin se confirme.
 5. **Validation sur appareils réels encore requise.** Chrome automatisé couvre les routes,

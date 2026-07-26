@@ -15,12 +15,17 @@ export const faq: readonly FaqItem[] = [
   {
     question: 'À qui s’adresse Qualifyr ?',
     answer:
-      'Aux dirigeants d’entreprises de nettoyage automobile mobile et aux professionnels du detailing à domicile. Que vous travailliez seul ou avec une petite équipe, sur une ville ou sur un secteur plus large.',
+      'Aux dirigeants d’entreprises de nettoyage automobile mobile, aux professionnels du detailing à domicile et aux conciergeries. Que vous travailliez seul ou avec une petite équipe, sur une zone précise ou plusieurs destinations.',
   },
   {
-    question: 'Qualifyr travaille-t-il uniquement avec le nettoyage automobile mobile ?',
+    question: 'Travaillez-vous avec tous les métiers ?',
     answer:
-      'Oui. C’est un choix, pas une limite provisoire. Les contraintes du métier — déplacement, zone, type et état du véhicule, durée de prestation, accès à l’eau et à l’électricité — sont connues d’avance, et c’est ce qui rend le travail utile dès le premier échange.',
+      'Non. Qualifyr se concentre actuellement sur le nettoyage automobile mobile et les conciergeries afin de proposer un accompagnement réellement adapté.',
+  },
+  {
+    question: 'Quelle différence entre les deux verticales ?',
+    answer:
+      'La méthode reste la même : clarifier l’offre, recueillir les bonnes informations, faciliter la demande, confirmer et prolonger la relation. Le parcours change selon le métier : véhicule, formule et zone d’intervention pour le nettoyage automobile ; besoin, séjour, destination ou accompagnement pour une conciergerie.',
   },
   {
     question: 'Est-ce seulement une création de site ?',
@@ -30,7 +35,7 @@ export const faq: readonly FaqItem[] = [
   {
     question: 'Peut-on intégrer une prise de rendez-vous ?',
     answer:
-      'Oui. Nous mettons en place le parcours de demande — véhicule, prestation, adresse, zone couverte, créneau souhaité — et nous pouvons configurer l’outil de rendez-vous qui vous convient.',
+      'Oui. Nous mettons en place le parcours de demande adapté à votre activité et nous pouvons configurer l’outil de rendez-vous qui vous convient.',
   },
   {
     question: 'Dois-je changer tous mes outils ?',
@@ -38,14 +43,14 @@ export const faq: readonly FaqItem[] = [
       'Non. Nous partons de ce que vous utilisez déjà. L’objectif est de faire tenir les choses ensemble, pas d’ajouter une couche de plus à apprendre.',
   },
   {
-    question: 'Qualifyr gère-t-il mon calendrier à ma place ?',
+    question: 'Le client reste-t-il maître de son calendrier ?',
     answer:
-      'Non. Nous pouvons configurer le système de rendez-vous et le relier au reste du parcours, mais vous restez maître de votre calendrier : vos créneaux, vos disponibilités, vos décisions. Nous n’y intervenons pas au quotidien.',
+      'Oui. Nous pouvons configurer le système de rendez-vous et le relier au reste du parcours, mais vous restez maître de votre calendrier : vos créneaux, vos disponibilités et vos décisions. Nous n’y intervenons pas au quotidien.',
   },
   {
     question: 'Peut-on conserver WhatsApp ?',
     answer:
-      'Oui. Beaucoup de clients écrivent par message, et c’est très bien. Le parcours sert justement à ce que la conversation démarre avec les informations déjà réunies : véhicule, prestation souhaitée, adresse, secteur.',
+      'Oui. Le parcours sert justement à ce que la conversation démarre avec les informations utiles déjà réunies, qu’il s’agisse d’un véhicule, d’une prestation, d’un séjour, d’une destination ou d’un besoin d’accompagnement.',
   },
   {
     question: 'Comment commence l’accompagnement ?',

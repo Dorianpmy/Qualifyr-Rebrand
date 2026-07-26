@@ -73,7 +73,7 @@ page « Tarifs », page « Ressources », page « FAQ » autonome, landing pages
 - Colonne 1 : logo, promesse en une ligne, canal de contact.
 - Colonne 2 : Méthode, Réalisations, À propos, Diagnostic, Contact.
 - Colonne 3 : Mentions légales, Politique de confidentialité.
-- Ligne basse : « Qualifyr Agence — Nettoyage automobile mobile et detailing à domicile » + année.
+- Ligne basse : « Qualifyr Agence — Nettoyage automobile mobile et conciergeries » + année.
 
 ---
 
@@ -85,9 +85,9 @@ Objectif : comprendre en dix secondes pour qui, pourquoi et quoi faire ensuite.
 
 Sections, dans l'ordre :
 
-1. **Ouverture** — titre principal « Faites grandir votre activité de nettoyage automobile. »,
+1. **Ouverture** — titre principal « Faites grandir votre activité de services. »,
    texte d'explication principal, appel à l'action principal, appel secondaire « Voir la méthode ».
-2. **Pour qui** — une phrase courte nommant précisément la cible. Une seule verticale.
+2. **Deux verticales** — deux blocs sobres : nettoyage automobile mobile et conciergeries.
 3. **Le constat** — trois à quatre points du problème réel, formulés sans dramatisation.
 4. **Le parcours** — les six étapes (trouvé, compris, choisi, réservé, avis, nouvelles
    réservations) présentées comme une séquence, avec une phrase par étape.

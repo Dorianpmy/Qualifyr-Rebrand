@@ -9,8 +9,8 @@ import { swCarCleaning } from './sw-car-cleaning';
  * interdit, aucune promesse de résultat.
  */
 
-/** Sur-titre du hero. Nomme la cible unique, sans détour. */
-export const heroEyebrow = 'Pour les professionnels du nettoyage automobile mobile';
+/** Sur-titre du hero. Nomme les deux verticales, sans détour. */
+export const heroEyebrow = 'Nettoyage automobile mobile · Conciergeries';
 
 export const heroLine = [
   'Positionnement',
@@ -20,13 +20,24 @@ export const heroLine = [
   'Fidélisation',
 ] as const;
 
+export const sectors = [
+  {
+    title: 'Nettoyage automobile mobile',
+    body: 'Clarifier les formules, simplifier la réservation et encourager les avis et les nouvelles prestations.',
+  },
+  {
+    title: 'Conciergeries',
+    body: 'Présenter l’accompagnement, qualifier les demandes et organiser un parcours rassurant avant, pendant et après la prise de contact.',
+  },
+] as const;
+
 /** Les moments du parcours client représentés dans la composition du hero. */
 export const heroMoments = [
   { number: '01', label: 'Découverte locale' },
-  { number: '02', label: 'Choix d’une formule' },
-  { number: '03', label: 'Sélection du véhicule' },
-  { number: '04', label: 'Adresse d’intervention' },
-  { number: '05', label: 'Réservation' },
+  { number: '02', label: 'Compréhension de l’offre' },
+  { number: '03', label: 'Vérification du besoin' },
+  { number: '04', label: 'Informations utiles' },
+  { number: '05', label: 'Demande ou réservation' },
   { number: '06', label: 'Confirmation' },
   { number: '07', label: 'Demande d’avis' },
 ] as const;
@@ -34,11 +45,11 @@ export const heroMoments = [
 export const problems = [
   {
     title: 'Votre offre est mal comprise',
-    body: 'Le client hésite entre plusieurs formules et finit par remettre sa décision à plus tard.',
+    body: 'Le client hésite entre plusieurs services ou formules et finit par remettre sa décision à plus tard.',
   },
   {
     title: 'Réserver demande trop d’efforts',
-    body: 'Messages, appels, disponibilité, adresse et type de véhicule sont récupérés dans plusieurs échanges.',
+    body: 'Messages, appels, disponibilités et informations utiles sont récupérés dans plusieurs échanges.',
   },
   {
     title: 'La relation s’arrête après la prestation',
@@ -67,14 +78,14 @@ export const pillars = [
 /** Le parcours vécu par le client final, de la recherche à la réservation suivante. */
 export const clientJourney = [
   { number: '01', label: 'Le client vous découvre' },
-  { number: '02', label: 'Il comprend vos formules' },
-  { number: '03', label: 'Il vérifie que vous intervenez dans sa zone' },
-  { number: '04', label: 'Il choisit son véhicule et sa prestation' },
-  { number: '05', label: 'Il demande ou réserve un créneau' },
-  { number: '06', label: 'Il reçoit les bonnes informations' },
-  { number: '07', label: 'Il bénéficie de la prestation' },
+  { number: '02', label: 'Il comprend votre offre' },
+  { number: '03', label: 'Il vérifie que votre service correspond à son besoin' },
+  { number: '04', label: 'Il transmet les bonnes informations' },
+  { number: '05', label: 'Il demande ou réserve un échange' },
+  { number: '06', label: 'Il reçoit une confirmation claire' },
+  { number: '07', label: 'La prestation ou l’accompagnement est réalisé' },
   { number: '08', label: 'Il laisse un avis' },
-  { number: '09', label: 'Il peut réserver à nouveau' },
+  { number: '09', label: 'Il peut revenir ou vous recommander' },
 ] as const;
 
 export const offer = [
@@ -91,7 +102,7 @@ export const offer = [
   {
     number: '03',
     title: 'Simplifier la réservation',
-    body: 'Véhicule, prestation, adresse, zone, créneau et informations utiles.',
+    body: 'Besoin, prestation, adresse ou destination, zone, créneau et informations utiles.',
   },
   {
     number: '04',
@@ -107,7 +118,7 @@ export const offer = [
 
 export const comparison = {
   before: [
-    'Formules envoyées par message',
+    'Offre expliquée par message',
     'Disponibilités vérifiées manuellement',
     'Informations incomplètes',
     'Zone d’intervention peu claire',

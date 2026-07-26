@@ -7,8 +7,11 @@ justifié par ce document.
 
 ## 1. Cible
 
-**Cible unique de la V1** : les dirigeants d'entreprises de nettoyage automobile mobile et
-les professionnels du detailing à domicile.
+**Deux verticales officielles en V1** :
+
+- les dirigeants d'entreprises de nettoyage automobile mobile et les professionnels du
+  detailing à domicile ;
+- les conciergeries.
 
 Profil type :
 
@@ -19,12 +22,14 @@ Profil type :
 - vend un savoir-faire manuel, un niveau de soin et une disponibilité ;
 - gère lui-même les appels, les messages, les rendez-vous et les déplacements.
 
-**Hors cible pour la V1** : tous les autres métiers de service à domicile, les centres de
-lavage fixes, les concessions, les flottes. Ils ne sont ni nommés ni suggérés sur le site.
+**Hors cible pour la V1** : toute troisième verticale non validée, les centres de lavage
+fixes, les concessions et les flottes. Le site ne s'adresse ni à tous les artisans, ni à
+toutes les entreprises de services.
 
-**Distinction critique** : le site s'adresse aux **professionnels du nettoyage automobile**,
-pas aux automobilistes. Aucun contenu, aucun titre et aucune requête ciblée ne doit
-s'adresser au particulier qui cherche à faire laver sa voiture.
+**Distinction critique** : le site s'adresse aux entreprises de ces deux verticales, jamais
+à leurs clients finaux. Le terme « conciergerie » ne se limite pas à la gestion Airbnb : il
+peut couvrir voyage, séjour, organisation de services, installation, expatriation, gestion
+ou coordination selon la réalité du client.
 
 ---
 
@@ -53,12 +58,12 @@ rendez-vous est réellement dans l'agenda.
 
 **Promesse principale, affichée en titre principal de l'accueil :**
 
-> Faites grandir votre activité de nettoyage automobile.
+> Faites grandir votre activité de services.
 
 **Texte d'explication principal, systématiquement associé :**
 
-> Qualifyr construit le parcours qui vous aide à être trouvé, choisi, réservé puis recommandé,
-> sans multiplier les outils ni compliquer votre quotidien.
+> Qualifyr construit le parcours qui vous aide à être trouvé, compris, choisi, réservé puis
+> recommandé, sans multiplier les outils ni compliquer votre quotidien.
 
 Règles d'usage :
 
@@ -90,8 +95,8 @@ Briques mobilisées **selon le besoin** :
 |---|---|
 | Être trouvé | clarification du positionnement, structuration des prestations |
 | Être compris | conception du site, présentation des prestations, présentation de la zone couverte |
-| Être choisi | mise en avant du travail réel, lisibilité des prestations et des véhicules concernés |
-| Être réservé | parcours de réservation, sélection du véhicule, sélection de la prestation, collecte de l'adresse, prise de rendez-vous, collecte d'un acompte si nécessaire, confirmations et rappels |
+| Être choisi | mise en avant du travail réel, lisibilité des prestations et des besoins concernés |
+| Être réservé | parcours de demande ou de réservation adapté au métier, collecte des informations nécessaires, prise de rendez-vous, acompte si nécessaire, confirmations et rappels |
 | Obtenir des avis | demande d'avis au bon moment |
 | Favoriser les nouvelles réservations | fidélisation, optimisation continue du parcours |
 
@@ -109,10 +114,10 @@ Règles d'usage :
 
 Ce qui distingue Qualifyr, à exprimer sans comparaison nominative et sans dénigrement :
 
-1. **Un seul métier.** Qualifyr ne travaille que pour le nettoyage automobile mobile et le
-   detailing à domicile. Les contraintes du métier sont connues d'avance : déplacement, zone,
-   type de véhicule, état du véhicule, durée de prestation, météo, accès à l'eau et à
-   l'électricité.
+1. **Deux métiers précis.** Qualifyr travaille pour le nettoyage automobile mobile, le
+   detailing à domicile et les conciergeries. La méthode est commune ; le parcours est adapté
+   aux véhicules, zones et créneaux d'un côté, aux besoins, séjours et demandes
+   d'accompagnement de l'autre.
 2. **Un parcours, pas un livrable isolé.** Le site n'est qu'un maillon. Ce qui est conçu, c'est
    l'enchaînement complet jusqu'au rendez-vous et jusqu'à l'avis.
 3. **Simplicité assumée.** Rien qui oblige à apprendre un nouvel outil ou à changer sa façon de
@@ -129,9 +134,9 @@ la modernité, l'originalité.
 
 Champ lexical du métier :
 
-nettoyage automobile mobile · detailing à domicile · prestation · véhicule · intérieur ·
-extérieur · finition · soin · lavage soigné · état du véhicule · zone d'intervention ·
-déplacement · rendez-vous · créneau · acompte · confirmation · rappel · avis · client fidèle
+nettoyage automobile mobile · detailing à domicile · conciergerie · voyage · séjour ·
+accompagnement · organisation · coordination · prestation · véhicule · besoin · zone
+d'intervention · destination · rendez-vous · créneau · acompte · confirmation · rappel · avis
 
 Champ lexical Qualifyr :
 

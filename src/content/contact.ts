@@ -53,7 +53,7 @@ export function availableChannels() {
 export const contactPage = {
   eyebrow: 'Contact',
   title: 'Parlons de votre activité.',
-  lead: 'Une question sur la façon dont nous travaillons, sur ce qui est possible ou sur votre situation en particulier ?',
+  lead: 'Une question sur notre accompagnement pour le nettoyage automobile mobile ou les conciergeries, sur ce qui est possible ou sur votre situation en particulier ?',
   orientationSuffix: 'Pour toute autre question, ce formulaire suffit.',
   noChannel:
     'Le formulaire est pour l’instant le seul canal de contact. Une adresse directe sera indiquée ici dès qu’elle sera en service.',

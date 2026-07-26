@@ -9,6 +9,8 @@ import {
 
 /** Jeu de données valide, réutilisé et modifié champ par champ. */
 const validDiagnostic = {
+  activity: 'nettoyage-auto-mobile',
+  activityDetails: 'Citadines et utilitaires légers.',
   fullName: 'Camille Rousseau',
   company: 'Éclat Mobile',
   email: 'camille@eclat-mobile.fr',
@@ -89,6 +91,7 @@ describe('diagnosticSchema — cas valide', () => {
 
 describe('diagnosticSchema — champs obligatoires', () => {
   const required = [
+    'activity',
     'fullName',
     'company',
     'email',

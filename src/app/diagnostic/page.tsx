@@ -48,8 +48,9 @@ export default function DiagnosticPage() {
               title="Identifions ce qui freine vos prochaines réservations."
             />
             <p className={styles.heroLead}>
-              Répondez à quelques questions sur votre activité. Nous pourrons ensuite préparer
-              un échange plus concret.
+              Que vous dirigiez une activité de nettoyage automobile mobile ou une
+              conciergerie, répondez à quelques questions. Nous pourrons ensuite préparer un
+              échange plus concret.
             </p>
           </div>
         </Container>

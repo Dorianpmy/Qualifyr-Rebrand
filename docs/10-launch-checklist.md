@@ -58,6 +58,7 @@ envoyer — ils ne prétendent jamais avoir transmis. Détail : `docs/11`.
 Sur l'aperçu Vercel, avec les vraies clés.
 
 - [ ] **Diagnostic** — envoi complet, e-mail bien reçu, `reply_to` correct
+- [ ] Diagnostic testé pour nettoyage automobile, detailing, conciergerie et « autre »
 - [ ] **Contact** — envoi complet, e-mail bien reçu
 - [ ] **Accusé de réception** reçu par l'expéditeur, texte relu
 - [ ] Envoi avec champs vides → erreurs par champ, focus sur le premier
@@ -75,7 +76,10 @@ Sur l'aperçu Vercel, avec les vraies clés.
 
 - [ ] Relire les 9 pages à voix haute
 - [ ] Vérifier que la promesse est identique partout, au mot près
-- [ ] Vérifier les 10 réponses de la FAQ — chacune doit rester tenable
+- [ ] Vérifier que les deux verticales officielles sont nommées clairement, sans troisième métier
+- [ ] Vérifier que « conciergerie » n'est pas réduit à la seule gestion Airbnb
+- [ ] Vérifier qu'aucun projet ou résultat de conciergerie n'est présenté sans preuve réelle
+- [ ] Vérifier les réponses de la FAQ — chacune doit rester tenable
 - [ ] Vérifier l'étude de cas SW Carcleaning : **aucun résultat n'y figure**
 - [ ] Confirmer le nom de l'offre : « Le parcours Qualifyr »
 - [ ] Confirmer le libellé du CTA : « Parler de mon activité »
@@ -165,7 +169,7 @@ Dans cet ordre, sans en sauter.
 ## K. Contrôles à relancer avant chaque mise en ligne
 
 ```bash
-npm run test        # 47 tests
+npm run test        # 48 tests
 npm run lint
 npm run typecheck
 npm run build
