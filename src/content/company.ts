@@ -1,3 +1,5 @@
+import { productionDomain } from '@/content/site';
+
 /**
  * Informations légales de la structure éditrice.
  *
@@ -65,7 +67,7 @@ export const company = {
   hosting: null as Hosting | null,
 
   /** Domaine, information factuelle et confirmée. */
-  domain: 'qualifyragence.com',
+  domain: productionDomain,
 } as const;
 
 /**
@@ -112,4 +114,3 @@ export function legalNoticeIsComplete(): boolean {
     company.email !== null
   );
 }
-

@@ -7,8 +7,8 @@ commerciale nouvelle. Uniquement des corrections de rendu, d'accessibilité et d
 
 ## 1. Méthode et honnêteté sur les limites
 
-**Aucun navigateur n'est disponible dans l'environnement de travail.** Les vérifications ont
-donc été faites de trois façons :
+La phase 8 initiale ne disposait pas de navigateur. L'audit final après import a ajouté une
+vérification Playwright avec Chrome en complément des trois contrôles existants :
 
 1. **Audit du HTML réellement rendu** par le serveur de production (`next start`) —
    `scripts/audit-a11y.py` et `scripts/audit-seo.py`, bibliothèque standard Python, aucune
@@ -18,8 +18,10 @@ donc été faites de trois façons :
    marges négatives, `direction: rtl`).
 3. **Mesure du build** — poids réel des scripts et des feuilles de style téléchargés par
    page, chunk par chunk.
+4. **Navigateur automatisé** — neuf pages, 404, viewport 390 px, absence de débordement,
+   menu mobile (ouverture et fermeture par Échap), overlay Next, console et validation client.
 
-**Ce qui n'a pas pu être vérifié par la machine** est listé en §7. Un aperçu autonome de
+**Ce qui demande encore un appareil ou une relecture humaine** est listé en §9. Un aperçu autonome de
 l'accueil (`apercu-accueil.html`, polices embarquées, aucune requête réseau) est fourni pour
 la relecture humaine : il suffit de redimensionner la fenêtre pour parcourir les paliers.
 
@@ -145,6 +147,10 @@ compositions.
 d'amorçage de 120 octets pose `data-motion="on"` sur `<html>` avant le premier rendu,
 **uniquement** si `prefers-reduced-motion` n'est pas demandé. C'est ce seul attribut qui
 déclenche l'état initial masqué.
+
+Le layout déclare `suppressHydrationWarning` uniquement sur `<html>` : le script modifie
+volontairement cet élément avant l'hydratation. Cette portée étroite évite l'avertissement
+React sans masquer une divergence dans le reste de l'arbre.
 
 Conséquences : sans JavaScript, la page est entière ; si le script échoue, la page est
 entière ; en mouvement réduit, la page est entière. Aucun clignotement d'un contenu affiché
@@ -283,14 +289,12 @@ sur le score « Total Blocking Time » d'un audit Lighthouse mobile.
 
 ---
 
-## 9. Ce qui demande une vérification humaine
+## 9. Ce qui demande encore une vérification humaine
 
-Aucun navigateur n'était disponible : les points suivants relèvent de l'œil, pas de la mesure.
-
-1. **Rendu réel aux neuf paliers.** Ouvrir `apercu-accueil.html` et redimensionner. Vérifier
-   en particulier la composition du hero entre 768 et 1279 px, où la mise en page a changé.
-2. **Menu mobile en conditions réelles** — sur un iPhone avec encoche, pour valider les zones
-   sûres, et au clavier pour le piège de focus. L'aperçu autonome n'a pas de JavaScript.
+1. **Rendu réel aux neuf paliers sur appareils.** L'audit automatisé confirme 390 px sans
+   débordement ; les autres paliers restent à valider visuellement sur matériel réel.
+2. **Menu mobile en conditions réelles** — l'ouverture et Échap sont validés par Playwright ;
+   restent l'iPhone avec encoche, les zones sûres et une passe clavier humaine complète.
 3. **Révélation au défilement** — vérifier qu'elle reste discrète et qu'aucun bloc ne
    « saute ». Tester aussi avec « Réduire les animations » activé dans le système.
 4. **Lighthouse mobile** sur un aperçu Vercel, pour les Core Web Vitals réels. Le socle JS

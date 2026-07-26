@@ -1,3 +1,5 @@
+import { productionUrl } from '@/content/site';
+
 /**
  * Lecture des variables d'environnement.
  *
@@ -43,7 +45,7 @@ export function missingEmailVars(): readonly string[] {
 
 /** URL publique du site. Repli sur le domaine de production. */
 export function siteUrl(): string {
-  return read('NEXT_PUBLIC_SITE_URL') ?? 'https://qualifyragence.com';
+  return read('NEXT_PUBLIC_SITE_URL') ?? productionUrl;
 }
 
 export function isProduction(): boolean {

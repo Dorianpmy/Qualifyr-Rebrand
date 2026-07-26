@@ -187,6 +187,8 @@ Principes appliqués :
   fait échouer le typecheck — impossible de créer un lien mort vers une route inexistante.
 - **Aucun texte stratégique en dur dans un composant.** Promesse, explication, descripteur,
   étapes du parcours et appel à l'action vivent dans `src/content/brand.ts`.
+- **Domaine centralisé.** L'URL et le domaine de production sont déclarés une seule fois dans
+  `src/content/site.ts`, puis consommés par les coordonnées, le légal et le repli des e-mails.
 - **Aucune couleur en dur.** Toutes les valeurs viennent de `tokens.css`.
 - **`site.indexable = false`** tant que le domaine n'est pas connecté : toutes les pages sont
   en `noindex, nofollow`. Le passage à `true` fait partie de la phase 10.
@@ -242,7 +244,7 @@ Chaque phase se termine par `lint` → `typecheck` → `build` au vert, puis un 
 | **11** | Bascule du domaine + `site.indexable = true` — **uniquement sur décision explicite de Dorian**. Procédure : `docs/10`. | à faire |
 
 Le domaine `qualifyragence.com`, les DNS, l'ancien déploiement et l'ancien dépôt ne sont
-touchés qu'à la phase 10.
+touchés qu'à la phase 11, après validation explicite.
 
 ---
 
@@ -545,8 +547,8 @@ plus tard, `src/content/legal.ts` et `docs/07` devront être mis à jour dans le
 
 ## 9. Stratégie de déploiement
 
-- **Hébergeur** : Vercel, adaptateur `@astrojs/vercel`, rendu statique + deux fonctions pour
-  les routes API.
+- **Hébergeur prévu** : Vercel, intégration Next.js native, rendu statique + deux fonctions
+  pour les routes API. Aucun adaptateur Astro n'est installé ni nécessaire.
 - **Branches** : `main` protégée (aucun envoi direct) ; le travail vit sur
   `feature/qualifyr-rebrand-v1` ; fusion via une demande de tirage une fois la phase 11 validée.
 - **Aperçus** : chaque envoi sur la branche génère une URL d'aperçu Vercel. La relecture se
@@ -556,7 +558,7 @@ plus tard, `src/content/legal.ts` et `docs/07` devront être mis à jour dans le
   production.
 - **Le domaine `qualifyragence.com` n'est pas connecté** tant que Dorian n'a pas donné son
   accord explicite. Les DNS, l'ancien déploiement et l'ancien dépôt restent intacts.
-- **Bascule (phase 10)** : redirections 301 en place → connexion du domaine → vérification
+- **Bascule (phase 11)** : redirections 301 en place → connexion du domaine → vérification
   HTTPS → contrôle des Core Web Vitals en conditions réelles → soumission du sitemap.
 - **Retour arrière** : l'ancien site n'est pas supprimé. En cas de problème, on repointe le
   domaine vers l'ancien déploiement.

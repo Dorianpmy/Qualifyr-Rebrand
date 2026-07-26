@@ -1,5 +1,8 @@
 import type { Route } from '@/types';
 
+export const productionUrl = 'https://qualifyragence.com';
+export const productionDomain = 'qualifyragence.com';
+
 /**
  * Configuration du site et métadonnées par page.
  *
@@ -10,7 +13,7 @@ import type { Route } from '@/types';
  */
 export const site = {
   /** Domaine canonique. Repli si `NEXT_PUBLIC_SITE_URL` n'est pas défini. */
-  url: process.env.NEXT_PUBLIC_SITE_URL?.trim() || 'https://qualifyragence.com',
+  url: process.env.NEXT_PUBLIC_SITE_URL?.trim() || productionUrl,
   locale: 'fr-FR',
   lang: 'fr',
   indexable: false,

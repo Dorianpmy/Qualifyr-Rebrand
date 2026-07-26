@@ -1,3 +1,5 @@
+import { productionDomain } from '@/content/site';
+
 /**
  * Coordonnées de Qualifyr Agence.
  *
@@ -24,7 +26,7 @@ export const contact = {
   phone: null as ContactChannel,
 
   /** Nom d'affichage du domaine, sans protocole. Information factuelle, connue. */
-  domain: 'qualifyragence.com',
+  domain: productionDomain,
 
   /** Adresse postale — non renseignée, et non inventée. */
   address: null as string | null,

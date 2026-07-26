@@ -5,20 +5,24 @@ Branche `feature/qualifyr-rebrand-v1`. **Rien n'est déployé, le domaine n'est 
 
 ---
 
-## 1. Les neuf phases
+## 1. Les neuf phases de fabrication
 
-| Phase | Contenu | Commit |
+La V1 a été reçue sous forme d'archive puis importée dans ce dépôt en un commit racine.
+Les hashes de travail mentionnés dans les documents sources n'appartiennent pas à l'historique
+de ce dépôt et ne sont donc pas reproduits ici comme s'ils étaient consultables.
+
+| Phase | Contenu | État importé |
 |---|---|---|
-| 0 | Audit du dépôt (vide), cadrage, quatre documents de référence | `94fb64c` |
-| 1 | Initialisation Next.js, jetons de design, layout, huit routes | `11e6773` |
-| 2 | Design system : 23 composants, menu mobile accessible | `b4d8984` |
-| 3 | Page d'accueil complète, 10 sections | `d06c6ac` |
-| 4 | Pages secondaires : Méthode, À propos, Diagnostic, Contact, Réalisations | `6ae5bc6` |
-| 5 | Étude de cas SW Carcleaning | `60852ec` |
-| 6 | Mise en service des formulaires, transport e-mail, 46 tests | `771b89a` |
-| 7 | SEO, image de partage, données structurées, structure légale | `a1b33aa` |
-| 8 | Passe qualité : responsive, accessibilité, performance | `e25f8f6` |
-| 9 | Audit final, en-têtes de sécurité, documents de lancement | ce commit |
+| 0 | Audit du dépôt (vide), cadrage, quatre documents de référence | terminé dans l'archive source |
+| 1 | Initialisation Next.js, jetons de design, layout, huit routes | terminé dans l'archive source |
+| 2 | Design system : 23 composants, menu mobile accessible | terminé dans l'archive source |
+| 3 | Page d'accueil complète, 10 sections | terminé dans l'archive source |
+| 4 | Pages secondaires : Méthode, À propos, Diagnostic, Contact, Réalisations | terminé dans l'archive source |
+| 5 | Étude de cas SW Carcleaning | terminé dans l'archive source |
+| 6 | Mise en service des formulaires, transport e-mail, tests | terminé dans l'archive source |
+| 7 | SEO, image de partage, données structurées, structure légale | terminé dans l'archive source |
+| 8 | Passe qualité : responsive, accessibilité, performance | terminé dans l'archive source |
+| 9 | Audit final, en-têtes de sécurité, documents de lancement | vérifié après import |
 
 ---
 
@@ -96,6 +100,10 @@ Branche `feature/qualifyr-rebrand-v1`. **Rien n'est déployé, le domaine n'est 
 - **En-têtes de sécurité** — `nosniff`, `DENY`, `Referrer-Policy`, `Permissions-Policy`, HSTS.
 - **Build reproductible** — la racine Turbopack est fixée au dépôt, indépendamment des
   autres lockfiles éventuellement présents sur la machine de développement.
+- **Audit navigateur après import** — routes publiques et 404, viewport 390 px sans
+  débordement, menu mobile, validation client et absence d'overlay vérifiés avec Playwright.
+- **Hydratation propre** — la mutation précoce et intentionnelle de `<html>` pour le mouvement
+  réduit est déclarée à React, sans avertissement de console.
 
 ---
 
@@ -130,8 +138,9 @@ Branche `feature/qualifyr-rebrand-v1`. **Rien n'est déployé, le domaine n'est 
 4. **Aucun test de bout en bout.** 47 tests unitaires couvrent la validation et les routes,
    notamment les messages français lorsque des champs requis sont totalement absents.
    Playwright + axe restent à ajouter si le besoin se confirme.
-5. **Aucune vérification en navigateur réel.** L'environnement de travail n'en a pas. Les
-   audits portent sur le HTML rendu et le CSS. Points à contrôler à l'œil : `docs/08`, §9.
+5. **Validation sur appareils réels encore requise.** Chrome automatisé couvre les routes,
+   le responsive 390 px et le menu ; iPhone/Android, lecteur d'écran et ressenti visuel aux
+   neuf paliers restent à contrôler. Voir `docs/08`, §9.
 6. **Avis npm sur `postcss` et `sharp`**, dépendances internes de Next 16.2.12 — déjà la
    dernière version. Les correctifs proposés par npm sont des rétrogradations absurdes
    (Next 9.3.3) : **ne pas les appliquer**. `sharp` n'est de toute façon pas sollicité,

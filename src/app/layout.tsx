@@ -49,7 +49,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang={site.lang} className={fontClassName}>
+    <html lang={site.lang} className={fontClassName} suppressHydrationWarning>
       <head>
         {/* Avant le premier rendu : autorise la révélation si, et seulement si,
             le visiteur n'a pas demandé de réduire les animations. */}
