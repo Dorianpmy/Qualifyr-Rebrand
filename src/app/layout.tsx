@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   // Base de toutes les URL relatives : canonical, Open Graph, images.
   metadataBase: new URL(site.url),
   title: {
-    default: 'Qualifyr — Sites web, applications et SaaS sur mesure',
+    default: 'Qualifyr — Agence digitale pour les entreprises de services',
     template: `%s — ${brand.fullName}`,
   },
   description: brand.descriptor,
@@ -35,14 +35,14 @@ export const metadata: Metadata = {
     type: 'website',
     locale: site.locale,
     siteName: brand.fullName,
-    title: 'Qualifyr — Sites web, applications et SaaS sur mesure',
+    title: 'Qualifyr — Agence digitale pour les entreprises de services',
     description: brand.descriptor,
     url: site.url,
     images: [openGraphImage],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Qualifyr — Sites web, applications et SaaS sur mesure',
+    title: 'Qualifyr — Agence digitale pour les entreprises de services',
     description: brand.descriptor,
     images: [openGraphImage.url],
   },

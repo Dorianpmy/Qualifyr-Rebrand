@@ -23,18 +23,18 @@ export const routeLabels: Readonly<Record<string, string>> = {
 };
 
 export const primaryNav: readonly NavItem[] = [
-  { label: 'Création de site', href: '/creation-site-web' },
-  { label: 'Notre offre', href: '/#notre-offre' },
+  { label: 'Expertise', href: '/#expertise' },
   { label: 'Réalisation', href: '/#sw-car-cleaning' },
+  { label: 'Laboratoire', href: '/#laboratoire' },
   { label: 'À propos', href: '/a-propos' },
   { label: 'Contact', href: '/contact' },
 ];
 
 export const footerNav: readonly NavItem[] = [
-  { label: 'Création de site web', href: '/creation-site-web' },
-  { label: 'Notre offre', href: '/#notre-offre' },
+  { label: 'Expertise', href: '/#expertise' },
   { label: 'Réalisation', href: '/#sw-car-cleaning' },
-  { label: 'Pour qui', href: '/#pour-qui' },
+  { label: 'Laboratoire', href: '/#laboratoire' },
+  { label: 'À propos', href: '/a-propos' },
   { label: 'Contact', href: '/contact' },
 ];
 

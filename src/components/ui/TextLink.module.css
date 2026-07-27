@@ -8,6 +8,10 @@
   border-radius: var(--radius-xs);
 }
 
+.link svg {
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
 .label {
   position: relative;
 }
@@ -24,6 +28,7 @@
   block-size: 1px;
   background-color: currentcolor;
   opacity: 0.35;
+  transform: scaleX(0.72);
   transform-origin: left;
   transition:
     opacity var(--duration-fast) var(--ease-out),
@@ -32,6 +37,22 @@
 
 .link:hover .label::after {
   opacity: 1;
+  transform: scaleX(1);
+}
+
+.link:hover svg {
+  transform: translate(0.18rem, -0.18rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link svg,
+  .label::after {
+    transition: none;
+  }
+
+  .link:hover svg {
+    transform: none;
+  }
 }
 
 .quiet {

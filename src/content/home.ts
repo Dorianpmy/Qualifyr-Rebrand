@@ -1,9 +1,11 @@
 import { objectives, swCarCleaning } from './sw-car-cleaning';
 
 export const hero = {
-  eyebrow: 'Sites web, applications et produits digitaux',
-  title: 'Des sites et produits digitaux pensés pour être utilisés, compris et rentables.',
-  body: 'Qualifyr conçoit des sites web, des applications et des SaaS modernes pour transformer une idée ou un besoin métier en expérience digitale concrète.',
+  eyebrow: 'Agence digitale pour les entreprises de services',
+  title:
+    'Transformez votre savoir-faire en une marque que l’on choisit.',
+  body:
+    'Qualifyr clarifie votre offre, construit votre identité et conçoit le site qui transforme votre savoir-faire en une expérience crédible et facile à choisir.',
 } as const;
 
 /** Conservé pour la composition éditoriale réutilisée par le design system. */
@@ -42,10 +44,36 @@ export const sectors = [
   },
 ] as const;
 
+export const transformations = [
+  {
+    number: '01',
+    title: 'Être compris',
+    body: 'Une offre claire, structurée et immédiatement lisible.',
+  },
+  {
+    number: '02',
+    title: 'Être choisi',
+    body: 'Une identité et un site qui inspirent confiance avant le premier échange.',
+  },
+  {
+    number: '03',
+    title: 'Être contacté',
+    body: 'Un parcours simple qui guide le visiteur vers la bonne action.',
+  },
+] as const;
+
+export const serviceCompanies = [
+  'Nettoyage automobile et detailing',
+  'Conciergerie',
+  'Services spécialisés',
+  'Entreprises locales à forte valeur de conseil ou d’exécution',
+] as const;
+
 export const method = [
-  { number: '01', title: 'Comprendre', body: 'Nous partons de votre activité, de vos clients et de vos priorités.' },
-  { number: '02', title: 'Construire', body: 'Nous concevons le site et le parcours adapté à votre fonctionnement.' },
-  { number: '03', title: 'Faire évoluer', body: 'Nous améliorons ce qui freine encore les demandes et les prises de contact.' },
+  { number: '01', title: 'Comprendre', body: 'Votre activité, vos clients, votre différence et vos objectifs.' },
+  { number: '02', title: 'Clarifier', body: 'L’offre, le message, la hiérarchie et les actions attendues.' },
+  { number: '03', title: 'Concevoir', body: 'L’identité, les contenus, le site et le parcours de contact.' },
+  { number: '04', title: 'Améliorer', body: 'Les détails, la lisibilité, l’expérience mobile et les points de friction.' },
 ] as const;
 
 export const featuredCase = {

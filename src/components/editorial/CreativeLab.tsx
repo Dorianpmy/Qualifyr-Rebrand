@@ -3,9 +3,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useId, useRef, useState, type CSSProperties } from 'react';
-import { BookingButton } from '@/components/agency/BookingButton';
 import { WhatsAppDiagnosticButton } from '@/components/agency/WhatsAppDiagnostic';
+import { InteractiveSitePreview } from '@/components/editorial/InteractiveSitePreview';
 import { creativeLab, type CreativeLabItem } from '@/content/creative-lab';
+import { swCarCleaning } from '@/content/sw-car-cleaning';
 import styles from './CreativeLab.module.css';
 
 const curatedPalettes = [
@@ -84,39 +85,59 @@ export function CreativeLab() {
       <p className={styles.disclaimer}>{creativeLab.disclaimer}</p>
 
       <div className={styles.grid}>
-        {creativeLab.items.map((item) => {
+        {creativeLab.items.map((item, index) => {
+          const hasLivePreview = item.featured && item.image && swCarCleaning.externalUrl;
           const content = (
             <>
               <div className={styles.media}>
-                {item.image ? (
+                {hasLivePreview ? (
+                  <InteractiveSitePreview
+                    url={swCarCleaning.externalUrl!}
+                    title="Site SW Carcleaning interactif"
+                    domain="swcarcleaning.ch"
+                    caption="Site réel · Fribourg"
+                    compact
+                  />
+                ) : item.image ? (
                   <Image src={item.image.src} alt={item.image.alt} width={item.image.width} height={item.image.height} sizes="(min-width: 62rem) 66vw, 100vw" unoptimized />
                 ) : <ConceptVisual type={item.visual} />}
               </div>
               <div className={styles.cardBody}>
-                <div className={styles.meta}><span data-status={item.status}>{item.statusLabel}</span><small>{item.subtitle}</small></div>
-                <h3>{item.title}</h3>
+                <div className={styles.meta}>
+                  <span className={styles.sequence}>{String(index + 1).padStart(2, '0')}</span>
+                  <span className={styles.status} data-status={item.status}>{item.statusLabel}</span>
+                  <small>{item.subtitle}</small>
+                </div>
+                <div className={styles.cardHeading}>
+                  <h3>{item.title}</h3>
+                  <span aria-hidden="true">↗</span>
+                </div>
                 <p>{item.description}</p>
-                <span className={styles.cardAction}>{item.href ? 'Découvrir le projet' : 'Explorer le concept'} <b aria-hidden="true">→</b></span>
+                {item.explores ? (
+                  <ul className={styles.explores} aria-label="Axes explorés">
+                    {item.explores.map((point) => <li key={point}>{point}</li>)}
+                  </ul>
+                ) : null}
+                {item.href ? (
+                  <Link href={item.href} className={styles.cardAction}>Découvrir le projet <b aria-hidden="true">→</b></Link>
+                ) : (
+                  <span className={styles.cardAction}>Explorer le concept <b aria-hidden="true">→</b></span>
+                )}
               </div>
             </>
           );
           return item.href ? (
-            <Link href={item.href} className={`${styles.card} ${item.featured ? styles.featured : ''}`} key={item.id}>{content}</Link>
+            <article className={`${styles.card} ${item.featured ? styles.featured : ''}`} key={item.id}>{content}</article>
           ) : (
             <button type="button" className={styles.card} onClick={() => openConcept(item)} key={item.id}>{content}</button>
           );
         })}
       </div>
 
-      <div className={styles.sectionCta}>
-        <div><h3>Votre activité mérite une présentation qui lui ressemble.</h3><p>Parlons de votre offre, de votre image et du parcours le plus adapté à vos prospects.</p></div>
-        <div className={styles.actions}><BookingButton withArrow>Réserver un échange</BookingButton><WhatsAppDiagnosticButton variant="secondary">Faire le diagnostic WhatsApp</WhatsAppDiagnosticButton></div>
-      </div>
-
       <dialog ref={dialogRef} className={styles.dialog} aria-labelledby={titleId} onClose={() => setActiveItem(null)}>
         {activeItem && (
           <div className={styles.dialogShell}>
-            <header><div><p>{activeItem.statusLabel}</p><h2 id={titleId}>{activeItem.title}</h2></div><button type="button" aria-label="Fermer le concept" onClick={() => dialogRef.current?.close()}>×</button></header>
+            <div className={styles.dialogHeader}><div><p>{activeItem.statusLabel}</p><h2 id={titleId}>{activeItem.title}</h2></div><button type="button" aria-label="Fermer le concept" onClick={() => dialogRef.current?.close()}>×</button></div>
             <ConceptVisual
               type={activeItem.visual}
               conciergeScenario={conciergeScenario}
@@ -155,7 +176,7 @@ export function CreativeLab() {
               <div><p>{activeItem.modalContent}</p><small>{activeItem.status === 'coming-soon' ? 'Concept créatif en cours de développement.' : creativeLab.disclaimer}</small></div>
               <div><h3>Ce que ce concept explore</h3><ul>{activeItem.explores?.map((point) => <li key={point}>{point}</li>)}</ul></div>
             </div>
-            <footer><WhatsAppDiagnosticButton onClick={() => dialogRef.current?.close()}>Parler de mon projet</WhatsAppDiagnosticButton></footer>
+            <div className={styles.dialogFooter}><WhatsAppDiagnosticButton onClick={() => dialogRef.current?.close()}>Parler de mon projet</WhatsAppDiagnosticButton></div>
           </div>
         )}
       </dialog>

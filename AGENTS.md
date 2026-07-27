@@ -84,12 +84,12 @@ entreprise :
 - d'obtenir des avis ;
 - de favoriser les nouvelles réservations.
 
-**Titre principal de l'accueil** : « Des sites et produits digitaux pensés pour être
-utilisés, compris et rentables. »
+**Titre principal de l'accueil** : « Transformez votre savoir-faire en une marque que l’on
+choisit. »
 
-**Texte d'explication principal** : « Qualifyr conçoit des sites web, des applications et
-des SaaS modernes pour transformer une idée ou un besoin métier en expérience digitale
-concrète. »
+**Texte d'explication principal** : « Qualifyr clarifie votre offre, construit votre identité
+et conçoit le site qui transforme votre savoir-faire en une expérience crédible et facile à
+choisir. »
 
 **Offre principale** : « Le parcours Qualifyr » (nom provisoire).
 

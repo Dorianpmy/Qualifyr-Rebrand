@@ -1,18 +1,23 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import { BookingButton } from '@/components/agency/BookingButton';
-import { WhatsAppDiagnosticButton } from '@/components/agency/WhatsAppDiagnostic';
 import { OfferConfigurator } from '@/components/agency/OfferConfigurator';
+import { WhatsAppDiagnosticButton } from '@/components/agency/WhatsAppDiagnostic';
 import { Container } from '@/components/layout/Container';
 import { Section } from '@/components/layout/Section';
-import { EditorialCard } from '@/components/editorial/EditorialCard';
 import { CreativeLab } from '@/components/editorial/CreativeLab';
+import { InteractiveSitePreview } from '@/components/editorial/InteractiveSitePreview';
 import { MethodStep } from '@/components/editorial/MethodStep';
 import { SectionHeading } from '@/components/editorial/SectionHeading';
 import { ButtonLink } from '@/components/ui/Button';
 import { Eyebrow } from '@/components/ui/Eyebrow';
 import { TextLink } from '@/components/ui/TextLink';
-import { featuredCase, hero, method, sectors } from '@/content/home';
+import {
+  hero,
+  method,
+  serviceCompanies,
+  transformations,
+} from '@/content/home';
+import { swCarCleaning } from '@/content/sw-car-cleaning';
 import { buildMetadata } from '@/lib/metadata';
 import styles from './page.module.css';
 
@@ -54,72 +59,103 @@ export default function HomePage() {
                 </WhatsAppDiagnosticButton>
               </div>
               <p className={styles.heroProofLink}>
-                <TextLink href="#sw-car-cleaning" tone="inverse">Voir notre réalisation</TextLink>
+                <TextLink href="#sw-car-cleaning" tone="inverse">Découvrir notre réalisation</TextLink>
               </p>
-            </div>
-            <div className={styles.heroPlate} aria-label="Les trois fondations du parcours Qualifyr">
-              <p>Le parcours Qualifyr</p>
-              <ol>
-                <li><span>01</span> Comprendre</li>
-                <li><span>02</span> Convaincre</li>
-                <li><span>03</span> Passer à l’action</li>
-              </ol>
             </div>
           </div>
           </Container>
         </div>
       </Section>
 
-      <Section id="sw-car-cleaning" spacing="tight">
+      <Section id="expertise" spacing="tight" ruled>
+        <Container>
+          <div className={styles.transformationIntro}>
+            <SectionHeading
+              eyebrow="Ce que nous transformons"
+              title="Votre activité mérite plus qu’un site correct."
+            />
+            <p>
+              Elle mérite une présentation à la hauteur de votre savoir-faire et un parcours
+              qui donne envie de vous choisir.
+            </p>
+          </div>
+          <ol className={styles.transformations}>
+            {transformations.map((item) => (
+              <li key={item.number} className={styles.transformation}>
+                <span>{item.number}</span>
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+              </li>
+            ))}
+          </ol>
+        </Container>
+      </Section>
+
+      <Section id="sw-car-cleaning" surface="inverse" spacing="tight">
         <Container>
           <div className={styles.caseGrid}>
-            <a
-              className={styles.casePreview}
-              href="https://www.swcarcleaning.ch/"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Voir le site SW Carcleaning"
-            >
-              <Image
-                src={featuredCase.preview.src}
-                alt={featuredCase.preview.alt}
-                width={featuredCase.preview.width}
-                height={featuredCase.preview.height}
-                sizes="(min-width: 62rem) 55vw, 100vw"
-              />
-            </a>
             <div className={styles.caseContent}>
-              <Eyebrow>Réalisation réelle</Eyebrow>
+              <Eyebrow inverse>Réalisation sélectionnée</Eyebrow>
               <h2>SW Car Cleaning</h2>
-              <p className={styles.lead}>{featuredCase.summary}</p>
+              <p className={styles.caseLead}>
+                Une identité et une expérience digitale conçues pour rendre l’offre plus
+                claire, renforcer la crédibilité et simplifier la prise de contact.
+              </p>
               <ul className={styles.factList}>
-                {featuredCase.objectives.map((objective) => <li key={objective.title}>{objective.title}</li>)}
+                <li>Clarification des prestations</li>
+                <li>Identité cohérente</li>
+                <li>Expérience mobile optimisée</li>
               </ul>
               <div className={styles.actions}>
-                <ButtonLink href="/realisations/sw-car-cleaning" variant="secondary">
-                  Découvrir le projet
+                <ButtonLink href="/realisations/sw-car-cleaning" variant="inverse">
+                  Découvrir la réalisation
                 </ButtonLink>
-                <WhatsAppDiagnosticButton>Parler de mon projet</WhatsAppDiagnosticButton>
+                <BookingButton variant="inverseSecondary">
+                  Créer une expérience similaire
+                </BookingButton>
               </div>
             </div>
+            {swCarCleaning.externalUrl ? (
+              <InteractiveSitePreview
+                url={swCarCleaning.externalUrl}
+                title="Site SW Carcleaning interactif"
+                domain="swcarcleaning.ch"
+                caption="Site réel · Fribourg"
+              />
+            ) : null}
           </div>
         </Container>
       </Section>
 
       <Section id="pour-qui" surface="sunken" ruled spacing="tight">
         <Container>
-          <SectionHeading title="Deux activités, un même besoin : rendre le parcours client plus simple." />
-          <div className={styles.twoGrid}>
-            {sectors.map((sector) => (
-              <EditorialCard key={sector.title} title={sector.title}>{sector.body}</EditorialCard>
-            ))}
+          <div className={styles.companies}>
+            <SectionHeading
+              eyebrow="Entreprises de services"
+              title="Conçu pour les entreprises qui vendent un véritable savoir-faire."
+              lead="Qualifyr accompagne des entreprises de services qui ont besoin d’être mieux comprises, mieux présentées et plus facilement contactées."
+            />
+            <ul className={styles.companyList}>
+              {serviceCompanies.map((company, index) => (
+                <li key={company}>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  {company}
+                </li>
+              ))}
+            </ul>
+            <p className={styles.companyNote}>
+              Une même exigence de clarté, adaptée au fonctionnement réel de chaque activité.
+            </p>
           </div>
         </Container>
       </Section>
 
       <Section ruled spacing="tight">
         <Container>
-          <SectionHeading title="Un fonctionnement simple, en trois étapes." />
+          <SectionHeading
+            eyebrow="Notre méthode"
+            title="Une méthode claire. Aucun effet inutile."
+          />
           <ol className={styles.methodGrid}>
             {method.map((step) => (
               <MethodStep key={step.number} number={step.number} title={step.title}>
@@ -136,7 +172,7 @@ export default function HomePage() {
         </Container>
       </Section>
 
-      <Section id="notre-offre" surface="sunken" ruled spacing="tight">
+      <Section id="estimation" surface="sunken" ruled spacing="tight">
         <Container>
           <OfferConfigurator />
         </Container>
@@ -146,9 +182,12 @@ export default function HomePage() {
         <Container>
           <div className={styles.finalCta}>
             <div>
-              <Eyebrow>Votre prochaine étape</Eyebrow>
-              <h2>Votre activité mérite un parcours plus clair.</h2>
-              <p>Présentez-nous votre situation. Nous verrons ensemble ce qu’il faut clarifier, construire ou améliorer.</p>
+              <Eyebrow inverse>Votre prochaine étape</Eyebrow>
+              <h2>Votre activité est déjà solide. Sa présentation doit l’être aussi.</h2>
+              <p>
+                Parlez-nous de votre entreprise et découvrons comment mieux traduire votre
+                savoir-faire en une expérience que vos prospects comprennent et choisissent.
+              </p>
             </div>
             <div className={styles.finalActions}>
               <BookingButton variant="inverse" withArrow>Réserver un échange</BookingButton>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 /**
  * Révélation au défilement — un seul observateur pour toute la page.
@@ -17,14 +18,13 @@ import { useEffect } from 'react';
  * — en `prefers-reduced-motion`, la page est intégralement lisible ;
  * — aucun contenu n'attend une animation pour apparaître.
  *
- * L'effet lui-même est volontairement discret : opacité et 8 px de
- * translation verticale, une seule fois, réservé aux **grandes compositions**.
- * Pas d'effet sur les cartes, pas de décalage en cascade, pas de parallaxe.
- *
- * Filet de sécurité : au bout de 1,5 s, tout est révélé quoi qu'il arrive —
- * un observateur qui ne se déclenche pas ne doit pas laisser une section vide.
+ * L'effet lui-même est volontairement discret : opacité et 12 px de
+ * translation verticale, une seule fois, réservé aux **grandes sections**.
+ * Pas d'effet sur chaque carte, pas de décalage en cascade, pas de parallaxe.
  */
 export function RevealObserver() {
+  const pathname = usePathname();
+
   useEffect(() => {
     const root = document.documentElement;
     if (root.dataset.motion !== 'on') return;
@@ -52,21 +52,15 @@ export function RevealObserver() {
           }
         }
       },
-      { rootMargin: '0px 0px -12% 0px', threshold: 0.1 },
+      { rootMargin: '0px 0px -10% 0px', threshold: 0.14 },
     );
 
     targets.forEach((target) => observer.observe(target));
 
-    const failsafe = window.setTimeout(() => {
-      targets.forEach(reveal);
-      observer.disconnect();
-    }, 1500);
-
     return () => {
-      window.clearTimeout(failsafe);
       observer.disconnect();
     };
-  }, []);
+  }, [pathname]);
 
   return null;
 }

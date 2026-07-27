@@ -3,7 +3,35 @@
 Document de référence. Toute page, tout titre et tout composant du site doit pouvoir être
 justifié par ce document.
 
-## Décision stratégique du 27 juillet 2026
+## Décision stratégique finale du 27 juillet 2026
+
+Qualifyr accompagne les entreprises de services. La valeur vendue n'est ni un outil ni une
+longue liste de prestations techniques : Qualifyr clarifie l'offre, construit l'identité et
+conçoit le site et le parcours qui rendent une entreprise plus facile à comprendre, à choisir
+et à contacter.
+
+**Titre principal de l'accueil :**
+
+> Transformez votre savoir-faire en une marque que l’on choisit.
+
+**Texte d'explication de l'accueil :**
+
+> Qualifyr clarifie votre offre, construit votre identité et conçoit le site qui transforme
+> votre savoir-faire en une expérience crédible et facile à choisir.
+
+**Title SEO de l'accueil :**
+
+> Qualifyr — Agence digitale pour les entreprises de services
+
+**Meta description de l'accueil :**
+
+> Qualifyr clarifie votre offre, construit votre identité et conçoit le site qui aide vos
+> prospects à vous comprendre, vous choisir et vous contacter.
+
+Cette décision remplace les formulations historiques contradictoires conservées plus bas à
+titre de contexte de la V1.
+
+## Décision stratégique précédente du 27 juillet 2026
 
 Le positionnement public de l'accueil est élargi à la conception de sites web,
 d'applications et de SaaS sur mesure. Les deux verticales historiques restent présentées
@@ -27,8 +55,7 @@ comme domaines d'expérience, sans limiter l'offre à ces seuls métiers.
 > Qualifyr conçoit des sites web, des applications et des SaaS modernes, pensés pour être
 > clairs, performants et adaptés aux besoins réels des entreprises.
 
-Cette décision remplace, pour l'accueil et ses métadonnées, les formulations historiques
-contradictoires conservées plus bas à titre de contexte de la V1.
+Cette formulation n'est plus utilisée sur l'accueil ni dans ses métadonnées.
 
 ## Décision de découvrabilité du 27 juillet 2026
 

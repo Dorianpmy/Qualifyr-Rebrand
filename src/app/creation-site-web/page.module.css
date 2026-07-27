@@ -47,18 +47,6 @@
   border-block: var(--border-width) solid var(--rule-hairline);
 }
 
-.preview {
-  display: block;
-  overflow: hidden;
-  background: var(--surface-sunken);
-}
-
-.preview img {
-  display: block;
-  inline-size: 100%;
-  block-size: auto;
-}
-
 .caseText {
   display: grid;
   gap: var(--space-5);

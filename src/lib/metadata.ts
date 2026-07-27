@@ -13,10 +13,10 @@ import type { Route } from '@/types';
 
 /** Image de partage : composition originale, ivoire, charbon et laiton. */
 export const openGraphImage = {
-  url: '/images/og/qualifyr-og.png',
+  url: '/images/og/qualifyr-og-v2.png',
   width: 1200,
   height: 630,
-  alt: 'Qualifyr — Sites web, applications et SaaS sur mesure',
+  alt: 'Qualifyr — Agence digitale pour les entreprises de services',
   type: 'image/png',
 } as const;
 

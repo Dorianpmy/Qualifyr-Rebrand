@@ -72,7 +72,7 @@ export function Footer() {
         </div>
 
         <div className={styles.baseline}>
-          <p>{brand.fullName} — nettoyage automobile mobile et conciergeries</p>
+          <p>{brand.fullName} — identité, site et parcours pour les entreprises de services</p>
           <p>© {year}</p>
         </div>
       </Container>

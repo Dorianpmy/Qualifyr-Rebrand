@@ -15,15 +15,16 @@ export const brand = {
   wordmarkSuffix: 'Agence',
 
   /** Promesse principale. Titre principal de l'accueil. */
-  promise: 'Des sites et produits digitaux pensés pour être utilisés, compris et rentables.',
+  promise:
+    'Transformez votre savoir-faire en une marque que l’on choisit.',
 
   /** Texte d'explication principal, systématiquement associé à la promesse. */
   explanation:
-    'Qualifyr conçoit des sites web, des applications et des SaaS modernes pour transformer une idée ou un besoin métier en expérience digitale concrète.',
+    'Qualifyr clarifie votre offre, construit votre identité et conçoit le site qui transforme votre savoir-faire en une expérience crédible et facile à choisir.',
 
   /** Formulation courte, pour le pied de page et les métadonnées. */
   descriptor:
-    'Qualifyr conçoit des sites web, des applications et des SaaS modernes, pensés pour être clairs, performants et adaptés aux besoins réels des entreprises.',
+    'Qualifyr clarifie l’offre, construit l’identité et conçoit le site des entreprises de services pour les rendre plus faciles à comprendre, à choisir et à contacter.',
 
   /** Nom provisoire de l'offre unique. */
   offerName: 'Le parcours Qualifyr',

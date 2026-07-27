@@ -1,5 +1,29 @@
 # 03 — Direction artistique
 
+## Ajustement éditorial du 27 juillet 2026
+
+L'accueil adopte une narration courte en sept sections : hero vidéo, transformation,
+réalisation sélectionnée, entreprises de services, méthode, laboratoire, clôture. Les
+compositions alternent grandes typographies, listes numérotées, preuve visuelle et fonds
+chauds. Le panneau sombre superposé du hero est retiré afin de réduire l'effet de bloc
+rapporté et de rendre la promesse prioritaire. Le configurateur tarifaire est conservé en
+fin de parcours, après les preuves, afin que l'estimation ne précède jamais la valeur.
+
+Le laboratoire adopte une composition de portfolio asymétrique : la réalisation réelle
+occupe toute la largeur, le concept Conciergerie forme la pièce éditoriale principale et les
+explorations Identité et Mouvement sont traitées comme des études secondaires. Les cartes de
+même poids sont évitées ; la hiérarchie vient des proportions, des numéros d'édition et des
+filets, sans faux projet ni effet décoratif gratuit.
+
+## Système d'interactions
+
+L'interactivité est distribuée sur tout le site par des réactions courtes et fonctionnelles :
+les flèches indiquent le déplacement, les filets se dessinent, les images avancent légèrement
+et les listes éditoriales révèlent leur caractère cliquable ou exploratoire. Les mouvements
+restent compris entre 1 et 6 px, n'altèrent jamais la lecture et ne sont activés au survol que
+sur les appareils qui disposent réellement d'un pointeur. Le focus clavier reste visible et
+`prefers-reduced-motion` supprime tout déplacement non essentiel.
+
 Identité visée : **luxueuse, premium, éditoriale, lumineuse, chaleureuse, précise,
 minimaliste, mature, mémorable.**
 
@@ -266,8 +290,10 @@ Principe : l'animation confirme une intention, elle ne décore pas.
 
 - **Durées** : 180 ms (micro-interaction) · 320 ms (apparition) · 480 ms (transition de section).
 - **Courbe** : `cubic-bezier(0.22, 0.61, 0.36, 1)` par défaut.
-- **Apparition au défilement** : opacité `0 → 1` et translation `12px → 0`, une seule fois,
-  déclenchée à 15 % de visibilité. Décalage de 60 ms maximum entre éléments d'un même groupe.
+- **Apparition au défilement** : le contenu principal de chaque grande section passe de
+  l'opacité `0 → 1` et d'une translation `12px → 0`, une seule fois, déclenchée autour de
+  15 % de visibilité. La surface de la section reste toujours visible pour éviter tout flash.
+  La première section d'une page n'est pas animée : elle doit être immédiatement lisible.
 - **Survol** : soulignement qui se trace de gauche à droite sur les liens ; assombrissement
   léger sur les boutons ; agrandissement d'image limité à `scale(1.02)`.
 - **Focus** : anneau `2px solid var(--focus-ring)` + décalage `3px`, visible instantanément, jamais animé.
@@ -276,6 +302,21 @@ Principe : l'animation confirme une intention, elle ne décore pas.
   animations en boucle permanente.
 - **`prefers-reduced-motion: reduce`** : toutes les animations sont désactivées, les contenus
   s'affichent immédiatement à leur état final. Aucune fonctionnalité ne dépend d'une animation.
+
+### Aperçus de sites interactifs
+
+Lorsqu'une réalisation réelle possède un site public intégrable, la capture statique peut être
+remplacée par une fenêtre de navigation réelle. Le site est chargé directement : le défilement
+et les liens fonctionnent dès que le pointeur ou le doigt se trouve dans la fenêtre.
+
+- la fenêtre affiche clairement le domaine visité et un lien d'ouverture dans un nouvel onglet ;
+- aucun faux contrôle de navigateur n'est présenté ;
+- le cadre conserve les filets, surfaces et contrastes du système éditorial ;
+- dans une réalisation principale sur desktop, la fenêtre occupe toute la largeur de sa
+  colonne afin de montrer la version desktop du site plutôt qu'un aperçu mobile isolé ;
+- sur mobile, une hauteur contenue permet de retrouver rapidement le défilement de Qualifyr ;
+- l'intégration utilise uniquement un site réel, public et autorisé à être affiché dans un cadre ;
+- une image réelle reste le repli si la ressource distante ne peut pas être chargée.
 
 ---
 

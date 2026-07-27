@@ -71,8 +71,8 @@ export function Header() {
         <Container>
           <div className={styles.editorialInner}>
             <p>01 — Qualifyr Agence</p>
-            <p>France · Belgique · Luxembourg · Suisse</p>
-            <p>Nettoyage auto · Conciergeries</p>
+            <p>Entreprises de services</p>
+            <p>Identité · Site · Parcours</p>
           </div>
         </Container>
       </div>

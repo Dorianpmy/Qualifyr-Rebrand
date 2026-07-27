@@ -25,11 +25,19 @@
 }
 
 .base:hover:not(:disabled):not([aria-disabled='true']) {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 .base:active:not(:disabled):not([aria-disabled='true']) {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.985);
+}
+
+.base svg {
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.base:hover:not(:disabled):not([aria-disabled='true']) svg {
+  transform: translateX(0.3rem);
 }
 
 /* --- Variante principale : charbon plein --- */
@@ -155,6 +163,14 @@
   }
 
   .base:hover {
+    transform: none;
+  }
+
+  .base svg {
+    transition: none;
+  }
+
+  .base:hover svg {
     transform: none;
   }
 }

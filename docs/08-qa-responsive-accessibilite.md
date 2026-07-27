@@ -130,16 +130,16 @@ Gain : CSS total du build **69,4 Ko → 63,8 Ko**, dont ~1,5 Ko gzip retirés du
 
 ## 4. Animations
 
-**Une seule animation ajoutée** : une révélation au défilement, réservée aux grandes
-compositions.
+**Une seule famille d'animation** : une révélation au défilement, réservée aux grandes
+sections éditoriales.
 
 | Point | Choix |
 |---|---|
-| Effet | Opacité 0 → 1 et translation verticale de 8 px |
+| Effet | Opacité 0 → 1 et translation verticale de 12 px |
 | Durée | 480 ms, courbe `--ease-out` |
 | Répétition | Une seule fois, puis l'observateur se détache |
-| Cibles | **4 au total** — frise du parcours, comparatif avant/après, bloc réalisation, livrables de l'étude de cas |
-| Hero | **Jamais animé.** Aucun contenu d'ouverture n'attend une animation |
+| Cibles | Les grandes `Section` de chaque route, jamais leurs cartes prises individuellement |
+| Hero | Première section immédiatement visible. Aucun contenu d'ouverture n'attend une animation |
 | Cartes | **Jamais animées** individuellement, aucun décalage en cascade |
 | Décalage de mise en page | Aucun — `opacity` et `transform` seuls |
 
@@ -154,9 +154,8 @@ React sans masquer une divergence dans le reste de l'arbre.
 
 Conséquences : sans JavaScript, la page est entière ; si le script échoue, la page est
 entière ; en mouvement réduit, la page est entière. Aucun clignotement d'un contenu affiché
-puis caché après hydratation. Un filet de sécurité révèle tout au bout de 1,5 s si
-l'observateur ne s'est pas déclenché, et une règle CSS `!important` sous
-`prefers-reduced-motion` rend le masquage impossible.
+puis caché après hydratation. Une règle CSS `!important` sous `prefers-reduced-motion` rend
+le masquage impossible.
 
 Interdits respectés : pas de parallaxe, pas de défilement horizontal, pas de curseur
 personnalisé, pas de texte qui tourne, pas d'élément flottant permanent, pas de 3D, pas de

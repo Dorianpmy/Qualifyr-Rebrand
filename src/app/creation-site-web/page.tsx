@@ -1,12 +1,11 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
-import Link from 'next/link';
 
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { Container } from '@/components/layout/Container';
 import { Section } from '@/components/layout/Section';
 import { CallToAction } from '@/components/editorial/CallToAction';
 import { EditorialCard } from '@/components/editorial/EditorialCard';
+import { InteractiveSitePreview } from '@/components/editorial/InteractiveSitePreview';
 import { MethodStep } from '@/components/editorial/MethodStep';
 import { SectionHeading } from '@/components/editorial/SectionHeading';
 import { JsonLd } from '@/components/seo/JsonLd';
@@ -100,15 +99,15 @@ export default function WebDesignPage() {
       <Section spacing="tight">
         <Container>
           <div className={styles.caseStudy}>
-            <Link href="/realisations/sw-car-cleaning" className={styles.preview}>
-              <Image
-                src={swCarCleaning.gallery[0].src}
-                alt={swCarCleaning.gallery[0].alt}
-                width={swCarCleaning.gallery[0].width}
-                height={swCarCleaning.gallery[0].height}
-                sizes="(min-width: 62rem) 55vw, 100vw"
+            {swCarCleaning.externalUrl ? (
+              <InteractiveSitePreview
+                url={swCarCleaning.externalUrl}
+                title="Site SW Carcleaning interactif"
+                domain="swcarcleaning.ch"
+                caption="Réalisation réelle · Fribourg"
+                compact
               />
-            </Link>
+            ) : null}
             <div className={styles.caseText}>
               <SectionHeading
                 eyebrow="Réalisation réelle"

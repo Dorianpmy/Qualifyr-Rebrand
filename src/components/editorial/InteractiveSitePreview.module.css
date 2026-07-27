@@ -1,0 +1,81 @@
+.preview {
+  display: grid;
+  min-inline-size: 0;
+  overflow: hidden;
+  border: 1px solid var(--rule-inverse);
+  background: var(--color-ink);
+  color: var(--text-inverse);
+}
+
+.viewport {
+  position: relative;
+  min-block-size: clamp(23rem, 56vw, 42rem);
+  overflow: hidden;
+  background: var(--surface-page);
+}
+
+.compact .viewport {
+  min-block-size: clamp(21rem, 47vw, 34rem);
+}
+
+.viewport iframe {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  border: 0;
+}
+
+.viewport iframe {
+  position: absolute;
+  inset: 0;
+  background: var(--surface-raised);
+}
+
+.preview figcaption {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3);
+  border-block-start: 1px solid var(--rule-inverse);
+  color: var(--color-stone);
+  font-size: var(--text-3xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.preview figcaption a {
+  color: var(--color-brass);
+  text-decoration: none;
+}
+
+.preview figcaption a span {
+  display: inline-block;
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.preview figcaption a:hover span {
+  transform: translate(0.15rem, -0.15rem);
+}
+
+@media (max-width: 47.99rem) {
+  .viewport,
+  .compact .viewport {
+    min-block-size: 27rem;
+  }
+
+  .preview figcaption {
+    align-items: start;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preview figcaption a span {
+    transition: none;
+  }
+
+  .preview figcaption a:hover span {
+    transform: none;
+  }
+}

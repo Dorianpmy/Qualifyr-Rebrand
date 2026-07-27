@@ -34,14 +34,15 @@ export function organization() {
     url: site.url,
     description: brand.descriptor,
     logo: absolute('/icon.svg?v=2'),
-    image: absolute('/images/og/qualifyr-og.png'),
+    image: absolute('/images/og/qualifyr-og-v2.png'),
     // Compétences réellement présentées, sans revendiquer d'implantation géographique.
     knowsAbout: [
-      'Sites web sur mesure',
-      'Applications web',
-      'SaaS',
+      'Entreprises de services',
+      'Clarification de l’offre',
+      'Identité de marque',
+      'Conception de sites web',
+      'Parcours de contact',
       'Expérience utilisateur',
-      'Produits digitaux',
     ],
   };
 

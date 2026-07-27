@@ -46,6 +46,7 @@ export function Section({
   return (
     <section
       className={classes}
+      data-reveal-target
       {...(id ? { id } : {})}
       {...(ariaLabelledBy ? { 'aria-labelledby': ariaLabelledBy } : {})}
       {...(surface === 'inverse' ? { 'data-surface': 'inverse' as const } : {})}

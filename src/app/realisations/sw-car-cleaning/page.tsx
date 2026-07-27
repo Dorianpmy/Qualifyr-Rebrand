@@ -90,6 +90,7 @@ export default function SwCarCleaningPage() {
                 priority
                 sizes="(min-width: 62rem) 55vw, 100vw"
               />
+              <span className="visually-hidden">Voir le site SW Carcleaning</span>
             </a>
           </div>
         </Container>

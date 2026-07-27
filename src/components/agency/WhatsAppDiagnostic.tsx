@@ -165,7 +165,7 @@ export function WhatsAppDiagnostic() {
   return (
     <dialog ref={dialogRef} className={styles.dialog} aria-labelledby={titleId}>
       <div className={styles.shell}>
-        <header className={styles.header}>
+        <div className={styles.header}>
           <div>
             <p className={styles.kicker}>Diagnostic commercial Qualifyr</p>
             <h2 id={titleId}>Parlez-nous de votre projet.</h2>
@@ -178,7 +178,7 @@ export function WhatsAppDiagnostic() {
           >
             ×
           </button>
-        </header>
+        </div>
 
         <p className={styles.intro}>
           Ce court parcours qualifie votre demande avant un échange avec l’agence.
@@ -272,14 +272,14 @@ export function WhatsAppDiagnostic() {
 
         {error ? <p className={styles.error} role="alert">{error}</p> : null}
         {step < 6 ? (
-          <footer className={styles.navigation}>
+          <div className={styles.navigation}>
             {step > 0 ? (
               <Button variant="text" onClick={() => { setError(''); setStep(step - 1); }}>
                 Retour
               </Button>
             ) : <span />}
             <Button onClick={next}>{step === 5 ? 'Préparer ma demande' : 'Continuer'}</Button>
-          </footer>
+          </div>
         ) : null}
       </div>
     </dialog>

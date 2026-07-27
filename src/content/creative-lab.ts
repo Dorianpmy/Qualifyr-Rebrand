@@ -19,10 +19,10 @@ export type CreativeLabItem = {
 };
 
 export const creativeLab = {
-  eyebrow: 'Notre laboratoire créatif',
-  title: 'Des idées rendues visibles.',
+  eyebrow: 'Explorations créatives',
+  title: 'Le laboratoire Qualifyr',
   subtitle:
-    'Nous explorons de nouvelles façons de présenter les entreprises de services à travers des identités, des interfaces, des mises en scène et des expériences digitales.',
+    'Des explorations autour de l’identité, du mouvement et des expériences digitales pour les entreprises de services.',
   disclaimer:
     'Les éléments signalés comme concepts sont des démonstrations créatives et non des projets clients livrés.',
   items: [

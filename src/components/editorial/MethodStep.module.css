@@ -3,6 +3,7 @@
 .step {
   position: relative;
   display: grid;
+  align-content: start;
   gap: var(--space-4);
   padding-inline-start: var(--space-7);
   padding-block-end: var(--space-9);
@@ -20,6 +21,7 @@
   inset-inline-start: 0.28rem;
   inline-size: 1px;
   background-color: var(--rule-hairline);
+  transition: background-color var(--duration-base) var(--ease-out);
 }
 
 .step:last-child::before {
@@ -36,6 +38,7 @@
   block-size: var(--space-2);
   border-radius: var(--radius-full);
   background-color: var(--color-brass);
+  transition: transform var(--duration-base) var(--ease-out);
 }
 
 .number {
@@ -53,12 +56,46 @@
   font-size: var(--text-xl);
   font-weight: var(--weight-regular);
   line-height: var(--leading-snug);
+  transition: transform var(--duration-base) var(--ease-out);
 }
 
 .body {
   max-inline-size: 52ch;
   font-size: var(--text-sm);
   color: var(--text-secondary);
+  transition: color var(--duration-base) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .step:hover::before {
+    background-color: var(--color-brass);
+  }
+
+  .step:hover::after {
+    transform: scale(1.65);
+  }
+
+  .step:hover .title {
+    transform: translateX(0.3rem);
+  }
+
+  .step:hover .body {
+    color: var(--text-primary);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .step::before,
+  .step::after,
+  .title,
+  .body {
+    transition: none;
+  }
+
+  .step:hover::after,
+  .step:hover .title {
+    transform: none;
+  }
 }
 
 .inverse::before {

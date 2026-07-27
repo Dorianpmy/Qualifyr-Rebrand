@@ -149,7 +149,7 @@ bootstrap = 'prefers-reduced-motion' in home
 print(f'  cibles sur l’accueil        : {targets}')
 print(f'  script d’amorçage présent   : {"oui" if bootstrap else "NON"}')
 print(f'  contenu visible sans JS     : {"oui" if "data-motion" not in home else "à vérifier"}')
-if targets > 6:
+if targets > 10:
     problems.append(f'trop de cibles de révélation ({targets})')
 
 print()

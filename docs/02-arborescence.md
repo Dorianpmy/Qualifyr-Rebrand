@@ -69,12 +69,12 @@ réel et renvoie vers une preuve réelle, sans ajouter de métier ni de promesse
 
 **Navigation principale**
 
-`Création de site` · `Notre offre` · `Réalisation` · `À propos` · `Contact` ·
+`Expertise` · `Réalisation` · `Laboratoire` · `À propos` · `Contact` ·
 **`Discuter sur WhatsApp`** *(bouton)*
 
 - Le logo renvoie à l'accueil ; « Accueil » n'apparaît pas dans le menu.
-- « Création de site » rejoint la page éditoriale dédiée ; « Notre offre » et
-  « Réalisation » rejoignent les sections correspondantes de l'accueil.
+- « Expertise », « Réalisation » et « Laboratoire » rejoignent les sections
+  correspondantes de l'accueil.
 - Sur mobile : menu plein écran et accès direct à WhatsApp.
 
 **Pied de page**
@@ -94,20 +94,19 @@ Objectif : comprendre en dix secondes pour qui, pourquoi et quoi faire ensuite.
 
 Sections, dans l'ordre :
 
-1. **Ouverture** — proposition concrète, réservation, diagnostic WhatsApp et lien vers la preuve.
-2. **Réalisation** — SW Car Cleaning, sans résultat chiffré ni faux visuel.
-3. **Pour qui** — nettoyage automobile mobile, detailing et conciergeries.
-4. **Fonctionnement** — Comprendre, Construire, Faire évoluer.
-5. **Laboratoire créatif** — une réalisation réelle dominante et trois concepts clairement
-   signalés, sans faux client ni fausse vidéo.
-6. **Ce que Qualifyr construit** — parcours progressif placé après les preuves : métier,
-   frein principal, besoins, puis recommandation de l'offre avec prix de mise en place,
-   mensualité, engagement et coût total avant la prise de contact.
-7. **Clôture** — réservation et diagnostic WhatsApp.
+1. **Ouverture** — promesse, calendrier, diagnostic WhatsApp et lien vers la preuve.
+2. **Transformation** — être compris, être choisi, être contacté.
+3. **Réalisation sélectionnée** — SW Car Cleaning, sans résultat chiffré ni faux visuel.
+4. **Entreprises accompagnées** — quelques exemples de services, sans catalogue de métiers.
+5. **Méthode** — Comprendre, Clarifier, Concevoir, Améliorer.
+6. **Laboratoire créatif** — une réalisation réelle et trois explorations honnêtement signalées.
+7. **Estimation guidée** — trois réponses, recommandation, options et coût complet sur douze mois.
+8. **Clôture** — réservation et diagnostic WhatsApp.
 
 À ne pas mettre : FAQ complète, comparaison avant/après, longue liste de fonctionnalités,
 bandeau de logos, compteur de clients, témoignage, comparatif de formules ou faux écran.
-Le choix guidé n'est pas une grille d'abonnements : il compose l'offre unique selon le besoin.
+Le configurateur tarifaire apparaît uniquement après la méthode, la preuve réelle et le
+laboratoire : le prix complète la compréhension de la valeur, il ne la précède pas.
 
 ---
 

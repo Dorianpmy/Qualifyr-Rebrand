@@ -39,9 +39,9 @@ type PageMeta = {
  */
 export const pageMeta: Readonly<Record<Route, PageMeta>> = {
   '/': {
-    title: 'Qualifyr — Sites web, applications et SaaS sur mesure',
+    title: 'Qualifyr — Agence digitale pour les entreprises de services',
     description:
-      'Qualifyr conçoit des sites web, des applications et des SaaS modernes, pensés pour être clairs, performants et adaptés aux besoins réels des entreprises.',
+      'Qualifyr clarifie votre offre, construit votre identité et conçoit le site qui aide vos prospects à vous comprendre, vous choisir et vous contacter.',
     priority: 1,
   },
   '/creation-site-web': {

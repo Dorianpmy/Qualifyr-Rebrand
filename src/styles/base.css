@@ -188,15 +188,16 @@ hr {
    Sans cet attribut, aucun bloc n'est masqué : la page reste entière.
    --------------------------------------------------------------------- */
 
-html[data-motion='on'] [data-reveal-target] {
+html[data-motion='on'] [data-reveal-target] > :first-child {
   opacity: 0;
-  transform: translateY(8px);
+  transform: translateY(12px);
   transition:
     opacity var(--duration-slow) var(--ease-out),
     transform var(--duration-slow) var(--ease-out);
 }
 
-html[data-motion='on'] [data-reveal-target][data-revealed='true'] {
+html[data-motion='on'] [data-reveal-target][data-revealed='true'] > :first-child,
+html[data-motion='on'] main > [data-reveal-target]:first-child > :first-child {
   opacity: 1;
   transform: none;
 }
@@ -204,7 +205,7 @@ html[data-motion='on'] [data-reveal-target][data-revealed='true'] {
 /* Ceinture et bretelles : même si l'attribut était posé à tort, le mouvement
    réduit rend le contenu immédiatement et définitivement visible. */
 @media (prefers-reduced-motion: reduce) {
-  [data-reveal-target] {
+  [data-reveal-target] > :first-child {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;

@@ -25,7 +25,7 @@ export function BookingDialog() {
   return (
     <div ref={dialogRef} id={bookingPopoverId} className={styles.dialog} popover="auto">
       <div className={styles.shell}>
-        <header className={styles.header}>
+        <div className={styles.header}>
           <div>
             <p className={styles.eyebrow}>Échange Qualifyr</p>
             <h2>Choisissez votre créneau.</h2>
@@ -38,8 +38,9 @@ export function BookingDialog() {
             popoverTargetAction="hide"
           >
             <Icon name="close" size={1.1} />
+            <span className="visually-hidden">Fermer</span>
           </button>
-        </header>
+        </div>
 
         <div className={styles.frameWrap}>
           <iframe
@@ -51,12 +52,12 @@ export function BookingDialog() {
           />
         </div>
 
-        <footer className={styles.footer}>
+        <div className={styles.footer}>
           <p>Si le calendrier ne s’affiche pas, ouvrez-le directement dans Google Calendar.</p>
           <ButtonAnchor href={agencyChannels.bookingUrl} target="_blank" variant="secondary">
             Ouvrir le calendrier
           </ButtonAnchor>
-        </footer>
+        </div>
       </div>
     </div>
   );

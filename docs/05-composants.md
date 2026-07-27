@@ -81,7 +81,7 @@ qu'hors production : **ni la route ni sa feuille de style n'existent dans le bui
 
 | Composant | Rôle |
 |---|---|
-| `RevealObserver` | Un seul observateur pour toute la page. Révèle les blocs marqués `data-reveal-target` : opacité et 8 px de translation, une seule fois. Le serveur rend le contenu **visible** ; le masquage initial dépend de `data-motion="on"`, posé avant le premier rendu uniquement si `prefers-reduced-motion` n'est pas demandé. Sans JavaScript, sans le script, ou en mouvement réduit : la page est entière. |
+| `RevealObserver` | Un seul observateur par route. Révèle le contenu des grandes `Section` au défilement : opacité et 12 px de translation, une seule fois. La première section reste immédiatement visible. Le serveur rend le contenu **visible** ; le masquage initial dépend de `data-motion="on"`, posé avant le premier rendu uniquement si `prefers-reduced-motion` n'est pas demandé. Sans JavaScript, sans le script, ou en mouvement réduit : la page est entière. |
 
 **Règle** : réservé aux **grandes compositions** — quatre cibles sur tout le site. Jamais sur
 le hero, jamais sur une carte, jamais en cascade.
@@ -513,6 +513,23 @@ Performance imposée par le composant : `width`/`height` déclarés (aucun déca
 page), AVIF puis WebP, `sizes` adapté au format, `loading="lazy"` sauf éventuellement sur le
 premier visuel, `priority` réservé au visuel principal. Le type `GalleryItem` rend `alt`
 obligatoire — une image sans texte alternatif fait échouer le typecheck.
+
+### `InteractiveSitePreview`
+
+Fenêtre de consultation d'une réalisation web réelle. Le composant charge directement le site
+public dans un `iframe` : le visiteur peut faire défiler les pages, suivre les liens et utiliser
+la navigation comme sur le site d'origine, sans écran d'activation.
+
+Le composant comporte toujours : le domaine, un lien d'ouverture dans un nouvel onglet, un
+titre accessible pour l'`iframe`, un chargement différé et une politique de référent stricte.
+Il ne doit jamais être imbriqué dans un lien ou un bouton. Sur mobile, sa hauteur est réduite
+afin que la personne retrouve facilement le contenu principal. Dans une composition vedette
+sur desktop, son conteneur doit lui donner toute la largeur disponible pour déclencher le
+rendu desktop du site intégré.
+
+Les zones d'en-tête et d'actions internes aux fenêtres de réservation ou de diagnostic
+restent des conteneurs visuels (`div`) : les éléments sémantiques `<header>` et `<footer>`
+sont réservés aux repères globaux de la page.
 
 ---
 
