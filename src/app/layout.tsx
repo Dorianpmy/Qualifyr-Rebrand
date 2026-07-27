@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   // Base de toutes les URL relatives : canonical, Open Graph, images.
   metadataBase: new URL(site.url),
   title: {
-    default: 'Agence pour nettoyage automobile et conciergeries — Qualifyr',
+    default: 'Qualifyr — Sites web, applications et SaaS sur mesure',
     template: `%s — ${brand.fullName}`,
   },
   description: brand.descriptor,
@@ -35,10 +35,17 @@ export const metadata: Metadata = {
     type: 'website',
     locale: site.locale,
     siteName: brand.fullName,
+    title: 'Qualifyr — Sites web, applications et SaaS sur mesure',
+    description: brand.descriptor,
     url: site.url,
     images: [openGraphImage],
   },
-  twitter: { card: 'summary_large_image', images: [openGraphImage.url] },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Qualifyr — Sites web, applications et SaaS sur mesure',
+    description: brand.descriptor,
+    images: [openGraphImage.url],
+  },
   robots: site.indexable
     ? { index: true, follow: true }
     : { index: false, follow: false, nocache: true },

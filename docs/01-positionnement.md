@@ -3,6 +3,33 @@
 Document de référence. Toute page, tout titre et tout composant du site doit pouvoir être
 justifié par ce document.
 
+## Décision stratégique du 27 juillet 2026
+
+Le positionnement public de l'accueil est élargi à la conception de sites web,
+d'applications et de SaaS sur mesure. Les deux verticales historiques restent présentées
+comme domaines d'expérience, sans limiter l'offre à ces seuls métiers.
+
+**Titre principal de l'accueil :**
+
+> Des sites et produits digitaux pensés pour être utilisés, compris et rentables.
+
+**Texte d'explication de l'accueil :**
+
+> Qualifyr conçoit des sites web, des applications et des SaaS modernes pour transformer
+> une idée ou un besoin métier en expérience digitale concrète.
+
+**Title SEO de l'accueil :**
+
+> Qualifyr — Sites web, applications et SaaS sur mesure
+
+**Meta description de l'accueil :**
+
+> Qualifyr conçoit des sites web, des applications et des SaaS modernes, pensés pour être
+> clairs, performants et adaptés aux besoins réels des entreprises.
+
+Cette décision remplace, pour l'accueil et ses métadonnées, les formulations historiques
+contradictoires conservées plus bas à titre de contexte de la V1.
+
 ---
 
 ## 1. Cible

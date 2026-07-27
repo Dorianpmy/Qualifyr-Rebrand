@@ -15,15 +15,15 @@ export const brand = {
   wordmarkSuffix: 'Agence',
 
   /** Promesse principale. Titre principal de l'accueil. */
-  promise: 'Faites grandir votre activité de services.',
+  promise: 'Des sites et produits digitaux pensés pour être utilisés, compris et rentables.',
 
   /** Texte d'explication principal, systématiquement associé à la promesse. */
   explanation:
-    'Qualifyr construit le parcours qui vous aide à être trouvé, compris, choisi, réservé puis recommandé, sans multiplier les outils ni compliquer votre quotidien.',
+    'Qualifyr conçoit des sites web, des applications et des SaaS modernes pour transformer une idée ou un besoin métier en expérience digitale concrète.',
 
   /** Formulation courte, pour le pied de page et les métadonnées. */
   descriptor:
-    'Agence spécialisée dans le développement des entreprises de nettoyage automobile mobile et des conciergeries.',
+    'Qualifyr conçoit des sites web, des applications et des SaaS modernes, pensés pour être clairs, performants et adaptés aux besoins réels des entreprises.',
 
   /** Nom provisoire de l'offre unique. */
   offerName: 'Le parcours Qualifyr',

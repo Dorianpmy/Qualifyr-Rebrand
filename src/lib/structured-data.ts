@@ -10,7 +10,7 @@ import type { Route } from '@/types';
  * `Organization`, `WebSite`, `BreadcrumbList`.
  *
  * Interdits, et pour de bonnes raisons :
- * — `SoftwareApplication` : Qualifyr ne vend pas de logiciel ;
+ * — `SoftwareApplication` : décrit un produit logiciel précis, pas une prestation d'agence ;
  * — `Product` / `Offer` : aucun tarif n'existe ;
  * — `AggregateRating`, `Review` : aucun avis n'a été recueilli ;
  * — `LocalBusiness` : aucune adresse n'est confirmée, et en inventer une pour
@@ -35,14 +35,13 @@ export function organization() {
     description: brand.descriptor,
     logo: absolute('/icon.svg?v=2'),
     image: absolute('/images/og/qualifyr-og.png'),
-    // Le métier servi, sans revendiquer d'implantation géographique.
+    // Compétences réellement présentées, sans revendiquer d'implantation géographique.
     knowsAbout: [
-      'Nettoyage automobile mobile',
-      'Detailing à domicile',
-      'Conciergerie',
-      'Organisation de services',
-      'Parcours client',
-      'Prise de rendez-vous',
+      'Sites web sur mesure',
+      'Applications web',
+      'SaaS',
+      'Expérience utilisateur',
+      'Produits digitaux',
     ],
   };
 

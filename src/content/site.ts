@@ -39,9 +39,9 @@ type PageMeta = {
  */
 export const pageMeta: Readonly<Record<Route, PageMeta>> = {
   '/': {
-    title: 'Qualifyr — Agence nettoyage auto & conciergeries',
+    title: 'Qualifyr — Sites web, applications et SaaS sur mesure',
     description:
-      'Qualifyr crée le site et le parcours client qui aident les entreprises de nettoyage automobile mobile et les conciergeries à obtenir plus de demandes.',
+      'Qualifyr conçoit des sites web, des applications et des SaaS modernes, pensés pour être clairs, performants et adaptés aux besoins réels des entreprises.',
     priority: 1,
   },
   '/methode': {

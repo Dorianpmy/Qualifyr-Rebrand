@@ -16,19 +16,19 @@ export const openGraphImage = {
   url: '/images/og/qualifyr-og.png',
   width: 1200,
   height: 630,
-  alt: 'Qualifyr Agence — Développez votre activité de services',
+  alt: 'Qualifyr — Sites web, applications et SaaS sur mesure',
   type: 'image/png',
 } as const;
 
 export function buildMetadata(route: Route): Metadata {
   const meta = pageMeta[route];
-  const canonical = route;
+  const canonical = new URL(route, site.url).toString();
 
   return {
     // Titre pris tel quel : la marque y figure déjà, le gabarit ne s'applique pas.
     title: { absolute: meta.title },
     description: meta.description,
-    alternates: { canonical },
+    alternates: { canonical: new URL(canonical) },
     openGraph: {
       type: 'website',
       locale: site.locale,

@@ -42,15 +42,16 @@ avec ces documents. Si un besoin nouveau apparaît, on met à jour le document c
 
 ---
 
-## 2. Deux verticales officielles
+## 2. Positionnement élargi validé
 
 Qualifyr Agence est spécialisée dans le développement de deux types d'entreprises :
 
 - le **nettoyage automobile mobile et le detailing à domicile** ;
 - les **conciergeries**.
 
-- La V1 du site s'adresse **uniquement** à ces deux verticales.
-- Aucune troisième verticale ne doit apparaître sans validation explicite.
+- Ces deux verticales restent des domaines d'expérience et des cas d'usage visibles.
+- Depuis la validation du 27 juillet 2026, l'accueil présente aussi l'offre élargie de
+  conception de sites web, d'applications et de SaaS sur mesure pour les entreprises.
 - Pas de page « Solutions » listant d'autres métiers.
 - Pas de mention « tous les artisans », « toutes les TPE », « tous secteurs ».
 - Le terme « conciergerie » reste large : voyage, séjour, organisation de services,
@@ -66,7 +67,6 @@ Qualifyr **n'est pas** :
 - une agence web généraliste ;
 - une agence IA ;
 - une agence no-code ;
-- un éditeur de SaaS ;
 - un CRM ;
 - un ERP ;
 - une agence publicitaire ;
@@ -84,11 +84,12 @@ entreprise :
 - d'obtenir des avis ;
 - de favoriser les nouvelles réservations.
 
-**Titre principal de l'accueil** : « Un site clair pour mieux développer votre activité. »
+**Titre principal de l'accueil** : « Des sites et produits digitaux pensés pour être
+utilisés, compris et rentables. »
 
-**Texte d'explication principal** : « Qualifyr construit le parcours qui vous aide à être
-trouvé, compris, choisi, réservé puis recommandé, sans multiplier les outils ni compliquer
-votre quotidien. »
+**Texte d'explication principal** : « Qualifyr conçoit des sites web, des applications et
+des SaaS modernes pour transformer une idée ou un besoin métier en expérience digitale
+concrète. »
 
 **Offre principale** : « Le parcours Qualifyr » (nom provisoire).
 
@@ -102,7 +103,7 @@ le développement de l'activité.
 
 Ne jamais utiliser comme argument, titre, sous-titre ou description d'offre :
 
-`IA` · `intelligence artificielle` · `SaaS` · `CRM` · `ERP` · `automatisation` · `no-code` ·
+`IA` · `intelligence artificielle` · `CRM` · `ERP` · `automatisation` · `no-code` ·
 `transformation digitale` · `présence en ligne` · `solution innovante` ·
 `technologie révolutionnaire` · `écosystème` · `tunnel de vente` · `growth hacking` ·
 `agence 360` · `acquisition omnicanale`
