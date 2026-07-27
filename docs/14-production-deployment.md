@@ -1,5 +1,28 @@
 # 14 — Préparation du déploiement production
 
+## Production effectuée le 27 juillet 2026
+
+À la demande explicite du propriétaire, la nouvelle V1 a remplacé l'ancien déploiement
+sur le projet Netlify existant `qualifyragence`. Aucune modification DNS n'a été
+nécessaire et l'ancien déploiement immuable reste disponible pour le rollback.
+
+- Domaine : <https://qualifyragence.com>
+- Hébergeur : Netlify
+- Déploiement final : `6a6766d918e9a4681b3bba6e`
+- Branche source : `feature/qualifyr-rebrand-v1`
+- Commit applicatif : `5b761e6`
+- HTTPS : actif
+- `www` : redirection permanente vers le domaine canonique
+- Indexation : active
+- `robots.txt`, sitemap et canonical : vérifiés en production
+- Pages principales : réponses `200`
+- Page inconnue : réponse `404`
+- Ancienne sauvegarde : <https://6a5df4ac65e28d556e8c951f--qualifyragence.netlify.app>
+
+Les formulaires restent volontairement indisponibles tant que les variables d'e-mail ne
+sont pas configurées. Les informations légales doivent encore être complétées. Aucun faux
+succès de formulaire n'est affiché.
+
 ## Mise à jour du 27 juillet 2026
 
 Une nouvelle demande de bascule a été reçue. L'audit a confirmé que le domaine sert toujours

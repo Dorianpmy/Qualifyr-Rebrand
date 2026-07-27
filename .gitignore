@@ -26,3 +26,6 @@ next-env.d.ts
 
 # déploiement
 .vercel
+
+# Local Netlify folder
+.netlify
