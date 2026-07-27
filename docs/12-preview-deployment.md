@@ -1,6 +1,19 @@
 # 12 — Déploiement preview
 
-## Déploiement validé
+## Dernier déploiement de validation
+
+- **Date** : 27 juillet 2026
+- **Branche** : `feature/qualifyr-rebrand-v1`
+- **Commit déployé** : `5b761e6`
+- **Cible Vercel** : `preview`
+- **URL immuable** : <https://qualifyr-rebrand-najdg04n9-dorianpmys-projects.vercel.app>
+- **Protection** : authentification Vercel active
+- **Remarque** : le projet Vercel n'étant plus relié au dépôt Git, les variables publiques n'ont pas pu être limitées à cette branche. Aucun secret d'e-mail n'a été ajouté.
+
+Ce déploiement contient le dernier code validé, dont la redirection certaine de
+`/diagnostic.html` vers `/diagnostic`. Il ne remplace pas le site public.
+
+## Déploiement validé précédemment
 
 - **Date** : 26 juillet 2026
 - **Branche** : `feature/qualifyr-rebrand-v1`
@@ -102,4 +115,3 @@ et est ignorée par Git.
 - Remplissage complet des deux formulaires au pouce.
 - Test des e-mails après configuration de Resend : réception interne, `reply_to`, accusé de réception et limitation de débit.
 - Aperçus de partage WhatsApp, LinkedIn et iMessage après validation définitive du logo et de l’image Open Graph.
-
