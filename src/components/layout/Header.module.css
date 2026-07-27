@@ -145,9 +145,9 @@
 }
 
 @media (max-width: 61.99rem) {
-  .inner { min-block-size: 4.5rem; }
+  .inner { min-block-size: 5.25rem; }
   .scrolled .inner { min-block-size: 4.25rem; }
-  .editorialBar { min-block-size: 4.75rem; }
+  .editorialBar { min-block-size: 6rem; }
   .editorialInner { grid-template-columns: 1fr 1fr; gap: var(--space-3); }
   .editorialInner p:nth-child(2) { display: none; }
 }

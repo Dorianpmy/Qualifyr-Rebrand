@@ -26,6 +26,10 @@ export const metadata: Metadata = {
   authors: [{ name: brand.fullName, url: site.url }],
   creator: brand.fullName,
   publisher: brand.fullName,
+  icons: {
+    icon: [{ url: '/icon.svg?v=2', type: 'image/svg+xml', sizes: 'any' }],
+    shortcut: '/icon.svg?v=2',
+  },
   formatDetection: { telephone: false, address: false, email: false },
   openGraph: {
     type: 'website',

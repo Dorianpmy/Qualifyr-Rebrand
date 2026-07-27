@@ -33,7 +33,7 @@ export function organization() {
     alternateName: brand.name,
     url: site.url,
     description: brand.descriptor,
-    logo: absolute('/images/og/qualifyr-og.png'),
+    logo: absolute('/icon.svg?v=2'),
     image: absolute('/images/og/qualifyr-og.png'),
     // Le métier servi, sans revendiquer d'implantation géographique.
     knowsAbout: [

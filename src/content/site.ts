@@ -39,9 +39,9 @@ type PageMeta = {
  */
 export const pageMeta: Readonly<Record<Route, PageMeta>> = {
   '/': {
-    title: 'Agence pour nettoyage automobile et conciergeries — Qualifyr',
+    title: 'Qualifyr — Agence nettoyage auto & conciergeries',
     description:
-      'Qualifyr conçoit des sites et parcours client pour les entreprises de nettoyage automobile mobile, le detailing à domicile et les conciergeries.',
+      'Qualifyr crée le site et le parcours client qui aident les entreprises de nettoyage automobile mobile et les conciergeries à obtenir plus de demandes.',
     priority: 1,
   },
   '/methode': {
@@ -83,7 +83,7 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
   '/mentions-legales': {
     title: 'Mentions légales — Qualifyr',
     description:
-      'Informations relatives à l’éditeur et à l’hébergeur du site de Qualifyr Agence.',
+      'Consultez les informations relatives à l’éditeur, à la publication et à l’hébergement du site officiel de Qualifyr Agence.',
     priority: 0.2,
   },
   '/politique-de-confidentialite': {

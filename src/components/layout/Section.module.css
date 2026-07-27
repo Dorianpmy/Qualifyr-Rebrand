@@ -37,3 +37,17 @@
 .inverse.ruled {
   border-block-start-color: var(--rule-inverse);
 }
+
+@media (max-width: 47.99rem) {
+  .section {
+    padding-block: 5.5rem;
+  }
+
+  .tight {
+    padding-block: 4.5rem;
+  }
+
+  .flush {
+    padding-block: 0;
+  }
+}
