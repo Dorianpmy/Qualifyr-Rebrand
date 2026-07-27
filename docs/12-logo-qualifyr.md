@@ -99,16 +99,17 @@ toucher.
 
 ### 4.2 La police du mot — **à confirmer**
 
-`QUALIFYR` est composé en **Newsreader**, la serif du site. Le fichier fourni semble utiliser
-une autre serif (un Trajan ou apparenté, à empattements plus marqués).
+`QUALIFYR` est composé en **Manrope 700**, conformément au rôle d'interface du wordmark.
+Le fichier fourni semble utiliser une autre serif (un Trajan ou apparenté, à empattements
+plus marqués).
 
 Deux possibilités :
 
-- **conserver Newsreader** — le logo et le site parlent la même langue typographique ;
+- **conserver Manrope** — le logo reste cohérent avec la navigation et l'interface ;
 - **fournir la police d'origine** — la marque est alors fidèle, mais introduit une troisième
   famille dans le projet (+ poids, + licence à vérifier).
 
-En l'absence de réponse, Newsreader est conservée : c'est le choix le plus léger et le plus
+En l'absence de réponse, Manrope est conservée : c'est le choix le plus léger et le plus
 cohérent.
 
 ### 4.3 Le lockup complet en vectoriel — **facultatif**

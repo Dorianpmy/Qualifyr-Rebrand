@@ -41,37 +41,43 @@ body {
 /* --- Titres ------------------------------------------------------------ */
 
 h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--family-display);
-  font-weight: var(--weight-regular);
-  line-height: var(--leading-snug);
-  letter-spacing: var(--tracking-snug);
+h2 {
+  font-family: var(--family-display) !important;
+  font-weight: var(--weight-semibold) !important;
   text-wrap: balance;
   hyphens: manual;
 }
 
 h1 {
-  font-size: var(--text-5xl);
-  line-height: var(--leading-tight);
-  letter-spacing: var(--tracking-tight);
+  font-size: var(--text-5xl) !important;
+  line-height: 0.95 !important;
+  letter-spacing: var(--tracking-tight) !important;
 }
 
 h2 {
-  font-size: var(--text-3xl);
+  font-size: var(--text-3xl) !important;
+  line-height: 1 !important;
+  letter-spacing: var(--tracking-snug) !important;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--family-text) !important;
+  font-weight: var(--weight-bold) !important;
+  text-wrap: balance;
+  hyphens: manual;
 }
 
 h3 {
   font-size: var(--text-2xl);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
 }
 
 h4 {
-  font-family: var(--family-text);
   font-size: var(--text-lg);
-  font-weight: var(--weight-medium);
   line-height: var(--leading-normal);
   letter-spacing: var(--tracking-normal);
 }

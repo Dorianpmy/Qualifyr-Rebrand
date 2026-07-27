@@ -88,8 +88,9 @@
 }
 
 .momentLabel {
-  font-family: var(--family-display);
+  font-family: var(--family-text);
   font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
   line-height: 1.25;
 }
 

@@ -1,0 +1,30 @@
+.dialog {
+  inline-size: min(68rem, calc(100% - 2rem));
+  max-block-size: calc(100dvh - 2rem);
+  inset: 0;
+  margin: auto;
+  padding: 0;
+  border: var(--border-width) solid var(--rule-hairline);
+  background: var(--surface-page);
+  color: var(--text-primary);
+  overflow: auto;
+}
+
+.dialog::backdrop { background: color-mix(in srgb, var(--color-ink) 78%, transparent); }
+.shell { display: grid; gap: var(--space-5); padding: clamp(1rem, 3vw, 2rem); }
+.header { display: flex; justify-content: space-between; align-items: start; gap: var(--space-5); }
+.header h2 { margin-block-start: var(--space-2); font-size: var(--text-2xl) !important; }
+.eyebrow { font-size: var(--text-3xs); font-weight: var(--weight-semibold); letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--text-secondary); }
+.close { display: grid; place-items: center; flex: 0 0 auto; inline-size: 2.875rem; block-size: 2.875rem; border: var(--border-width) solid var(--rule-strong); }
+.frameWrap { min-block-size: 34rem; overflow: hidden; border: var(--border-width) solid var(--rule-hairline); background: var(--surface-raised); }
+.frame { inline-size: 100%; block-size: 40rem; border: 0; background: var(--surface-raised); }
+.footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-4); }
+.footer p { max-inline-size: 54ch; font-size: var(--text-sm); color: var(--text-secondary); }
+
+@media (max-width: 47.99rem) {
+  .dialog { inline-size: 100%; max-block-size: 100dvh; block-size: 100dvh; border: 0; }
+  .shell { min-block-size: 100%; padding-block-end: calc(var(--space-5) + var(--safe-bottom)); }
+  .header h2 { font-size: var(--text-xl) !important; }
+  .frameWrap { min-block-size: 0; }
+  .frame { block-size: 68dvh; }
+}

@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { primaryNav } from '@/content/navigation';
-import { primaryCta } from '@/content/brand';
-import { ButtonLink } from '@/components/ui/Button';
+import { BookingDialog } from '@/components/agency/BookingDialog';
+import { WhatsAppDiagnostic, WhatsAppDiagnosticButton } from '@/components/agency/WhatsAppDiagnostic';
 import { Logo } from '@/components/ui/Logo';
 import { Container } from './Container';
 import { MobileNavigation } from './MobileNavigation';
@@ -31,6 +31,7 @@ export function Header() {
   }, []);
 
   return (
+    <>
     <header className={isScrolled ? `${styles.header} ${styles.scrolled}` : styles.header}>
       <Container>
         <div className={styles.inner}>
@@ -56,12 +57,28 @@ export function Header() {
 
           <div className={styles.actions}>
             <div className={styles.cta}>
-              <ButtonLink href={primaryCta.href}>{primaryCta.label}</ButtonLink>
+              <WhatsAppDiagnosticButton variant="secondary" className={styles.whatsappCta!}>
+                Discuter sur WhatsApp
+              </WhatsAppDiagnosticButton>
             </div>
             <MobileNavigation pathname={pathname} />
           </div>
         </div>
       </Container>
     </header>
+    {pathname === '/' ? (
+      <div className={styles.editorialBar} aria-label="Informations Qualifyr">
+        <Container>
+          <div className={styles.editorialInner}>
+            <p>01 — Qualifyr Agence</p>
+            <p>France · Belgique · Luxembourg · Suisse</p>
+            <p>Nettoyage auto · Conciergeries</p>
+          </div>
+        </Container>
+      </div>
+    ) : null}
+    <BookingDialog />
+    <WhatsAppDiagnostic />
+    </>
   );
 }

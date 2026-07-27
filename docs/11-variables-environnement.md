@@ -14,6 +14,9 @@ ignorés par Git.
 | `CONTACT_TO_EMAIL` | oui, pour l'envoi | non | Vercel + `.env.local` | Envoi impossible |
 | `CONTACT_FROM_EMAIL` | oui, pour l'envoi | non | Vercel + `.env.local` | Envoi impossible |
 | `NEXT_PUBLIC_SITE_URL` | non | **non — publique** | Vercel | Repli `https://qualifyragence.com` |
+| `NEXT_PUBLIC_SITE_INDEXABLE` | oui en production finale | **non — publique** | Vercel Production uniquement | Site et sitemap maintenus hors index |
+| `NEXT_PUBLIC_QUALIFYR_BOOKING_URL` | non | **non — publique** | Vercel + `.env.local` | Boutons vers Contact |
+| `NEXT_PUBLIC_QUALIFYR_WHATSAPP_NUMBER` | non | **non — publique** | Vercel + `.env.local` | Résumé affiché sans lien WhatsApp |
 
 **Aucune variable secrète ne porte le préfixe `NEXT_PUBLIC_`.** Ce préfixe expose la valeur
 au navigateur : il est réservé à l'URL du site, qui est publique par nature.
@@ -69,6 +72,27 @@ poser tant que le domaine final ne change pas.
 
 Sur un aperçu Vercel, la renseigner avec l'URL d'aperçu évite des `canonical` pointant vers
 un site qui n'existe pas encore.
+
+### `NEXT_PUBLIC_SITE_INDEXABLE` — publique
+
+Interrupteur de sécurité SEO. La valeur exacte `true` autorise l'indexation et remplit le
+sitemap. Toute autre valeur maintient `noindex`, bloque les robots et renvoie un sitemap vide.
+
+Cette variable ne doit être ajoutée qu'à l'environnement **Production**, après validation du
+domaine canonique, des informations légales et des formulaires. Elle ne doit jamais être
+configurée sur une preview.
+
+---
+
+### Canaux commerciaux publics
+
+`NEXT_PUBLIC_QUALIFYR_BOOKING_URL` accepte uniquement une URL HTTPS vers le calendrier
+commercial de Qualifyr. Pour Google Calendar, utiliser l’URL d’intégration de la page de
+rendez-vous terminée par `?gv=true`. `NEXT_PUBLIC_QUALIFYR_WHATSAPP_NUMBER` contient le numéro WhatsApp
+au format international, chiffres uniquement. Ces valeurs sont publiques par nature.
+
+Si elles manquent ou sont invalides, le site ne génère aucun lien cassé : la réservation
+renvoie vers Contact et le diagnostic conserve son résumé avec des alternatives.
 
 ---
 

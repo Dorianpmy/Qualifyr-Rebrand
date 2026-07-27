@@ -1,5 +1,17 @@
 # 14 — Préparation du déploiement production
 
+## Mise à jour du 27 juillet 2026
+
+Une nouvelle demande de bascule a été reçue. L'audit a confirmé que le domaine sert toujours
+l'ancien projet Netlify, que son déploiement immuable reste disponible et que la délégation
+DNS autoritaire est toujours Netlify/NS1. Aucun DNS ni domaine n'a été modifié.
+
+Le projet Vercel reste authentifié et lié à `dorianpmys-projects/qualifyr-rebrand`. Les
+variables de production nécessaires aux formulaires sont toujours absentes, et les
+informations légales restent incomplètes. La bascule demeure donc bloquée conformément à la
+checklist. La redirection certaine `/diagnostic.html` vers `/diagnostic` a été ajoutée au
+nouveau site ; aucune destination n'a été inventée pour les autres anciennes URL.
+
 ## Statut
 
 **Production non déployée — bascule bloquée.**

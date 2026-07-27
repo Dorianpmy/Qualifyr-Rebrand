@@ -4,7 +4,7 @@
   gap: var(--space-3);
   font-family: var(--family-text);
   font-size: var(--text-3xs);
-  font-weight: var(--weight-medium);
+  font-weight: var(--weight-semibold);
   line-height: 1.2;
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;

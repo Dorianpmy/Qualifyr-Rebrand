@@ -42,6 +42,12 @@ Pages système (non listées dans la navigation) :
 /design-system             Planche de référence — 404 en production
 ```
 
+Le site comprend également une relance de contact globale, affichée une seule fois par
+chargement après environ vingt secondes sans interaction. Elle ne crée aucune URL, ne promet
+aucune disponibilité et propose uniquement un échange WhatsApp ou la poursuite de la lecture.
+Elle doit rester fermable au clavier et ne jamais réapparaître après fermeture pendant la
+navigation courante.
+
 **Note d'URL** : la page de confidentialité vit à `/politique-de-confidentialite`, et non
 `/politique-confidentialite`. La forme longue est grammaticalement correcte et déjà câblée
 partout — navigation, pied de page, lien de consentement, sitemap, type `Route`. Le renommage
@@ -58,15 +64,14 @@ page « Tarifs », page « Ressources », page « FAQ » autonome, landing pages
 
 ## 2. Navigation
 
-**Navigation principale (5 entrées)**
+**Navigation principale**
 
-`Méthode` · `Réalisations` · `À propos` · `Diagnostic` · **`Parler de mon activité`** *(bouton)*
+`Notre offre` · `Réalisation` · `Laboratoire` · `À propos` · `Contact` ·
+**`Discuter sur WhatsApp`** *(bouton)*
 
 - Le logo renvoie à l'accueil ; « Accueil » n'apparaît pas dans le menu.
-- « Contact » vit dans le pied de page : l'entrée du parcours est le diagnostic, pas un
-  formulaire générique.
-- Un seul bouton d'action dans l'en-tête, toujours le même libellé.
-- Sur mobile : menu plein écran, fond ivoire, typographie large, bouton d'action en bas de panneau.
+- Les trois premières entrées rejoignent les sections correspondantes de l'accueil.
+- Sur mobile : menu plein écran et accès direct à WhatsApp.
 
 **Pied de page**
 
@@ -85,19 +90,20 @@ Objectif : comprendre en dix secondes pour qui, pourquoi et quoi faire ensuite.
 
 Sections, dans l'ordre :
 
-1. **Ouverture** — titre principal « Faites grandir votre activité de services. »,
-   texte d'explication principal, appel à l'action principal, appel secondaire « Voir la méthode ».
-2. **Deux verticales** — deux blocs sobres : nettoyage automobile mobile et conciergeries.
-3. **Le constat** — trois à quatre points du problème réel, formulés sans dramatisation.
-4. **Le parcours** — les six étapes (trouvé, compris, choisi, réservé, avis, nouvelles
-   réservations) présentées comme une séquence, avec une phrase par étape.
-5. **Ce que ça change concrètement** — trois blocs courts reliant une brique à un bénéfice
-   opérationnel, sans chiffre.
-6. **Réalisation** — un extrait de la page Réalisations (SW Carcleaning), sans résultat chiffré.
-7. **Appel à l'action de clôture** — bloc large, promesse rappelée, bouton « Demander un diagnostic ».
+1. **Ouverture** — proposition concrète, réservation, diagnostic WhatsApp et lien vers la preuve.
+2. **Réalisation** — SW Car Cleaning, sans résultat chiffré ni faux visuel.
+3. **Pour qui** — nettoyage automobile mobile, detailing et conciergeries.
+4. **Fonctionnement** — Comprendre, Construire, Faire évoluer.
+5. **Laboratoire créatif** — une réalisation réelle dominante et trois concepts clairement
+   signalés, sans faux client ni fausse vidéo.
+6. **Ce que Qualifyr construit** — parcours progressif placé après les preuves : métier,
+   frein principal, besoins, puis recommandation de l'offre avec prix de mise en place,
+   mensualité, engagement et coût total avant la prise de contact.
+7. **Clôture** — réservation et diagnostic WhatsApp.
 
-À ne pas mettre : bandeau de logos, compteur de clients, témoignage, comparatif de formules,
-capture d'écran d'interface.
+À ne pas mettre : FAQ complète, comparaison avant/après, longue liste de fonctionnalités,
+bandeau de logos, compteur de clients, témoignage, comparatif de formules ou faux écran.
+Le choix guidé n'est pas une grille d'abonnements : il compose l'offre unique selon le besoin.
 
 ---
 

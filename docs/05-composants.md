@@ -113,8 +113,8 @@ le hero, jamais sur une carte, jamais en cascade.
 
 ### `Logo` / `QualifyrMark`
 
-Verrouillage horizontal : le **Q** à gauche, `QUALIFYR` en capitales Newsreader et `AGENCE`
-en petites capitales Manrope à droite. La variante `stacked` restitue le lockup empilé de
+Verrouillage horizontal : le **Q** à gauche, `QUALIFYR` et `AGENCE` en capitales Manrope.
+La variante `stacked` restitue le lockup empilé de
 l'original, là où la hauteur n'est pas contrainte.
 
 Le tracé du Q vient du logo fourni par Dorian, **en aplat monochrome** : le dégradé doré
@@ -234,6 +234,23 @@ Panneau plein écran sous 992px.
 - Zones sûres iOS : `env(safe-area-inset-*)` sur les quatre côtés, `viewportFit: 'cover'`
   déclaré dans le `viewport` du layout racine.
 - Numérotation `01`–`04` en repère typographique, sans icône.
+
+---
+
+### `OfferConfigurator`
+
+Parcours progressif en cinq étapes, placé après les preuves de l'accueil. Il recueille
+l'activité, la situation et le frein principal avant de présenter une recommandation et le
+prix complet sur douze mois.
+
+- aucune réponse présélectionnée ;
+- une question principale par écran ;
+- cartes entièrement activables au clavier et au toucher ;
+- réponses conservées au retour arrière ;
+- recommandations déterministes et testées ;
+- options ajoutées ou retirées sans masquer leur prix ;
+- WhatsApp prérempli avec les réponses, le parcours, les options et l'estimation ;
+- calendrier secondaire et modification des réponses disponibles à l'étape finale.
 
 ---
 

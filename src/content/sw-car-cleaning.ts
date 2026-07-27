@@ -47,12 +47,17 @@ export const swCarCleaning = {
    */
   logo: null as CaseImage | null,
 
-  /**
-   * Galerie. Vide : aucune capture d'écran n'a été fournie, seulement le code
-   * source de la page. La section se masque d'elle-même.
-   * Voir docs/06, §2.2.
-   */
-  gallery: [] as readonly GalleryItem[],
+  /** Capture réelle du site public, réalisée le 27 juillet 2026. */
+  gallery: [
+    {
+      src: '/images/sw-car-cleaning/site-accueil.webp',
+      alt: 'Page d’accueil du site SW Carcleaning présentant le lavage automobile et le detailing à domicile à Fribourg.',
+      width: 1440,
+      height: 900,
+      device: 'desktop',
+      caption: 'Accueil du site SW Carcleaning.',
+    },
+  ] as const satisfies readonly GalleryItem[],
 } as const;
 
 export const casePage = {

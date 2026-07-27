@@ -1,0 +1,116 @@
+.dialog {
+  inline-size: min(34rem, calc(100% - 2rem));
+  max-block-size: calc(100dvh - 2rem);
+  inset: 0;
+  margin: auto;
+  padding: 0;
+  border: var(--border-width) solid var(--rule-strong);
+  background: var(--surface-page);
+  color: var(--text-primary);
+}
+
+.dialog::backdrop {
+  background: rgb(23 21 19 / 72%);
+}
+
+.frame {
+  position: relative;
+  display: grid;
+  gap: var(--space-5);
+  padding: clamp(1.5rem, 5vw, 3rem);
+}
+
+.frame::before {
+  content: '';
+  inline-size: 3rem;
+  block-size: 1px;
+  background: var(--rule-accent);
+}
+
+.marker {
+  position: absolute;
+  inset-block-start: var(--space-5);
+  inset-inline-end: var(--space-5);
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-secondary);
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-accent);
+}
+
+.frame h2 {
+  max-inline-size: 12ch;
+  margin: 0;
+  font-family: var(--family-display);
+  font-size: clamp(2.25rem, 7vw, 3.75rem);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-snug);
+}
+
+.copy {
+  max-inline-size: 45ch;
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding-block-start: var(--space-2);
+}
+
+.primary,
+.secondary {
+  display: inline-flex;
+  min-block-size: 2.875rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.125rem;
+  border: var(--border-width) solid var(--text-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+}
+
+.primary {
+  background: var(--surface-inverse);
+  color: var(--text-inverse);
+}
+
+.secondary {
+  background: transparent;
+  color: var(--text-primary);
+}
+
+@media (max-width: 30rem) {
+  .dialog {
+    inline-size: calc(100% - 1rem);
+  }
+
+  .actions,
+  .primary,
+  .secondary {
+    inline-size: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dialog[open] {
+    animation: prompt-in var(--duration-base) var(--ease-out);
+  }
+}
+
+@keyframes prompt-in {
+  from { opacity: 0; transform: translateY(0.5rem); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -18,6 +18,7 @@ const pageExtensions =
 
 const nextConfig: NextConfig = {
   pageExtensions,
+  allowedDevOrigins: ['127.0.0.1'],
   turbopack: {
     root: projectRoot,
   },
@@ -64,6 +65,15 @@ const nextConfig: NextConfig = {
             value: 'max-age=63072000; includeSubDomains; preload',
           },
         ],
+      },
+    ];
+  },
+  async redirects() {
+    return [
+      {
+        source: '/diagnostic.html',
+        destination: '/diagnostic',
+        permanent: true,
       },
     ];
   },

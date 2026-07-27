@@ -18,7 +18,10 @@
 }
 
 .level2 {
-  font-size: var(--text-3xl);
+  font-size: clamp(2rem, 1.65rem + 1.55vw, 3rem);
+  line-height: 1.02;
+  letter-spacing: var(--tracking-snug);
+  max-inline-size: 18ch;
 }
 
 .level3 {

@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { Container } from '@/components/layout/Container';
 import { Section } from '@/components/layout/Section';
 import { CallToAction } from '@/components/editorial/CallToAction';
 import { CaseGallery } from '@/components/editorial/CaseGallery';
-import { CasePlate } from '@/components/editorial/CasePlate';
 import { SectionHeading } from '@/components/editorial/SectionHeading';
 import { Eyebrow } from '@/components/ui/Eyebrow';
 import { JsonLd } from '@/components/seo/JsonLd';
@@ -37,9 +37,8 @@ export const metadata: Metadata = buildMetadata('/realisations/sw-car-cleaning')
  * description validée par Dorian ; chaque entrée porte, dans
  * `src/content/sw-car-cleaning.ts`, la portion de phrase qui la justifie.
  *
- * Assets : aucun n'existe à ce jour. Le panneau bascule automatiquement sur une
- * composition typographique, la galerie se masque, le lien externe disparaît.
- * Inventaire complet dans `docs/06-assets-sw-car-cleaning.md`.
+ * Une capture réelle du site public est affichée dans le hero et la galerie.
+ * Les photographies et le logo source restent inventoriés dans `docs/06-assets-sw-car-cleaning.md`.
  */
 export default function SwCarCleaningPage() {
   return (
@@ -76,14 +75,22 @@ export default function SwCarCleaningPage() {
               ) : null}
             </div>
 
-            <CasePlate
-              client={swCarCleaning.client}
-              meta={swCarCleaning.sector}
-              logo={swCarCleaning.logo}
-              tone="sand"
-              size="large"
-              priority
-            />
+            <a
+              className={styles.sitePreview}
+              href={swCarCleaning.externalUrl ?? undefined}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Voir le site SW Carcleaning"
+            >
+              <Image
+                src={swCarCleaning.gallery[0].src}
+                alt={swCarCleaning.gallery[0].alt}
+                width={swCarCleaning.gallery[0].width}
+                height={swCarCleaning.gallery[0].height}
+                priority
+                sizes="(min-width: 62rem) 55vw, 100vw"
+              />
+            </a>
           </div>
         </Container>
       </Section>
@@ -132,10 +139,10 @@ export default function SwCarCleaningPage() {
       </Section>
 
       {/* -------------------- Travail réalisé -------------------- */}
-      <Section surface="inverse">
+      <Section ruled spacing="tight">
         <Container>
-          <SectionHeading inverse eyebrow="Travail réalisé" title="Ce qui a été conçu." />
-          <div className={styles.deliverables} data-reveal-target>
+          <SectionHeading eyebrow="Travail réalisé" title="Ce qui a été conçu." />
+          <div className={styles.deliverables}>
             {deliverables.map((item) => (
               <article key={item.number} className={styles.deliverable}>
                 <span className={styles.deliverableNumber}>{item.number}</span>

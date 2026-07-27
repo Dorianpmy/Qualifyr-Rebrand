@@ -17,8 +17,9 @@
   gap: var(--space-5);
   min-block-size: 3.5rem;
   padding-block: var(--space-5);
-  font-family: var(--family-display);
+  font-family: var(--family-text);
   font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
   line-height: var(--leading-snug);
   cursor: pointer;
   list-style: none;

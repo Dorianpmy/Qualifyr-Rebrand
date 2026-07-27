@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { primaryNav } from '@/content/navigation';
-import { brand, primaryCta } from '@/content/brand';
-import { ButtonLink } from '@/components/ui/Button';
+import { brand } from '@/content/brand';
+import { WhatsAppDiagnosticButton } from '@/components/agency/WhatsAppDiagnostic';
 import { Icon } from '@/components/ui/Icon';
 import { Logo } from '@/components/ui/Logo';
 import styles from './MobileNavigation.module.css';
@@ -135,9 +135,9 @@ export function MobileNavigation({ pathname }: MobileNavigationProps) {
 
           <div className={styles.foot}>
             <p className={styles.footNote}>{brand.descriptor}</p>
-            <ButtonLink href={primaryCta.href} onClick={close} withArrow>
-              {primaryCta.label}
-            </ButtonLink>
+            <WhatsAppDiagnosticButton onClick={close}>
+              Discuter sur WhatsApp
+            </WhatsAppDiagnosticButton>
           </div>
         </div>
       ) : null}

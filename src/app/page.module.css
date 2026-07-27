@@ -1,161 +1,107 @@
-/* ============================ HERO ============================ */
-
-.hero {
+.heroSection {
+  position: relative;
+  isolation: isolate;
+  min-block-size: max(36rem, calc(100svh - 14rem));
   display: grid;
-  gap: var(--space-8);
-  padding-block: clamp(2rem, 1rem + 4vw, 4.5rem) 0;
+  align-items: center;
+  overflow: hidden;
+  background: var(--color-espresso) url('/images/qualifyr-hero-poster.webp') center center / cover no-repeat;
 }
-
-.heroText {
-  display: grid;
-  gap: var(--space-5);
-  align-content: start;
+.heroVideo, .heroOverlay { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; }
+.heroVideo { z-index: -2; object-fit: cover; object-position: center center; }
+.heroOverlay {
+  z-index: -1;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-espresso) 92%, transparent) 0%,
+    color-mix(in srgb, var(--color-espresso) 76%, transparent) 48%,
+    color-mix(in srgb, var(--color-ink) 48%, transparent) 100%
+  );
 }
-
-.heroTitle {
-  max-inline-size: 13ch;
-  margin: 0;
+.heroContent { position: relative; z-index: 1; inline-size: 100%; }
+.hero { display: grid; gap: var(--space-7); padding-block: clamp(2rem, 7vh, 5rem); }
+.heroText { display: grid; gap: var(--space-5); align-content: center; }
+.heroTitle { max-inline-size: 12ch; margin: 0; color: var(--text-inverse); }
+.heroBody { max-inline-size: 52ch; color: var(--color-sand); font-size: var(--text-lg); }
+.lead { max-inline-size: 52ch; color: var(--text-secondary); font-size: var(--text-lg); }
+.heroActions, .actions, .finalActions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.heroProofLink { margin-block-start: var(--space-1); }
+.heroPlate {
+  position: relative;
+  justify-self: end;
+  inline-size: min(100%, 27rem);
+  padding: clamp(1.25rem, 2.5vw, 2rem);
+  border: 1px solid color-mix(in srgb, var(--color-sand) 18%, transparent);
+  border-block-color: color-mix(in srgb, var(--color-sand) 34%, transparent);
+  border-radius: var(--radius-xs);
+  background: color-mix(in srgb, var(--color-ink) 88%, transparent);
+  color: var(--text-inverse);
 }
-
-.heroBody {
-  max-inline-size: 46ch;
-  font-size: var(--text-lg);
-  color: var(--text-secondary);
+.heroPlate::before {
+  content: '';
+  position: absolute;
+  inset-block-start: -1px;
+  inset-inline-start: clamp(1.25rem, 2.5vw, 2rem);
+  inline-size: 3.75rem;
+  block-size: 2px;
+  background: var(--color-brass);
 }
-
-.heroActions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-  margin-block-start: var(--space-2);
+.heroPlate::after {
+  content: '';
+  position: absolute;
+  inset-inline-end: 0.4rem;
+  inset-block-end: 0.4rem;
+  inline-size: 2rem;
+  block-size: 2rem;
+  border-inline-end: 1px solid color-mix(in srgb, var(--color-brass) 72%, transparent);
+  border-block-end: 1px solid color-mix(in srgb, var(--color-brass) 72%, transparent);
+  pointer-events: none;
 }
-
-/* Ligne éditoriale : une phrase rythmée par des points médians,
-   surtout pas une liste de fonctionnalités. */
-.heroLine {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--space-2) var(--space-3);
-  margin-block-start: var(--space-6);
-  padding-block-start: var(--space-5);
-  border-block-start: 1px solid var(--rule-hairline);
-  font-size: var(--text-xs);
-  letter-spacing: 0.04em;
-  color: var(--text-secondary);
-}
-
-.heroLineSeparator {
-  color: var(--color-brass-deep);
-}
-
-/* Le hero ne se scinde qu'à partir de 1280px.
-   Entre 992 et 1279, la colonne de droite devenait trop étroite pour la
-   composition : les libellés du parcours passaient tous à la ligne. Empilé,
-   le hero laisse à la planche toute la largeur — plus généreux, plus lisible. */
-@media (min-width: 80rem) {
-  .hero {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    gap: var(--space-9);
-    align-items: start;
-    padding-block-start: clamp(3rem, 1rem + 5vw, 5.5rem);
-  }
-
-  .heroComposition {
-    padding-block-start: var(--space-4);
-  }
-}
-
-/* ========================== SECTIONS ========================== */
-
-.blocks {
-  display: grid;
-  gap: var(--space-6);
-  margin-block-start: var(--section-gap-tight);
-}
+.heroPlate > p { margin-block-end: var(--space-4); font-size: var(--text-2xs); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+.heroPlate ol { display: grid; }
+.heroPlate li { display: flex; gap: var(--space-4); align-items: baseline; padding-block: var(--space-3); border-block-start: 1px solid var(--rule-inverse); font-family: var(--family-text); font-size: clamp(1.05rem, 1.5vw, 1.35rem); font-weight: var(--weight-bold); }
+.heroPlate span { font-family: var(--family-text); font-size: var(--text-3xs); color: var(--color-sand); }
+.threeGrid, .twoGrid, .methodGrid { display: grid; gap: var(--space-5); margin-block-start: var(--space-7); }
+.caseGrid { display: grid; gap: var(--space-7); align-items: center; }
+.casePreview { display: block; overflow: hidden; border: 1px solid var(--rule-hairline); background: var(--surface-raised); text-decoration: none; }
+.casePreview img { inline-size: 100%; block-size: auto; transition: transform var(--duration-base) var(--ease-out); }
+.casePreview:hover img { transform: scale(1.015); }
+.caseContent { display: grid; gap: var(--space-5); }
+.caseContent h2 { margin: 0; }
+.factList { display: grid; gap: var(--space-3); }
+.factList li { padding-block-start: var(--space-3); border-block-start: 1px solid var(--rule-hairline); }
+.finalCta { display: grid; gap: var(--space-7); align-items: end; }
+.finalCta h2 { max-inline-size: 17ch; margin-block: var(--space-3); }
+.finalCta p { max-inline-size: 55ch; color: var(--text-inverse-secondary); }
 
 @media (min-width: 48rem) {
-  .blocks {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--space-6);
-  }
-}
-
-.pillars {
-  display: grid;
-  gap: var(--space-7);
-  margin-block-start: var(--section-gap-tight);
-}
-
-@media (min-width: 48rem) {
-  .pillars {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--space-6);
-  }
-}
-
-.offerGrid {
-  display: grid;
-  gap: var(--space-6);
-  margin-block-start: var(--section-gap-tight);
-}
-
-@media (min-width: 48rem) {
-  .offerGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-6) var(--space-8);
-  }
+  .threeGrid, .methodGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .twoGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (min-width: 62rem) {
-  .offerGrid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .hero { grid-template-columns: minmax(0, 6fr) minmax(22rem, 5fr); align-items: center; gap: var(--space-9); }
+  .caseGrid { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: var(--space-9); }
+  .finalCta { grid-template-columns: minmax(0, 7fr) minmax(18rem, 4fr); }
+  .finalActions { justify-content: flex-end; }
+}
+
+@media (max-width: 47.99rem) {
+  .heroSection { min-block-size: max(35rem, calc(100svh - 9.25rem)); }
+  .heroVideo { object-position: 65% center; }
+  .heroOverlay {
+    background: color-mix(in srgb, var(--color-espresso) 84%, transparent);
   }
+  .hero { padding-block: var(--space-7); gap: var(--space-6); }
+  .heroText { gap: var(--space-4); }
+  .heroPlate { justify-self: stretch; inline-size: 100%; padding: var(--space-4); }
+  .heroPlate > p { margin-block-end: var(--space-3); }
+  .heroPlate li { padding-block: var(--space-2); }
+  .threeGrid, .twoGrid, .methodGrid { margin-block-start: var(--space-5); }
 }
 
-.spaced {
-  margin-block-start: var(--section-gap-tight);
+@media (prefers-reduced-motion: reduce) {
+  .heroVideo { display: none; }
+  .casePreview img { transition: none; }
+  .casePreview:hover img { transform: none; }
 }
-
-
-/* ---------- Méthode ---------- */
-
-.methodLayout {
-  display: grid;
-  gap: var(--space-8);
-}
-
-.methodSteps {
-  display: grid;
-}
-
-.methodAction {
-  margin-block-start: var(--space-6);
-}
-
-@media (min-width: 62rem) {
-  .methodLayout {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    gap: var(--space-9);
-    align-items: start;
-  }
-}
-
-/* ---------- FAQ ---------- */
-
-.faqLayout {
-  display: grid;
-  gap: var(--space-7);
-}
-
-@media (min-width: 62rem) {
-  .faqLayout {
-    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
-    gap: var(--space-9);
-    align-items: start;
-  }
-}
-
-/* ---------- Réalisation ---------- */
-
-

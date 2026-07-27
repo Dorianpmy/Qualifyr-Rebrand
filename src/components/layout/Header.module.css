@@ -2,24 +2,15 @@
   position: sticky;
   inset-block-start: 0;
   z-index: var(--z-header);
-  /* Voile ivoire à 88 % : le contenu défile derrière sans jamais nuire à la
-     lisibilité. Ni flou, ni saturation, ni glassmorphism — seulement de la
-     transparence. Repli opaque là où `color-mix` n'est pas pris en charge. */
-  background-color: var(--surface-page);
-  border-block-end: var(--border-width) solid transparent;
+  background-color: var(--surface-raised);
+  border-block-end: var(--border-width) solid var(--rule-hairline);
   transition: border-color var(--duration-base) var(--ease-out);
-}
-
-@supports (background-color: color-mix(in srgb, red 50%, transparent)) {
-  .header {
-    background-color: color-mix(in srgb, var(--color-ivory) 88%, transparent);
-  }
 }
 
 /* Le filet n'apparaît qu'une fois la page défilée : au repos, l'en-tête se
    fond dans la page. */
 .scrolled {
-  border-block-end-color: var(--rule-hairline);
+  border-block-end-color: var(--rule-strong);
 }
 
 .inner {
@@ -27,9 +18,12 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-5);
-  min-block-size: var(--header-height);
+  min-block-size: 5.5rem;
   padding-block-start: var(--safe-top);
+  transition: min-block-size var(--duration-base) var(--ease-out);
 }
+
+.scrolled .inner { min-block-size: 4.75rem; }
 
 .brand {
   text-decoration: none;
@@ -43,14 +37,15 @@
 .navList {
   display: flex;
   align-items: center;
-  gap: var(--space-6);
+  gap: clamp(1.25rem, 2vw, 2.25rem);
 }
 
 .navLink {
   position: relative;
   display: inline-block;
   padding-block: var(--space-2);
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
   text-decoration: none;
   color: var(--text-secondary);
   transition: color var(--duration-fast) var(--ease-out);
@@ -98,6 +93,50 @@
   display: none;
 }
 
+.whatsappCta {
+  min-block-size: 2.875rem;
+  padding-inline: 1.35rem;
+  border-color: var(--color-brass-deep) !important;
+  font-size: var(--text-3xs) !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase;
+}
+
+.whatsappCta:hover {
+  border-color: var(--color-brass-deep) !important;
+  background: var(--color-brass-deep) !important;
+  color: var(--text-inverse) !important;
+}
+
+.editorialBar {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  align-items: center;
+  min-block-size: clamp(7.5rem, 10vw, 9.25rem);
+  border-block-end: 1px solid var(--rule-hairline);
+  background: var(--surface-raised);
+}
+
+.editorialInner {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.editorialInner p {
+  color: var(--text-secondary);
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.editorialInner p:nth-child(2) { text-align: center; }
+.editorialInner p:last-child { text-align: end; }
+
 @media (min-width: 62rem) {
   .nav,
   .cta {
@@ -105,8 +144,21 @@
   }
 }
 
+@media (max-width: 61.99rem) {
+  .inner { min-block-size: 4.5rem; }
+  .scrolled .inner { min-block-size: 4.25rem; }
+  .editorialBar { min-block-size: 4.75rem; }
+  .editorialInner { grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+  .editorialInner p:nth-child(2) { display: none; }
+}
+
+@media (max-width: 29.99rem) {
+  .editorialInner { display: flex; flex-wrap: wrap; justify-content: space-between; }
+  .editorialInner p { font-size: 0.65rem; letter-spacing: 0.1em; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .navLink::after {
+  .header, .inner, .navLink::after {
     transition: none;
   }
 }

@@ -97,29 +97,24 @@ Seules ombres autorisées : `--shadow-subtle` (`0 1px 2px rgb(23 21 19 / 6%)`) e
 
 ## 2. Typographies
 
-Deux familles, **auto-hébergées** via `next/font/local` depuis `src/styles/fonts/`.
-Aucune requête vers Google Fonts ou un CDN tiers, ni au build ni à l'exécution.
+Deux familles intégrées via `next/font/google`. Next.js les télécharge au build puis les sert
+depuis le site : aucune requête vers Google Fonts n'est effectuée par le navigateur.
 
 ### 2.1 Titres — serif éditoriale
 
-**Newsreader Variable** (200→800), sous-ensemble latin, 58 Ko.
-Licence SIL Open Font License 1.1. Exposée via `--font-serif` puis `--family-display`.
-
-Serif de presse, à contraste modéré et à empattements francs : lisible en petite taille,
-éditoriale en grande. Écartée : Playfair Display (cliché), Cormorant (trop fine en corps de
-texte), Instrument Serif (graisse unique, moins souple).
+**Cormorant Garamond SemiBold**, poids 600, sous-ensemble latin. Exposée via
+`--font-display` puis `--family-display`. Réservée aux H1, H2 et grands titres éditoriaux.
 
 ### 2.2 Texte courant — sans-serif d'interface
 
-**Manrope Variable** (200→800), sous-ensemble latin, 24 Ko.
-Licence SIL Open Font License 1.1. Exposée via `--font-sans` puis `--family-text`.
+**Manrope**, poids 400, 500, 600 et 700, sous-ensemble latin. Exposée via `--font-body` puis
+`--family-text`.
 
 Géométrique mais chaude, terminaisons douces, excellente en petit corps. Écartée : Inter
 (trop marquée « produit numérique »), Poppins et Montserrat (trop génériques).
 
-**Total polices : 82 Ko** pour deux familles variables. Les deux sont préchargées.
-Une italique Newsreader (64 Ko) est disponible mais non embarquée : à ajouter uniquement si
-une composition l'exige réellement.
+Manrope porte les paragraphes, H3, navigation, boutons, formulaires, labels, pied de page,
+FAQ, cartes, badges et toute l'interface.
 
 ### 2.3 Échelle typographique
 
@@ -128,12 +123,12 @@ définis dans `src/styles/tokens.css`.
 
 | Rôle | Famille | Jeton | Interlignage | Interlettrage |
 |---|---|---|---|---|
-| Titre principal (h1) | Newsreader | `--text-5xl` (2.5 → 4.5rem) | 1.05 | −0.02em |
-| Titre de section (h2) | Newsreader | `--text-3xl` (1.875 → 2.75rem) | 1.18 | −0.01em |
-| Sous-titre (h3) | Newsreader | `--text-2xl` (1.5 → 1.875rem) | 1.18 | −0.01em |
-| Titre courant (h4) | Manrope | `--text-lg` | 1.4 | 0 |
+| Titre principal (h1) | Cormorant Garamond 600 | `--text-5xl` (2.875 → 5.25rem) | 0.95 | −0.04em |
+| Titre de section (h2) | Cormorant Garamond 600 | `--text-3xl` (2.125 → 3.75rem) | 1 | −0.03em |
+| Sous-titre (h3) | Manrope 700 | `--text-2xl` (1.5 → 1.875rem) | 1.2 | −0.02em |
+| Titre courant (h4) | Manrope 700 | `--text-lg` | 1.4 | 0 |
 | Chapô | Manrope | `--text-lg` | 1.65 | 0 |
-| Corps | Manrope | `--text-base` (1.0625 → 1.125rem) | 1.65 | 0 |
+| Corps | Manrope 400 | `--text-base` (1.125rem) | 1.7 | 0 |
 | Petit texte | Manrope | `--text-sm` | 1.55 | 0 |
 | Sur-titre | Manrope | `--text-3xs` | 1.2 | **0.12em, majuscules** |
 

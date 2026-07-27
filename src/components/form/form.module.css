@@ -48,8 +48,9 @@
 }
 
 .legendTitle {
-  font-family: var(--family-display);
+  font-family: var(--family-text);
   font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
   line-height: var(--leading-snug);
 }
 
@@ -252,8 +253,9 @@ select.control {
 }
 
 .summaryTitle {
-  font-family: var(--family-display);
+  font-family: var(--family-text);
   font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
   line-height: var(--leading-snug);
 }
 
@@ -290,8 +292,9 @@ select.control {
 }
 
 .successTitle {
-  font-family: var(--family-display);
+  font-family: var(--family-text);
   font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
   line-height: var(--leading-snug);
   letter-spacing: var(--tracking-snug);
 }

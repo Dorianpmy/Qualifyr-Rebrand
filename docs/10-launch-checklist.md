@@ -139,7 +139,7 @@ Dans cet ordre, sans en sauter.
 
 - [ ] Aperçu Vercel validé de bout en bout
 - [ ] Redirections 301 en place
-- [ ] `site.indexable` passé à **`true`** dans `src/content/site.ts`
+- [ ] `NEXT_PUBLIC_SITE_INDEXABLE=true` configuré en **Production uniquement**
 - [ ] Vérifier : `robots.txt` autorise, `sitemap.xml` contient les 9 URL,
       les pages sont en `index, follow`
 - [ ] `NEXT_PUBLIC_SITE_URL` posée sur le domaine final
@@ -189,6 +189,6 @@ Si un problème apparaît après la bascule :
 
 1. Repointer le domaine vers l'ancien déploiement — **c'est pourquoi il ne doit pas être
    supprimé**.
-2. Repasser `site.indexable` à `false` et redéployer, pour éviter l'indexation d'un site
+2. Retirer `NEXT_PUBLIC_SITE_INDEXABLE` et redéployer, pour éviter l'indexation d'un site
    cassé.
 3. Diagnostiquer sur l'aperçu, jamais en production.

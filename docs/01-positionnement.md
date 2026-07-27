@@ -26,6 +26,15 @@ Profil type :
 fixes, les concessions et les flottes. Le site ne s'adresse ni à tous les artisans, ni à
 toutes les entreprises de services.
 
+Le configurateur peut proposer « Autre demande de service » comme porte d'entrée de contact.
+Ce choix sert uniquement à recueillir et orienter une demande : il ne constitue ni une
+troisième verticale affichée, ni une promesse d'accompagnement.
+
+Le parcours de configuration comporte cinq temps maximum : activité, situation actuelle,
+frein principal, parcours recommandé et prix complet. Aucun choix n'est présélectionné. Les
+recommandations ne montrent que les briques justifiées par les réponses et les options
+librement ajoutées par le visiteur.
+
 **Distinction critique** : le site s'adresse aux entreprises de ces deux verticales, jamais
 à leurs clients finaux. Le terme « conciergerie » ne se limite pas à la gestion Airbnb : il
 peut couvrir voyage, séjour, organisation de services, installation, expatriation, gestion
@@ -56,18 +65,18 @@ rendez-vous est réellement dans l'agenda.
 
 ## 3. Promesse
 
-**Promesse principale, affichée en titre principal de l'accueil :**
+**Titre principal de l'accueil :**
 
-> Faites grandir votre activité de services.
+> Un site clair pour mieux développer votre activité.
 
-**Texte d'explication principal, systématiquement associé :**
+**Texte d'explication de l'accueil :**
 
-> Qualifyr construit le parcours qui vous aide à être trouvé, compris, choisi, réservé puis
-> recommandé, sans multiplier les outils ni compliquer votre quotidien.
+> Qualifyr conçoit votre site et structure le parcours qui aide vos prospects à comprendre
+> votre offre, vous contacter et passer à l’action.
 
 Règles d'usage :
 
-- La promesse ne se reformule pas d'une page à l'autre. Elle reste identique au mot près.
+- Le titre rend le livrable concret sans réduire Qualifyr à une agence web généraliste.
 - On ne promet aucun résultat chiffré, aucun délai, aucun volume.
 - On promet une **méthode** et un **parcours**, jamais une performance garantie.
 
@@ -86,8 +95,23 @@ Règles d'usage :
 
 **Nom provisoire** : *Le parcours Qualifyr*.
 
-Une seule offre. Pas de grille de formules, pas de comparatif à trois colonnes, pas de tarif
-affiché en V1.
+Une seule offre. Pas de comparatif artificiel à trois abonnements. L'accueil peut toutefois
+présenter un configurateur indicatif : le visiteur choisit sa situation et les briques utiles,
+puis obtient une estimation transparente avant l'échange. Le montant reste à confirmer après
+cadrage et ne constitue pas un devis.
+
+Modèle commercial arrêté pour ce configurateur :
+
+- mise en place du parcours : 490 € ;
+- accompagnement : 149 €/mois avec un engagement de 12 mois ;
+- acompte en ligne : +290 € ponctuels ;
+- parcours de réservation avancé : +290 € ponctuels ;
+- rédaction complète des contenus : +390 € ponctuels.
+
+Le socle comprend la clarification de l'offre, le site, une demande guidée, le calendrier,
+l'hébergement, la maintenance, les modifications courantes et l'amélioration progressive.
+Le coût total sur la période d'engagement et les options choisies sont affichés avant la
+prise de contact. Les conditions définitives restent celles du devis et du contrat.
 
 Briques mobilisées **selon le besoin** :
 
@@ -102,8 +126,8 @@ Briques mobilisées **selon le besoin** :
 
 Règles d'usage :
 
-- Ces briques sont des **moyens**. Elles ne remontent jamais au niveau du titre principal.
-- On ne présente jamais l'offre comme « un site internet ».
+- Ces briques sont des **moyens** au service du développement de l'activité.
+- On peut présenter le site comme la pièce centrale de l'offre, jamais comme un livrable isolé.
 - On ne liste pas les briques comme un catalogue de fonctionnalités. On les rattache toujours
   à l'étape du parcours qu'elles servent.
 - Toute brique non réellement livrable aujourd'hui est retirée du site, pas atténuée.
@@ -213,11 +237,12 @@ Exemples non conformes :
 
 ## 9. Appels à l'action
 
-**Appel à l'action principal, unique sur tout le site :**
+**Appel à l'action principal :**
 
-> Parler de mon activité
+> Réserver un échange
 
-Il pointe systématiquement vers la page `Diagnostic`.
+Il ouvre le calendrier commercial Qualifyr lorsqu'il est configuré. À défaut, il pointe vers
+la page Contact : aucun lien vide ou calendrier inventé.
 
 *Formulation arrêtée à la phase 2. Elle remplace « Demander un diagnostic », jugée trop
 administrative : on propose un échange, pas un formulaire. Le mot « diagnostic » reste le nom
@@ -225,7 +250,7 @@ de la page et de l'étape, mais il ne sert plus de libellé de bouton.*
 
 **Appels à l'action secondaires autorisés :**
 
-- « Voir la méthode » → page Méthode
+- « Faire le diagnostic WhatsApp » → parcours de qualification des prospects Qualifyr
 - « Voir les réalisations » → page Réalisations
 - « Nous écrire » → page Contact
 
@@ -257,7 +282,7 @@ Ce que la V1 **ne fait pas** :
 
 - pas de blog ni de magazine ;
 - pas de page « Solutions » listant des métiers ;
-- pas de grille tarifaire ;
+- pas de grille de trois formules ; une estimation configurée et honnête est autorisée ;
 - pas de témoignages tant qu'aucun n'a été recueilli et validé par écrit ;
 - pas de logos clients ;
 - pas d'espace client, de connexion ni de compte ;

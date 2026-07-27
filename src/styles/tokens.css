@@ -64,36 +64,37 @@
   --state-success-surface: #efeadc;
 
   /* ---------------------------------------------------------------------
-     Typographie — deux familles, chargées localement via next/font/local.
-     --font-serif et --font-sans sont injectées par src/lib/fonts.ts.
+     Typographie — deux familles intégrées via next/font/google.
+     --font-display et --font-body sont injectées par src/lib/fonts.ts.
      --------------------------------------------------------------------- */
-  --family-display: var(--font-serif), Georgia, 'Times New Roman', serif;
-  --family-text: var(--font-sans), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --family-display: var(--font-display), Georgia, 'Times New Roman', serif;
+  --family-text: var(--font-body), system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   /* Échelle fluide, base 16px, mobile 360px → desktop 1280px */
   --text-3xs: 0.75rem;
   --text-2xs: 0.8125rem;
   --text-xs: 0.875rem;
   --text-sm: 0.9375rem;
-  --text-base: clamp(1.0625rem, 0.98rem + 0.3vw, 1.125rem);
+  --text-base: 1.125rem;
   --text-lg: clamp(1.125rem, 1.04rem + 0.4vw, 1.3125rem);
   --text-xl: clamp(1.25rem, 1.1rem + 0.7vw, 1.5rem);
-  --text-2xl: clamp(1.5rem, 1.3rem + 0.9vw, 1.875rem);
-  --text-3xl: clamp(1.875rem, 1.5rem + 1.7vw, 2.75rem);
+  --text-2xl: clamp(1.5rem, 1.37rem + 0.65vw, 1.875rem);
+  --text-3xl: clamp(2.125rem, 1.55rem + 2.55vw, 3.75rem);
   --text-4xl: clamp(2.25rem, 1.6rem + 2.9vw, 3.5rem);
-  --text-5xl: clamp(2.25rem, 1.35rem + 4.5vw, 4.5rem);
+  --text-5xl: clamp(2.875rem, 1.95rem + 4.15vw, 5.25rem);
 
   --weight-regular: 400;
   --weight-medium: 500;
   --weight-semibold: 600;
+  --weight-bold: 700;
 
   --leading-tight: 1.05;
   --leading-snug: 1.18;
   --leading-normal: 1.4;
-  --leading-relaxed: 1.65;
+  --leading-relaxed: 1.7;
 
-  --tracking-tight: -0.02em;
-  --tracking-snug: -0.01em;
+  --tracking-tight: -0.04em;
+  --tracking-snug: -0.03em;
   --tracking-normal: 0;
   --tracking-wide: 0.12em;
 

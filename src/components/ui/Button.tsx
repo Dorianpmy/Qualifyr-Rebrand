@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from 'react';
 import type { LinkTarget } from '@/types';
 import { Icon } from './Icon';
 import styles from './Button.module.css';
 
-type Variant = 'primary' | 'secondary' | 'text' | 'inverse';
+type Variant = 'primary' | 'secondary' | 'text' | 'inverse' | 'inverseSecondary';
 
 type SharedProps = {
   children: ReactNode;
@@ -49,6 +49,29 @@ export function ButtonLink({
       <span className={styles.label}>{children}</span>
       {withArrow ? <Icon name="arrow-right" size={0.95} /> : null}
     </Link>
+  );
+}
+
+type ButtonAnchorProps = SharedProps &
+  Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'className' | 'children' | 'href'> & {
+    href: string;
+  };
+
+/** Action externe sûre, rendue comme un lien et jamais comme un bouton. */
+export function ButtonAnchor({
+  href,
+  children,
+  variant = 'primary',
+  className,
+  withArrow = false,
+  rel = 'noopener noreferrer',
+  ...rest
+}: ButtonAnchorProps) {
+  return (
+    <a href={href} className={classesFor(variant, className)} rel={rel} {...rest}>
+      <span className={styles.label}>{children}</span>
+      {withArrow ? <Icon name="arrow-right" size={0.95} /> : null}
+    </a>
   );
 }
 

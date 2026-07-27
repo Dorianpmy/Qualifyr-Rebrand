@@ -66,6 +66,7 @@ la conversion AVIF/WebP est faite au build par `next/image`.
 | Fichier | Contenu attendu | Dimensions minimales |
 |---|---|---|
 | `desktop-accueil.png` | Haut de la page d'accueil, écran large | 2560 × 1600 |
+| `site-accueil.webp` | Hero et galerie de l’étude de cas | 1440 × 900 — **fourni** |
 | `desktop-formules.png` | Section « Trouvez votre formule » | 2560 × 1600 |
 | `mobile-accueil.png` | Même page sur téléphone | 828 × 1792 |
 | `mobile-contact.png` | Parcours de prise de contact sur téléphone | 828 × 1792 |

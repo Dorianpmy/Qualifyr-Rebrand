@@ -1,44 +1,17 @@
-import localFont from 'next/font/local';
+import { Cormorant_Garamond, Manrope } from 'next/font/google';
 
-/**
- * Polices auto-hébergées, servies depuis le dépôt.
- * Aucune requête vers un domaine tiers : ni Google Fonts, ni CDN.
- *
- * Newsreader — serif éditoriale, variable (200→800), sous-ensemble latin.
- * Manrope    — sans-serif d'interface, variable (200→800), sous-ensemble latin.
- *
- * Les deux sont sous licence SIL Open Font License 1.1
- * (voir src/styles/fonts/*-LICENSE.txt).
- */
-
-export const serif = localFont({
-  src: [
-    {
-      path: '../styles/fonts/newsreader-latin-variable.woff2',
-      weight: '200 800',
-      style: 'normal',
-    },
-  ],
-  variable: '--font-serif',
+export const displayFont = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['600'],
+  variable: '--font-display',
   display: 'swap',
-  preload: true,
-  fallback: ['Georgia', 'Times New Roman', 'serif'],
-  adjustFontFallback: 'Times New Roman',
 });
 
-export const sans = localFont({
-  src: [
-    {
-      path: '../styles/fonts/manrope-latin-variable.woff2',
-      weight: '200 800',
-      style: 'normal',
-    },
-  ],
-  variable: '--font-sans',
+export const bodyFont = Manrope({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-body',
   display: 'swap',
-  preload: true,
-  fallback: ['system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
-  adjustFontFallback: 'Arial',
 });
 
-export const fontClassName = `${serif.variable} ${sans.variable}`;
+export const fontClassName = `${displayFont.variable} ${bodyFont.variable}`;

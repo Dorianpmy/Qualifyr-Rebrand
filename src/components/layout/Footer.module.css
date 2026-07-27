@@ -14,7 +14,7 @@
 .positioning {
   max-inline-size: 32ch;
   margin-block-start: var(--space-5);
-  font-family: var(--family-display);
+  font-family: var(--family-text);
   font-size: var(--text-lg);
   line-height: var(--leading-normal);
   color: var(--text-inverse);
@@ -29,10 +29,11 @@
 
 .columnTitle {
   margin-block-end: var(--space-4);
-  font-family: var(--family-text);
-  font-size: var(--text-3xs);
-  font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-wide);
+  font-family: var(--family-text) !important;
+  font-size: var(--text-3xs) !important;
+  font-weight: var(--weight-semibold) !important;
+  line-height: 1.2 !important;
+  letter-spacing: var(--tracking-wide) !important;
   text-transform: uppercase;
   color: var(--color-brass);
 }
@@ -47,6 +48,7 @@
   display: inline-block;
   min-block-size: 1.75rem;
   font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
   text-decoration: none;
   color: var(--text-inverse);
   transition: color var(--duration-fast) var(--ease-out);

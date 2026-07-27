@@ -51,8 +51,9 @@
 
 .label {
   margin-block-start: var(--space-2);
-  font-family: var(--family-display);
+  font-family: var(--family-text);
   font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
   line-height: 1.25;
   color: var(--text-primary);
 }

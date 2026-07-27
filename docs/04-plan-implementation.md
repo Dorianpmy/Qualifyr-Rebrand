@@ -231,7 +231,7 @@ Chaque phase se termine par `lint` → `typecheck` → `build` au vert, puis un 
 | **0** | Audit, branche, `AGENTS.md`, `docs/` | **fait** |
 | **1** | Fondation : Next.js + TypeScript strict + ESLint, jetons de design, polices locales, layout racine, Header, Footer, huit routes, 404, contenu centralisé | **fait** |
 | **2** | Design system : 23 composants globaux, en-tête, menu mobile accessible, pied de page, planche `/design-system` | **fait** |
-| **3** | Accueil complet : hero et composition éditoriale, constat, piliers, parcours client, offre, avant/après, réalisation, méthode, FAQ, clôture | **fait** |
+| **3** | Accueil resserré : hero, deux verticales, trois problèmes, frise du parcours, méthode, réalisation et clôture | **fait** |
 | **4** | Pages secondaires : Méthode, À propos, Diagnostic (interface du formulaire), Contact, Réalisations | **fait** |
 | **4** | Réalisations (SW Carcleaning) + À propos | **bloqué** — contenus et autorisations réels requis |
 | **5** | Étude de cas SW Carcleaning : cinq sections, composants de projet, inventaire des assets | **fait** |
@@ -256,7 +256,7 @@ touchés qu'à la phase 11, après validation explicite.
 | **Dérive vers l'esthétique « template »** | Perte de la différenciation | Revue systématique contre §11/§12 du document 03 avant chaque commit de section |
 | **Vocabulaire interdit qui s'infiltre** dans la microcopy ou les `alt` | Contredit le positionnement | Script de recherche des mots interdits intégré à `lint` |
 | **Couleurs interdites** introduites en dur dans un composant | Contredit la DA | Aucune bibliothèque de styles n'expose de palette par défaut ; seuls les jetons de `tokens.css` existent. Contrôle automatisé ajouté en phase 8. |
-| **Polices : licence et poids** | Performance et conformité | Résolu : Newsreader et Manrope sous SIL OFL 1.1, licences versionnées, sous-ensemble latin, 82 Ko au total |
+| **Polices : licence et poids** | Performance et conformité | Cormorant Garamond 600 + Manrope 400/500/600/700 via `next/font/google`, servies localement par Next.js |
 | **Formulaire : spam** | Bruit et coût | Champ piège + horodatage + limitation de débit ; CAPTCHA seulement si insuffisant |
 | **RGPD** | Risque juridique | Consentement explicite, finalité indiquée, durée de conservation définie, pas de traceur publicitaire |
 | **Confusion de cible en SEO** (attirer des automobilistes) | Trafic sans valeur | Requêtes strictement B2B, voir §8. Métadonnées centralisées dans `src/content/site.ts`, relues d'un seul endroit. |
@@ -478,11 +478,11 @@ automobile mobile**, jamais aux automobilistes. Aucune requête du type
 
 `public/images/og/qualifyr-og.png` — 1200 × 630. Composition **originale**, régénérée pour
 les deux verticales :
-fond ivoire, wordmark `qualifyr` en Newsreader avec son point de laiton, titre court en serif,
+fond ivoire, wordmark `qualifyr` en Manrope avec son point de laiton, titre court en Cormorant Garamond,
 panneau charbon portant la séquence du parcours, un reflet oblique très discret.
 
 Aucun mockup, aucune capture d'interface, aucune photographie sous licence. Générée à partir
-des polices du projet (SIL OFL 1.1) — le fichier est versionné, rien n'est produit au build.
+des polices du projet — le fichier est versionné, rien n'est produit au build.
 
 ### 8.3 Données structurées
 
@@ -603,7 +603,7 @@ Inventaire tenu à jour. **Aucun de ces manques n'est comblé par un contenu fab
 | Framework | Next.js 16, App Router — demandé par Dorian |
 | Gestionnaire de paquets | npm (aucun préexistant) |
 | Styles | CSS moderne + CSS Modules, sans Tailwind (§1.1) |
-| Polices | Newsreader + Manrope, variables, auto-hébergées, 82 Ko (§1.2) |
+| Polices | Cormorant Garamond 600 + Manrope 400/500/600/700 via `next/font/google` (§1.2) |
 | Logo | Wordmark typographique temporaire + favicon `icon.svg`, remplaçables en un fichier |
 | Indexation | `noindex` global tant que `site.indexable` vaut `false` |
 

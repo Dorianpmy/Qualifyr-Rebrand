@@ -8,6 +8,10 @@ Branche `feature/qualifyr-rebrand-v1`. **Rien n'est déployé, le domaine n'est 
 automobile mobile / detailing à domicile et conciergeries. Aucun faux projet de
 conciergerie n'a été ajouté ; SW Carcleaning reste la réalisation réelle publiée.
 
+**Accueil resserré — 27 juillet 2026 :** la page d'accueil passe à six grandes sections.
+La comparaison avant/après, les piliers redondants, la liste détaillée de l'offre et la FAQ
+complète sont retirés de l'accueil au profit des pages internes.
+
 ---
 
 ## 1. Les neuf phases de fabrication
@@ -118,7 +122,7 @@ de ce dépôt et ne sont donc pas reproduits ici comme s'ils étaient consultabl
 |---|---|---|
 | Framework | Next.js 16, App Router | Demandé. Astro recommandé initialement, écarté. |
 | Styles | CSS natif + CSS Modules | Tailwind exposerait des dizaines de couleurs interdites |
-| Polices | Newsreader + Manrope, auto-hébergées | 82 Ko, aucune requête tierce, aucun décalage |
+| Polices | Cormorant Garamond 600 + Manrope 400/500/600/700 | Intégrées via `next/font/google` et servies localement par Next.js |
 | Composants | Aucune bibliothèque préfabriquée | shadcn, MUI, Radix imposent une esthétique générique |
 | Animations | CSS + un `IntersectionObserver` | Aucune dépendance d'animation |
 | SDK Resend | Non installé, appel HTTP direct | L'API tient en un `POST`. Une dépendance en moins. |
@@ -181,3 +185,33 @@ téléphone, aucun réseau social, aucune date de projet.
 
 Vérifié à chaque phase par recherche automatisée sur le contenu réellement rendu.
 Dernier passage : **aucune occurrence**.
+
+---
+
+## 10. Simplification commerciale de l'accueil
+
+- Accueil recomposé en six sections courtes : ouverture, offre, SW Car Cleaning, deux
+  activités, fonctionnement en trois étapes et clôture.
+- Navigation réduite à quatre entrées et un bouton de réservation.
+- Ajout d'un diagnostic WhatsApp exclusivement destiné aux prospects Qualifyr. Le message
+  est construit à partir de six étapes et testé unitairement.
+- Ajout de `NEXT_PUBLIC_QUALIFYR_BOOKING_URL` et
+  `NEXT_PUBLIC_QUALIFYR_WHATSAPP_NUMBER`. Sans configuration, les replis restent explicites
+  et aucun lien incomplet n'est rendu.
+- SW Car Cleaning reste la seule réalisation affichée. Faute de captures et de logo
+  exploitables, la preuve conserve sa planche typographique et des objectifs réels.
+- Aucun déploiement, commit, push, changement de domaine ou DNS effectué dans cette phase.
+
+### Preuve SW Car Cleaning
+
+- Ajout d’une capture réelle du site public SW Carcleaning dans l’accueil et l’étude de cas.
+- Remplacement de la grande section charbon « Travail réalisé » par une section claire et
+  compacte ; les livrables restent visibles sans dépendre d’une animation au défilement.
+- Le bouton « Parler de mon projet » de l’accueil ouvre directement WhatsApp.
+
+### Canaux commerciaux intégrés
+
+- Les boutons « Réserver un échange » ouvrent le planning Google Calendar dans une fenêtre
+  native au site, avec fermeture clavier et lien externe de secours.
+- Ajout d’un bouton WhatsApp carré, fixe en bas à droite sur toutes les pages, en respectant
+  les zones sûres mobiles et la palette Qualifyr.

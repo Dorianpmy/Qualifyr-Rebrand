@@ -72,8 +72,9 @@ Qualifyr **n'est pas** :
 - une agence publicitaire ;
 - une entreprise servant tous les artisans.
 
-Qualifyr ne vend pas principalement « un site internet ». Qualifyr vend une **offre commune,
-adaptée aux contraintes de chacun des deux métiers** : un parcours complet permettant à une
+Qualifyr rend son offre concrète par la conception d'un **site clair**, sans se réduire à une
+agence web généraliste. Le site est la pièce centrale d'une **offre commune, adaptée aux
+contraintes de chacun des deux métiers** : un parcours complet permettant à une
 entreprise :
 
 - d'être trouvée ;
@@ -83,7 +84,7 @@ entreprise :
 - d'obtenir des avis ;
 - de favoriser les nouvelles réservations.
 
-**Promesse principale** : « Faites grandir votre activité de services. »
+**Titre principal de l'accueil** : « Un site clair pour mieux développer votre activité. »
 
 **Texte d'explication principal** : « Qualifyr construit le parcours qui vous aide à être
 trouvé, compris, choisi, réservé puis recommandé, sans multiplier les outils ni compliquer
@@ -92,7 +93,7 @@ votre quotidien. »
 **Offre principale** : « Le parcours Qualifyr » (nom provisoire).
 
 Les briques opérationnelles (conception du site, parcours de réservation, acompte, rappels,
-demande d'avis, fidélisation, optimisation) sont des **moyens**. La promesse affichée reste
+demande d'avis, fidélisation, optimisation) sont des **moyens**. La finalité affichée reste
 le développement de l'activité.
 
 ---

@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import { Header } from '@/components/layout/Header';
+import { FloatingWhatsApp } from '@/components/agency/FloatingWhatsApp';
+import { ConversionPrompt } from '@/components/agency/ConversionPrompt';
 import { Footer } from '@/components/layout/Footer';
 import { SkipLink } from '@/components/layout/SkipLink';
 import { RevealObserver, revealBootstrap } from '@/components/motion/RevealObserver';
@@ -16,7 +18,7 @@ export const metadata: Metadata = {
   // Base de toutes les URL relatives : canonical, Open Graph, images.
   metadataBase: new URL(site.url),
   title: {
-    default: 'Qualifyr — Développez votre activité de services',
+    default: 'Agence pour nettoyage automobile et conciergeries — Qualifyr',
     template: `%s — ${brand.fullName}`,
   },
   description: brand.descriptor,
@@ -49,7 +51,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang={site.lang} className={fontClassName} suppressHydrationWarning>
+    <html
+      lang={site.lang}
+      className={fontClassName}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
       <head>
         {/* Avant le premier rendu : autorise la révélation si, et seulement si,
             le visiteur n'a pas demandé de réduire les animations. */}
@@ -60,6 +67,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <JsonLd data={website()} />
         <SkipLink />
         <Header />
+        <FloatingWhatsApp />
+        <ConversionPrompt />
         <main id="contenu">{children}</main>
         <Footer />
         <RevealObserver />
