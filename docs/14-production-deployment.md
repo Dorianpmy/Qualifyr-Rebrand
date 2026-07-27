@@ -1,5 +1,34 @@
 # 14 — Préparation du déploiement production
 
+## Mise à jour production du 27 juillet 2026 — interface et conversion
+
+La version validée localement a été publiée sur le projet Netlify existant, sans modifier
+le domaine ni les DNS. Le déploiement précédent est conservé et permet un retour arrière
+immédiat.
+
+- Domaine : <https://qualifyragence.com>
+- Hébergeur : Netlify
+- Branche : `feature/qualifyr-rebrand-v1`
+- Commit applicatif : `d040691`
+- Déploiement : `6a67d37e3411bd06964f7b09`
+- URL immuable de cette version :
+  <https://6a67d37e3411bd06964f7b09--qualifyragence.netlify.app>
+- Version précédente conservée pour rollback :
+  <https://6a67af00169165bfde142661--qualifyragence.netlify.app>
+- Domaine canonique, HTTPS, `robots.txt`, sitemap et indexation : vérifiés en production.
+- Pages publiques principales : réponses `200`.
+- Route inconnue : réponse `404` correcte.
+- Audit SEO rendu : réussi.
+- Audit accessibilité rendu : réussi.
+- `npm run lint`, `npm run typecheck`, `npm run test` (53 tests) et `npm run build` :
+  réussis.
+
+Cette mise à jour publie notamment l'aperçu interactif de SW Car Cleaning, les ajustements
+du laboratoire, le tunnel d'estimation et les animations au défilement. Aucun DNS n'a été
+modifié et aucun ancien déploiement n'a été supprimé. La réception réelle des formulaires
+n'est pas déclarée comme validée tant que la configuration e-mail correspondante n'a pas
+été testée de bout en bout.
+
 ## Production effectuée le 27 juillet 2026
 
 À la demande explicite du propriétaire, la nouvelle V1 a remplacé l'ancien déploiement
