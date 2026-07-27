@@ -8,6 +8,7 @@ Structure courte et volontairement fermée. Huit pages, pas une de plus en V1.
 
 ```
 /                          Accueil
+/creation-site-web         Création de site web
 /methode                   Méthode
 /realisations              Réalisations
 /a-propos                  À propos
@@ -59,6 +60,8 @@ les pages `/diagnostic/merci` et `/contact/merci` envisagées à la phase 0 ne s
 
 **Interdit en V1** : page « Solutions », page « Services » listant des métiers, page « Blog »,
 page « Tarifs », page « Ressources », page « FAQ » autonome, landing pages sectorielles.
+La page `/creation-site-web` est une exception éditoriale validée : elle explique un service
+réel et renvoie vers une preuve réelle, sans ajouter de métier ni de promesse commerciale.
 
 ---
 
@@ -66,11 +69,12 @@ page « Tarifs », page « Ressources », page « FAQ » autonome, landing pages
 
 **Navigation principale**
 
-`Notre offre` · `Réalisation` · `Laboratoire` · `À propos` · `Contact` ·
+`Création de site` · `Notre offre` · `Réalisation` · `À propos` · `Contact` ·
 **`Discuter sur WhatsApp`** *(bouton)*
 
 - Le logo renvoie à l'accueil ; « Accueil » n'apparaît pas dans le menu.
-- Les trois premières entrées rejoignent les sections correspondantes de l'accueil.
+- « Création de site » rejoint la page éditoriale dédiée ; « Notre offre » et
+  « Réalisation » rejoignent les sections correspondantes de l'accueil.
 - Sur mobile : menu plein écran et accès direct à WhatsApp.
 
 **Pied de page**
@@ -120,6 +124,22 @@ Sections :
    Sans durée chiffrée tant qu'elle n'est pas un engagement réel.
 4. Ce que Qualifyr ne fait pas — section courte et assumée, forte en différenciation.
 5. Appel à l'action de clôture.
+
+---
+
+### `/creation-site-web` — Création de site web
+
+Objectif : répondre clairement aux entreprises qui cherchent un partenaire pour créer ou
+refaire leur site, et donner aux moteurs une page précise à comprendre et à citer.
+
+Structure :
+
+1. Ouverture — résultat attendu, sans promesse chiffrée.
+2. Ce que le site doit permettre de comprendre et de faire.
+3. Ce que Qualifyr conçoit réellement.
+4. Déroulé du projet, sans délai inventé.
+5. Preuve réelle — SW Carcleaning.
+6. Appel à l'action de clôture.
 
 ---
 

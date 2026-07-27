@@ -11,6 +11,7 @@ import type { NavItem } from '@/types';
 /** Libellés courts des routes, pour le fil d'Ariane. */
 export const routeLabels: Readonly<Record<string, string>> = {
   '/': 'Accueil',
+  '/creation-site-web': 'Création de site web',
   '/methode': 'Méthode',
   '/realisations': 'Réalisations',
   '/realisations/sw-car-cleaning': 'SW Carcleaning',
@@ -22,14 +23,15 @@ export const routeLabels: Readonly<Record<string, string>> = {
 };
 
 export const primaryNav: readonly NavItem[] = [
+  { label: 'Création de site', href: '/creation-site-web' },
   { label: 'Notre offre', href: '/#notre-offre' },
   { label: 'Réalisation', href: '/#sw-car-cleaning' },
-  { label: 'Laboratoire', href: '/#laboratoire' },
   { label: 'À propos', href: '/a-propos' },
   { label: 'Contact', href: '/contact' },
 ];
 
 export const footerNav: readonly NavItem[] = [
+  { label: 'Création de site web', href: '/creation-site-web' },
   { label: 'Notre offre', href: '/#notre-offre' },
   { label: 'Réalisation', href: '/#sw-car-cleaning' },
   { label: 'Pour qui', href: '/#pour-qui' },

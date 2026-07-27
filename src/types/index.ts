@@ -6,6 +6,7 @@ export type NavItem = {
 /** Toutes les routes du site. Toute page ajoutée doit être déclarée ici. */
 export type Route =
   | '/'
+  | '/creation-site-web'
   | '/methode'
   | '/realisations'
   | '/realisations/sw-car-cleaning'

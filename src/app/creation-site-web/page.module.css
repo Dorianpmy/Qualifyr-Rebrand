@@ -1,0 +1,95 @@
+.hero {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.intro {
+  max-inline-size: 58ch;
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+}
+
+.cards,
+.steps {
+  display: grid;
+  gap: var(--space-6);
+  margin-block-start: var(--space-7);
+}
+
+.included {
+  display: grid;
+  gap: var(--space-7);
+}
+
+.list {
+  display: grid;
+  align-content: start;
+}
+
+.list li {
+  display: grid;
+  grid-template-columns: var(--space-4) minmax(0, 1fr);
+  gap: var(--space-3);
+  padding-block: var(--space-3);
+  border-block-start: var(--border-width) solid var(--rule-hairline);
+}
+
+.list li::before {
+  content: '';
+  inline-size: var(--space-3);
+  block-size: 1px;
+  margin-block-start: 0.8em;
+  background-color: var(--color-brass);
+}
+
+.caseStudy {
+  display: grid;
+  border-block: var(--border-width) solid var(--rule-hairline);
+}
+
+.preview {
+  display: block;
+  overflow: hidden;
+  background: var(--surface-sunken);
+}
+
+.preview img {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+}
+
+.caseText {
+  display: grid;
+  gap: var(--space-5);
+  align-content: center;
+  padding-block: var(--space-7);
+}
+
+@media (min-width: 48rem) {
+  .cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 62rem) {
+  .hero,
+  .included,
+  .caseStudy {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: var(--space-9);
+    align-items: start;
+  }
+
+  .intro {
+    align-self: end;
+  }
+
+  .caseText {
+    padding-block: var(--space-8);
+  }
+}

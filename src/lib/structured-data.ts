@@ -6,8 +6,8 @@ import type { Route } from '@/types';
 /**
  * Données structurées (JSON-LD).
  *
- * **Uniquement des faits vérifiables.** Trois types sont autorisés :
- * `Organization`, `WebSite`, `BreadcrumbList`.
+ * **Uniquement des faits vérifiables.** Quatre types sont autorisés :
+ * `Organization`, `WebSite`, `BreadcrumbList`, `Service`.
  *
  * Interdits, et pour de bonnes raisons :
  * — `SoftwareApplication` : décrit un produit logiciel précis, pas une prestation d'agence ;
@@ -65,6 +65,21 @@ export function website() {
     inLanguage: site.locale,
     description: brand.descriptor,
     publisher: { '@id': `${site.url}/#organization` },
+  };
+}
+
+/** Service réellement présenté sur `/creation-site-web`, sans prix ni promesse. */
+export function webDesignService() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': `${site.url}/creation-site-web#service`,
+    name: 'Création de site web sur mesure',
+    serviceType: 'Conception et création de sites web',
+    url: absolute('/creation-site-web'),
+    description:
+      'Conception de sites web clairs, rapides et adaptés aux besoins réels des entreprises, de la structure des contenus jusqu’à la prise de contact.',
+    provider: { '@id': `${site.url}/#organization` },
   };
 }
 

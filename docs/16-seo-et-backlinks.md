@@ -16,6 +16,8 @@ et les conciergeries. Aucun mot-clé sans rapport avec ces deux verticales n'est
 - maillage interne depuis l'accueil, le menu et le pied de page ;
 - pages d'étude de cas accessibles et descriptives ;
 - aperçus et environnements non finaux maintenus hors index.
+- accès explicite de `OAI-SearchBot` aux pages publiques ;
+- page éditoriale `/creation-site-web` reliée à une réalisation réelle, sans contenu artificiel.
 
 ## Plan de liens externes honnête
 

@@ -1,7 +1,7 @@
 import { objectives, swCarCleaning } from './sw-car-cleaning';
 
 export const hero = {
-  eyebrow: 'Pour les entreprises de nettoyage automobile et les conciergeries',
+  eyebrow: 'Sites web, applications et produits digitaux',
   title: 'Des sites et produits digitaux pensés pour être utilisés, compris et rentables.',
   body: 'Qualifyr conçoit des sites web, des applications et des SaaS modernes pour transformer une idée ou un besoin métier en expérience digitale concrète.',
 } as const;

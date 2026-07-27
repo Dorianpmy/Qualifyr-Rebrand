@@ -30,6 +30,17 @@ comme domaines d'expérience, sans limiter l'offre à ces seuls métiers.
 Cette décision remplace, pour l'accueil et ses métadonnées, les formulations historiques
 contradictoires conservées plus bas à titre de contexte de la V1.
 
+## Décision de découvrabilité du 27 juillet 2026
+
+Une page éditoriale dédiée à la création de sites web est autorisée. Elle répond à une
+intention précise — comprendre ce que Qualifyr conçoit lorsqu'une entreprise cherche à créer
+ou refaire son site — sans transformer le site en catalogue de prestations. Elle doit rester
+honnête : aucun délai, résultat, volume de clients ou tarif non confirmé n'y est annoncé.
+
+Cette page s'appuie sur la réalisation réelle SW Carcleaning et renvoie vers le parcours de
+prise de contact existant. Les applications et produits logiciels ne reçoivent pas de page
+dédiée tant qu'aucune preuve de réalisation publique ne permet de les documenter correctement.
+
 ---
 
 ## 1. Cible

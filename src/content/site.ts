@@ -44,6 +44,12 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
       'Qualifyr conçoit des sites web, des applications et des SaaS modernes, pensés pour être clairs, performants et adaptés aux besoins réels des entreprises.',
     priority: 1,
   },
+  '/creation-site-web': {
+    title: 'Création de site web sur mesure — Qualifyr',
+    description:
+      'Qualifyr conçoit des sites web clairs, rapides et adaptés aux besoins réels des entreprises, de la structure des contenus jusqu’à la prise de contact.',
+    priority: 0.9,
+  },
   '/methode': {
     title: 'Parcours client pour entreprises de services — Qualifyr',
     description:

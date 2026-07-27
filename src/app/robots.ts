@@ -22,6 +22,12 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
+        // Robot utilisé par la recherche ChatGPT pour découvrir et citer les pages.
+        userAgent: 'OAI-SearchBot',
+        allow: '/',
+        disallow: ['/api/', '/design-system'],
+      },
+      {
         userAgent: '*',
         allow: '/',
         disallow: ['/api/', '/design-system'],
