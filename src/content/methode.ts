@@ -6,8 +6,8 @@
 
 export const methodPage = {
   eyebrow: 'Méthode',
-  title: 'Une méthode construite autour de votre activité.',
-  lead: 'Avant de concevoir quoi que ce soit, nous cherchons à comprendre comment vos clients vous découvrent, choisissent une formule, réservent et reviennent.',
+  title: 'Comprendre avant de construire.',
+  lead: 'Quatre temps pour clarifier votre activité, concevoir le bon parcours et l’améliorer sans compliquer votre quotidien.',
 } as const;
 
 export type MethodDetail = {
@@ -22,97 +22,63 @@ export const methodDetails: readonly MethodDetail[] = [
   {
     number: '01',
     title: 'Comprendre',
-    body: 'Nous partons de la réalité du terrain, pas d’un modèle générique. Cette étape sert autant à vous qu’à nous : elle met à plat ce qui fonctionne déjà et ce qui coince.',
+    body: 'Nous partons de votre réalité, de vos clients et des demandes que vous recevez déjà.',
     itemsLabel: 'Ce que nous regardons',
     items: [
-      'Votre activité et la façon dont vous la décrivez aujourd’hui',
-      'Votre zone d’intervention et vos déplacements',
-      'Vos prestations, de la plus courte à la plus complète',
-      'Les véhicules, séjours, destinations ou besoins concernés',
-      'Vos clients actuels et ceux que vous aimeriez avoir',
-      'Les demandes que vous recevez, et celles qui n’aboutissent pas',
-      'Votre organisation : agenda, matériel, disponibilités',
-      'Les outils que vous utilisez déjà',
+      'Votre activité et votre différence',
+      'Vos prestations et votre zone',
+      'Les demandes qui avancent ou se perdent',
     ],
   },
   {
     number: '02',
     title: 'Clarifier',
-    body: 'Un client qui hésite reporte. Nous rendons lisible ce que vous proposez, pour qui, où, à quelles conditions, et ce qui vous distingue concrètement.',
+    body: 'Nous rendons votre offre lisible pour qu’un client sache rapidement quoi choisir et pourquoi.',
     itemsLabel: 'Ce que nous mettons au clair',
     items: [
-      'Votre positionnement, en mots que vos clients emploient',
-      'Vos formules, leurs différences et ce qu’elles contiennent',
-      'Les bénéfices réels de chaque prestation',
-      'Vos tarifs, si vous souhaitez les afficher',
-      'Votre zone d’intervention et ses limites',
-      'Le déroulement d’une prestation, du début à la fin',
-      'Les éléments qui rassurent : matériel, durée, précautions',
+      'Le message et la hiérarchie de l’offre',
+      'Les formules et leurs différences',
+      'Les informations qui rassurent',
     ],
   },
   {
     number: '03',
     title: 'Construire',
-    body: 'Nous mettons en place le parcours, du premier contact jusqu’à la demande d’avis. Chaque élément existe parce qu’il sert une étape précise.',
+    body: 'Nous concevons les pages et les actions utiles, du premier regard jusqu’à la demande.',
     itemsLabel: 'Ce que nous mettons en place',
     items: [
-      'La structure du parcours, étape par étape',
-      'Les pages nécessaires — et seulement celles-là',
-      'La demande de prestation et la réservation',
-      'Les formulaires, pensés pour être remplis au pouce',
-      'Le calendrier connecté, si vous en utilisez un',
-      'Les confirmations envoyées au client',
-      'Les demandes d’avis, au bon moment',
-      'Le rendu mobile, traité en premier et non en dernier',
+      'Une structure courte et cohérente',
+      'Une demande ou réservation plus simple',
+      'Une expérience mobile soignée',
     ],
   },
   {
     number: '04',
     title: 'Améliorer',
-    body: 'Un parcours se règle dans le temps. Nous observons ce qui se passe réellement et corrigeons ce qui freine encore une réservation.',
+    body: 'Nous ajustons ce qui crée encore de l’hésitation ou vous fait perdre du temps.',
     itemsLabel: 'Ce que nous observons',
     items: [
-      'Vos retours après quelques semaines d’usage',
-      'Les demandes incomplètes et ce qui leur manque',
-      'Les points où les visiteurs s’arrêtent',
-      'Les informations que l’on vous redemande sans cesse',
-      'Les évolutions à faire progressivement, sans tout refaire',
+      'Les retours d’usage réels',
+      'Les demandes encore incomplètes',
+      'Les améliorations utiles, sans tout refaire',
     ],
   },
 ];
 
 export const toolsSection = {
-  eyebrow: 'Outils',
-  title: 'Nous utilisons les bons outils, pas forcément les plus nombreux.',
-  body: [
-    'Vous avez déjà une façon de travailler : un téléphone qui sonne, des messages, peut-être un agenda partagé ou une page sur laquelle on vous trouve. Notre premier réflexe n’est pas de remplacer tout cela.',
-    'Nous regardons ce que vous utilisez, ce qui vous convient et ce qui vous fait perdre du temps. Nous conservons ce qui fonctionne, nous relions ce qui doit l’être, et nous ne remplaçons que ce qui pose réellement problème.',
-    'Un outil de plus n’est utile que s’il retire une contrainte. Sinon, c’est une contrainte de plus.',
-  ],
-  principles: [
-    {
-      title: 'Partir de l’existant',
-      body: 'Si votre agenda vous convient, nous le gardons et nous branchons le parcours dessus.',
-    },
-    {
-      title: 'Limiter le nombre d’endroits',
-      body: 'Moins il y a d’outils à ouvrir dans une journée, moins il y a d’informations perdues.',
-    },
-    {
-      title: 'Vous laisser la main',
-      body: 'Vous devez pouvoir comprendre, utiliser et modifier ce que nous mettons en place.',
-    },
-  ],
+  eyebrow: 'Principe d’outillage',
+  title: 'Conserver ce qui fonctionne.',
+  body: 'Nous relions ou remplaçons uniquement ce qui crée une contrainte. Chaque outil ajouté doit retirer une difficulté et vous laisser la main.',
 } as const;
 
 export const verticalAdaptations = [
   {
     title: 'Nettoyage automobile mobile',
-    body: 'Le parcours peut qualifier le véhicule, la formule, l’adresse d’intervention, la zone couverte et le créneau avant de confirmer, rappeler puis demander un avis.',
+    body: 'Véhicule, formule, adresse, zone et créneau sont organisés avant la confirmation.',
   },
   {
     title: 'Conciergeries',
-    body: 'Le parcours peut présenter l’accompagnement, recueillir les informations sur le besoin, le séjour ou la destination, organiser l’échange et assurer un suivi clair.',
+    body: 'Besoin, séjour ou destination sont précisés avant l’échange et le suivi.',
   },
 ] as const;
 

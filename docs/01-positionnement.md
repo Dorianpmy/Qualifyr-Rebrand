@@ -3,6 +3,41 @@
 Document de référence. Toute page, tout titre et tout composant du site doit pouvoir être
 justifié par ce document.
 
+## Décision commerciale du 1 août 2026 — pages métier
+
+L'accueil conserve une promesse générale destinée aux entreprises de services. Deux pages
+commerciales courtes précisent ensuite l'accompagnement pour les deux verticales officielles :
+
+- `/nettoyage-automobile` pour le nettoyage automobile mobile et le detailing à domicile ;
+- `/conciergerie` pour les conciergeries.
+
+Ces pages ne créent ni nouvelle offre ni troisième métier. Elles traduisent la même méthode
+dans le vocabulaire, les problèmes et le parcours propres à chaque activité. La page
+automobile s'appuie uniquement sur la réalisation réelle SW Carcleaning, sans résultat
+inventé. La page conciergerie s'appuie sur une exploration clairement signalée comme
+**Concept Qualifyr**, jamais comme un projet client.
+
+Chaque page reste volontairement courte : une promesse métier, les freins principaux, ce qui
+est construit, le parcours adapté, une preuve ou exploration honnête, la méthode, cinq
+questions fréquentes et un appel à l'action. Aucun tarif, délai, chiffre de performance ou
+témoignage n'est ajouté.
+
+## Décision éditoriale du 31 juillet 2026 — Journal Qualifyr
+
+Qualifyr publie un journal destiné aux entreprises de services. Son rôle est d'expliquer,
+avec des exemples concrets, comment clarifier une offre, présenter un savoir-faire, concevoir
+un site utile et simplifier la prise de contact.
+
+Le journal ne devient ni un catalogue de métiers ni un prétexte à produire du texte en
+volume. Les articles sont rédigés et relus avant leur date de publication, puis peuvent être
+mis en ligne automatiquement selon un calendrier. Aucun article n'est généré au hasard,
+aucune fréquence n'est promise publiquement et aucune affirmation non vérifiée n'est ajoutée
+pour occuper une date.
+
+La rubrique porte le nom public **« Le journal »** et utilise la route `/blog`, explicite pour
+les visiteurs comme pour les moteurs. Elle reste accessible depuis la navigation et le pied
+de page, mais aucun article ni bloc éditorial du journal n'est affiché sur l'accueil.
+
 ## Décision stratégique finale du 27 juillet 2026
 
 Qualifyr accompagne les entreprises de services. La valeur vendue n'est ni un outil ni une
@@ -10,23 +45,23 @@ longue liste de prestations techniques : Qualifyr clarifie l'offre, construit l'
 conçoit le site et le parcours qui rendent une entreprise plus facile à comprendre, à choisir
 et à contacter.
 
-**Titre principal de l'accueil :**
+**Titre principal de l'accueil — formulation simplifiée le 31 juillet 2026 :**
 
-> Transformez votre savoir-faire en une marque que l’on choisit.
+> Donnez envie de vous choisir.
 
 **Texte d'explication de l'accueil :**
 
-> Qualifyr clarifie votre offre, construit votre identité et conçoit le site qui transforme
-> votre savoir-faire en une expérience crédible et facile à choisir.
+> Qualifyr clarifie votre offre, construit votre identité et conçoit un parcours simple
+> jusqu’à la prise de contact.
 
 **Title SEO de l'accueil :**
 
-> Qualifyr — Agence digitale pour les entreprises de services
+> Qualifyr | Création de sites web et applications sur mesure
 
 **Meta description de l'accueil :**
 
-> Qualifyr clarifie votre offre, construit votre identité et conçoit le site qui aide vos
-> prospects à vous comprendre, vous choisir et vous contacter.
+> Qualifyr conçoit des sites web, des applications et des solutions digitales sur mesure
+> pour aider les entreprises à gagner en clarté, en efficacité et en clients.
 
 Cette décision remplace les formulations historiques contradictoires conservées plus bas à
 titre de contexte de la V1.
@@ -167,11 +202,27 @@ cadrage et ne constitue pas un devis.
 
 Modèle commercial arrêté pour ce configurateur :
 
-- mise en place du parcours : 490 € ;
+- mise en place du parcours : 590 € ;
 - accompagnement : 149 €/mois avec un engagement de 12 mois ;
 - acompte en ligne : +290 € ponctuels ;
 - parcours de réservation avancé : +290 € ponctuels ;
 - rédaction complète des contenus : +390 € ponctuels.
+
+Pour une facturation en Suisse, le configurateur applique une grille régionale en CHF. Le
+montant euro est majoré de 16 %, puis arrondi à la dizaine supérieure : 590 € deviennent
+ainsi 690 CHF. La même règle s'applique à l'accompagnement et aux options. Le pays déduit de
+la requête détermine automatiquement la grille affichée : CHF en Suisse, EUR dans les autres
+cas. Aucun sélecteur de pays n'est présenté dans le parcours. Il ne s'agit ni d'un taux de
+change en temps réel ni d'un devis.
+
+Deux lectures du même prix sont proposées, sans modifier le total :
+
+- un paiement réparti sur 12 mois, affiché par défaut sous forme d'équivalent mensuel exact ;
+- la formule historique, avec la mise en place et les options ponctuelles au démarrage, puis
+  l'accompagnement mensuel pendant 12 mois.
+
+Le choix exprime une préférence de paiement à confirmer au devis ; il ne vaut ni acceptation
+de financement, ni engagement avant signature.
 
 Le socle comprend la clarification de l'offre, le site, une demande guidée, le calendrier,
 l'hébergement, la maintenance, les modifications courantes et l'amélioration progressive.
@@ -315,9 +366,16 @@ de la page et de l'étape, mais il ne sert plus de libellé de bouton.*
 
 **Appels à l'action secondaires autorisés :**
 
-- « Faire le diagnostic WhatsApp » → parcours de qualification des prospects Qualifyr
+- « Faire le diagnostic » → parcours unique `/diagnostic`
+- « Discuter sur WhatsApp » → conversation directe, sans questionnaire parallèle
 - « Voir les réalisations » → page Réalisations
 - « Nous écrire » → page Contact
+- « Estimer mon projet » → page d'estimation guidée
+
+Le pied de page peut utiliser la question de clôture « Prêt à transformer votre projet
+digital ? ». Cette exception est limitée au bloc d'appel à l'action global demandé le
+30 juillet 2026 ; elle ne modifie ni la promesse principale ni la règle générale sur les
+titres de section.
 
 Règles :
 

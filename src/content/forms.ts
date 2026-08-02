@@ -8,39 +8,90 @@
 export type SelectOption = {
   readonly value: string;
   readonly label: string;
+  readonly description?: string;
 };
 
 export const activityOptions = [
-  { value: 'nettoyage-auto-mobile', label: 'Nettoyage automobile mobile' },
-  { value: 'detailing-domicile', label: 'Detailing à domicile' },
-  { value: 'conciergerie', label: 'Conciergerie' },
-  { value: 'autre', label: 'Autre activité' },
+  {
+    value: 'nettoyage-detailing',
+    label: 'Nettoyage automobile / detailing',
+    description: 'Prestations mobiles, à domicile ou dans votre atelier.',
+  },
+  {
+    value: 'conciergerie',
+    label: 'Conciergerie',
+    description: 'Séjours, intendance, coordination ou accompagnement.',
+  },
+  {
+    value: 'autre-service',
+    label: 'Autre entreprise de services',
+    description: 'Présentez votre activité : nous vérifierons si le projet est cohérent.',
+  },
 ] as const satisfies readonly SelectOption[];
 
-export const seniorityOptions = [
+export const practiceModeOptions = [
+  { value: 'domicile', label: 'À domicile' },
+  { value: 'atelier', label: 'En atelier' },
+  { value: 'les-deux', label: 'Les deux' },
+] as const satisfies readonly SelectOption[];
+
+export const conciergeTypeOptions = [
+  { value: 'voyage-sejour', label: 'Voyage et séjour' },
+  { value: 'installation-expatriation', label: 'Installation / expatriation' },
+  { value: 'location-gestion', label: 'Location et gestion' },
+  { value: 'services-sur-mesure', label: 'Services sur mesure' },
+  { value: 'autre', label: 'Autre' },
+] as const satisfies readonly SelectOption[];
+
+export const siteSituationOptions = [
   { value: 'lancement', label: 'Je lance mon activité' },
-  { value: 'moins-1-an', label: 'Moins d’un an' },
-  { value: '1-3-ans', label: 'Entre 1 et 3 ans' },
-  { value: '3-5-ans', label: 'Entre 3 et 5 ans' },
-  { value: 'plus-5-ans', label: 'Plus de 5 ans' },
+  { value: 'sans-site', label: 'Je n’ai pas encore de site' },
+  { value: 'site-decale', label: 'Mon site ne reflète plus la qualité de mon activité' },
+  { value: 'peu-demandes', label: 'Mon site est correct, mais génère peu de demandes' },
+  { value: 'offre-floue', label: 'Mon offre manque encore de clarté' },
+  { value: 'conseil', label: 'Je souhaite être conseillé' },
 ] as const satisfies readonly SelectOption[];
 
-export const bookingMethodOptions = [
-  { value: 'telephone', label: 'Téléphone' },
+export const demandSourceOptions = [
+  { value: 'recommandation', label: 'Recommandation / bouche-à-oreille' },
+  { value: 'google', label: 'Google' },
+  { value: 'reseaux-sociaux', label: 'Instagram / TikTok' },
   { value: 'whatsapp', label: 'WhatsApp' },
-  { value: 'formulaire', label: 'Formulaire' },
-  { value: 'calendrier', label: 'Calendrier en ligne' },
-  { value: 'reseaux-sociaux', label: 'Réseaux sociaux' },
-  { value: 'autre', label: 'Autrement' },
+  { value: 'publicite', label: 'Publicité' },
+  { value: 'partenariats', label: 'Partenariats' },
+  { value: 'autre', label: 'Autre' },
 ] as const satisfies readonly SelectOption[];
 
 export const priorityOptions = [
-  { value: 'plus-de-demandes', label: 'Obtenir plus de demandes' },
-  { value: 'simplifier-reservations', label: 'Simplifier les réservations' },
-  { value: 'presenter-formules', label: 'Mieux présenter les formules' },
-  { value: 'plus-avis', label: 'Obtenir plus d’avis' },
-  { value: 'fideliser', label: 'Fidéliser mes clients' },
-  { value: 'lancer-activite', label: 'Lancer mon activité' },
+  { value: 'clarifier-offre', label: 'Clarifier mon offre' },
+  { value: 'image-premium', label: 'Donner une image plus premium' },
+  { value: 'nouveau-site', label: 'Créer un nouveau site' },
+  { value: 'refaire-site', label: 'Refaire mon site actuel' },
+  { value: 'demandes-serieuses', label: 'Obtenir davantage de demandes sérieuses' },
+  { value: 'prise-contact', label: 'Simplifier la prise de contact' },
+  { value: 'realisations', label: 'Mieux présenter mes réalisations' },
+  { value: 'nouvelle-activite', label: 'Lancer une nouvelle activité' },
+  { value: 'conseil', label: 'Être conseillé avant de décider' },
+] as const satisfies readonly SelectOption[];
+
+export const timingOptions = [
+  { value: 'des-que-possible', label: 'Dès que possible' },
+  { value: 'moins-un-mois', label: 'Dans moins d’un mois' },
+  { value: 'un-trois-mois', label: 'Dans un à trois mois' },
+  { value: 'plus-tard', label: 'Plus tard' },
+  { value: 'inconnu', label: 'Je ne sais pas encore' },
+] as const satisfies readonly SelectOption[];
+
+export const budgetStatusOptions = [
+  { value: 'oui', label: 'Oui' },
+  { value: 'pas-encore', label: 'Pas encore' },
+  { value: 'conseil', label: 'Je souhaite être conseillé' },
+] as const satisfies readonly SelectOption[];
+
+export const preferredContactOptions = [
+  { value: 'whatsapp', label: 'WhatsApp' },
+  { value: 'appel', label: 'Appel' },
+  { value: 'email', label: 'E-mail' },
 ] as const satisfies readonly SelectOption[];
 
 /**
@@ -48,9 +99,9 @@ export const priorityOptions = [
  * confidentialité. La case n'est jamais pré-cochée.
  */
 export const consent = {
-  before: 'J’accepte que ces informations soient utilisées pour préparer notre échange, conformément à la ',
-  linkLabel: 'politique de confidentialité',
-  after: '. Elles ne sont ni revendues, ni utilisées à d’autres fins, et ne sont pas conservées dans une base de données.',
+  before: 'J’accepte que Qualifyr utilise ces informations uniquement afin de répondre à ma demande. ',
+  linkLabel: 'Politique de confidentialité',
+  after: '',
 } as const;
 
 export const formLabels = {

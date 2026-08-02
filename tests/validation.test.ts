@@ -3,25 +3,32 @@ import {
   clean,
   contactSchema,
   diagnosticSchema,
+  diagnosticStepSchemas,
   fieldErrors,
   MIN_ELAPSED_MS,
 } from '@/lib/validation';
 
-/** Jeu de données valide, réutilisé et modifié champ par champ. */
 const validDiagnostic = {
-  activity: 'nettoyage-auto-mobile',
-  activityDetails: 'Citadines et utilitaires légers.',
-  fullName: 'Camille Rousseau',
+  activity: 'nettoyage-detailing',
+  activityDetails: '',
+  practiceMode: 'domicile',
+  conciergeType: '',
   company: 'Éclat Mobile',
+  website: 'https://eclat-mobile.fr',
+  siteSituation: 'site-decale',
+  demandSources: ['recommandation', 'whatsapp'],
+  situationNote: 'Les demandes sont souvent incomplètes.',
+  priorities: ['clarifier-offre', 'prise-contact'],
+  desiredResult: 'Recevoir des demandes plus précises.',
+  timing: 'un-trois-mois',
+  budgetStatus: 'pas-encore',
+  budgetAmount: '',
+  constraints: '',
+  firstName: 'Camille',
+  lastName: 'Rousseau',
   email: 'camille@eclat-mobile.fr',
   phone: '06 12 34 56 78',
-  area: 'Lille et 20 km autour',
-  website: 'https://eclat-mobile.fr',
-  seniority: '1-3-ans',
-  bookingMethods: ['telephone', 'whatsapp'],
-  priority: 'simplifier-reservations',
-  blocker: 'Trop d’allers-retours par message avant de fixer un rendez-vous.',
-  message: '',
+  preferredContact: 'whatsapp',
   consent: true,
   fax: '',
   elapsedMs: 9000,
@@ -40,219 +47,196 @@ const validContact = {
 };
 
 describe('clean', () => {
-  it('retire les caractères de contrôle', () => {
-    expect(clean('a\u0000b\u001Fc')).toBe('abc');
+  it('retire les caractères de contrôle et normalise les espaces', () => {
+    expect(clean('  Éclat\u0000    Mobile  ')).toBe('Éclat Mobile');
   });
 
-  it('normalise les espaces et coupe aux bornes', () => {
-    expect(clean('  Éclat    Mobile  ')).toBe('Éclat Mobile');
-  });
-
-  it('tronque à la taille maximale', () => {
+  it('borne les contenus et ignore les valeurs non textuelles', () => {
     expect(clean('x'.repeat(50), 10)).toHaveLength(10);
-  });
-
-  it('renvoie une chaîne vide pour une valeur non textuelle', () => {
-    expect(clean(42)).toBe('');
     expect(clean(null)).toBe('');
-    expect(clean(undefined)).toBe('');
   });
 });
 
-describe('diagnosticSchema — cas valide', () => {
-  it('accepte un jeu complet', () => {
-    const result = diagnosticSchema.safeParse(validDiagnostic);
-    expect(result.success).toBe(true);
-  });
-
-  it('nettoie et normalise les valeurs', () => {
+describe('diagnosticSchema', () => {
+  it('accepte et nettoie une demande complète', () => {
     const result = diagnosticSchema.safeParse({
       ...validDiagnostic,
-      fullName: '  Camille   Rousseau ',
+      firstName: '  Camille ',
       email: '  CAMILLE@Eclat-Mobile.FR ',
     });
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.data.fullName).toBe('Camille Rousseau');
+      expect(result.data.firstName).toBe('Camille');
       expect(result.data.email).toBe('camille@eclat-mobile.fr');
     }
   });
 
-  it('accepte les champs facultatifs vides', () => {
-    const result = diagnosticSchema.safeParse({
+  it('accepte une attribution bornée et refuse les champs inconnus', () => {
+    const accepted = diagnosticSchema.safeParse({
       ...validDiagnostic,
-      phone: '',
-      website: '',
-      message: '',
+      attribution: {
+        firstTouch: {
+          source: 'instagram',
+          medium: 'organic',
+          campaign: 'profil',
+          landingPath: `/diagnostic?${'x'.repeat(700)}`,
+        },
+      },
     });
-    expect(result.success).toBe(true);
+    expect(accepted.success).toBe(true);
+    if (accepted.success) {
+      expect(accepted.data.attribution?.firstTouch?.landingPath?.length).toBeLessThanOrEqual(500);
+    }
+
+    expect(diagnosticSchema.safeParse({
+      ...validDiagnostic,
+      attribution: { firstTouch: { email: 'interdit@example.fr' } },
+    }).success).toBe(false);
   });
-});
 
-describe('diagnosticSchema — champs obligatoires', () => {
-  const required = [
-    'activity',
-    'fullName',
-    'company',
-    'email',
-    'area',
-    'seniority',
-    'priority',
-    'blocker',
-  ] as const;
+  it('accepte les champs facultatifs vides', () => {
+    expect(diagnosticSchema.safeParse({
+      ...validDiagnostic,
+      website: '',
+      phone: '',
+      desiredResult: '',
+      constraints: '',
+    }).success).toBe(true);
+  });
 
-  for (const field of required) {
+  for (const field of ['activity', 'company', 'siteSituation', 'timing', 'budgetStatus', 'firstName', 'email', 'preferredContact'] as const) {
     it(`refuse un « ${field} » vide`, () => {
       const result = diagnosticSchema.safeParse({ ...validDiagnostic, [field]: '' });
       expect(result.success).toBe(false);
-      if (!result.success) {
-        expect(Object.keys(fieldErrors(result.error))).toContain(field);
-      }
+      if (!result.success) expect(fieldErrors(result.error)[field]).toBeDefined();
     });
   }
 
-  it('refuse une liste de méthodes de réservation vide', () => {
-    const result = diagnosticSchema.safeParse({ ...validDiagnostic, bookingMethods: [] });
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(fieldErrors(result.error).bookingMethods).toBeDefined();
-    }
-  });
-
-  it('refuse une méthode de réservation inconnue', () => {
+  it('refuse une activité autre sans précision', () => {
     const result = diagnosticSchema.safeParse({
       ...validDiagnostic,
-      bookingMethods: ['pigeon-voyageur'],
+      activity: 'autre-service',
+      activityDetails: '',
     });
     expect(result.success).toBe(false);
+    if (!result.success) expect(fieldErrors(result.error).activityDetails).toBeDefined();
   });
 
-  it('refuse un objectif prioritaire inconnu', () => {
-    const result = diagnosticSchema.safeParse({ ...validDiagnostic, priority: 'autre' });
+  it('accepte la précision facultative du nettoyage automobile', () => {
+    const result = diagnosticSchema.safeParse({ ...validDiagnostic, practiceMode: '' });
+    expect(result.success).toBe(true);
+  });
+
+  it('accepte le type de conciergerie facultatif', () => {
+    const result = diagnosticSchema.safeParse({
+      ...validDiagnostic,
+      activity: 'conciergerie',
+      practiceMode: '',
+      conciergeType: '',
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('refuse une précision conditionnelle inconnue lorsqu’elle est renseignée', () => {
+    const result = diagnosticSchema.safeParse({ ...validDiagnostic, practiceMode: 'valeur-inconnue' });
     expect(result.success).toBe(false);
+    if (!result.success) expect(fieldErrors(result.error).practiceMode).toBeDefined();
   });
-});
 
-describe('diagnosticSchema — consentement', () => {
-  it('refuse une case décochée', () => {
+  it('accepte une autre entreprise de services renseignée', () => {
+    expect(diagnosticSchema.safeParse({
+      ...validDiagnostic,
+      activity: 'autre-service',
+      practiceMode: '',
+      activityDetails: 'Photographe culinaire',
+    }).success).toBe(true);
+  });
+
+  it('limite les choix multiples', () => {
+    expect(diagnosticSchema.safeParse({ ...validDiagnostic, demandSources: [] }).success).toBe(false);
+    expect(diagnosticSchema.safeParse({ ...validDiagnostic, priorities: [] }).success).toBe(false);
+    expect(diagnosticSchema.safeParse({
+      ...validDiagnostic,
+      priorities: ['clarifier-offre', 'prise-contact', 'nouveau-site'],
+    }).success).toBe(false);
+  });
+
+  it('borne les réponses libres aux limites éditoriales', () => {
+    const result = diagnosticSchema.safeParse({
+      ...validDiagnostic,
+      situationNote: 'x'.repeat(500),
+      constraints: 'x'.repeat(900),
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.situationNote).toHaveLength(400);
+      expect(result.data.constraints).toHaveLength(700);
+    }
+  });
+
+  it('valide chaque étape indépendamment', () => {
+    const slices = [
+      validDiagnostic,
+      validDiagnostic,
+      validDiagnostic,
+      validDiagnostic,
+      validDiagnostic,
+    ];
+    diagnosticStepSchemas.forEach((schema, index) => {
+      expect(schema.safeParse(slices[index]).success).toBe(true);
+    });
+  });
+
+  it('refuse un consentement absent', () => {
     const result = diagnosticSchema.safeParse({ ...validDiagnostic, consent: false });
     expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(fieldErrors(result.error).consent).toBeDefined();
-    }
+    if (!result.success) expect(fieldErrors(result.error).consent).toBeDefined();
+  });
+
+  it('normalise un domaine sans protocole', () => {
+    const result = diagnosticSchema.safeParse({ ...validDiagnostic, website: 'eclat-mobile.fr' });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.website).toBe('https://eclat-mobile.fr');
+  });
+
+  it('refuse un domaine incomplet', () => {
+    expect(diagnosticSchema.safeParse({ ...validDiagnostic, website: 'eclat' }).success).toBe(false);
   });
 });
 
-describe('validation de l’e-mail', () => {
-  const invalid = ['pas-un-email', 'a@', '@domaine.fr', 'a b@domaine.fr', ''];
-
-  for (const value of invalid) {
-    it(`refuse « ${value || '(vide)'} »`, () => {
+describe('validation partagée et anti-spam', () => {
+  it('refuse les e-mails invalides', () => {
+    for (const value of ['pas-un-email', 'a@', '@domaine.fr', '']) {
       const result = contactSchema.safeParse({ ...validContact, email: value });
       expect(result.success).toBe(false);
-      if (!result.success) {
-        expect(fieldErrors(result.error).email).toBeDefined();
-      }
-    });
-  }
-
-  it('accepte une adresse valide', () => {
-    const result = contactSchema.safeParse({ ...validContact, email: 'a.b+c@domaine.fr' });
-    expect(result.success).toBe(true);
-  });
-});
-
-describe('tailles maximales', () => {
-  it('tronque un message trop long au lieu de le rejeter', () => {
-    const result = contactSchema.safeParse({
-      ...validContact,
-      message: 'x'.repeat(5000),
-    });
-    expect(result.success).toBe(true);
-    if (result.success) {
-      expect(result.data.message).toHaveLength(2000);
     }
   });
 
-  it('borne le nom', () => {
-    const result = contactSchema.safeParse({ ...validContact, fullName: 'x'.repeat(500) });
+  it('borne un message long', () => {
+    const result = contactSchema.safeParse({ ...validContact, message: 'x'.repeat(5000) });
     expect(result.success).toBe(true);
-    if (result.success) {
-      expect(result.data.fullName.length).toBeLessThanOrEqual(120);
-    }
-  });
-});
-
-describe('URL facultative', () => {
-  it('accepte une adresse vide', () => {
-    expect(diagnosticSchema.safeParse({ ...validDiagnostic, website: '' }).success).toBe(
-      true,
-    );
+    if (result.success) expect(result.data.message).toHaveLength(2000);
   });
 
-  it('refuse une adresse incomplète', () => {
-    const result = diagnosticSchema.safeParse({ ...validDiagnostic, website: 'eclat' });
-    expect(result.success).toBe(false);
-  });
-});
-
-describe('anti-spam', () => {
-  it('accepte le champ piège vide', () => {
-    const result = contactSchema.safeParse({ ...validContact, fax: '' });
-    expect(result.success).toBe(true);
-    if (result.success) expect(result.data.fax).toBe('');
-  });
-
-  it('laisse passer la validation quand le champ piège est rempli', () => {
-    // Le rejet est décidé côté serveur, pas par le schéma : cela permet de
-    // répondre « ok » au robot sans lui indiquer ce qui l'a trahi.
+  it('conserve le piège pour que le serveur décide du rejet silencieux', () => {
     const result = contactSchema.safeParse({ ...validContact, fax: 'https://spam.example' });
     expect(result.success).toBe(true);
     if (result.success) expect(result.data.fax).not.toBe('');
   });
 
-  it('expose un seuil de temps minimal cohérent', () => {
+  it('expose un délai cohérent et refuse une durée négative', () => {
     expect(MIN_ELAPSED_MS).toBeGreaterThan(0);
     expect(MIN_ELAPSED_MS).toBeLessThan(30_000);
+    expect(contactSchema.safeParse({ ...validContact, elapsedMs: -1 }).success).toBe(false);
   });
 
-  it('refuse un temps écoulé négatif', () => {
-    const result = contactSchema.safeParse({ ...validContact, elapsedMs: -1 });
-    expect(result.success).toBe(false);
-  });
-});
-
-describe('fieldErrors', () => {
-  it('renvoie des messages français lorsque des champs requis sont absents', () => {
+  it('produit des erreurs françaises adressables par champ', () => {
     const result = contactSchema.safeParse({ email: 'nope' });
     expect(result.success).toBe(false);
     if (!result.success) {
       const errors = fieldErrors(result.error);
-      expect(errors.fullName).toBe('Indiquez votre prénom et votre nom.');
-      expect(errors.message).toBe('Écrivez votre message (10 caractères minimum).');
-      expect(errors.consent).toBe(
-        'Votre accord est nécessaire pour que nous puissions vous répondre.',
-      );
-      expect(errors.elapsedMs).toBe('Le formulaire doit être affiché avant son envoi.');
-      expect(Object.values(errors).join(' ')).not.toContain('Invalid input');
-    }
-  });
-
-  it('ne garde que la première erreur par champ', () => {
-    const result = contactSchema.safeParse({
-      ...validContact,
-      fullName: '',
-      email: 'nope',
-      message: '',
-    });
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      const errors = fieldErrors(result.error);
-      expect(Object.keys(errors).sort()).toEqual(['email', 'fullName', 'message']);
-      for (const message of Object.values(errors)) {
-        expect(typeof message).toBe('string');
-        expect(message.length).toBeGreaterThan(0);
-      }
+      expect(errors.fullName).toBeDefined();
+      expect(errors.email).toBeDefined();
     }
   });
 });

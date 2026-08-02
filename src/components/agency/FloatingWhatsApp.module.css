@@ -10,15 +10,49 @@
   border: var(--border-width) solid var(--color-brass);
   background: var(--surface-inverse);
   color: var(--text-inverse);
-  font-size: var(--text-xs);
-  font-weight: var(--weight-bold);
-  letter-spacing: 0.08em;
   text-decoration: none;
   box-shadow: var(--shadow-raised);
-  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
 }
 
-.button:hover { transform: translateY(-2px); background: var(--color-espresso); }
+.button:hover {
+  transform: translateY(-2px);
+  border-color: var(--text-inverse);
+  background: var(--color-espresso);
+}
+
+.icon {
+  inline-size: 1.65rem;
+  block-size: 1.65rem;
+}
+
+.tooltip {
+  position: absolute;
+  inset-inline-end: calc(100% + var(--space-3));
+  padding: 0.55rem 0.75rem;
+  border: var(--border-width) solid var(--rule-inverse);
+  background: var(--surface-inverse);
+  color: var(--text-inverse);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(0.35rem);
+  transition:
+    opacity var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.button:hover .tooltip,
+.button:focus-visible .tooltip {
+  opacity: 1;
+  transform: translateX(0);
+}
 
 .badge {
   position: absolute;
@@ -46,9 +80,19 @@
     inline-size: 3.25rem;
     block-size: 3.25rem;
   }
+
+  .icon {
+    inline-size: 1.45rem;
+    block-size: 1.45rem;
+  }
+
+  .tooltip {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .button { transition: none; }
+  .button,
+  .tooltip { transition: none; }
   .button:hover { transform: none; }
 }

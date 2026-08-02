@@ -4,15 +4,15 @@ import Image from 'next/image';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { Container } from '@/components/layout/Container';
 import { Section } from '@/components/layout/Section';
-import { CallToAction } from '@/components/editorial/CallToAction';
 import { CaseGallery } from '@/components/editorial/CaseGallery';
 import { SectionHeading } from '@/components/editorial/SectionHeading';
 import { Eyebrow } from '@/components/ui/Eyebrow';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { TextLink } from '@/components/ui/TextLink';
+import { ButtonLink } from '@/components/ui/Button';
+import { CallToAction } from '@/components/editorial/CallToAction';
 
 import {
-  caseCta,
   casePage,
   context,
   deliverables,
@@ -88,6 +88,7 @@ export default function SwCarCleaningPage() {
                 width={swCarCleaning.gallery[0].width}
                 height={swCarCleaning.gallery[0].height}
                 priority
+                loading="eager"
                 sizes="(min-width: 62rem) 55vw, 100vw"
               />
               <span className="visually-hidden">Voir le site SW Carcleaning</span>
@@ -185,14 +186,25 @@ export default function SwCarCleaningPage() {
         </Container>
       </Section>
 
-      {/* ------------------------- CTA -------------------------- */}
-      <Section>
+      <Section surface="inverse" spacing="tight">
         <Container>
-          <CallToAction light eyebrow={caseCta.eyebrow} title={caseCta.title}>
-            {caseCta.body}
+          <CallToAction
+            eyebrow="Votre activité"
+            title="Construisons un parcours aussi clair que votre savoir-faire."
+            actionLabel="Présenter mon projet"
+            actionHref="/diagnostic?activity=nettoyage-automobile&utm_source=case_study&utm_medium=internal&utm_campaign=sw_car_cleaning"
+            ctaId="case_study_diagnostic"
+            secondaryAction={(
+              <ButtonLink href="/estimation" ctaId="case_study_estimation" variant="inverseSecondary">
+                Obtenir une estimation
+              </ButtonLink>
+            )}
+          >
+            <p>Présentez-nous votre fonctionnement pour préparer un échange concret, ou obtenez d’abord une estimation indicative.</p>
           </CallToAction>
         </Container>
       </Section>
+
     </>
   );
 }

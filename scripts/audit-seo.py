@@ -10,8 +10,9 @@ import urllib.request
 BASE = sys.argv[1] if len(sys.argv) > 1 else 'http://localhost:3177'
 
 PAGES = [
-    '/', '/methode', '/realisations', '/realisations/sw-car-cleaning',
+    '/', '/creation-site-web', '/methode', '/realisations', '/realisations/sw-car-cleaning', '/laboratoire',
     '/a-propos', '/diagnostic', '/contact',
+    '/blog', '/blog/rendre-une-offre-de-services-plus-facile-a-choisir',
     '/mentions-legales', '/politique-de-confidentialite',
 ]
 
@@ -172,14 +173,21 @@ print(f'  liens externes visibles : {sorted(external) or "aucun"}')
 print('\n' + '=' * 74)
 print('DONNÉES STRUCTURÉES')
 print('=' * 74)
-allowed = {'Organization', 'WebSite', 'BreadcrumbList'}
+allowed = {
+    'Organization', 'ProfessionalService', 'WebSite', 'WebPage',
+    'BreadcrumbList', 'Service', 'Blog', 'BlogPosting',
+}
 for path, doc in pages_html.items():
     blocks = tag(r'<script type="application/ld\+json"[^>]*>(.*?)</script>', doc)
     types = []
     for block in blocks:
         try:
             data = json.loads(html.unescape(block))
-            types.append(data.get('@type'))
+            schema_type = data.get('@type')
+            if isinstance(schema_type, list):
+                types.extend(schema_type)
+            else:
+                types.append(schema_type)
         except json.JSONDecodeError:
             problems.append(f'{path} : JSON-LD invalide')
     forbidden = [t for t in types if t not in allowed]
@@ -191,7 +199,7 @@ for path, doc in pages_html.items():
 print('\n' + '=' * 74)
 print('ROBOTS ET SITEMAP')
 print('=' * 74)
-for path in ('/robots.txt', '/sitemap.xml'):
+for path in ('/robots.txt', '/sitemap.xml', '/manifest.webmanifest'):
     status, doc = get(path)
     print(f'  {path} → {status}')
     print('    ' + doc.strip().replace('\n', '\n    ')[:400])

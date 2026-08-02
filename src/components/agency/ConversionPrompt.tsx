@@ -1,22 +1,27 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { agencyChannels } from '@/content/agency-channels';
+import { buildDirectWhatsAppMessage, buildWhatsAppUrl } from '@/lib/whatsapp';
 import styles from './ConversionPrompt.module.css';
 
-const inactivityDelay = 20_000;
+const inactivityDelay = 60_000;
 
 export function ConversionPrompt() {
+  const pathname = usePathname();
+  const isDiagnostic = pathname === '/diagnostic';
   const dialogRef = useRef<HTMLDialogElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const shownRef = useRef(false);
   const [isOpen, setIsOpen] = useState(false);
-  const message = 'Bonjour, je souhaite discuter de mon projet avec Qualifyr.';
-  const whatsappUrl = agencyChannels.whatsappNumber
-    ? `https://wa.me/${agencyChannels.whatsappNumber}?text=${encodeURIComponent(message)}`
-    : null;
+  const whatsappUrl = buildWhatsAppUrl(
+    agencyChannels.whatsappNumber,
+    buildDirectWhatsAppMessage(),
+  );
 
   useEffect(() => {
+    if (isDiagnostic) return;
     const clearTimer = () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
@@ -46,12 +51,14 @@ export function ConversionPrompt() {
       events.forEach((eventName) => window.removeEventListener(eventName, restartTimer));
       document.removeEventListener('contextmenu', preventContextMenu);
     };
-  }, []);
+  }, [isDiagnostic]);
 
   const close = () => {
     dialogRef.current?.close();
     setIsOpen(false);
   };
+
+  if (isDiagnostic) return null;
 
   return (
     <dialog
@@ -73,7 +80,7 @@ export function ConversionPrompt() {
         </p>
         <div className={styles.actions}>
           {whatsappUrl ? (
-            <a className={styles.primary} href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+            <a className={styles.primary} href={whatsappUrl} target="_blank" rel="noopener noreferrer" data-analytics-event="whatsapp_direct_opened" data-analytics-cta-id="inactivity_prompt_whatsapp" data-analytics-destination="whatsapp">
               Discuter sur WhatsApp
             </a>
           ) : null}

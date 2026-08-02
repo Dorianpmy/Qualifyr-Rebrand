@@ -46,6 +46,8 @@ export function TextInput({
   hasHint,
   error,
   inputMode,
+  placeholder,
+  maxLength,
 }: {
   id: string;
   name: string;
@@ -56,6 +58,8 @@ export function TextInput({
   hasHint?: boolean;
   error?: string | undefined;
   inputMode?: 'text' | 'email' | 'tel' | 'url';
+  placeholder?: string;
+  maxLength?: number;
 }) {
   return (
     <input
@@ -66,6 +70,8 @@ export function TextInput({
       onChange={(event) => onChange(event.target.value)}
       {...(autoComplete ? { autoComplete } : {})}
       {...(inputMode ? { inputMode } : {})}
+      {...(placeholder ? { placeholder } : {})}
+      {...(maxLength ? { maxLength } : {})}
       {...controlProps({ id, hasHint: hasHint ?? false, error })}
     />
   );
@@ -79,6 +85,8 @@ export function TextArea({
   rows = 5,
   hasHint,
   error,
+  placeholder,
+  maxLength,
 }: {
   id: string;
   name: string;
@@ -87,6 +95,8 @@ export function TextArea({
   rows?: number;
   hasHint?: boolean;
   error?: string | undefined;
+  placeholder?: string;
+  maxLength?: number;
 }) {
   return (
     <textarea
@@ -95,8 +105,64 @@ export function TextArea({
       rows={rows}
       value={value}
       onChange={(event) => onChange(event.target.value)}
+      {...(placeholder ? { placeholder } : {})}
+      {...(maxLength ? { maxLength } : {})}
       {...controlProps({ id, hasHint: hasHint ?? false, error })}
     />
+  );
+}
+
+/* ----------------------- Choix éditoriaux natifs ----------------------- */
+
+export function ChoiceGroup({
+  id,
+  name,
+  options,
+  type,
+  selected,
+  onToggle,
+  error,
+  columns = 1,
+}: {
+  id: string;
+  name: string;
+  options: readonly SelectOption[];
+  type: 'radio' | 'checkbox';
+  selected: readonly string[];
+  onToggle: (value: string) => void;
+  error?: string | undefined;
+  columns?: 1 | 2;
+}) {
+  return (
+    <div
+      id={id}
+      className={`${styles.choiceGrid} ${columns === 2 ? styles.choiceGridTwo : ''}`}
+      {...(error ? { 'aria-describedby': `${id}-error` } : {})}
+    >
+      {options.map((option, index) => {
+        const checked = selected.includes(option.value);
+        return (
+          <label key={option.value} className={styles.choiceCard}>
+            <input
+              type={type}
+              name={name}
+              value={option.value}
+              checked={checked}
+              onChange={() => onToggle(option.value)}
+              {...(error ? { 'aria-invalid': true as const } : {})}
+            />
+            <span className={styles.choiceIndex} aria-hidden="true">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <span className={styles.choiceCopy}>
+              <strong>{option.label}</strong>
+              {option.description ? <small>{option.description}</small> : null}
+            </span>
+            <span className={styles.choiceMark} aria-hidden="true" />
+          </label>
+        );
+      })}
+    </div>
   );
 }
 
@@ -120,22 +186,24 @@ export function Select({
   error?: string | undefined;
 }) {
   return (
-    <select
-      id={id}
-      name={name}
-      value={value}
-      onChange={(event) => onChange(event.target.value)}
-      {...controlProps({ id, hasHint: hasHint ?? false, error })}
-    >
-      <option value="" disabled>
-        {placeholder}
-      </option>
-      {options.map((option) => (
-        <option key={option.value} value={option.value}>
-          {option.label}
+    <span className={styles.selectWrap}>
+      <select
+        id={id}
+        name={name}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        {...controlProps({ id, hasHint: hasHint ?? false, error })}
+      >
+        <option value="" disabled>
+          {placeholder}
         </option>
-      ))}
-    </select>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </span>
   );
 }
 

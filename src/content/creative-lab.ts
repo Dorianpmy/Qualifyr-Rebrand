@@ -3,51 +3,25 @@ export type CreativeLabItem = {
   readonly title: string;
   readonly subtitle: string;
   readonly description: string;
-  readonly status: 'realisation' | 'concept' | 'exploration' | 'coming-soon';
+  readonly status: 'concept' | 'coming-soon';
   readonly statusLabel: string;
-  readonly visual: 'sw-car-cleaning' | 'conciergerie' | 'identity' | 'motion';
-  readonly href?: string;
-  readonly image?: {
-    readonly src: string;
-    readonly alt: string;
-    readonly width: number;
-    readonly height: number;
-  };
+  readonly visual: 'conciergerie' | 'identity' | 'motion';
   readonly modalContent?: string;
   readonly explores?: readonly string[];
-  readonly featured?: boolean;
 };
 
 export const creativeLab = {
-  eyebrow: 'Explorations créatives',
-  title: 'Le laboratoire Qualifyr',
+  eyebrow: 'Laboratoire créatif',
+  title: 'Des idées rendues visibles.',
   subtitle:
-    'Des explorations autour de l’identité, du mouvement et des expériences digitales pour les entreprises de services.',
+    'Trois études créatives pour montrer comment une identité, une interface et un parcours peuvent prendre forme.',
   disclaimer:
     'Les éléments signalés comme concepts sont des démonstrations créatives et non des projets clients livrés.',
   items: [
     {
-      id: 'sw-car-cleaning',
-      title: 'SW Car Cleaning',
-      subtitle: 'Site • Identité • Expérience',
-      description:
-        'Une identité et un site conçus pour présenter clairement une activité de nettoyage automobile et faciliter la prise de contact.',
-      status: 'realisation',
-      statusLabel: 'Réalisation',
-      visual: 'sw-car-cleaning',
-      href: '/realisations/sw-car-cleaning',
-      image: {
-        src: '/images/sw-car-cleaning/site-accueil.webp',
-        alt: 'Page d’accueil réelle du site SW Car Cleaning.',
-        width: 1440,
-        height: 900,
-      },
-      featured: true,
-    },
-    {
       id: 'concept-conciergerie',
       title: 'Conciergerie',
-      subtitle: 'Direction • Présentation • Parcours',
+      subtitle: 'Direction · Présentation · Parcours',
       description:
         'Une exploration visuelle autour d’une conciergerie premium, pensée pour rassurer et faciliter la prise de contact.',
       status: 'concept',
@@ -60,9 +34,9 @@ export const creativeLab = {
     {
       id: 'identite-visuelle',
       title: 'Identité visuelle',
-      subtitle: 'Logo • Couleurs • Supports',
+      subtitle: 'Logo · Couleurs · Supports',
       description:
-        'Une identité pensée pour créer une impression plus cohérente sur le site, les réseaux et les supports professionnels.',
+        'Une identité pensée pour créer une impression cohérente sur le site, les réseaux et les supports professionnels.',
       status: 'concept',
       statusLabel: 'Concept',
       visual: 'identity',
@@ -73,9 +47,9 @@ export const creativeLab = {
     {
       id: 'motion-ui',
       title: 'Motion UI',
-      subtitle: 'Interface • Mouvement • Détail',
+      subtitle: 'Interface · Mouvement · Détail',
       description:
-        'Une future démonstration animée de la manière dont les interfaces Qualifyr peuvent prendre vie.',
+        'Une future démonstration de la manière dont les interfaces Qualifyr peuvent prendre vie sans détourner l’attention du contenu.',
       status: 'coming-soon',
       statusLabel: 'En préparation',
       visual: 'motion',

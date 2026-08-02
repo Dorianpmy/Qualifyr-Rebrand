@@ -1,5 +1,8 @@
 import type { MetadataRoute } from 'next';
+import { getPublishedArticles } from '@/content/blog';
 import { pageMeta, site, sitemapRoutes } from '@/content/site';
+
+export const revalidate = 3600;
 
 /**
  * Plan du site.
@@ -17,10 +20,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const lastModified = new Date();
 
-  return sitemapRoutes.map((route) => ({
+  const pages: MetadataRoute.Sitemap = sitemapRoutes.map((route) => ({
     url: new URL(route, site.url).toString(),
     lastModified,
-    changeFrequency: route === '/' ? 'monthly' : 'yearly',
+    changeFrequency: route === '/blog' ? 'daily' : route === '/' ? 'monthly' : 'yearly',
     priority: pageMeta[route].priority ?? 0.5,
   }));
+
+  const articles: MetadataRoute.Sitemap = getPublishedArticles().map((article) => ({
+    url: new URL(`/blog/${article.slug}`, site.url).toString(),
+    lastModified: new Date(article.publishedAt),
+    changeFrequency: 'monthly',
+    priority: 0.6,
+  }));
+
+  return [...pages, ...articles];
 }

@@ -8,9 +8,9 @@
 }
 
 .title {
-  font-family: var(--family-display);
+  font-family: var(--family-text);
   font-size: var(--text-xl);
-  font-weight: var(--weight-regular);
+  font-weight: var(--weight-bold);
   line-height: var(--leading-snug);
   letter-spacing: var(--tracking-snug);
   margin: 0;

@@ -13,7 +13,7 @@ import {
   TextInput,
 } from './Controls';
 import { Field } from './Field';
-import { Fieldset } from './Fieldset';
+import { FieldRow, Fieldset } from './Fieldset';
 import { ErrorSummary, SuccessPanel } from './FormShell';
 import { useFormSubmission } from './useFormSubmission';
 import styles from './form.module.css';
@@ -46,7 +46,7 @@ const labels: Record<string, string> = {
  * conservées, focus sur la première erreur, état d'envoi, double envoi
  * impossible, champ piège et temps minimal.
  */
-export function ContactForm() {
+export function ContactForm({ className }: { readonly className?: string | undefined }) {
   const { values, setValue, errors, formError, state, submit, summaryRef } =
     useFormSubmission({
       endpoint: '/api/contact',
@@ -68,7 +68,7 @@ export function ContactForm() {
   }
 
   return (
-    <form className={styles.form} onSubmit={submit} noValidate>
+    <form className={[styles.form, className].filter(Boolean).join(' ')} onSubmit={submit} noValidate>
       <ErrorSummary
         errors={errors}
         formError={formError}
@@ -76,30 +76,32 @@ export function ContactForm() {
         labels={labels}
       />
 
-      <Fieldset legend="Votre message">
-        <Field id={`${ID}-fullName`} label={labels.fullName ?? ''} error={errors.fullName}>
-          <TextInput
-            id={`${ID}-fullName`}
-            name="fullName"
-            value={values.fullName}
-            onChange={(value) => setValue('fullName', value)}
-            autoComplete="name"
-            error={errors.fullName}
-          />
-        </Field>
+      <Fieldset legend="Votre projet">
+        <FieldRow>
+          <Field id={`${ID}-fullName`} label={labels.fullName ?? ''} error={errors.fullName}>
+            <TextInput
+              id={`${ID}-fullName`}
+              name="fullName"
+              value={values.fullName}
+              onChange={(value) => setValue('fullName', value)}
+              autoComplete="name"
+              error={errors.fullName}
+            />
+          </Field>
 
-        <Field id={`${ID}-email`} label={labels.email ?? ''} error={errors.email}>
-          <TextInput
-            id={`${ID}-email`}
-            name="email"
-            type="email"
-            inputMode="email"
-            value={values.email}
-            onChange={(value) => setValue('email', value)}
-            autoComplete="email"
-            error={errors.email}
-          />
-        </Field>
+          <Field id={`${ID}-email`} label={labels.email ?? ''} error={errors.email}>
+            <TextInput
+              id={`${ID}-email`}
+              name="email"
+              type="email"
+              inputMode="email"
+              value={values.email}
+              onChange={(value) => setValue('email', value)}
+              autoComplete="email"
+              error={errors.email}
+            />
+          </Field>
+        </FieldRow>
 
         <Field
           id={`${ID}-company`}
@@ -122,6 +124,7 @@ export function ContactForm() {
             id={`${ID}-message`}
             name="message"
             rows={6}
+            placeholder="Votre contexte, vos objectifs et ce qui vous freine aujourd’hui…"
             value={values.message}
             onChange={(value) => setValue('message', value)}
             error={errors.message}

@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { primaryNav } from '@/content/navigation';
 import { BookingDialog } from '@/components/agency/BookingDialog';
-import { WhatsAppDiagnostic, WhatsAppDiagnosticButton } from '@/components/agency/WhatsAppDiagnostic';
+import { WhatsAppDirectButton } from '@/components/agency/WhatsAppDirectButton';
 import { Logo } from '@/components/ui/Logo';
 import { Container } from './Container';
 import { MobileNavigation } from './MobileNavigation';
@@ -22,6 +22,7 @@ import styles from './Header.module.css';
 export function Header() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
+  const isDiagnostic = pathname === '/diagnostic';
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 8);
@@ -29,6 +30,27 @@ export function Header() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  if (isDiagnostic) {
+    return (
+      <>
+        <header className={`${styles.header} ${styles.diagnosticHeader}`}>
+          <Container>
+            <div className={styles.diagnosticInner}>
+              <Link href="/" className={styles.brand} aria-label="Qualifyr Agence, accueil">
+                <Logo />
+              </Link>
+              <Link href="/" className={styles.diagnosticBack}>
+                <span aria-hidden="true">←</span>
+                Retour au site
+              </Link>
+            </div>
+          </Container>
+        </header>
+        <BookingDialog />
+      </>
+    );
+  }
 
   return (
     <>
@@ -57,9 +79,9 @@ export function Header() {
 
           <div className={styles.actions}>
             <div className={styles.cta}>
-              <WhatsAppDiagnosticButton variant="secondary" className={styles.whatsappCta!}>
+              <WhatsAppDirectButton ctaId="header_whatsapp" variant="secondary" className={styles.whatsappCta!}>
                 Discuter sur WhatsApp
-              </WhatsAppDiagnosticButton>
+              </WhatsAppDirectButton>
             </div>
             <MobileNavigation pathname={pathname} />
           </div>
@@ -78,7 +100,6 @@ export function Header() {
       </div>
     ) : null}
     <BookingDialog />
-    <WhatsAppDiagnostic />
     </>
   );
 }

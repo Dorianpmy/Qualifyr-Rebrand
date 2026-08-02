@@ -1,4 +1,18 @@
-# 04 — Plan d'implémentation
+# 04 — Plan d’implémentation
+
+## Décision du 1er août 2026 — diagnostic en cinq étapes
+
+La route `/diagnostic` devient une consultation guidée autonome : introduction, cinq étapes
+courtes, vérification éditable et confirmation. Le parcours conserve la route
+`POST /api/diagnostic`, la validation Zod partagée, le champ piège, le temps minimal et la
+limitation de débit. Chaque demande validée est d'abord transmise à `POST /api/diagnostic` :
+WhatsApp n'est jamais un raccourci qui contourne cet envoi. Après une vraie réussite, il peut
+ouvrir un résumé prérempli sur action explicite ; après un échec, il peut servir de repli
+manuel avec un message honnête. Le calendrier n'apparaît que lorsque son URL HTTPS est valide.
+
+Les réponses peuvent être conservées dans `sessionStorage` pendant la session. Elles sont
+retirées après un envoi e-mail réussi ou lorsque le visiteur choisit explicitement de
+recommencer. Aucune donnée personnelle n'est envoyée à un outil de mesure d'audience.
 
 **État : phase 1 réalisée.** La fondation technique est en place. Ce document consigne les
 décisions arrêtées et l'ordre des phases restantes.
@@ -111,6 +125,8 @@ Arborescence réellement en place :
 │   │   ├── api/contact/route.ts
 │   │   ├── sitemap.ts          piloté par site.indexable
 │   │   ├── robots.ts           piloté par site.indexable
+│   │   ├── blog/               index du journal + route dynamique [slug]
+│   │   ├── laboratoire/        explorations créatives, séparées de l'accueil
 │   │   ├── realisations/sw-car-cleaning/  étude de cas
 │   │   ├── methode/page.tsx
 │   │   ├── realisations/page.tsx
@@ -137,6 +153,7 @@ Arborescence réellement en place :
 │   │                           Divider, Icon
 │   ├── content/
 │   │   ├── home.ts             tout le texte de la page d'accueil
+│   │   ├── blog.ts             articles, dates et calendrier de publication
 │   │   ├── methode.ts          quatre temps détaillés, section outils
 │   │   ├── about.ts            philosophie, manière de travailler, refus
 │   │   ├── work.ts             réalisations — structure extensible
@@ -178,7 +195,9 @@ Arborescence réellement en place :
 
 Principes appliqués :
 
-- **Statique par défaut.** Les dix routes sont prérendues (`○ Static`). Aucune route dynamique.
+- **Statique par défaut.** Les pages commerciales restent prérendues. Le journal et ses
+  articles utilisent une revalidation horaire afin qu'un article déjà rédigé puisse paraître
+  à la date prévue sans intervention manuelle. Aucune génération de texte n'a lieu en ligne.
 - **Cinq îlots client** : `Header.tsx` (état de défilement, `aria-current`),
   `MobileNavigation.tsx` (ouverture du panneau, piège de focus), `DiagnosticForm.tsx` et
   `ContactForm.tsx` (état d'envoi), `RevealObserver.tsx` (~1 Ko, révélation au défilement).
@@ -196,7 +215,87 @@ Principes appliqués :
   dépôt afin qu'un lockfile présent plus haut sur la machine ne modifie ni la résolution des
   dépendances ni la racine du build.
 
+### 2.1 Journal et publication planifiée
+
+- `src/content/blog.ts` est la source unique : slug, titre, résumé, date, catégorie et contenu.
+- `getPublishedArticles()` masque toute publication dont la date n'est pas atteinte.
+- `/blog` et la fenêtre de l'accueil sont revalidés au maximum toutes les heures.
+- `/blog/[slug]` renvoie 404 avant la date prévue et expose ensuite ses métadonnées propres.
+- Le sitemap ajoute uniquement les articles déjà publiés et utilise leur vraie date.
+- Aucun CMS, service tiers, tracker ou nouvelle dépendance n'est nécessaire pour cette phase.
+- Ajouter un article signifie ajouter un contenu terminé à la file éditoriale ; la
+  programmation ne produit ni ne complète le texte.
+
+### 2.2 Accueil resserré et Laboratoire autonome
+
+- L'accueil ne rend plus le Journal ni le Laboratoire complet : ces contenus possèdent leurs
+  propres routes et ne concurrencent plus l'estimation.
+- Les sections « Entreprises accompagnées » et « Méthode » partagent une même composition.
+- SW Car Cleaning conserve une seule fenêtre interactive sur l'accueil. Le Laboratoire ne
+  charge que des compositions locales, sans seconde ressource distante identique.
+- Aucun paquet ni appel externe n'est ajouté par ce découpage ; la page `/laboratoire`
+  réutilise le composant `CreativeLab` et les métadonnées centralisées.
+
+### 2.3 Méthode compacte et orientation créative
+
+- `/methode` conserve ses quatre temps dans les données centralisées, mais les rend dans une
+  seule grille responsive au lieu de quatre sections distinctes.
+- Les listes sont limitées à trois points publics par temps ; le détail opérationnel reste
+  traité lors du diagnostic et n'alourdit pas la lecture initiale.
+- `CreativeLab`, déjà client pour ses fenêtres et ateliers, porte un état d'orientation local :
+  un choix associe le besoin à un concept existant, sans requête réseau ni stockage.
+- La recommandation ouvre la même fenêtre accessible que la carte correspondante et propose
+  ensuite l'estimation existante. Aucun second calcul tarifaire n'est ajouté.
+- `ConversionPrompt` utilise un délai d'inactivité de 60 000 ms, remis à zéro par les mêmes
+  interactions que précédemment. Aucune nouvelle dépendance ni donnée personnelle.
+
+### 2.4 Architecture éditoriale finale et estimation dédiée — 1 août 2026
+
+- L'accueil suit un ordre fixe : en-tête et ligne éditoriale, hero vidéo, transformation,
+  réalisation SW Car Cleaning, entreprises accompagnées, méthode, laboratoire compact et CTA.
+- `OfferConfigurator` est retiré de l'accueil et réutilisé sans duplication dans
+  `/estimation`. La route reçoit ses propres métadonnées et figure dans le sitemap.
+- `CreativeLab` est ramené à trois cartes et une fenêtre de détail accessible. L'atelier de
+  palette, les scénarios et l'orientation interactive sont supprimés ; aucune iframe distante
+  n'y est chargée.
+- La seule iframe de démonstration du site reste celle de SW Car Cleaning sur l'accueil.
+- Les survols ne déplacent plus le texte ni les espacements. Les variations restent limitées
+  aux couleurs, bordures, visuels et flèches, avec neutralisation en mouvement réduit.
+- Aucun paquet, service tiers ou nouvelle source de données n'est ajouté.
+
+### 2.5 Lecture tarifaire et devise automatique — 1 août 2026
+
+- Le point de terminaison géographique existant reste la seule source de la région tarifaire.
+  Il ne transmet au navigateur que `euro` ou `switzerland`, sans adresse IP ni stockage.
+- Le sélecteur de pays est supprimé. Le rendu tarifaire attend la réponse régionale afin
+  d'éviter un affichage euro transitoire pour un visiteur suisse ; l'euro reste le repli en
+  cas d'indisponibilité.
+- Le coût complet est inchangé. Le configurateur calcule un équivalent mensuel exact sur douze
+  mois et laisse comparer cette lecture avec la mise en place suivie de l'accompagnement.
+- La préférence est ajoutée au message WhatsApp, mais les modalités définitives restent fixées
+  par le devis et le contrat.
+
+### 2.6 Pages métier partagées — 1 août 2026
+
+- Les routes `/nettoyage-automobile` et `/conciergerie` consomment un même composant serveur
+  `VerticalServicePage` alimenté par `src/content/verticals.ts`.
+- Le composant fixe la hiérarchie et l'accessibilité ; les textes, FAQ, étapes et preuves
+  restent des données typées et centralisées afin d'éviter deux pages copiées-collées.
+- La page automobile utilise uniquement la capture réelle déjà inventoriée de SW Carcleaning.
+  La page conciergerie rend une composition CSS abstraite et porte explicitement les mentions
+  « Exploration créative » et « Concept Qualifyr ».
+- Les routes sont ajoutées au type `Route`, aux métadonnées, au sitemap et aux liens internes.
+  Aucun paquet, service tiers, formulaire ou calcul n'est ajouté.
+
 ---
+
+### 2.7 Acquisition et attribution — 2 août 2026
+
+- Les liens de campagne sont définis dans `src/content/campaign-links.ts` et résolus uniquement par la liste blanche `/go/[campaign]`.
+- `AttributionCapture` conserve en `sessionStorage` un premier et un dernier contact limités aux paramètres UTM autorisés, au domaine référent et à la page d’entrée.
+- Les formulaires transmettent cette attribution dans un objet dédié, validé et nettoyé côté serveur.
+- La mesure commerciale passe par `src/lib/analytics.ts`, sans fournisseur imposé, cookie ni donnée personnelle.
+- Les liens `/go/*` restent hors navigation, hors sitemap et non indexables.
 
 ## 3. Composants
 
@@ -334,8 +433,8 @@ Aucune autre dépendance sans justification écrite dans ce document.
 
 ## 7. Formulaires — implémentation
 
-**Deux formulaires en service** : `Diagnostic` (choix d'activité obligatoire et question
-complémentaire adaptée, 3 groupes) et `Contact` (5 champs).
+**Deux formulaires en service** : `Diagnostic` (introduction, cinq étapes conditionnelles,
+vérification et confirmation) et `Contact` (5 champs).
 
 ### 7.1 Validation
 
@@ -362,13 +461,18 @@ contournée.
   référence contre une seconde soumission concurrente.
 - Aucune erreur n'est véhiculée par la seule couleur : bordure épaissie, repère et texte.
 
-### 7.3 Confirmation
+### 7.3 Vérification, envoi et confirmation
 
-La confirmation **remplace le formulaire sur place** : pas de redirection, pas de changement
-d'URL. Elle affiche un résumé minimal (entreprise, zone, adresse de réponse) et deux liens :
-retour à l'accueil, découverte de la méthode.
+La vérification reprend les réponses par groupe et permet de modifier chaque étape sans perte
+de saisie. Le bouton final envoie toujours le schéma complet vers `POST /api/diagnostic`.
 
-**Aucun délai de réponse n'est annoncé**, aucun calendrier n'est proposé.
+La confirmation **remplace le formulaire sur place** uniquement après une réponse serveur
+réussie. Elle ne promet aucun délai. Elle peut proposer WhatsApp et le calendrier comme suites
+facultatives si leurs URL publiques sont valides. En cas d'échec, le formulaire reste visible,
+le message indique que rien n'a été transmis et le résumé WhatsApp devient un repli manuel.
+
+Une session inachevée n'est jamais restaurée silencieusement : l'introduction propose
+explicitement « Continuer » ou « Recommencer ».
 
 ### 7.4 Anti-spam — et ses limites
 
@@ -442,7 +546,7 @@ Vercel, jamais dans le dépôt.
 
 ### 7.9 Tests
 
-48 tests, `npm run test`.
+61 tests, `npm run test`.
 
 - `tests/validation.test.ts` — nettoyage, champs obligatoires, e-mails invalides, bornes de
   taille, URL facultative, consentement, champ piège, agrégation des erreurs.
@@ -457,16 +561,17 @@ Vercel, jamais dans le dépôt.
 
 ## 8. SEO — implémentation
 
-**Principe fondateur, inchangé** : le site s'adresse aux **professionnels du nettoyage
-automobile mobile**, jamais aux automobilistes. Aucune requête du type
-« lavage auto à domicile [ville] » n'est visée.
+Le référencement décrit l'offre réellement visible : création de sites internet,
+applications web et solutions digitales sur mesure pour les entreprises. Les pages de
+réalisation peuvent préciser un métier client, sans transformer Qualifyr en prestataire de
+nettoyage ni viser les requêtes des particuliers.
 
 ### 8.1 Métadonnées
 
-- `metadataBase` sur le domaine canonique `https://qualifyragence.com`, surchargeable par
-  `NEXT_PUBLIC_SITE_URL`.
+- `metadataBase` et tous les canonical sur le domaine public fixe
+  `https://qualifyragence.com`. Une preview ne publie jamais sa propre URL comme canonical.
 - **Titres et descriptions uniques**, rédigés à la main, centralisés dans
-  `src/content/site.ts`. Vérifié : 9 titres uniques, 9 descriptions uniques, toutes entre
+  `src/content/site.ts`. Vérifié : 10 titres uniques, 10 descriptions uniques, toutes entre
   130 et 165 caractères.
 - Les titres portent déjà la marque : `buildMetadata` utilise `title.absolute`, le gabarit
   `%s — Qualifyr Agence` ne s'applique donc pas deux fois.
@@ -476,18 +581,20 @@ automobile mobile**, jamais aux automobilistes. Aucune requête du type
 
 ### 8.2 Image de partage
 
-`public/images/og/qualifyr-og.png` — 1200 × 630. Composition **originale**, régénérée pour
-les deux verticales :
-fond ivoire, wordmark `qualifyr` en Manrope avec son point de laiton, titre court en Cormorant Garamond,
-panneau charbon portant la séquence du parcours, un reflet oblique très discret.
+`public/images/og/qualifyr-og-v3.png` — 1200 × 630. Composition **originale** alignée sur
+la nouvelle identité : fond ivoire, marque Qualifyr, titre éditorial en Cormorant Garamond
+et composition charbon/laiton sans capture d'interface fictive.
 
 Aucun mockup, aucune capture d'interface, aucune photographie sous licence. Générée à partir
 des polices du projet — le fichier est versionné, rien n'est produit au build.
 
 ### 8.3 Données structurées
 
-Trois types, **uniquement des faits vérifiables** : `Organization` et `WebSite` sur toutes les
-pages, `BreadcrumbList` sur les trois pages qui affichent réellement un fil d'Ariane.
+Types employés, **uniquement avec des faits vérifiables** : `Organization` enrichi du type
+`ProfessionalService`, `WebSite` sur toutes les pages, `WebPage` sur l'accueil,
+`Service` sur la page de création de site et `BreadcrumbList` sur les pages qui affichent
+réellement un fil d'Ariane. `sameAs` et les coordonnées restent conditionnels aux vraies
+valeurs centralisées dans le projet.
 
 **Volontairement absents** : `SoftwareApplication` (Qualifyr ne vend pas de logiciel),
 `Product` / `Offer` (aucun tarif), `AggregateRating` et `Review` (aucun avis recueilli),
@@ -505,7 +612,7 @@ Générés, et pilotés par le **seul interrupteur** `site.indexable`.
 | État | `robots.txt` | `sitemap.xml` | Balise `robots` |
 |---|---|---|---|
 | Avant mise en ligne (actuel) | `Disallow: /` | vide | `noindex, nofollow, nocache` |
-| Après mise en ligne | `Allow: /`, `Disallow: /api/`, `/design-system`, `Host` + `Sitemap` | 9 URL sur le domaine canonique | `index, follow` |
+| Après mise en ligne | `Allow: /`, `Disallow: /api/`, `/design-system`, `Host` + `Sitemap` | 10 URL sur le domaine canonique | `index, follow` |
 
 Les deux états ont été vérifiés en basculant temporairement l'interrupteur. Un aperçu de
 préproduction indexé créerait du contenu dupliqué et des liens morts après la bascule : c'est
@@ -590,7 +697,7 @@ Inventaire tenu à jour. **Aucun de ces manques n'est comblé par un contenu fab
 | Clés d'envoi d'e-mail | `/diagnostic`, `/contact` | **Manquantes.** `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL` restent à renseigner. Sans elles, la production répond honnêtement qu'elle ne peut pas envoyer. |
 | Domaine vérifié chez Resend | Expédition des e-mails | **À faire.** `CONTACT_FROM_EMAIL` doit utiliser un domaine vérifié, sinon Resend refuse l'envoi. |
 | Délai de réponse annoncé | `/contact` | **Non affiché.** Aucun délai ne sera annoncé tant qu'il ne sera pas tenable. |
-| Logo définitif | `Logo`, `icon.svg` | **Manquant.** Wordmark typographique temporaire. |
+| Logo définitif | `Logo`, favicons, manifest, Open Graph | **Intégré.** Nouveau lockup fourni le 31 juillet 2026, décliné en monochrome ; master vectoriel officiel recommandé pour l'impression. |
 
 ---
 
@@ -617,8 +724,8 @@ Inventaire tenu à jour. **Aucun de ces manques n'est comblé par un contenu fab
 5. **Compte Resend** — à créer, domaine `qualifyragence.com` à vérifier, clé API à générer.
 6. **Édition du contenu après mise en ligne** — si Dorian veut éditer seul, un CMS léger doit
    être décidé avant la phase 2, pas après.
-7. **Logo définitif** — à fournir ou à concevoir. Aucune conception de logo n'est prévue dans
-   ce plan.
+7. **Master vectoriel du logo** — le logo est intégré pour le web ; fournir le `.svg`, `.ai`,
+   `.eps` ou `.pdf` officiel pour garantir la fidélité en impression.
 8. **Nom de l'offre** — « Le parcours Qualifyr » est-il définitif ?
 9. **Zone géographique de Qualifyr** — nationale ou régionale.
 10. **URL de l'ancien site** — inventaire nécessaire au plan de redirections avant la phase 10.

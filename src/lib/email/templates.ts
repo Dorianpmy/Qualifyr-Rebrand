@@ -1,11 +1,17 @@
 import {
   activityOptions,
-  bookingMethodOptions,
+  budgetStatusOptions,
+  conciergeTypeOptions,
+  demandSourceOptions,
   labelFor,
+  practiceModeOptions,
+  preferredContactOptions,
   priorityOptions,
-  seniorityOptions,
+  siteSituationOptions,
+  timingOptions,
 } from '@/content/forms';
 import type { ContactData, DiagnosticData } from '@/lib/validation';
+import type { AttributionData, AttributionTouch } from '@/lib/attribution';
 
 /**
  * Composition des e-mails.
@@ -33,13 +39,43 @@ function block(title: string, lines: readonly (string | null)[]): string {
   return [title, '─'.repeat(title.length), ...kept, ''].join('\n');
 }
 
+function attributionLines(prefix: string, touch: AttributionTouch | undefined) {
+  if (!touch) return [];
+  return [
+    line(`${prefix} — source`, touch.source ?? 'Source directe ou non identifiée'),
+    line(`${prefix} — support`, touch.medium),
+    line(`${prefix} — campagne`, touch.campaign),
+    line(`${prefix} — contenu`, touch.content),
+    line(`${prefix} — terme`, touch.term),
+    line(`${prefix} — référent`, touch.referrerDomain),
+    line(`${prefix} — page d’arrivée`, touch.landingPath),
+    line(`${prefix} — première vue`, touch.firstSeenAt),
+  ];
+}
+
+function attributionBlock(attribution: AttributionData | undefined, submissionPage: string) {
+  const touchLines = [
+    ...attributionLines('Premier contact', attribution?.firstTouch),
+    ...attributionLines('Dernier contact', attribution?.lastTouch),
+  ];
+  return block('Origine de la demande', [
+    line('Page de soumission', submissionPage),
+    ...(touchLines.length > 0
+      ? touchLines
+      : [line('Source', 'Source directe ou non identifiée')]),
+  ]);
+}
+
 /* ------------------------------------------------------------------ */
 /* Notification reçue par Qualifyr                                     */
 /* ------------------------------------------------------------------ */
 
 export function diagnosticNotification(data: DiagnosticData, receivedAt: Date) {
-  const methods = data.bookingMethods
-    .map((value) => labelFor(bookingMethodOptions, value))
+  const sources = data.demandSources
+    .map((value) => labelFor(demandSourceOptions, value))
+    .join(', ');
+  const priorities = data.priorities
+    .map((value) => labelFor(priorityOptions, value))
     .join(', ');
 
   const text = [
@@ -49,30 +85,46 @@ export function diagnosticNotification(data: DiagnosticData, receivedAt: Date) {
       line('Page d’origine', data.pageUrl),
     ]),
     block('Coordonnées', [
-      line('Nom', data.fullName),
+      line('Nom', [data.firstName, data.lastName].filter(Boolean).join(' ')),
       line('E-mail', data.email),
       line('Téléphone', data.phone),
+      line('Contact préféré', labelFor(preferredContactOptions, data.preferredContact)),
     ]),
     block('Activité', [
       line('Type d’activité', labelFor(activityOptions, data.activity)),
-      line('Précisions', data.activityDetails),
+      line(
+        'Précisions',
+        data.activity === 'nettoyage-detailing'
+          ? labelFor(practiceModeOptions, data.practiceMode)
+          : data.activity === 'conciergerie'
+            ? labelFor(conciergeTypeOptions, data.conciergeType)
+            : data.activityDetails,
+      ),
       line('Entreprise', data.company),
-      line('Zone couverte', data.area),
-      line('Ancienneté', labelFor(seniorityOptions, data.seniority)),
       line('Site actuel', data.website),
     ]),
     block('Situation', [
-      line('Réservations reçues par', methods),
-      line('Objectif prioritaire', labelFor(priorityOptions, data.priority)),
+      line('Situation du site', labelFor(siteSituationOptions, data.siteSituation)),
+      line('Demandes reçues par', sources),
+      line('Point gênant aujourd’hui', data.situationNote),
     ]),
-    block('Principal blocage', [data.blocker]),
-    block('Message', [data.message || null]),
+    block('Priorités', [
+      line('Priorités', priorities),
+      line('Résultat souhaité', data.desiredResult),
+    ]),
+    block('Projet', [
+      line('Démarrage', labelFor(timingOptions, data.timing)),
+      line('Budget défini', labelFor(budgetStatusOptions, data.budgetStatus)),
+      line('Montant ou fourchette', data.budgetAmount),
+      line('Contraintes ou attentes', data.constraints),
+    ]),
+    attributionBlock(data.attribution, data.pageUrl),
   ]
     .filter(Boolean)
     .join('\n');
 
   return {
-    subject: `Diagnostic — ${data.company} (${data.area})`,
+    subject: `Diagnostic — ${data.company}`,
     text,
   };
 }
@@ -90,6 +142,7 @@ export function contactNotification(data: ContactData, receivedAt: Date) {
       line('Entreprise', data.company),
     ]),
     block('Message', [data.message]),
+    attributionBlock(data.attribution, data.pageUrl),
   ]
     .filter(Boolean)
     .join('\n');

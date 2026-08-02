@@ -1,24 +1,20 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { BookingButton } from '@/components/agency/BookingButton';
-import { OfferConfigurator } from '@/components/agency/OfferConfigurator';
-import { WhatsAppDiagnosticButton } from '@/components/agency/WhatsAppDiagnostic';
-import { Container } from '@/components/layout/Container';
-import { Section } from '@/components/layout/Section';
+import { DiagnosticLink } from '@/components/agency/DiagnosticLink';
 import { CreativeLab } from '@/components/editorial/CreativeLab';
 import { InteractiveSitePreview } from '@/components/editorial/InteractiveSitePreview';
 import { MethodStep } from '@/components/editorial/MethodStep';
 import { SectionHeading } from '@/components/editorial/SectionHeading';
+import { Container } from '@/components/layout/Container';
+import { Section } from '@/components/layout/Section';
+import { JsonLd } from '@/components/seo/JsonLd';
 import { ButtonLink } from '@/components/ui/Button';
 import { Eyebrow } from '@/components/ui/Eyebrow';
-import { TextLink } from '@/components/ui/TextLink';
-import {
-  hero,
-  method,
-  serviceCompanies,
-  transformations,
-} from '@/content/home';
+import { hero, method, serviceCompanies, transformations } from '@/content/home';
 import { swCarCleaning } from '@/content/sw-car-cleaning';
 import { buildMetadata } from '@/lib/metadata';
+import { webPage } from '@/lib/structured-data';
 import styles from './page.module.css';
 
 export const metadata: Metadata = buildMetadata('/');
@@ -26,6 +22,8 @@ export const metadata: Metadata = buildMetadata('/');
 export default function HomePage() {
   return (
     <>
+      <JsonLd data={webPage('/')} />
+
       <Section spacing="flush" className={styles.heroSection}>
         <video
           className={styles.heroVideo}
@@ -47,22 +45,22 @@ export default function HomePage() {
         <div className={styles.heroOverlay} aria-hidden="true" />
         <div className={styles.heroContent}>
           <Container>
-          <div className={styles.hero}>
-            <div className={styles.heroText}>
+            <div className={styles.hero}>
               <Eyebrow inverse>{hero.eyebrow}</Eyebrow>
               <h1 className={styles.heroTitle}>{hero.title}</h1>
               <p className={styles.heroBody}>{hero.body}</p>
               <div className={styles.heroActions}>
-                <BookingButton variant="inverse" withArrow>Réserver un échange</BookingButton>
-                <WhatsAppDiagnosticButton variant="inverseSecondary">
-                  Faire le diagnostic WhatsApp
-                </WhatsAppDiagnosticButton>
+                <BookingButton ctaId="hero_booking" variant="inverse" withArrow>
+                  Réserver un échange
+                </BookingButton>
+                <DiagnosticLink ctaId="hero_diagnostic" variant="inverseSecondary">
+                  Faire le diagnostic
+                </DiagnosticLink>
               </div>
-              <p className={styles.heroProofLink}>
-                <TextLink href="#sw-car-cleaning" tone="inverse">Découvrir notre réalisation</TextLink>
-              </p>
+              <ButtonLink href="#sw-car-cleaning" variant="text" className={styles.heroTextLink}>
+                Découvrir notre réalisation
+              </ButtonLink>
             </div>
-          </div>
           </Container>
         </div>
       </Section>
@@ -101,19 +99,14 @@ export default function HomePage() {
                 Une identité et une expérience digitale conçues pour rendre l’offre plus
                 claire, renforcer la crédibilité et simplifier la prise de contact.
               </p>
-              <ul className={styles.factList}>
+              <ul className={styles.factList} aria-label="Éléments réalisés">
                 <li>Clarification des prestations</li>
                 <li>Identité cohérente</li>
                 <li>Expérience mobile optimisée</li>
               </ul>
-              <div className={styles.actions}>
-                <ButtonLink href="/realisations/sw-car-cleaning" variant="inverse">
-                  Découvrir la réalisation
-                </ButtonLink>
-                <BookingButton variant="inverseSecondary">
-                  Créer une expérience similaire
-                </BookingButton>
-              </div>
+              <ButtonLink href="/realisations/sw-car-cleaning" ctaId="home_sw_case" variant="inverse" withArrow>
+                Découvrir la réalisation
+              </ButtonLink>
             </div>
             {swCarCleaning.externalUrl ? (
               <InteractiveSitePreview
@@ -129,32 +122,44 @@ export default function HomePage() {
 
       <Section id="pour-qui" surface="sunken" ruled spacing="tight">
         <Container>
-          <div className={styles.companies}>
+          <div className={styles.sectionIntro}>
             <SectionHeading
               eyebrow="Entreprises de services"
-              title="Conçu pour les entreprises qui vendent un véritable savoir-faire."
-              lead="Qualifyr accompagne des entreprises de services qui ont besoin d’être mieux comprises, mieux présentées et plus facilement contactées."
+              title="Conçu pour les entreprises où la confiance précède la prise de contact."
+              lead="Qualifyr accompagne les entreprises de services dont le savoir-faire doit être compris et crédible avant le premier échange."
             />
-            <ul className={styles.companyList}>
-              {serviceCompanies.map((company, index) => (
-                <li key={company}>
-                  <span>{String(index + 1).padStart(2, '0')}</span>
-                  {company}
-                </li>
-              ))}
-            </ul>
-            <p className={styles.companyNote}>
-              Une même exigence de clarté, adaptée au fonctionnement réel de chaque activité.
-            </p>
           </div>
+          <ol className={styles.companyList}>
+            {serviceCompanies.map((company, index) => (
+              <li key={company.title}>
+                <Link
+                  href={company.href}
+                  className={styles.companyLink}
+                  data-cta-id={company.href === '/conciergerie' ? 'home_concierge_page' : 'home_cleaning_page'}
+                >
+                  <span className={styles.companyNumber}>{String(index + 1).padStart(2, '0')}</span>
+                  <span className={styles.companyCopy}>
+                    <span className={styles.companyTitle}>{company.title}</span>
+                    <span className={styles.companyBody}>{company.body}</span>
+                    <span className={styles.companyBody}>Découvrir notre approche</span>
+                  </span>
+                  <span className={styles.companyArrow} aria-hidden="true">↗</span>
+                </Link>
+              </li>
+            ))}
+          </ol>
+          <p className={styles.companyNote}>
+            Une même exigence de clarté, adaptée au fonctionnement réel de chaque activité.
+          </p>
         </Container>
       </Section>
 
-      <Section ruled spacing="tight">
+      <Section id="methode" spacing="tight" ruled>
         <Container>
           <SectionHeading
             eyebrow="Notre méthode"
-            title="Une méthode claire. Aucun effet inutile."
+            title="Quatre étapes. Une direction claire."
+            lead="Nous avançons sans ajouter de complexité inutile à votre quotidien."
           />
           <ol className={styles.methodGrid}>
             {method.map((step) => (
@@ -166,23 +171,17 @@ export default function HomePage() {
         </Container>
       </Section>
 
-      <Section surface="raised" ruled spacing="tight" id="laboratoire">
+      <Section id="laboratoire" surface="raised" spacing="tight" ruled>
         <Container>
           <CreativeLab />
         </Container>
       </Section>
 
-      <Section id="estimation" surface="sunken" ruled spacing="tight">
-        <Container>
-          <OfferConfigurator />
-        </Container>
-      </Section>
-
-      <Section surface="inverse" spacing="tight" className={styles.finalSection}>
+      <Section spacing="tight" ruled className={styles.finalSection}>
         <Container>
           <div className={styles.finalCta}>
             <div>
-              <Eyebrow inverse>Votre prochaine étape</Eyebrow>
+              <Eyebrow>Votre prochaine étape</Eyebrow>
               <h2>Votre activité est déjà solide. Sa présentation doit l’être aussi.</h2>
               <p>
                 Parlez-nous de votre entreprise et découvrons comment mieux traduire votre
@@ -190,8 +189,13 @@ export default function HomePage() {
               </p>
             </div>
             <div className={styles.finalActions}>
-              <BookingButton variant="inverse" withArrow>Réserver un échange</BookingButton>
-              <WhatsAppDiagnosticButton variant="inverseSecondary">Faire le diagnostic WhatsApp</WhatsAppDiagnosticButton>
+              <BookingButton ctaId="final_booking" withArrow>Réserver un échange</BookingButton>
+              <DiagnosticLink ctaId="final_diagnostic" variant="secondary">
+                Faire le diagnostic
+              </DiagnosticLink>
+              <ButtonLink href="/estimation" ctaId="estimation_start" variant="text">
+                Obtenir une première estimation
+              </ButtonLink>
             </div>
           </div>
         </Container>

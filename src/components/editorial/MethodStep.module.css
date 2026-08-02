@@ -52,9 +52,9 @@
 
 .title {
   margin: 0;
-  font-family: var(--family-display);
+  font-family: var(--family-text);
   font-size: var(--text-xl);
-  font-weight: var(--weight-regular);
+  font-weight: var(--weight-bold);
   line-height: var(--leading-snug);
   transition: transform var(--duration-base) var(--ease-out);
 }

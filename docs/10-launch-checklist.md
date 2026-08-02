@@ -1,5 +1,21 @@
 # 10 — Checklist de lancement
 
+## Diagnostic en cinq étapes — contrôle avant mise en ligne
+
+- [ ] Parcours complet testé au clavier et au toucher, de l'introduction à la vérification
+- [ ] Retour vers chaque étape depuis le résumé sans perte de réponse
+- [ ] Limites testées : trois origines de demandes, deux priorités
+- [ ] URL sans protocole normalisée et e-mail invalide refusé
+- [ ] Consentement obligatoire et politique de confidentialité accessible
+- [ ] Message WhatsApp relu sur un appareil réel, sans champ vide ni valeur technique
+- [ ] Envoi principal `POST /api/diagnostic` testé avec Resend, puis en configuration absente
+- [ ] Échec serveur affiché sans faux succès ; repli WhatsApp présenté comme non envoyé
+- [ ] Branches nettoyage automobile, conciergerie et autre service testées de bout en bout
+- [ ] Reprise et abandon d'une session inachevée testés sans restauration silencieuse
+- [ ] CTA diagnostic et CTA WhatsApp direct vérifiés comme deux actions distinctes
+- [ ] Bouton calendrier absent lorsque `NEXT_PUBLIC_QUALIFYR_BOOKING_URL` est vide
+- [ ] Données de session supprimées après un envoi réussi
+
 À dérouler dans l'ordre. **Tant qu'un point bloquant n'est pas coché, le domaine ne se
 connecte pas.**
 
@@ -46,7 +62,7 @@ envoyer — ils ne prétendent jamais avoir transmis. Détail : `docs/11`.
 - [ ] Compte Resend créé
 - [ ] **Domaine `qualifyragence.com` vérifié chez Resend** (enregistrements DNS).
       Sans domaine vérifié, l'envoi est refusé.
-- [ ] `RESEND_API_KEY` générée et posée dans Vercel
+- [ ] `RESEND_API_KEY` générée et posée dans Netlify
 - [ ] `CONTACT_TO_EMAIL` posée
 - [ ] `CONTACT_FROM_EMAIL` posée, sur le domaine vérifié
 - [ ] Aucune de ces valeurs n'est dans le dépôt — vérifier `git log -p | grep -i "re_"`
@@ -55,7 +71,7 @@ envoyer — ils ne prétendent jamais avoir transmis. Détail : `docs/11`.
 
 ## D. Test réel des formulaires — **BLOQUANT**
 
-Sur l'aperçu Vercel, avec les vraies clés.
+Sur l'aperçu Netlify, avec les vraies clés uniquement si le test d'envoi est autorisé.
 
 - [ ] **Diagnostic** — envoi complet, e-mail bien reçu, `reply_to` correct
 - [ ] Diagnostic testé pour nettoyage automobile, detailing, conciergerie et « autre »
@@ -68,7 +84,7 @@ Sur l'aperçu Vercel, avec les vraies clés.
 - [ ] Double clic sur Envoyer → un seul e-mail
 - [ ] Confirmation affichée à la place du formulaire, sans redirection
 - [ ] Six envois d'affilée → le sixième est refusé (limitation de débit)
-- [ ] Vérifier les journaux Vercel : **aucune donnée personnelle**
+- [ ] Vérifier les journaux Netlify : **aucune donnée personnelle**
 
 ---
 
@@ -98,7 +114,7 @@ Détail et noms de fichiers attendus : `docs/06`.
 - [ ] Photographies du métier
 - [ ] **Un texte alternatif écrit à la main pour chaque image** — le typage l'impose,
       une image sans `alt` fait échouer le build
-- [ ] Logo Qualifyr définitif → `Logo.tsx` et `icon.svg`
+- [x] Logo Qualifyr intégré → en-tête, menu, footer, favicon, icônes du manifest et Open Graph
 - [ ] Image de partage à refaire si le logo change → `public/images/og/`
 
 ---
@@ -137,13 +153,13 @@ Sur appareils réels, pas seulement en simulateur.
 
 Dans cet ordre, sans en sauter.
 
-- [ ] Aperçu Vercel validé de bout en bout
+- [ ] Aperçu Netlify validé de bout en bout
 - [ ] Redirections 301 en place
 - [ ] `NEXT_PUBLIC_SITE_INDEXABLE=true` configuré en **Production uniquement**
 - [ ] Vérifier : `robots.txt` autorise, `sitemap.xml` contient les 9 URL,
       les pages sont en `index, follow`
 - [ ] `NEXT_PUBLIC_SITE_URL` posée sur le domaine final
-- [ ] Domaine connecté dans Vercel
+- [x] Domaine déjà connecté au projet Netlify de production — ne pas modifier les DNS
 - [ ] HTTPS actif, certificat valide
 - [ ] Redirection `www` → apex, ou l'inverse — **une seule** version servie
 - [ ] `http` → `https`
@@ -168,8 +184,13 @@ Dans cet ordre, sans en sauter.
 
 ## K. Contrôles à relancer avant chaque mise en ligne
 
+- [ ] `/estimation` répond 200, possède une canonical propre et apparaît une seule fois dans le sitemap
+- [ ] L'accueil ne contient ni configurateur ni prix et ne charge qu'une iframe SW Car Cleaning
+- [ ] Le Laboratoire affiche exactement trois concepts, sans atelier de palette ni scénario
+- [ ] Les CTA calendrier, WhatsApp et estimation fonctionnent au clavier et sur mobile
+
 ```bash
-npm run test        # 48 tests
+npm run test        # 77 tests
 npm run lint
 npm run typecheck
 npm run build

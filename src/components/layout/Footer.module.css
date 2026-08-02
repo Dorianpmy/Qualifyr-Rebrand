@@ -1,30 +1,135 @@
 .footer {
   padding-block: var(--space-10) calc(var(--space-6) + var(--safe-bottom));
+  background-color: var(--surface-page);
+  color: var(--text-primary);
+  border-block-start: var(--border-width) solid var(--rule-hairline);
+}
+
+.cta {
+  display: grid;
+  gap: var(--space-7);
+  padding: clamp(var(--space-7), 7vw, var(--space-11));
   background-color: var(--surface-inverse);
   color: var(--text-inverse);
+  border: var(--border-width) solid var(--rule-inverse);
+  border-radius: var(--radius-sm);
+}
+
+.ctaCopy {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.ctaEyebrow,
+.columnTitle,
+.areaLabel {
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-semibold);
+  line-height: 1.2;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.ctaEyebrow {
+  color: var(--color-brass);
+}
+
+.ctaTitle {
+  max-inline-size: 18ch;
+  font-size: var(--text-4xl) !important;
+}
+
+.ctaText {
+  max-inline-size: 58ch;
+  color: var(--text-inverse-secondary);
+}
+
+.ctaActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: center;
 }
 
 .grid {
   display: grid;
   gap: var(--space-8);
-  padding-block-end: var(--space-8);
-  border-block-end: var(--border-width) solid var(--rule-inverse);
+  padding-block: var(--space-10) var(--space-8);
+  border-block-end: var(--border-width) solid var(--rule-hairline);
+}
+
+.brandColumn {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+}
+
+.logoLink {
+  display: inline-flex;
+  min-block-size: 2.75rem;
+  align-items: center;
+  text-decoration: none;
 }
 
 .positioning {
-  max-inline-size: 32ch;
+  max-inline-size: 39ch;
   margin-block-start: var(--space-5);
   font-family: var(--family-text);
-  font-size: var(--text-lg);
-  line-height: var(--leading-normal);
-  color: var(--text-inverse);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--text-secondary);
 }
 
-.domain {
-  margin-block-start: var(--space-5);
+.socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-block-start: var(--space-6);
+}
+
+.socialLink {
+  display: inline-flex;
+  min-block-size: 2.75rem;
+  gap: var(--space-2);
+  align-items: center;
+  padding-inline: var(--space-3);
+  border: var(--border-width) solid var(--rule-strong);
   font-size: var(--text-xs);
-  letter-spacing: 0.04em;
-  color: var(--text-inverse-secondary);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+  color: var(--text-primary);
+  background-size: 160% 160%;
+  background-position: 0% 50%;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    background-position var(--duration-base) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.socialLink[data-network='instagram'] {
+  border-color: transparent;
+  background-image: linear-gradient(135deg, #833ab4 0%, #d62976 42%, #f56040 72%, #feda75 100%);
+  color: #fff;
+}
+
+.socialLink[data-network='tiktok'] {
+  border-color: transparent;
+  background-image: linear-gradient(135deg, #25f4ee 0%, #111 24%, #111 72%, #fe2c55 100%);
+  color: #fff;
+}
+
+.socialLink:hover {
+  color: var(--text-inverse);
+  background-position: 100% 50%;
+  transform: translateY(-2px);
+}
+
+.socialIcon {
+  flex: 0 0 auto;
+  inline-size: 1rem;
+  block-size: 1rem;
 }
 
 .columnTitle {
@@ -34,8 +139,7 @@
   font-weight: var(--weight-semibold) !important;
   line-height: 1.2 !important;
   letter-spacing: var(--tracking-wide) !important;
-  text-transform: uppercase;
-  color: var(--color-brass);
+  color: var(--text-accent);
 }
 
 .list {
@@ -46,19 +150,20 @@
 
 .link {
   position: relative;
-  display: inline-block;
-  min-block-size: 1.75rem;
+  display: inline-flex;
+  min-block-size: 2.75rem;
+  align-items: center;
   font-size: var(--text-sm);
   font-weight: var(--weight-semibold);
   text-decoration: none;
-  color: var(--text-inverse);
+  color: var(--text-primary);
   transition:
     color var(--duration-fast) var(--ease-out),
     transform var(--duration-base) var(--ease-out);
 }
 
 .link:hover {
-  color: var(--color-sand);
+  color: var(--text-accent);
   transform: translateX(0.3rem);
 }
 
@@ -79,9 +184,23 @@
   transform: scaleX(1);
 }
 
-.channelValue {
+.detail {
   font-size: var(--text-sm);
-  color: var(--text-inverse);
+  color: var(--text-secondary);
+}
+
+.areaLabel {
+  margin-block-start: var(--space-7);
+  margin-block-end: var(--space-4);
+  color: var(--text-accent);
+}
+
+.areaList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2) var(--space-4);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
 }
 
 .baseline {
@@ -91,32 +210,55 @@
   justify-content: space-between;
   padding-block-start: var(--space-6);
   font-size: var(--text-2xs);
-  color: var(--text-inverse-secondary);
+  color: var(--text-secondary);
 }
 
-/* Colonnes adaptatives : la colonne « Contact » n'existe que si un canal est
-   réellement renseigné. Une grille à nombre fixe de colonnes laisserait donc
-   une piste vide. `auto-fit` s'ajuste au nombre réel d'enfants. */
+.legalList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+}
+
+.legalLink {
+  display: inline-flex;
+  min-block-size: 2.75rem;
+  align-items: center;
+  font-weight: var(--weight-medium);
+  text-underline-offset: 0.3em;
+}
+
 @media (min-width: 48rem) {
+  .cta {
+    grid-template-columns: minmax(0, 7fr) minmax(17rem, 4fr);
+    align-items: end;
+  }
+
+  .ctaActions {
+    justify-content: flex-end;
+  }
+
   .grid {
-    grid-template-columns: minmax(0, 1.5fr) repeat(auto-fit, minmax(9rem, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-8) var(--space-7);
   }
 }
 
 @media (min-width: 62rem) {
   .grid {
+    grid-template-columns: minmax(0, 1.65fr) repeat(3, minmax(0, 1fr));
     gap: var(--space-9);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .link,
-  .link::after {
+  .link::after,
+  .socialLink {
     transition: none;
   }
 
-  .link:hover {
+  .link:hover,
+  .socialLink:hover {
     transform: none;
   }
 }

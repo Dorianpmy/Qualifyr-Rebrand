@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 
 import { Container } from '@/components/layout/Container';
 import { Section } from '@/components/layout/Section';
-import { CallToAction } from '@/components/editorial/CallToAction';
 import { EditorialCard } from '@/components/editorial/EditorialCard';
 import { SectionHeading } from '@/components/editorial/SectionHeading';
 import { QuoteBlock } from '@/components/editorial/QuoteBlock';
@@ -97,18 +96,6 @@ export default function AProposPage() {
         </Container>
       </Section>
 
-      <Section surface="raised" ruled>
-        <Container>
-          <CallToAction
-            light
-            eyebrow="Prendre contact"
-            title="Dites-nous où vous en êtes."
-          >
-            Votre activité, votre zone, vos prestations, et ce qui vous freine aujourd’hui.
-            Nous vous dirons franchement ce qui mérite d’être clarifié en premier.
-          </CallToAction>
-        </Container>
-      </Section>
     </>
   );
 }

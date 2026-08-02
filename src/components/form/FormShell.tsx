@@ -17,18 +17,22 @@ export function ErrorSummary({
   formError,
   summaryRef,
   labels,
+  title,
 }: {
   errors: FieldErrors;
   formError: string | null;
   summaryRef: RefObject<HTMLDivElement | null>;
   labels: Readonly<Record<string, string>>;
+  title?: string;
 }) {
   const entries = Object.entries(errors);
   if (entries.length === 0 && !formError) return null;
 
   return (
     <div className={styles.summary} role="alert" tabIndex={-1} ref={summaryRef}>
-      <p className={styles.summaryTitle}>{formError ?? formLabels.errorSummaryTitle}</p>
+      <p className={styles.summaryTitle}>
+        {formError ?? title ?? formLabels.errorSummaryTitle}
+      </p>
       {entries.length > 0 ? (
         <>
           <p>{formLabels.errorSummaryIntro}</p>

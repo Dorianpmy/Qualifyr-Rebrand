@@ -93,9 +93,9 @@ export const retention = {
 /**
  * Mesure d'audience et cookies.
  *
- * **Aucun outil de mesure n'est installé.** Aucun cookie n'est déposé : ni
- * publicitaire, ni de mesure, ni de préférence. Le site ne stocke rien dans le
- * navigateur. Ne modifier ces valeurs qu'en même temps que le code.
+ * **Aucun fournisseur de mesure n'est installé.** Aucun cookie n'est déposé.
+ * Le stockage de session sert uniquement à reprendre le diagnostic et à garder
+ * l'origine non personnelle d'une campagne pendant l'onglet courant.
  */
 export const tracking = {
   analytics: null as string | null,

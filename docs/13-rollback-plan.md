@@ -1,5 +1,10 @@
 # 13 — Plan de retour arrière
 
+> **État actuel (août 2026).** Netlify est resté la plateforme de production. Les sections
+> Vercel ci-dessous documentent une migration envisagée puis abandonnée ; elles sont conservées
+> comme historique. Le retour arrière actuel consiste à republier l'ancien déploiement Netlify
+> immuable documenté ci-dessous, sans changer les DNS et sans supprimer aucun déploiement.
+
 ## Principe
 
 La migration vers Vercel doit rester réversible. L’ancien projet Netlify, son déploiement

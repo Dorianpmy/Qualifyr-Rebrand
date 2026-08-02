@@ -1,48 +1,42 @@
 'use client';
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { useEffect, useId, useRef, useState, type CSSProperties } from 'react';
-import { WhatsAppDiagnosticButton } from '@/components/agency/WhatsAppDiagnostic';
-import { InteractiveSitePreview } from '@/components/editorial/InteractiveSitePreview';
+import { useId, useRef, useState } from 'react';
+import { BookingButton } from '@/components/agency/BookingButton';
 import { creativeLab, type CreativeLabItem } from '@/content/creative-lab';
-import { swCarCleaning } from '@/content/sw-car-cleaning';
 import styles from './CreativeLab.module.css';
 
-const curatedPalettes = [
-  { name: 'Terre', colors: ['#171513', '#30231e', '#8b452f', '#d9cbb8', '#f5f0e7'] },
-  { name: 'Minéral', colors: ['#201f1d', '#55504a', '#8d8277', '#d8d1c8', '#f7f4ee'] },
-  { name: 'Éditorial', colors: ['#151515', '#3b302a', '#a9573f', '#c9aa7a', '#fbf7ef'] },
-] as const;
+const identityColors = ['#171513', '#30231e', '#8b452f', '#d9cbb8', '#f5f0e7'] as const;
 
-const conciergeScenarios = {
-  sejour: { label: 'Préparer un séjour', eyebrow: 'Votre séjour', title: 'Chaque détail au bon moment', steps: ['Découvrir', 'Préciser', 'Confirmer'] },
-  service: { label: 'Organiser un service', eyebrow: 'Votre demande', title: 'Un besoin clairement cadré', steps: ['Comprendre', 'Organiser', 'Coordonner'] },
-  accompagnement: { label: 'Être accompagné', eyebrow: 'Votre situation', title: 'Un accompagnement plus lisible', steps: ['Écouter', 'Préparer', 'Accompagner'] },
-} as const;
-
-function ConceptVisual({ type, palette, conciergeScenario = 'sejour' }: { type: CreativeLabItem['visual']; palette?: readonly string[]; conciergeScenario?: keyof typeof conciergeScenarios }) {
+function ConceptVisual({ type }: { type: CreativeLabItem['visual'] }) {
   if (type === 'conciergerie') {
-    const scenario = conciergeScenarios[conciergeScenario];
     return (
       <div className={`${styles.conceptVisual} ${styles.conciergeVisual}`} aria-hidden="true">
         <span className={styles.conciergeMark}>C</span>
-        <div className={styles.conciergeCard}><small>{scenario.eyebrow}</small><strong>{scenario.title}</strong><i /></div>
-        <ol>{scenario.steps.map((step) => <li key={step}>{step}</li>)}</ol>
+        <div className={styles.conciergeCard}>
+          <small>Votre demande</small>
+          <strong>Chaque détail au bon moment</strong>
+          <i />
+        </div>
+        <ol><li>Comprendre</li><li>Préciser</li><li>Confirmer</li></ol>
       </div>
     );
   }
+
   if (type === 'identity') {
-    const colors = palette ?? curatedPalettes[0].colors;
-    const paletteStyle = { '--palette-dark': colors[0], '--palette-paper': colors[4] } as CSSProperties;
     return (
-      <div className={`${styles.conceptVisual} ${styles.identityVisual}`} style={paletteStyle} aria-hidden="true">
+      <div className={`${styles.conceptVisual} ${styles.identityVisual}`} aria-hidden="true">
         <div className={styles.identityType}>Aa</div>
-        <div className={styles.identityCard}><span>Nom de marque</span><b>Une signature cohérente.</b></div>
-        <div className={styles.swatches}>{colors.map((color) => <i style={{ backgroundColor: color }} key={color} />)}</div>
+        <div className={styles.identityCard}>
+          <span>Nom de marque</span>
+          <b>Une signature cohérente.</b>
+        </div>
+        <div className={styles.swatches}>
+          {identityColors.map((color) => <i style={{ backgroundColor: color }} key={color} />)}
+        </div>
       </div>
     );
   }
+
   return (
     <div className={`${styles.conceptVisual} ${styles.motionVisual}`} aria-hidden="true">
       <div className={styles.motionFrame}><span>01</span><strong>Comprendre</strong><i /></div>
@@ -54,24 +48,24 @@ function ConceptVisual({ type, palette, conciergeScenario = 'sejour' }: { type: 
 
 export function CreativeLab() {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const lastTriggerRef = useRef<HTMLButtonElement>(null);
   const titleId = useId();
   const [activeItem, setActiveItem] = useState<CreativeLabItem | null>(null);
-  const [palette, setPalette] = useState<string[]>([...curatedPalettes[0].colors]);
-  const [conciergeScenario, setConciergeScenario] = useState<keyof typeof conciergeScenarios>('sejour');
 
-  useEffect(() => {
-    if (!activeItem) return;
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') dialogRef.current?.close();
-    };
-    document.addEventListener('keydown', closeOnEscape);
-    return () => document.removeEventListener('keydown', closeOnEscape);
-  }, [activeItem]);
-
-  const openConcept = (item: CreativeLabItem) => {
+  function openConcept(item: CreativeLabItem, trigger: HTMLButtonElement) {
+    lastTriggerRef.current = trigger;
     setActiveItem(item);
     requestAnimationFrame(() => dialogRef.current?.showModal());
-  };
+  }
+
+  function closeConcept() {
+    dialogRef.current?.close();
+  }
+
+  function restoreFocus() {
+    setActiveItem(null);
+    lastTriggerRef.current?.focus();
+  }
 
   return (
     <>
@@ -80,105 +74,80 @@ export function CreativeLab() {
           <p className={styles.eyebrow}>{creativeLab.eyebrow}</p>
           <h2>{creativeLab.title}</h2>
         </div>
-        <p>{creativeLab.subtitle}</p>
+        <div className={styles.headingCopy}>
+          <p>{creativeLab.subtitle}</p>
+          <small>{creativeLab.disclaimer}</small>
+        </div>
       </div>
-      <p className={styles.disclaimer}>{creativeLab.disclaimer}</p>
 
       <div className={styles.grid}>
-        {creativeLab.items.map((item, index) => {
-          const hasLivePreview = item.featured && item.image && swCarCleaning.externalUrl;
-          const content = (
-            <>
-              <div className={styles.media}>
-                {hasLivePreview ? (
-                  <InteractiveSitePreview
-                    url={swCarCleaning.externalUrl!}
-                    title="Site SW Carcleaning interactif"
-                    domain="swcarcleaning.ch"
-                    caption="Site réel · Fribourg"
-                    compact
-                  />
-                ) : item.image ? (
-                  <Image src={item.image.src} alt={item.image.alt} width={item.image.width} height={item.image.height} sizes="(min-width: 62rem) 66vw, 100vw" unoptimized />
-                ) : <ConceptVisual type={item.visual} />}
+        {creativeLab.items.map((item, index) => (
+          <article
+            className={`${styles.card} ${item.visual === 'conciergerie' ? styles.primary : styles.secondary}`}
+            data-visual={item.visual}
+            key={item.id}
+          >
+            <div className={styles.media}>
+              <ConceptVisual type={item.visual} />
+            </div>
+            <div className={styles.cardBody}>
+              <div className={styles.meta}>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <b data-status={item.status}>{item.statusLabel}</b>
               </div>
-              <div className={styles.cardBody}>
-                <div className={styles.meta}>
-                  <span className={styles.sequence}>{String(index + 1).padStart(2, '0')}</span>
-                  <span className={styles.status} data-status={item.status}>{item.statusLabel}</span>
-                  <small>{item.subtitle}</small>
-                </div>
-                <div className={styles.cardHeading}>
-                  <h3>{item.title}</h3>
-                  <span aria-hidden="true">↗</span>
-                </div>
-                <p>{item.description}</p>
-                {item.explores ? (
-                  <ul className={styles.explores} aria-label="Axes explorés">
-                    {item.explores.map((point) => <li key={point}>{point}</li>)}
-                  </ul>
-                ) : null}
-                {item.href ? (
-                  <Link href={item.href} className={styles.cardAction}>Découvrir le projet <b aria-hidden="true">→</b></Link>
-                ) : (
-                  <span className={styles.cardAction}>Explorer le concept <b aria-hidden="true">→</b></span>
-                )}
-              </div>
-            </>
-          );
-          return item.href ? (
-            <article className={`${styles.card} ${item.featured ? styles.featured : ''}`} key={item.id}>{content}</article>
-          ) : (
-            <button type="button" className={styles.card} onClick={() => openConcept(item)} key={item.id}>{content}</button>
-          );
-        })}
+              <small className={styles.category}>{item.subtitle}</small>
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+              {item.explores ? (
+                <ul className={styles.axes} aria-label="Axes explorés">
+                  {item.explores.slice(0, 3).map((point) => <li key={point}>{point}</li>)}
+                </ul>
+              ) : null}
+              <span className={styles.cardAction}>Explorer le concept <b aria-hidden="true">→</b></span>
+            </div>
+            <button
+              type="button"
+              className={styles.clickTarget}
+              aria-label={`Explorer le concept ${item.title}`}
+              onClick={(event) => openConcept(item, event.currentTarget)}
+            />
+          </article>
+        ))}
       </div>
 
-      <dialog ref={dialogRef} className={styles.dialog} aria-labelledby={titleId} onClose={() => setActiveItem(null)}>
-        {activeItem && (
+      <dialog
+        ref={dialogRef}
+        className={styles.dialog}
+        aria-labelledby={titleId}
+        onClose={restoreFocus}
+      >
+        {activeItem ? (
           <div className={styles.dialogShell}>
-            <div className={styles.dialogHeader}><div><p>{activeItem.statusLabel}</p><h2 id={titleId}>{activeItem.title}</h2></div><button type="button" aria-label="Fermer le concept" onClick={() => dialogRef.current?.close()}>×</button></div>
-            <ConceptVisual
-              type={activeItem.visual}
-              conciergeScenario={conciergeScenario}
-              {...(activeItem.visual === 'identity' ? { palette } : {})}
-            />
-            {activeItem.visual === 'identity' && (
-              <section className={styles.workshop} aria-labelledby={`${titleId}-palette`}>
-                <div><p>Atelier palette</p><h3 id={`${titleId}-palette`}>Trouvez une harmonie qui vous ressemble.</h3></div>
-                <div className={styles.paletteChoices}>
-                  {curatedPalettes.map((choice) => (
-                    <button type="button" onClick={() => setPalette([...choice.colors])} key={choice.name}>
-                      <span>{choice.colors.map((color) => <i style={{ backgroundColor: color }} key={color} />)}</span>
-                      <b>{choice.name}</b>
-                    </button>
-                  ))}
-                </div>
-                <fieldset className={styles.customPalette}>
-                  <legend>Ou composez votre palette</legend>
-                  {palette.map((color, index) => (
-                    <label key={`${index}-${color}`}><span>Couleur {index + 1}</span><input type="color" value={color} onChange={(event) => setPalette((current) => current.map((item, itemIndex) => itemIndex === index ? event.target.value : item))} /></label>
-                  ))}
-                </fieldset>
-              </section>
-            )}
-            {activeItem.visual === 'conciergerie' && (
-              <section className={styles.workshop} aria-labelledby={`${titleId}-scenario`}>
-                <div><p>Parcours interactif</p><h3 id={`${titleId}-scenario`}>Quel besoin souhaitez-vous mettre en scène ?</h3></div>
-                <div className={styles.scenarioChoices}>
-                  {Object.entries(conciergeScenarios).map(([id, scenario]) => (
-                    <button type="button" data-selected={conciergeScenario === id} onClick={() => setConciergeScenario(id as keyof typeof conciergeScenarios)} key={id}>{scenario.label}</button>
-                  ))}
-                </div>
-              </section>
-            )}
-            <div className={styles.dialogCopy}>
-              <div><p>{activeItem.modalContent}</p><small>{activeItem.status === 'coming-soon' ? 'Concept créatif en cours de développement.' : creativeLab.disclaimer}</small></div>
-              <div><h3>Ce que ce concept explore</h3><ul>{activeItem.explores?.map((point) => <li key={point}>{point}</li>)}</ul></div>
+            <div className={styles.dialogHeader}>
+              <div>
+                <p>{activeItem.statusLabel}</p>
+                <h2 id={titleId}>{activeItem.title}</h2>
+              </div>
+              <button type="button" aria-label="Fermer le concept" onClick={closeConcept}>×</button>
             </div>
-            <div className={styles.dialogFooter}><WhatsAppDiagnosticButton onClick={() => dialogRef.current?.close()}>Parler de mon projet</WhatsAppDiagnosticButton></div>
+            <ConceptVisual type={activeItem.visual} />
+            <div className={styles.dialogCopy}>
+              <div>
+                <p>{activeItem.modalContent}</p>
+                <small>{activeItem.status === 'coming-soon' ? 'Exploration créative en préparation.' : creativeLab.disclaimer}</small>
+              </div>
+              <div>
+                <h3>Axes explorés</h3>
+                <ul>{activeItem.explores?.slice(0, 3).map((point) => <li key={point}>{point}</li>)}</ul>
+              </div>
+            </div>
+            <div className={styles.dialogFooter}>
+              <BookingButton ctaId="laboratoire_booking" onClick={closeConcept}>
+                Parler de mon projet
+              </BookingButton>
+            </div>
           </div>
-        )}
+        ) : null}
       </dialog>
     </>
   );

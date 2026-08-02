@@ -10,13 +10,14 @@ ignorés par Git.
 
 | Variable | Obligatoire | Secret | Où la poser | Sans elle |
 |---|---|---|---|---|
-| `RESEND_API_KEY` | oui, pour l'envoi | **oui** | Vercel + `.env.local` | Envoi impossible |
-| `CONTACT_TO_EMAIL` | oui, pour l'envoi | non | Vercel + `.env.local` | Envoi impossible |
-| `CONTACT_FROM_EMAIL` | oui, pour l'envoi | non | Vercel + `.env.local` | Envoi impossible |
-| `NEXT_PUBLIC_SITE_URL` | non | **non — publique** | Vercel | Repli `https://qualifyragence.com` |
-| `NEXT_PUBLIC_SITE_INDEXABLE` | oui en production finale | **non — publique** | Vercel Production uniquement | Site et sitemap maintenus hors index |
-| `NEXT_PUBLIC_QUALIFYR_BOOKING_URL` | non | **non — publique** | Vercel + `.env.local` | Boutons vers Contact |
-| `NEXT_PUBLIC_QUALIFYR_WHATSAPP_NUMBER` | non | **non — publique** | Vercel + `.env.local` | Résumé affiché sans lien WhatsApp |
+| `RESEND_API_KEY` | oui, pour l'envoi | **oui** | Netlify + `.env.local` | Envoi impossible |
+| `CONTACT_TO_EMAIL` | oui, pour l'envoi | non | Netlify + `.env.local` | Envoi impossible |
+| `CONTACT_FROM_EMAIL` | oui, pour l'envoi | non | Netlify + `.env.local` | Envoi impossible |
+| `NEXT_PUBLIC_SITE_URL` | non | **non — publique** | Netlify | Repli `https://qualifyragence.com` |
+| `NEXT_PUBLIC_SITE_INDEXABLE` | oui en production finale | **non — publique** | Netlify Production uniquement | Site et sitemap maintenus hors index |
+| `NEXT_PUBLIC_QUALIFYR_BOOKING_URL` | non | **non — publique** | Netlify + `.env.local` | Boutons vers Contact |
+| `NEXT_PUBLIC_QUALIFYR_WHATSAPP_NUMBER` | non | **non — publique** | Netlify + `.env.local` | Résumé affiché sans lien WhatsApp |
+| `GOOGLE_SITE_VERIFICATION` | non | non | Production + `.env.local` | Aucune balise de validation Search Console |
 
 **Aucune variable secrète ne porte le préfixe `NEXT_PUBLIC_`.** Ce préfixe expose la valeur
 au navigateur : il est réservé à l'URL du site, qui est publique par nature.
@@ -70,8 +71,8 @@ Sert aux liens absolus des e-mails, à `metadataBase`, aux `canonical`, au `site
 aux données structurées. Sans elle, le repli est `https://qualifyragence.com` — donc rien à
 poser tant que le domaine final ne change pas.
 
-Sur un aperçu Vercel, la renseigner avec l'URL d'aperçu évite des `canonical` pointant vers
-un site qui n'existe pas encore.
+Sur un aperçu Netlify, elle reste définie sur le domaine final : les `canonical` ne doivent
+jamais désigner une URL temporaire de preview. L'aperçu reste simultanément en `noindex`.
 
 ### `NEXT_PUBLIC_SITE_INDEXABLE` — publique
 
@@ -81,6 +82,13 @@ sitemap. Toute autre valeur maintient `noindex`, bloque les robots et renvoie un
 Cette variable ne doit être ajoutée qu'à l'environnement **Production**, après validation du
 domaine canonique, des informations légales et des formulaires. Elle ne doit jamais être
 configurée sur une preview.
+
+### `GOOGLE_SITE_VERIFICATION`
+
+Jeton fourni par Google Search Console pour valider la propriété du site avec une balise
+HTML. Le renseigner sans le préfixe `google-site-verification=`. Lorsqu'il est absent, aucune
+balise vide n'est générée. Cette variable ne remplace pas la validation DNS d'une propriété
+de domaine et sa valeur n'est jamais affichée dans l'interface.
 
 ---
 
@@ -92,7 +100,14 @@ rendez-vous terminée par `?gv=true`. `NEXT_PUBLIC_QUALIFYR_WHATSAPP_NUMBER` con
 au format international, chiffres uniquement. Ces valeurs sont publiques par nature.
 
 Si elles manquent ou sont invalides, le site ne génère aucun lien cassé : la réservation
-renvoie vers Contact et le diagnostic conserve son résumé avec des alternatives.
+renvoie vers Contact et le diagnostic conserve son canal d'envoi serveur.
+
+Sur `/diagnostic`, l'envoi sécurisé vers `POST /api/diagnostic` est toujours l'action finale
+principale. Le numéro WhatsApp sert uniquement à construire une URL `wa.me` après une réussite
+réelle ou comme repli manuel explicitement présenté après un échec. Il ne remplace jamais
+l'endpoint et aucune demande n'est envoyée à WhatsApp en arrière-plan. Les CTA WhatsApp directs
+utilisent, eux, un message court sans réponses de diagnostic. L'URL de réservation reste
+secondaire et est entièrement masquée lorsqu'elle est absente.
 
 ---
 
@@ -125,10 +140,11 @@ Resend.
 
 ---
 
-## 5. En production, sur Vercel
+## 5. En production, sur Netlify
 
-Project Settings → Environment Variables. Une par une, pour l'environnement **Production**
-(et **Preview** si l'on veut tester l'envoi réel sur un aperçu).
+Site configuration → Environment variables. Les variables secrètes ne sont ajoutées à la
+preview que si un test réel d'envoi est explicitement autorisé. La variable
+`NEXT_PUBLIC_SITE_INDEXABLE=true` est réservée au contexte **Production**.
 
 Après ajout ou modification : **redéployer**. Les variables sont lues au démarrage, pas à
 chaud.

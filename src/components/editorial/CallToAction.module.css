@@ -12,7 +12,7 @@
   margin: 0;
   font-family: var(--family-display);
   font-size: var(--text-4xl);
-  font-weight: var(--weight-regular);
+  font-weight: var(--weight-semibold);
   line-height: var(--leading-tight);
   letter-spacing: var(--tracking-tight);
 }

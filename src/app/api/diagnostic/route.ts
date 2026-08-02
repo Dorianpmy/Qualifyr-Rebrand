@@ -14,7 +14,10 @@ export async function POST(request: Request) {
     kind: 'diagnostic',
     schema: diagnosticSchema,
     notification: diagnosticNotification,
-    identity: (data) => ({ fullName: data.fullName, email: data.email }),
+    identity: (data) => ({
+      fullName: [data.firstName, data.lastName].filter(Boolean).join(' '),
+      email: data.email,
+    }),
     antiSpam: (data) => ({ fax: data.fax, elapsedMs: data.elapsedMs }),
   });
 

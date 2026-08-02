@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { LinkTarget } from '@/types';
 import { primaryCta } from '@/content/brand';
 import { ButtonLink } from '@/components/ui/Button';
 import { Eyebrow } from '@/components/ui/Eyebrow';
@@ -23,6 +24,8 @@ type CallToActionProps = {
   /** Sur fond clair au lieu du bloc charbon. */
   light?: boolean;
   className?: string | undefined;
+  actionHref?: LinkTarget;
+  ctaId?: string | undefined;
 };
 
 /**
@@ -44,6 +47,8 @@ export function CallToAction({
   actionLabel,
   light = false,
   className,
+  actionHref = primaryCta.href,
+  ctaId,
 }: CallToActionProps) {
   const classes = [styles.cta, light ? styles.light : null, className]
     .filter(Boolean)
@@ -62,7 +67,7 @@ export function CallToAction({
       <div className={styles.aside}>
         {children ? <div className={styles.body}>{children}</div> : null}
         <div className={styles.actions}>
-          <ButtonLink href={primaryCta.href} variant={light ? 'primary' : 'inverse'} withArrow>
+          <ButtonLink href={actionHref} ctaId={ctaId} variant={light ? 'primary' : 'inverse'} withArrow>
             {actionLabel ?? primaryCta.label}
           </ButtonLink>
           {secondaryAction}

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { primaryNav } from '@/content/navigation';
 import { brand } from '@/content/brand';
-import { WhatsAppDiagnosticButton } from '@/components/agency/WhatsAppDiagnostic';
+import { WhatsAppDirectButton } from '@/components/agency/WhatsAppDirectButton';
 import { Icon } from '@/components/ui/Icon';
 import { Logo } from '@/components/ui/Logo';
 import styles from './MobileNavigation.module.css';
@@ -135,9 +135,9 @@ export function MobileNavigation({ pathname }: MobileNavigationProps) {
 
           <div className={styles.foot}>
             <p className={styles.footNote}>{brand.descriptor}</p>
-            <WhatsAppDiagnosticButton onClick={close}>
+            <WhatsAppDirectButton onClick={close}>
               Discuter sur WhatsApp
-            </WhatsAppDiagnosticButton>
+            </WhatsAppDirectButton>
           </div>
         </div>
       ) : null}

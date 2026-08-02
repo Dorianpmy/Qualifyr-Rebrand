@@ -1,21 +1,11 @@
 .heading {
   display: grid;
-  gap: var(--space-5);
+  gap: var(--space-6);
   align-items: end;
 }
 
-.heading h2 {
-  max-inline-size: 13ch;
-  margin-block-start: var(--space-3);
-}
-
-.heading > p {
-  max-inline-size: 52ch;
-  color: var(--text-secondary);
-  font-size: var(--text-lg);
-}
-
 .eyebrow {
+  margin-block-end: var(--space-3);
   color: var(--color-copper-deep);
   font-size: var(--text-xs);
   font-weight: var(--weight-bold);
@@ -23,139 +13,142 @@
   text-transform: uppercase;
 }
 
-.disclaimer {
-  max-inline-size: 72ch;
-  margin-block-start: var(--space-5);
-  padding-block: var(--space-3);
-  border-block: 1px solid var(--rule-hairline);
+.heading h2 {
+  max-inline-size: 16ch;
+}
+
+.headingCopy {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.headingCopy > p {
+  max-inline-size: 46ch;
   color: var(--text-secondary);
-  font-size: var(--text-sm);
+  font-size: var(--text-lg);
+}
+
+.headingCopy small {
+  max-inline-size: 64ch;
+  color: var(--text-secondary);
+  font-size: var(--text-xs);
 }
 
 .grid {
   display: grid;
-  gap: var(--space-4);
-  margin-block-start: var(--space-7);
+  gap: var(--space-5);
+  margin-block-start: var(--space-8);
 }
 
 .card {
   position: relative;
   display: grid;
+  grid-template-rows: auto 1fr;
   min-inline-size: 0;
-  padding: 0;
-  overflow: hidden;
+  overflow: clip;
   border: 1px solid var(--rule-hairline);
-  border-radius: 0;
-  background: var(--surface-raised);
+  border-radius: var(--radius-sm);
+  background: var(--surface-page);
   color: var(--text-primary);
-  font: inherit;
-  text-align: start;
-  text-decoration: none;
-  cursor: pointer;
-  transition:
-    border-color var(--duration-base) var(--ease-out),
-    background-color var(--duration-base) var(--ease-out);
+  transition: border-color 380ms var(--ease-out), background-color 380ms var(--ease-out), transform 380ms var(--ease-out);
 }
 
-.card:hover {
-  border-color: var(--rule-strong);
-  background: var(--surface-page);
+.clickTarget {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.clickTarget:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -4px;
 }
 
 .media {
   position: relative;
-  min-block-size: 16rem;
+  z-index: 1;
+  min-block-size: 15rem;
   overflow: hidden;
   background: var(--color-espresso);
 }
 
-.media > img {
-  inline-size: 100%;
+.conceptVisual {
+  position: relative;
   block-size: 100%;
-  object-fit: cover;
-  object-position: top center;
-  animation: lab-zoom 18s var(--ease-out) infinite alternate;
+  min-block-size: 15rem;
+  overflow: hidden;
+  transition: transform 420ms var(--ease-out);
 }
 
 .cardBody {
+  position: relative;
+  z-index: 1;
   display: grid;
+  gap: var(--space-3);
   align-content: start;
-  gap: var(--space-4);
-  padding: clamp(1.35rem, 3vw, 2.25rem);
-}
-
-.cardHeading {
-  display: flex;
-  gap: var(--space-4);
-  align-items: start;
-  justify-content: space-between;
-}
-
-.cardHeading h3 {
-  font-size: clamp(1.65rem, 2.4vw, 2.3rem);
-  line-height: 1.05;
-}
-
-.cardHeading > span {
-  color: var(--color-copper-deep);
-  font-size: 1.35rem;
-  transition: transform var(--duration-base) var(--ease-out);
-}
-
-.card:hover .cardHeading > span {
-  transform: translate(0.2rem, -0.2rem);
-}
-
-.cardBody > p {
-  max-inline-size: 44ch;
-  color: var(--text-secondary);
+  min-inline-size: 0;
+  padding: clamp(1.35rem, 3vw, 2rem);
 }
 
 .meta {
-  display: grid;
-  grid-template-columns: auto auto minmax(0, 1fr);
-  gap: var(--space-2) var(--space-3);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
   align-items: center;
 }
 
-.sequence {
+.meta > span {
   color: var(--color-copper-deep);
   font-size: var(--text-3xs);
   font-weight: var(--weight-bold);
-  font-variant-numeric: tabular-nums;
   letter-spacing: var(--tracking-wide);
 }
 
-.status {
+.meta > b {
+  min-block-size: 1.75rem;
   padding: 0.35rem 0.55rem;
   border: 1px solid var(--rule-strong);
   font-size: var(--text-3xs);
-  font-weight: var(--weight-bold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.status[data-status='realisation'] {
+.meta > b[data-status='coming-soon'] {
   border-color: var(--color-copper-deep);
-  background: var(--color-copper-deep);
-  color: var(--text-inverse);
+  background: color-mix(in srgb, var(--color-copper) 10%, transparent);
+  color: var(--color-copper-deep);
 }
 
-.meta small {
-  overflow: hidden;
+.category {
   color: var(--text-secondary);
   font-size: var(--text-xs);
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-.explores {
+.cardBody h3 {
+  max-inline-size: 14ch;
+  font-size: clamp(2rem, 3vw, 3rem);
+  line-height: 0.98;
+}
+
+.cardBody > p {
+  max-inline-size: 42ch;
+  color: var(--text-secondary);
+}
+
+.axes {
   display: grid;
   margin-block-start: var(--space-2);
   border-block-start: 1px solid var(--rule-hairline);
 }
 
-.explores li {
+.axes li {
   padding-block: var(--space-2);
   border-block-end: 1px solid var(--rule-hairline);
   color: var(--text-secondary);
@@ -163,123 +156,188 @@
 }
 
 .cardAction {
+  display: inline-flex;
+  gap: var(--space-2);
+  min-block-size: 2.75rem;
   margin-block-start: auto;
   padding-block-start: var(--space-3);
-  color: inherit;
+  align-items: center;
   font-weight: var(--weight-semibold);
-  text-decoration: none;
 }
 
 .cardAction b {
-  margin-inline-start: var(--space-2);
   color: var(--color-copper-deep);
+  transition: transform 380ms var(--ease-out);
 }
 
-.featured {
-  border-color: var(--color-espresso);
+.conciergeVisual {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr);
+  gap: var(--space-4);
+  align-items: center;
+  padding: clamp(1.5rem, 4vw, 2.75rem);
+  padding-block-end: 4.25rem;
   background: var(--color-espresso);
   color: var(--text-inverse);
-  cursor: default;
 }
 
-.featured:hover {
-  border-color: var(--color-copper);
-  background: var(--color-espresso);
+.conciergeMark {
+  color: var(--color-brass);
+  font-family: var(--family-display);
+  font-size: clamp(5rem, 9vw, 7.5rem);
+  font-weight: var(--weight-semibold);
+  line-height: 0.7;
 }
 
-.featured .media {
+.conciergeCard {
   display: grid;
-  place-items: center;
-  padding: clamp(1rem, 2.5vw, 2.25rem);
-  background: var(--color-ink);
-}
-
-.featured .media > figure {
-  inline-size: 100%;
-  max-inline-size: none;
-}
-
-.featured .media > img {
-  inline-size: 100%;
-  block-size: auto;
-  max-block-size: 34rem;
-  object-fit: contain;
+  gap: var(--space-2);
+  padding: var(--space-4);
   border: 1px solid var(--rule-inverse);
 }
 
-.featured .cardBody {
-  align-content: center;
-  padding: clamp(1.75rem, 4vw, 3.5rem);
-  background: var(--color-espresso);
-}
+.conciergeCard small { color: var(--color-sand); }
+.conciergeCard i { inline-size: 3rem; block-size: 2px; margin-block-start: var(--space-2); background: var(--color-brass); }
 
-.featured .cardBody > p,
-.featured .meta small {
+.conciergeVisual ol {
+  position: absolute;
+  inset-inline: var(--space-5);
+  inset-block-end: var(--space-4);
+  display: flex;
+  gap: var(--space-3);
+  justify-content: space-between;
   color: var(--color-stone);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
 }
 
-.featured .sequence,
-.featured .cardHeading > span,
-.featured .cardAction b {
-  color: var(--color-brass);
+.identityVisual {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.25fr);
+  grid-template-rows: 1fr auto;
+  gap: var(--space-4);
+  padding: clamp(1.25rem, 3vw, 2rem);
+  background: #e7ddcf;
+  color: var(--color-ink);
 }
 
-.featured .cardAction {
-  margin-block-start: var(--space-4);
+.identityType {
+  font-family: var(--family-display);
+  font-size: clamp(4.25rem, 8vw, 6.5rem);
+  font-weight: var(--weight-semibold);
+  line-height: 0.8;
+}
+
+.identityCard {
+  display: grid;
+  gap: var(--space-2);
+  align-content: center;
+  padding: var(--space-4);
+  border: 1px solid var(--rule-hairline);
+  background: var(--surface-raised);
+}
+
+.identityCard span { color: var(--text-secondary); font-size: var(--text-xs); }
+
+.swatches {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  block-size: 2.25rem;
+}
+
+.motionVisual {
+  display: grid;
+  gap: var(--space-3);
+  align-content: center;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  background: var(--color-ink);
   color: var(--text-inverse);
 }
-.conceptVisual { position: relative; block-size: 100%; min-block-size: 16rem; overflow: hidden; color: var(--text-inverse); }
-.conciergeVisual { display: grid; grid-template-columns: 1fr 1.6fr; gap: var(--space-5); align-items: center; padding: clamp(1.5rem, 4vw, 3rem); background: var(--color-espresso); }
-.conciergeMark { font-family: var(--family-display); font-size: 8rem; line-height: 0.7; color: var(--color-brass); }
-.conciergeCard { display: grid; gap: var(--space-2); padding: var(--space-4); border: 1px solid var(--rule-inverse); }
-.conciergeCard small { color: var(--color-sand); }
-.conciergeCard i { inline-size: 3rem; block-size: 2px; margin-block-start: var(--space-3); background: var(--color-brass); }
-.conciergeVisual ol { position: absolute; inset-inline: var(--space-5); inset-block-end: var(--space-4); display: flex; justify-content: space-between; gap: var(--space-2); color: var(--color-stone); font-size: var(--text-2xs); text-transform: uppercase; }
-.identityVisual { display: grid; grid-template-columns: 1fr 1.5fr; grid-template-rows: 1fr auto; gap: var(--space-4); padding: clamp(1.5rem, 4vw, 3rem); background: color-mix(in srgb, var(--palette-paper) 76%, var(--color-sand)); color: var(--palette-dark); transition: background-color var(--duration-base) var(--ease-out), color var(--duration-base) var(--ease-out); }
-.identityType { font-family: var(--family-display); font-size: 6rem; line-height: 0.8; }
-.identityCard { display: grid; align-content: center; gap: var(--space-2); padding: var(--space-4); background: var(--surface-raised); border: 1px solid var(--rule-hairline); }
-.identityCard span { color: var(--text-secondary); font-size: var(--text-xs); }
-.swatches { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(5, 1fr); block-size: 2.5rem; }
-.motionVisual { display: grid; gap: var(--space-3); align-content: center; padding: clamp(1.5rem, 4vw, 3rem); background: var(--color-ink); }
-.motionFrame { position: relative; display: grid; grid-template-columns: auto 1fr; gap: var(--space-3); padding: var(--space-4); border: 1px solid var(--rule-inverse); }
-.motionFrame span { color: var(--color-brass); font-size: var(--text-2xs); }.motionFrame i { grid-column: 2; inline-size: 40%; block-size: 2px; background: var(--color-brass); }
-.motionLine { position: absolute; inset-inline: 12%; inset-block-end: 18%; block-size: 1px; background: var(--color-copper); animation: motion-line 10s var(--ease-out) infinite alternate; }
-.dialog { inline-size: min(62rem, calc(100% - 2rem)); max-block-size: calc(100dvh - 2rem); margin: auto; padding: 0; border: 1px solid var(--rule-hairline); background: var(--surface-page); color: var(--text-primary); overflow: auto; }.dialog::backdrop { background: color-mix(in srgb, var(--color-ink) 78%, transparent); }
-.dialogShell { display: grid; gap: var(--space-5); padding: clamp(1.25rem, 4vw, 2.5rem); }.dialogHeader { display: flex; justify-content: space-between; gap: var(--space-5); }.dialogHeader p { color: var(--color-copper-deep); font-size: var(--text-xs); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }.dialogHeader h2 { margin-block-start: var(--space-2); }.dialogHeader button { flex: 0 0 auto; inline-size: 2.875rem; block-size: 2.875rem; border: 1px solid var(--rule-strong); font-size: 1.5rem; }.dialogCopy { display: grid; gap: var(--space-6); }.dialogCopy p { max-inline-size: 62ch; font-size: var(--text-lg); }.dialogCopy small { display: block; margin-block-start: var(--space-3); color: var(--text-secondary); }.dialogCopy h3 { margin-block-end: var(--space-3); }.dialogCopy ul { display: grid; gap: var(--space-2); }.dialogCopy li { padding-block-start: var(--space-2); border-block-start: 1px solid var(--rule-hairline); }.dialogFooter { padding-block-start: var(--space-4); border-block-start: 1px solid var(--rule-hairline); }
-.workshop { display: grid; gap: var(--space-5); padding: var(--space-5); border: 1px solid var(--rule-hairline); background: var(--surface-raised); }.workshop > div:first-child > p { color: var(--color-copper-deep); font-size: var(--text-2xs); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }.workshop h3 { margin-block-start: var(--space-2); }.paletteChoices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); }.paletteChoices button { display: grid; gap: var(--space-2); padding: var(--space-3); border: 1px solid var(--rule-hairline); text-align: start; }.paletteChoices button > span { display: grid; grid-template-columns: repeat(5, 1fr); block-size: 1.5rem; }.customPalette { display: flex; flex-wrap: wrap; gap: var(--space-3); padding: 0; border: 0; }.customPalette legend { inline-size: 100%; margin-block-end: var(--space-2); font-weight: var(--weight-semibold); }.customPalette label { display: grid; gap: var(--space-1); color: var(--text-secondary); font-size: var(--text-2xs); }.customPalette input { inline-size: 3.25rem; block-size: 2.5rem; padding: 0.15rem; border: 1px solid var(--rule-strong); background: transparent; }.scenarioChoices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); }.scenarioChoices button { min-block-size: 3rem; padding: var(--space-3); border: 1px solid var(--rule-strong); font-weight: var(--weight-semibold); }.scenarioChoices button[data-selected='true'] { border-color: var(--color-copper-deep); background: var(--color-copper-deep); color: var(--text-inverse); }
-@keyframes motion-line { from { transform: scaleX(0.25); transform-origin: left; } to { transform: scaleX(1); transform-origin: left; } }
-@keyframes lab-zoom { from { transform: scale(1); } to { transform: scale(1.025); } }
+
+.motionFrame {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--rule-inverse);
+  transition: border-color 420ms var(--ease-out);
+}
+
+.motionFrame span { color: var(--color-brass); font-size: var(--text-2xs); }
+.motionFrame i { grid-column: 2; inline-size: 40%; block-size: 2px; background: var(--color-brass); transition: inline-size 420ms var(--ease-out); }
+.motionLine { position: absolute; inset-inline: 12%; inset-block-end: 14%; block-size: 1px; background: var(--color-copper); transform: scaleX(0.3); transform-origin: left; transition: transform 420ms var(--ease-out); }
+
+.dialog {
+  inline-size: min(62rem, calc(100% - 2rem));
+  max-block-size: calc(100dvh - 2rem);
+  margin: auto;
+  padding: 0;
+  overflow: auto;
+  border: 1px solid var(--rule-hairline);
+  background: var(--surface-page);
+  color: var(--text-primary);
+}
+
+.dialog::backdrop { background: color-mix(in srgb, var(--color-ink) 78%, transparent); }
+.dialogShell { display: grid; gap: var(--space-5); padding: clamp(1.25rem, 4vw, 2.5rem); }
+.dialogHeader { display: flex; gap: var(--space-5); justify-content: space-between; }
+.dialogHeader p { color: var(--color-copper-deep); font-size: var(--text-xs); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+.dialogHeader h2 { margin-block-start: var(--space-2); }
+.dialogHeader button { flex: 0 0 auto; inline-size: 2.875rem; block-size: 2.875rem; border: 1px solid var(--rule-strong); font-size: 1.5rem; }
+.dialogCopy { display: grid; gap: var(--space-6); }
+.dialogCopy p { max-inline-size: 60ch; font-size: var(--text-lg); }
+.dialogCopy small { display: block; margin-block-start: var(--space-3); color: var(--text-secondary); }
+.dialogCopy h3 { margin-block-end: var(--space-3); }
+.dialogCopy li { padding-block: var(--space-2); border-block-start: 1px solid var(--rule-hairline); }
+.dialogFooter { padding-block-start: var(--space-4); border-block-start: 1px solid var(--rule-hairline); }
+
 @media (min-width: 48rem) {
   .heading { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); }
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .featured { grid-column: 1 / -1; grid-template-columns: minmax(0, 1.65fr) minmax(18rem, 0.75fr); }
-  .featured .media { min-block-size: 27rem; }
-  .grid > .card:nth-child(4) { grid-column: 1 / -1; grid-template-columns: minmax(16rem, 0.8fr) minmax(0, 1.2fr); }
-  .dialogCopy { grid-template-columns: 1.2fr 0.8fr; }
+  .primary { grid-column: 1 / -1; }
+  .dialogCopy { grid-template-columns: minmax(0, 1.2fr) minmax(15rem, 0.8fr); }
 }
+
 @media (min-width: 75rem) {
   .grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
-  .featured { grid-column: 1 / -1; grid-template-columns: minmax(0, 1.85fr) minmax(20rem, 0.65fr); }
-  .featured .media { min-block-size: 29rem; }
-  .grid > .card:nth-child(2) { grid-column: 1 / 8; grid-row: span 2; }
-  .grid > .card:nth-child(2) .media { min-block-size: 23rem; }
-  .grid > .card:nth-child(3),
-  .grid > .card:nth-child(4) {
-    grid-column: 8 / -1;
-    grid-template-columns: minmax(12rem, 0.78fr) minmax(0, 1.22fr);
+  .primary { grid-column: span 6; }
+  .secondary { grid-column: span 3; }
+  .card { min-block-size: 35rem; }
+  .primary { min-block-size: 38rem; }
+  .media, .conceptVisual { min-block-size: 16rem; }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:is(:hover, :focus-within) {
+    border-color: var(--rule-strong);
+    background: var(--surface-raised);
+    transform: translateY(-0.2rem);
   }
-  .grid > .card:nth-child(3) .explores,
-  .grid > .card:nth-child(4) .explores { display: none; }
-  .grid > .card:nth-child(3) .media,
-  .grid > .card:nth-child(4) .media { min-block-size: 18rem; }
+
+  .card:is(:hover, :focus-within) .conceptVisual { transform: scale(1.012); }
+  .card:is(:hover, :focus-within) .cardAction b { transform: translateX(0.35rem); }
+  .card[data-visual='motion']:is(:hover, :focus-within) .motionFrame { border-color: var(--color-brass); }
+  .card[data-visual='motion']:is(:hover, :focus-within) .motionFrame i { inline-size: 72%; }
+  .card[data-visual='motion']:is(:hover, :focus-within) .motionLine { transform: scaleX(1); }
 }
+
 @media (max-width: 47.99rem) {
-  .media, .conceptVisual { min-block-size: 13rem; }
-  .cardBody { padding: var(--space-4); }
-  .meta { grid-template-columns: auto auto; }
-  .meta small { grid-column: 1 / -1; white-space: normal; }
-  .dialog { inline-size: 100%; max-block-size: 100dvh; block-size: 100dvh; border: 0; }
+  .media,
+  .conceptVisual { min-block-size: clamp(13rem, 66vw, 18rem); }
+  .cardBody { padding: var(--space-5); }
+  .conciergeVisual { padding: var(--space-5); padding-block-end: 4.25rem; }
+  .identityCard { padding: var(--space-3); }
+  .dialog { inline-size: 100%; block-size: 100dvh; max-block-size: 100dvh; border: 0; }
   .dialogShell { min-block-size: 100%; padding-block-end: calc(var(--space-5) + var(--safe-bottom)); }
-  .paletteChoices, .scenarioChoices { grid-template-columns: 1fr; }
 }
-@media (prefers-reduced-motion: reduce) { .card { transition: none; }.card:hover { transform: none; }.media img, .motionLine { animation: none; }.motionLine { transform: scaleX(0.7); transform-origin: left; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .conceptVisual,
+  .cardAction b,
+  .motionFrame,
+  .motionFrame i,
+  .motionLine { transition: none; }
+  .card:hover { transform: none; }
+}

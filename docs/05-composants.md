@@ -1,5 +1,36 @@
 # 05 — Composants
 
+## Diagnostic guidé — mise à jour du 1er août 2026
+
+Le diagnostic commercial possède désormais **une seule source de vérité** : la route
+`/diagnostic`. Aucun questionnaire WhatsApp parallèle ne doit être maintenu. Les
+responsabilités des actions commerciales sont séparées explicitement :
+
+- `DiagnosticLink` mène toujours vers `/diagnostic`, quel que soit l'état de la
+  configuration WhatsApp ;
+- `WhatsAppDirectButton` ouvre uniquement une conversation directe avec le message court
+  public, sans collecter ni prétendre transmettre des réponses ;
+- `DiagnosticForm` valide les cinq étapes, envoie d'abord vers `POST /api/diagnostic`, puis
+  propose WhatsApp et le calendrier uniquement après une réponse serveur réussie ;
+- le résumé WhatsApp structuré est généré par `buildDiagnosticWhatsAppMessage`, sans champ
+  vide ni identifiant technique ;
+- `useFormSubmission` peut signaler une session inachevée afin que la personne choisisse
+  explicitement de la reprendre ou de recommencer.
+
+La modale historique `WhatsAppDiagnostic` et son événement global sont supprimés : ils
+dupliquaient la collecte et permettaient de contourner l'envoi serveur.
+
+`DiagnosticForm` orchestre désormais huit états : introduction, cinq étapes, vérification et
+confirmation. Les choix sont de vrais boutons radio ou cases à cocher, rendus sous forme de
+grandes lignes éditoriales. Un maximum de trois origines de demandes et de deux priorités est
+appliqué sans effacer les choix déjà faits.
+
+Le composant réutilise `Field`, `TextInput`, `TextArea`, `Consent`, `HoneypotField`,
+`ErrorSummary` et `Button`. La génération du message WhatsApp reste centralisée dans
+`src/lib/whatsapp.ts`. Le header global affiche une variante minimale sur `/diagnostic` et le
+footer, le bouton WhatsApp flottant et la relance d'inactivité y sont masqués afin de ne pas
+concurrencer le parcours.
+
 Design system de Qualifyr Agence. Ce document fait autorité sur l'usage des composants.
 Il se lit avec `docs/03-direction-artistique.md` (jetons, compositions) et
 `docs/01-positionnement.md` (vocabulaire).
@@ -31,6 +62,12 @@ qu'hors production : **ni la route ni sa feuille de style n'existent dans le bui
 
 ## 1. Inventaire
 
+### Acquisition et mesure
+
+- `AttributionCapture` : composant client global et invisible ; premier contact stable, dernier contact mis à jour uniquement lors d’une nouvelle campagne.
+- `src/lib/analytics.ts` : événements commerciaux typés, émis via `CustomEvent` et vers `dataLayer` uniquement lorsqu’elle existe déjà.
+- Les CTA prioritaires portent un identifiant stable. Aucun texte libre, e-mail, téléphone, budget exact ou réponse de formulaire n’est mesuré.
+
 ### `src/components/ui/` — primitives
 
 | Composant | Variantes | Rôle |
@@ -43,6 +80,7 @@ qu'hors production : **ni la route ni sa feuille de style n'existent dans le bui
 | `Eyebrow` | `bare` · `numbered` · `inverse` | Sur-titre en capitales espacées |
 | `Divider` | `tone` : `hairline` \| `accent` \| `inverse` · `short` · `spacing` | Filet de structure |
 | `Icon` | `arrow-right`, `arrow-up-right`, `plus`, `minus`, `close`, `menu` | Jeu d'icônes maison |
+| `BrandIcon` | `whatsapp`, `instagram`, `tiktok` | Pictogrammes SVG monochromes des canaux confirmés |
 
 ### `src/components/layout/` — mise en page
 
@@ -76,6 +114,9 @@ qu'hors production : **ni la route ni sa feuille de style n'existent dans le bui
 | `ComparisonPanel` | — | Comparatif avant / après |
 | `CasePlate` | `tone` : `sand` \| `ink` · `size` · `logo` · `priority` | Panneau d'identification d'un projet |
 | `CaseGallery` | `priorityFirst` | Galerie d'une étude de cas — masquée si vide |
+| `CreativeLab` | — | Portfolio asymétrique de concepts ouvrant leur étude ; les aperçus Identité et Motion réagissent horizontalement au survol et au focus |
+| `ArticleCard` | `featured` · `compact` | Entrée éditoriale du journal : numéro, catégorie, date, titre, résumé et lien de lecture |
+| `VerticalServicePage` | `content` | Page commerciale métier partagée : hero, freins, réponse Qualifyr, parcours, preuve ou concept, méthode, FAQ et CTA |
 
 ### `src/components/motion/` — mouvement
 
@@ -92,7 +133,33 @@ le hero, jamais sur une carte, jamais en cascade.
 |---|---|
 | `JsonLd` | Insertion d'un bloc de données structurées. Ne reçoit que des objets construits par `src/lib/structured-data.ts` — jamais de saisie visiteur. |
 
+Les schémas globaux décrivent `Organization` / `ProfessionalService` et `WebSite`. L'accueil
+ajoute `WebPage`, la page de création de site ajoute `Service`, et les fils d'Ariane visibles
+peuvent ajouter `BreadcrumbList`. Toute coordonnée ou URL sociale inconnue est omise.
+Le journal ajoute `Blog` et chaque article publié ajoute `BlogPosting` avec sa date réelle.
+
+### `ArticleCard`
+
+- Composant serveur, sans état ni dépendance.
+- La variante `featured` compose une une en deux colonnes sur grand écran ; `compact` sert
+  aux articles suivants sur la page du journal. L'accueil ne rend plus de carte d'article.
+- Le panneau visuel est typographique et décoratif (`aria-hidden`) : aucune image générique,
+  aucun faux écran et aucun projet fictif.
+- Toute la carte est un lien ; le titre reste le nom accessible principal.
+- Les publications futures ne lui sont jamais transmises.
+
 ### `src/components/form/` — formulaires
+
+Le `DiagnosticForm` est un parcours guidé en cinq étapes. Chaque étape est validée avant de
+continuer avec le même schéma partagé par le client et l’API. La progression est annoncée aux
+technologies d’assistance, les étapes restent modifiables depuis le récapitulatif et le focus
+est déplacé vers le titre de l’étape suivante sans modifier la position de lecture. Les
+données, les erreurs serveur, le champ piège et la protection contre le double envoi
+conservent leur fonctionnement existant.
+
+Les `Select` masquent uniquement la flèche système au profit d'un chevron CSS, sans remplacer
+le contrôle natif. Les groupes de cases gardent de vrais `input[type="checkbox"]`, visibles au
+clavier et annoncés par les lecteurs d'écran, dans des surfaces tactiles d'au moins 44 px.
 
 | Composant | Rôle |
 |---|---|
@@ -113,22 +180,17 @@ le hero, jamais sur une carte, jamais en cascade.
 
 ### `Logo` / `QualifyrMark`
 
-Verrouillage horizontal : le **Q** à gauche, `QUALIFYR` et `AGENCE` en capitales Manrope.
-La variante `stacked` restitue le lockup empilé de
-l'original, là où la hauteur n'est pas contrainte.
+Verrouillage horizontal : le nouveau **Q** à gauche, `QUALIFYR` et `AGENCE` dans le lockup
+fourni par Dorian. La variante `stacked` conserve une composition compacte lorsque la hauteur
+n'est pas contrainte.
 
-Le tracé du Q vient du logo fourni par Dorian, **en aplat monochrome** : le dégradé doré
-métallique de l'original n'est pas repris, `AGENTS.md` §5 et `docs/03` §1.6 l'interdisent.
-Le dessin est conservé au trait près. Décision, méthode de vectorisation et solutions de
-rechange : `docs/12-logo-qualifyr.md`.
+Le fond gris, le halo et le relief métallique du visuel de présentation ne sont pas repris.
+Le lockup est préparé en aplat charbon et bascule en ivoire sur les fonds sombres. Les
+déclinaisons, la limite de la source raster et le remplacement futur par le master vectoriel
+officiel sont documentés dans `docs/12-logo-qualifyr.md`.
 
-`QualifyrMark` n'écrit **aucune couleur** : elle suit `currentColor` et bascule d'elle-même
-en ivoire sur les fonds charbon. SVG inline — aucune requête réseau, aucun décalage de mise
-en page, 2 Ko de tracé.
-
-**À ne pas faire** : réintroduire un dégradé, ajouter une ombre, colorer la marque en laiton,
-la placer dans une pastille. Pour passer au fichier vectoriel d'origine, seul l'attribut `d`
-de `QualifyrMark.tsx` change.
+**À ne pas faire** : réintroduire un dégradé, ajouter une ombre, colorer la marque en laiton
+ou la placer dans une pastille.
 
 ---
 
@@ -249,6 +311,12 @@ prix complet sur douze mois.
 - réponses conservées au retour arrière ;
 - recommandations déterministes et testées ;
 - options ajoutées ou retirées sans masquer leur prix ;
+- grille tarifaire déterminée selon le code pays fourni par l'hébergeur : euros par défaut et
+  CHF pour la Suisse, sans sélecteur de pays dans l'interface ;
+- tarifs suisses calculés avec la règle commerciale documentée, puis arrondis à la dizaine
+  supérieure ; aucune adresse IP n'est transmise au composant ni conservée ;
+- prix présenté d'abord comme un équivalent mensuel exact sur 12 mois, avec une alternative
+  lisible « mise en place + suivi » et le total contractuel toujours visible ;
 - WhatsApp prérempli avec les réponses, le parcours, les options et l'estimation ;
 - calendrier secondaire et modification des réponses disponibles à l'étape finale.
 
@@ -256,13 +324,56 @@ prix complet sur douze mois.
 
 ### `Footer`
 
-Wordmark · phrase de positionnement · domaine · navigation · contact · liens légaux ·
-copyright dynamique (`new Date().getFullYear()`).
+Clôture globale en deux parties :
+
+1. un bloc d'appel à l'action charbon — « Prêt à transformer votre projet digital ? » —
+   avec un lien vers l'estimation et un lien vers le diagnostic ;
+2. un pied de page ivoire en quatre colonnes : marque, services, entreprise, coordonnées et
+   zone d'accompagnement, puis une ligne légale.
 
 **La colonne « Contact » n'apparaît que si `src/content/contact.ts` contient au moins un canal
-renseigné.** Sinon elle disparaît entièrement. Aucune adresse, aucun numéro d'entreprise,
-aucun téléphone, aucun horaire, aucun réseau social n'est inventé — c'est une règle, pas un
-état provisoire.
+renseigné.** Le lien vers le calendrier suit la même règle avec
+`NEXT_PUBLIC_QUALIFYR_BOOKING_URL`. Les réseaux sociaux viennent exclusivement de
+`contact.social`. Aucune adresse, aucun numéro d'entreprise, aucun téléphone, aucun horaire
+ni aucun réseau social n'est inventé — c'est une règle, pas un état provisoire.
+
+Les libellés de services respectent le vocabulaire public autorisé. Un service sans page
+dédiée renvoie vers le diagnostic, la méthode ou l'estimation selon l'action réellement
+disponible ; aucun lien vide ni route fictive n'est créé.
+
+Les liens Instagram et TikTok sont rendus sous forme de boutons éditoriaux avec pictogramme
+SVG et nom du réseau. Le bouton WhatsApp fixe remplace le sigle « WA » par le pictogramme de
+marque et expose aussi le mot « WhatsApp » au survol et au focus. Chaque cible conserve un
+nom accessible complet et une surface tactile d'au moins 44 px.
+
+---
+
+### `CreativeLab`
+
+Portfolio éditorial généré depuis `src/content/creative-lab.ts`, rendu sur la route
+`/laboratoire`. Il associe un concept principal et deux explorations secondaires sans
+dupliquer la structure des cartes ni la réalisation déjà présentée ailleurs.
+
+- introduction courte avec surtitre, titre et phrase de démarche ;
+- orientation légère avant la grille : trois besoins réels, une recommandation et un accès
+  direct à l'étude correspondante ; elle ne calcule aucun prix et ne remplace pas l'estimation ;
+- panneau d'orientation encadré, composé en deux colonnes sur desktop et en une seule colonne
+  sur mobile ; les choix sont des boutons complets avec numéro, texte, flèche et état pressé ;
+- recommandation intégrée au même panneau, avec un état d'attente explicite qui conserve la
+  hauteur du bloc sans donner l'impression d'un contenu manquant ;
+- grille desktop de douze colonnes : Conciergerie 7/12, colonne secondaire 5/12 ;
+- carte Conciergerie plafonnée en hauteur, avec titre et visuel réduits pour ne plus dominer
+  les autres études ; elle commence dès le premier rang et traverse les deux rangées ;
+- les deux cartes secondaires utilisent une composition verticale avec un visuel panoramique
+  au-dessus du texte afin d'éviter toute coupe ou colonne de lecture trop étroite ;
+- cartes verticales sur tablette et mobile, sans sous-grille susceptible de comprimer le texte ;
+- carte entière activable au clavier et au pointeur ;
+- fenêtre interactive conservée pour chaque concept ;
+- aucune réalisation réelle ni fenêtre distante : SW Car Cleaning reste présenté une seule
+  fois sur l'accueil puis sur ses pages dédiées ;
+- badge « En préparation » traité comme un statut éditorial valorisé ;
+- mouvement limité à une montée courte, un léger agrandissement du visuel et une flèche animée,
+  avec désactivation complète via `prefers-reduced-motion`.
 
 ---
 
@@ -284,6 +395,20 @@ pas de second composant de titre, afin que la hiérarchie reste vérifiable d'un
 
 **Un seul `level={1}` par page.** `split` rejette le chapô en colonne de droite sur grand
 écran — c'est la composition asymétrique par défaut du site.
+
+### `VerticalServicePage`
+
+Composant serveur réservé aux deux verticales officielles. Son contenu provient de
+`src/content/verticals.ts` et sa structure ne varie pas : un seul H1, sections sémantiques,
+listes éditoriales, FAQ native et clôture vers le diagnostic.
+
+- La variante `real` affiche une image réelle et un lien vers l'étude de cas.
+- La variante `concept` affiche une composition abstraite sans faux écran et nomme le concept
+  avant toute description.
+- Les cartes ne sont jamais dupliquées dans les fichiers de route ; les routes ne contiennent
+  que les métadonnées, le JSON-LD et la donnée à rendre.
+- Aucun chiffre, résultat, prix, témoignage, logo absent ou promesse temporelle ne peut être
+  ajouté dans ce composant.
 
 ---
 
@@ -617,30 +742,30 @@ sont réservés aux repères globaux de la page.
 
 ## 4bis. Structure de la page d'accueil
 
-Dix sections, dans cet ordre. L'alternance des surfaces porte le rythme : ivoire par défaut,
-blanc chaud pour les sections structurantes, sable pour la réalisation, **une seule section
-charbon** — la clôture.
+Huit temps éditoriaux, dans cet ordre. L'alternance des surfaces porte le rythme : ivoire par
+défaut, sable pour les respirations, **une seule section charbon** — la réalisation réelle.
 
 | # | Section | Surface | Composants |
 |---|---|---|---|
-| 1 | Hero | page | `Eyebrow`, `ButtonLink`, `HeroComposition` |
-| 2 | Le constat | page | `SectionHeading`, `EditorialCard` ×3 |
-| 3 | Résultats recherchés | raised | `SectionHeading`, `EditorialCard size="large"` ×3 |
-| 4 | Parcours client | page | `SectionHeading`, `JourneyTrack` |
-| 5 | L'offre | raised | `SectionHeading`, `EditorialCard` ×5 |
-| 6 | Avant / après | page | `SectionHeading`, `ComparisonPanel` |
-| 7 | Réalisation | sunken | `SectionHeading`, `CaseStudyCard` |
-| 8 | Méthode (`#notre-methode`) | page | `SectionHeading`, `MethodStep` ×4, `TextLink` |
-| 9 | FAQ | raised | `SectionHeading`, `FAQAccordion` |
-| 10 | Clôture | **inverse** | `CallToAction` |
+| 1 | Hero | page sur vidéo | `Eyebrow`, calendrier, WhatsApp et lien vers la réalisation |
+| 2 | Transformation | page | `SectionHeading`, résultats recherchés ×3 |
+| 3 | Réalisation | **inverse** | preuve factuelle + `InteractiveSitePreview` unique |
+| 4 | Entreprises | sunken | trois familles de services, sans déplacement au survol |
+| 5 | Méthode | page | `MethodStep` ×4 |
+| 6 | Laboratoire compact | raised | `CreativeLab` ×3, fenêtre accessible, aucun atelier |
+| 7 | Clôture | page | calendrier, WhatsApp et lien texte vers `/estimation` |
 
 Règles de la page :
 
 - **Un seul `<h1>`** : la promesse. Toutes les sections portent un `<h2>`.
-- **Un seul appel à l'action principal**, répété au hero et à la clôture, vers `/diagnostic`.
-- Le lien secondaire du hero pointe vers l'ancre `#notre-methode`, dans la page.
-- Aucune section ne dépasse trois blocs par rangée, sauf l'offre qui passe à trois colonnes
-  seulement au-delà de 992px (5 items → 3 + 2).
+- **Un seul appel à l'action principal** dans le hero : « Réserver un échange ».
+- Le diagnostic est secondaire et mène à `/diagnostic` ; le lien tertiaire pointe vers la
+  réalisation réelle. WhatsApp direct reste un canal séparé.
+- WhatsApp reste disponible dans l'en-tête et le bouton fixe ; le calendrier apparaît dans
+  le hero et la clôture.
+- L'estimation vit uniquement à `/estimation` et n'est jamais rendue dans l'accueil.
+- Le Journal reste sur sa route. Le Laboratoire apparaît en version compacte et conserve sa
+  route dédiée sans atelier de personnalisation.
 
 ---
 
@@ -651,12 +776,15 @@ la mise en page de l'accueil.
 
 | Page | Composition | Surfaces |
 |---|---|---|
-| `/methode` | Ouverture large + index des quatre temps, puis un diptyque décalé par étape (intention à gauche, contenu réel à droite) | alternance page / raised, puis sunken, clôture inverse |
+| `/methode` | Ouverture courte + grille unique des quatre temps, puis adaptation métier et principe d'outillage réunis | page → raised → sunken |
 | `/a-propos` | Ouverture en largeur de lecture, manifeste numéroté en trois colonnes larges, phrase manifeste centrée, bande « ce que nous ne faisons pas » en négatif | page → raised → page → sunken → **inverse** → raised |
-| `/diagnostic` | Ouverture courte, « ce qui se passe ensuite » en trois temps, puis formulaire avec colonne d'orientation collante | page → raised → page |
+| `/diagnostic` | Introduction autonome, cinq étapes conditionnelles, vérification éditable et confirmation après envoi serveur | page → sunken → inverse → page |
 | `/contact` | Deux colonnes serrées : orientation et coordonnées à gauche, formulaire court à droite. Page volontairement courte, sans bloc de clôture | page |
 | `/realisations` | Une entrée par bande pleine largeur, numérotée, `CasePlate` + descriptif | page, clôture inverse |
 | `/realisations/sw-car-cleaning` | Hero en diptyque avec panneau de projet, contexte à deux colonnes, objectifs en séquence numérotée, travail réalisé en négatif sur trois colonnes, galerie conditionnelle, enseignement | page → raised → page → **inverse** → sunken (si galerie) → raised → page |
+| `/blog` | Ouverture courte, une éditoriale, puis grille des articles précédents et orientation vers le diagnostic | page → raised → page |
+| `/blog/[slug]` | Ouverture en largeur de lecture, contenu séquencé, repère de publication et appel à l'action discret | page → raised → page |
+| `/laboratoire` | Ouverture courte, orientation en deux états puis portfolio asymétrique de trois concepts interactifs, sans réalisation dupliquée | page → raised |
 
 Note : `/contact` est la seule page sans `CallToAction` final. Y placer un appel à l'action
 vers le diagnostic juste sous un formulaire de contact serait redondant ; l'orientation vers

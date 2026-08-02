@@ -3,6 +3,12 @@ import type { Route } from '@/types';
 export const productionUrl = 'https://qualifyragence.com';
 export const productionDomain = 'qualifyragence.com';
 
+export const homeSeo = {
+  title: 'Qualifyr | Création de sites web et applications sur mesure',
+  description:
+    'Qualifyr conçoit des sites web, des applications et des solutions digitales sur mesure pour aider les entreprises à gagner en clarté, en efficacité et en clients.',
+} as const;
+
 /**
  * Configuration du site et métadonnées par page.
  *
@@ -12,8 +18,8 @@ export const productionDomain = 'qualifyragence.com';
  * `sitemap.xml`. Un seul interrupteur, actionné le jour de la mise en ligne.
  */
 export const site = {
-  /** Domaine canonique. Repli si `NEXT_PUBLIC_SITE_URL` n'est pas défini. */
-  url: process.env.NEXT_PUBLIC_SITE_URL?.trim() || productionUrl,
+  /** Domaine canonique public. Les previews pointent elles aussi vers ce domaine. */
+  url: productionUrl,
   locale: 'fr-FR',
   lang: 'fr',
   indexable: process.env.NEXT_PUBLIC_SITE_INDEXABLE === 'true',
@@ -39,15 +45,26 @@ type PageMeta = {
  */
 export const pageMeta: Readonly<Record<Route, PageMeta>> = {
   '/': {
-    title: 'Qualifyr — Agence digitale pour les entreprises de services',
-    description:
-      'Qualifyr clarifie votre offre, construit votre identité et conçoit le site qui aide vos prospects à vous comprendre, vous choisir et vous contacter.',
+    title: homeSeo.title,
+    description: homeSeo.description,
     priority: 1,
   },
   '/creation-site-web': {
     title: 'Création de site web sur mesure — Qualifyr',
     description:
       'Qualifyr conçoit des sites web clairs, rapides et adaptés aux besoins réels des entreprises, de la structure des contenus jusqu’à la prise de contact.',
+    priority: 0.9,
+  },
+  '/nettoyage-automobile': {
+    title: 'Site pour nettoyage automobile et detailing | Qualifyr',
+    description:
+      'Qualifyr aide les professionnels du nettoyage automobile et du detailing à clarifier leurs prestations, renforcer leur image et obtenir des demandes plus sérieuses.',
+    priority: 0.9,
+  },
+  '/conciergerie': {
+    title: 'Site pour conciergerie | Qualifyr',
+    description:
+      'Qualifyr aide les conciergeries à présenter clairement leur accompagnement, inspirer confiance et guider leurs prospects vers la bonne prise de contact.',
     priority: 0.9,
   },
   '/methode': {
@@ -68,6 +85,12 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
       'Le projet réalisé pour SW Carcleaning, lavage et detailing à domicile à Fribourg : identité, structure des formules et parcours de prise de contact.',
     priority: 0.7,
   },
+  '/laboratoire': {
+    title: 'Laboratoire créatif — Qualifyr',
+    description:
+      'Explorez les études créatives de Qualifyr autour de la conciergerie, de l’identité visuelle et du mouvement, clairement distinguées des projets clients.',
+    priority: 0.5,
+  },
   '/a-propos': {
     title: 'Agence spécialisée nettoyage auto et conciergeries — Qualifyr',
     description:
@@ -75,16 +98,28 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
     priority: 0.6,
   },
   '/diagnostic': {
-    title: 'Diagnostic de votre parcours client — Qualifyr',
+    title: 'Diagnostic de votre projet | Qualifyr',
     description:
-      'Présentez votre fonctionnement actuel et identifiez les points qui peuvent compliquer la compréhension, la réservation ou la fidélisation.',
+      'Présentez votre activité, vos priorités et votre projet afin de préparer un échange plus concret avec Qualifyr.',
     priority: 0.9,
+  },
+  '/estimation': {
+    title: 'Estimation de projet | Qualifyr',
+    description:
+      'Obtenez une première orientation et une estimation indicative avant un échange avec Qualifyr.',
+    priority: 0.8,
   },
   '/contact': {
     title: 'Contact — Qualifyr',
     description:
       'Une question sur notre façon de travailler ou sur votre situation en particulier ? Écrivez-nous. Pour une analyse détaillée, passez par le diagnostic.',
     priority: 0.5,
+  },
+  '/blog': {
+    title: 'Le journal — Conseils pour entreprises de services | Qualifyr',
+    description:
+      'Des articles concrets pour clarifier une offre, construire une identité, concevoir un site utile et simplifier la prise de contact.',
+    priority: 0.7,
   },
   '/mentions-legales': {
     title: 'Mentions légales — Qualifyr',

@@ -2,13 +2,9 @@ import type { Metadata } from 'next';
 
 import { Container } from '@/components/layout/Container';
 import { Section } from '@/components/layout/Section';
-import { CallToAction } from '@/components/editorial/CallToAction';
-import { EditorialCard } from '@/components/editorial/EditorialCard';
 import { SectionHeading } from '@/components/editorial/SectionHeading';
-import { Eyebrow } from '@/components/ui/Eyebrow';
 
 import {
-  methodCta,
   methodDetails,
   methodPage,
   toolsSection,
@@ -22,10 +18,9 @@ export const metadata: Metadata = buildMetadata('/methode');
 /**
  * Page Méthode.
  *
- * Composition propre : ouverture large avec index des quatre temps, puis un
- * diptyque décalé par étape (intention à gauche, contenu réel à droite), en
- * alternant les surfaces. Elle prolonge l'accueil sans le répéter — l'accueil
- * annonce les quatre temps, cette page dit ce qu'ils contiennent.
+ * Composition compacte : ouverture, grille des quatre temps, puis adaptation
+ * métier et principe d'outillage réunis. Elle prolonge l'accueil sans répéter
+ * chaque étape dans une bande pleine hauteur.
  */
 export default function MethodePage() {
   return (
@@ -47,84 +42,53 @@ export default function MethodePage() {
         </Container>
       </Section>
 
-      {methodDetails.map((step, index) => (
-        <Section
-          key={step.number}
-          surface={index % 2 === 0 ? 'page' : 'raised'}
-          ruled
-          spacing="tight"
-        >
-          <Container>
-            <div className={styles.step}>
-              <div className={styles.stepIntro}>
-                <span className={styles.stepNumber}>{step.number}</span>
-                <h2 className={styles.stepTitle}>{step.title}</h2>
-                <p className={styles.stepBody}>{step.body}</p>
-              </div>
-              <div>
-                <p className={styles.stepListLabel}>{step.itemsLabel}</p>
-                <ul className={styles.stepList}>
-                  {step.items.map((item) => (
-                    <li key={item} className={styles.stepItem}>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </Container>
-        </Section>
-      ))}
-
-      <Section ruled spacing="tight">
+      <Section surface="raised" ruled spacing="tight">
         <Container>
           <SectionHeading
-            eyebrow="Adaptation par métier"
-            title="Une méthode commune. Deux parcours concrets."
-            lead="Nous conservons les mêmes étapes, puis adaptons les informations et les moments de décision à votre activité."
+            eyebrow="Le parcours"
+            title="Quatre temps. Une progression claire."
+            lead="Chaque étape répond à une question précise et prépare la suivante."
           />
-          <div className={styles.principles}>
-            {verticalAdaptations.map((vertical) => (
-              <EditorialCard key={vertical.title} title={vertical.title}>
-                {vertical.body}
-              </EditorialCard>
+          <ol className={styles.steps}>
+            {methodDetails.map((step) => (
+              <li key={step.number} className={styles.step}>
+                <span className={styles.stepNumber}>{step.number}</span>
+                <h3 className={styles.stepTitle}>{step.title}</h3>
+                <p className={styles.stepBody}>{step.body}</p>
+                <p className={styles.stepListLabel}>{step.itemsLabel}</p>
+                <ul className={styles.stepList}>
+                  {step.items.map((item) => <li key={item}>{item}</li>)}
+                </ul>
+              </li>
             ))}
-          </div>
+          </ol>
         </Container>
       </Section>
 
-      <Section surface="sunken">
+      <Section surface="sunken" spacing="tight">
         <Container>
-          <div className={styles.tools}>
-            <div>
-              <Eyebrow>{toolsSection.eyebrow}</Eyebrow>
-              <SectionHeading title={toolsSection.title} className="stack-lg" />
+          <div className={styles.closing}>
+            <div className={styles.adaptations}>
+              <SectionHeading
+                eyebrow="Adaptation par métier"
+                title="Une méthode commune. Deux parcours concrets."
+                lead="Les mêmes principes, avec les informations propres à votre activité."
+              />
+              <div className={styles.verticals}>
+                {verticalAdaptations.map((vertical) => (
+                  <article key={vertical.title} className={styles.vertical}>
+                    <h3>{vertical.title}</h3>
+                    <p>{vertical.body}</p>
+                  </article>
+                ))}
+              </div>
             </div>
-            <div className={styles.toolsText}>
-              {toolsSection.body.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
-            </div>
-            <div className={styles.principles}>
-              {toolsSection.principles.map((principle) => (
-                <EditorialCard key={principle.title} title={principle.title}>
-                  {principle.body}
-                </EditorialCard>
-              ))}
-            </div>
+            <aside className={styles.toolsNote}>
+              <span>{toolsSection.eyebrow}</span>
+              <h3>{toolsSection.title}</h3>
+              <p>{toolsSection.body}</p>
+            </aside>
           </div>
-        </Container>
-      </Section>
-
-      <Section surface="inverse">
-        <Container>
-          <CallToAction
-            eyebrow={methodCta.eyebrow}
-            title={methodCta.title}
-            actionLabel={methodCta.label}
-          >
-            {methodCta.body}
-          </CallToAction>
         </Container>
       </Section>
     </>

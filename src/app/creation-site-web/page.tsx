@@ -3,7 +3,6 @@ import type { Metadata } from 'next';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { Container } from '@/components/layout/Container';
 import { Section } from '@/components/layout/Section';
-import { CallToAction } from '@/components/editorial/CallToAction';
 import { EditorialCard } from '@/components/editorial/EditorialCard';
 import { InteractiveSitePreview } from '@/components/editorial/InteractiveSitePreview';
 import { MethodStep } from '@/components/editorial/MethodStep';
@@ -120,18 +119,6 @@ export default function WebDesignPage() {
         </Container>
       </Section>
 
-      <Section surface="inverse">
-        <Container>
-          <CallToAction
-            eyebrow="Votre projet"
-            title="Présentez-nous le site que vous souhaitez créer."
-            actionLabel="Parler de mon projet"
-          >
-            Votre activité, vos utilisateurs et ce que le site doit permettre de faire. Nous
-            commencerons par clarifier le besoin avant de parler de pages ou de fonctionnalités.
-          </CallToAction>
-        </Container>
-      </Section>
     </>
   );
 }

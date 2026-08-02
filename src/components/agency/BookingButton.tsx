@@ -8,7 +8,7 @@ export const bookingPopoverId = 'qualifyr-booking-calendar';
 
 type BookingButtonProps = Pick<
   ComponentProps<typeof ButtonLink>,
-  'children' | 'variant' | 'className' | 'withArrow'
+  'children' | 'variant' | 'className' | 'withArrow' | 'ctaId'
 > & {
   onClick?: () => void;
 };
@@ -18,6 +18,8 @@ export function BookingButton({ onClick, ...props }: BookingButtonProps) {
     return (
       <Button
         {...props}
+        analyticsEvent="booking_opened"
+        analyticsDestination="calendar"
         popoverTarget={bookingPopoverId}
         popoverTargetAction="show"
         {...(onClick ? { onClick } : {})}
@@ -25,5 +27,5 @@ export function BookingButton({ onClick, ...props }: BookingButtonProps) {
     );
   }
 
-  return <ButtonLink href="/contact" {...(onClick ? { onClick } : {})} {...props} />;
+  return <ButtonLink href="/contact" analyticsEvent="booking_opened" analyticsDestination="/contact" {...(onClick ? { onClick } : {})} {...props} />;
 }

@@ -1,13 +1,10 @@
-/* Composition propre à la page Méthode : une ouverture large, puis quatre
-   blocs en diptyque décalé, alternant les surfaces. */
-
 .hero {
   display: grid;
   gap: var(--space-6);
 }
 
 .heroLead {
-  max-inline-size: 52ch;
+  max-inline-size: 50ch;
   font-size: var(--text-lg);
   color: var(--text-secondary);
 }
@@ -16,7 +13,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-3) var(--space-6);
-  margin-block-start: var(--space-6);
+  margin-block-start: var(--space-4);
   padding-block-start: var(--space-5);
   border-block-start: var(--border-width) solid var(--rule-hairline);
 }
@@ -29,10 +26,137 @@
   color: var(--text-secondary);
 }
 
-.indexNumber {
+.indexNumber,
+.stepNumber {
   font-variant-numeric: tabular-nums lining-nums;
   letter-spacing: var(--tracking-wide);
   color: var(--color-brass-deep);
+}
+
+.steps {
+  display: grid;
+  margin-block-start: var(--space-7);
+  border-block-start: var(--border-width) solid var(--rule-hairline);
+}
+
+.step {
+  display: grid;
+  gap: var(--space-3);
+  padding-block: var(--space-6);
+  border-block-end: var(--border-width) solid var(--rule-hairline);
+}
+
+.stepNumber {
+  font-size: var(--text-3xs);
+}
+
+.stepTitle {
+  margin: 0;
+  font-family: var(--family-display);
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-snug);
+}
+
+.stepBody {
+  max-inline-size: 42ch;
+  color: var(--text-secondary);
+}
+
+.stepListLabel {
+  margin-block-start: var(--space-2);
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.stepList {
+  display: grid;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+}
+
+.stepList li {
+  display: grid;
+  grid-template-columns: 1rem minmax(0, 1fr);
+  gap: var(--space-2);
+}
+
+.stepList li::before {
+  content: '';
+  inline-size: 0.65rem;
+  block-size: 1px;
+  margin-block-start: 0.75em;
+  background: var(--rule-accent);
+}
+
+.closing {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.adaptations,
+.verticals {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.vertical {
+  display: grid;
+  gap: var(--space-2);
+  padding-block-start: var(--space-4);
+  border-block-start: var(--border-width) solid var(--rule-hairline);
+}
+
+.vertical h3,
+.toolsNote h3 {
+  margin: 0;
+  font-family: var(--family-text);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+}
+
+.vertical p,
+.toolsNote p {
+  color: var(--text-secondary);
+}
+
+.toolsNote {
+  display: grid;
+  gap: var(--space-3);
+  align-content: start;
+  padding: var(--space-6);
+  border: var(--border-width) solid var(--rule-strong);
+  background: var(--surface-raised);
+}
+
+.toolsNote span {
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-accent);
+}
+
+@media (min-width: 48rem) {
+  .steps,
+  .verticals {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .step:nth-child(odd),
+  .vertical:first-child {
+    padding-inline-end: var(--space-6);
+    border-inline-end: var(--border-width) solid var(--rule-hairline);
+  }
+
+  .step:nth-child(even),
+  .vertical:last-child {
+    padding-inline-start: var(--space-6);
+  }
 }
 
 @media (min-width: 62rem) {
@@ -45,116 +169,9 @@
   .index {
     grid-column: 1 / -1;
   }
-}
 
-/* ---------------------------- Étapes ---------------------------- */
-
-.step {
-  display: grid;
-  gap: var(--space-6);
-}
-
-.stepIntro {
-  display: grid;
-  gap: var(--space-4);
-  align-content: start;
-}
-
-.stepNumber {
-  font-size: var(--text-3xs);
-  font-variant-numeric: tabular-nums lining-nums;
-  letter-spacing: var(--tracking-wide);
-  color: var(--color-brass-deep);
-}
-
-.stepTitle {
-  margin: 0;
-  font-family: var(--family-display);
-  font-size: var(--text-3xl);
-  font-weight: var(--weight-regular);
-  line-height: var(--leading-snug);
-  letter-spacing: var(--tracking-snug);
-}
-
-.stepBody {
-  max-inline-size: 44ch;
-  color: var(--text-secondary);
-}
-
-.stepListLabel {
-  margin-block-end: var(--space-4);
-  font-size: var(--text-3xs);
-  font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
-  color: var(--text-secondary);
-}
-
-.stepList {
-  display: grid;
-}
-
-.stepItem {
-  display: grid;
-  grid-template-columns: var(--space-4) minmax(0, 1fr);
-  gap: var(--space-3);
-  align-items: baseline;
-  padding-block: var(--space-3);
-  border-block-start: var(--border-width) solid var(--rule-hairline);
-  font-size: var(--text-sm);
-}
-
-.stepItem::before {
-  content: '';
-  inline-size: var(--space-3);
-  block-size: 1px;
-  background-color: var(--color-brass);
-  transform: translateY(-0.35em);
-}
-
-@media (min-width: 62rem) {
-  .step {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    gap: var(--space-9);
+  .closing {
+    grid-template-columns: minmax(0, 8fr) minmax(18rem, 4fr);
     align-items: start;
-  }
-}
-
-/* ---------------------------- Outils ---------------------------- */
-
-.tools {
-  display: grid;
-  gap: var(--space-7);
-}
-
-.toolsText {
-  display: grid;
-  gap: var(--space-4);
-  max-inline-size: 60ch;
-  color: var(--text-secondary);
-}
-
-.principles {
-  display: grid;
-  gap: var(--space-6);
-  margin-block-start: var(--space-6);
-}
-
-@media (min-width: 48rem) {
-  .principles {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 62rem) {
-  .tools {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    gap: var(--space-9);
-    align-items: start;
-  }
-
-  .principles {
-    grid-column: 1 / -1;
-    margin-block-start: var(--space-4);
   }
 }

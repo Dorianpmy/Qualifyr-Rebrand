@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { brand } from '@/content/brand';
-import { pageMeta, site } from '@/content/site';
+import type { BlogArticle } from '@/content/blog';
+import { homeSeo, pageMeta, site } from '@/content/site';
 import type { Route } from '@/types';
 
 /**
@@ -13,10 +14,10 @@ import type { Route } from '@/types';
 
 /** Image de partage : composition originale, ivoire, charbon et laiton. */
 export const openGraphImage = {
-  url: '/images/og/qualifyr-og-v2.png',
+  url: '/images/og/qualifyr-og-v3.png',
   width: 1200,
   height: 630,
-  alt: 'Qualifyr — Agence digitale pour les entreprises de services',
+  alt: homeSeo.title,
   type: 'image/png',
 } as const;
 
@@ -28,7 +29,7 @@ export function buildMetadata(route: Route): Metadata {
     // Titre pris tel quel : la marque y figure déjà, le gabarit ne s'applique pas.
     title: { absolute: meta.title },
     description: meta.description,
-    alternates: { canonical: new URL(canonical) },
+    alternates: { canonical },
     openGraph: {
       type: 'website',
       locale: site.locale,
@@ -42,6 +43,36 @@ export function buildMetadata(route: Route): Metadata {
       card: 'summary_large_image',
       title: meta.title,
       description: meta.description,
+      images: [openGraphImage.url],
+    },
+    robots: site.indexable
+      ? { index: true, follow: true }
+      : { index: false, follow: false, nocache: true },
+  };
+}
+
+export function buildArticleMetadata(article: BlogArticle): Metadata {
+  const canonical = new URL(`/blog/${article.slug}`, site.url).toString();
+
+  return {
+    title: { absolute: article.seoTitle },
+    description: article.seoDescription,
+    alternates: { canonical },
+    openGraph: {
+      type: 'article',
+      locale: site.locale,
+      siteName: brand.fullName,
+      title: article.seoTitle,
+      description: article.seoDescription,
+      url: canonical,
+      publishedTime: article.publishedAt,
+      authors: [brand.fullName],
+      images: [openGraphImage],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: article.seoTitle,
+      description: article.seoDescription,
       images: [openGraphImage.url],
     },
     robots: site.indexable

@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 
+import { WhatsAppDirectButton } from '@/components/agency/WhatsAppDirectButton';
 import { Container } from '@/components/layout/Container';
 import { Section } from '@/components/layout/Section';
-import { SectionHeading } from '@/components/editorial/SectionHeading';
 import { ContactForm } from '@/components/form/ContactForm';
-import { TextLink } from '@/components/ui/TextLink';
+import { ButtonAnchor, ButtonLink } from '@/components/ui/Button';
 
-import { availableChannels, contactPage } from '@/content/contact';
+import { contact, contactPage } from '@/content/contact';
 import { buildMetadata } from '@/lib/metadata';
 import styles from './page.module.css';
 
@@ -15,55 +15,88 @@ export const metadata: Metadata = buildMetadata('/contact');
 /**
  * Page Contact.
  *
- * Les coordonnées viennent de `src/content/contact.ts` et **seules les valeurs
- * réellement configurées sont affichées**. Aucun délai de réponse n'est
- * annoncé : il ne serait pas tenable aujourd'hui. Aucun calendrier public
- * n'est intégré tant qu'aucun n'est configuré.
+ * Les coordonnées viennent de `src/content/contact.ts`. Aucun délai de réponse
+ * n'est annoncé : il ne serait pas tenable aujourd'hui.
  */
 export default function ContactPage() {
-  const channels = availableChannels();
-
   return (
-    <Section spacing="tight">
+    <Section spacing="flush" className={styles.page}>
       <Container>
-        <SectionHeading
-          level={1}
-          split
-          eyebrow={contactPage.eyebrow}
-          title={contactPage.title}
-          lead={contactPage.lead}
-        />
+        <div className={styles.hero}>
+          <p className={styles.eyebrow}>{contactPage.eyebrow}</p>
+          <h1>{contactPage.title}</h1>
+          <p className={styles.heroLead}>{contactPage.lead}</p>
+        </div>
 
-        <div className={styles.layout}>
-          <div className={styles.aside}>
-            <div className={styles.orient}>
-              <p>
-                Si vous souhaitez que nous regardions votre activité en détail, passez plutôt
-                par le <TextLink href="/diagnostic">diagnostic</TextLink> : les questions y
-                sont plus précises et l’échange qui suit est plus utile.
-              </p>
-              <p>{contactPage.orientationSuffix}</p>
+        <div className={styles.contactStage}>
+          <section className={styles.brief} aria-labelledby="contact-brief-title">
+            <div className={styles.briefHeading}>
+              <div>
+                <span className={styles.sectionNumber}>01</span>
+                <h2 id="contact-brief-title">{contactPage.briefTitle}</h2>
+              </div>
+              <p>{contactPage.briefLead}</p>
             </div>
 
-            {channels.length > 0 ? (
-              <div className={styles.channels}>
-                {channels.map((channel) => (
-                  <div key={channel.href} className={styles.channel}>
-                    <span className={styles.channelLabel}>{channel.label}</span>
-                    <span className={styles.channelValue}>
-                      <TextLink externalHref={channel.href}>{channel.value}</TextLink>
-                    </span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className={styles.channels}>
-                <p className={styles.noChannel}>{contactPage.noChannel}</p>
-              </div>
-            )}
-          </div>
+            <ContactForm className={styles.contactForm} />
+          </section>
 
-          <ContactForm />
+          <aside className={styles.direct} aria-labelledby="contact-direct-title">
+            <div className={styles.directHeading}>
+              <span className={styles.sectionNumber}>02</span>
+              <h2 id="contact-direct-title">{contactPage.directTitle}</h2>
+              <p>{contactPage.directLead}</p>
+            </div>
+
+            <div className={styles.directOptions}>
+              <article className={styles.directCard}>
+                <span className={styles.cardIndex}>01</span>
+                <h3>WhatsApp</h3>
+                <p>Pour ouvrir une conversation et expliquer votre besoin simplement.</p>
+                <WhatsAppDirectButton
+                  variant="inverseSecondary"
+                  withArrow
+                  className={styles.cardAction}
+                >
+                  Écrire sur WhatsApp
+                </WhatsAppDirectButton>
+              </article>
+
+              {contact.email ? (
+                <article className={styles.directCard}>
+                  <span className={styles.cardIndex}>02</span>
+                  <h3>E-mail</h3>
+                  <p>Pour détailler votre demande ou joindre des informations utiles.</p>
+                  <ButtonAnchor
+                    href={contact.email.href}
+                    variant="inverseSecondary"
+                    withArrow
+                    className={styles.cardAction}
+                  >
+                    Écrire un e-mail
+                  </ButtonAnchor>
+                </article>
+              ) : null}
+
+              <article className={`${styles.directCard} ${styles.diagnosticCard}`}>
+                <span className={styles.cardIndex}>03</span>
+                <h3>Besoin d’un cadrage ?</h3>
+                <p>Le diagnostic guidé permet de structurer votre situation avant l’échange.</p>
+                <ButtonLink
+                  href="/diagnostic"
+                  variant="inverseSecondary"
+                  withArrow
+                  className={styles.cardAction}
+                >
+                  Faire le diagnostic
+                </ButtonLink>
+              </article>
+            </div>
+
+            <p className={styles.confidentiality}>
+              Vos informations servent uniquement à répondre à votre demande.
+            </p>
+          </aside>
         </div>
       </Container>
     </Section>

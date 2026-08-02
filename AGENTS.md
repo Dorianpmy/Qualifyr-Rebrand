@@ -84,12 +84,10 @@ entreprise :
 - d'obtenir des avis ;
 - de favoriser les nouvelles réservations.
 
-**Titre principal de l'accueil** : « Transformez votre savoir-faire en une marque que l’on
-choisit. »
+**Titre principal de l'accueil** : « Donnez envie de vous choisir. »
 
 **Texte d'explication principal** : « Qualifyr clarifie votre offre, construit votre identité
-et conçoit le site qui transforme votre savoir-faire en une expérience crédible et facile à
-choisir. »
+et conçoit un parcours simple jusqu’à la prise de contact. »
 
 **Offre principale** : « Le parcours Qualifyr » (nom provisoire).
 

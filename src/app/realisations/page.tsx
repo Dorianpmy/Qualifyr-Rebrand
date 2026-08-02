@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 
 import { Container } from '@/components/layout/Container';
 import { Section } from '@/components/layout/Section';
-import { CallToAction } from '@/components/editorial/CallToAction';
 import { CasePlate } from '@/components/editorial/CasePlate';
 import { SectionHeading } from '@/components/editorial/SectionHeading';
 import { ButtonLink } from '@/components/ui/Button';
@@ -83,17 +82,6 @@ export default function RealisationsPage() {
         </Container>
       </Section>
 
-      <Section surface="inverse">
-        <Container>
-          <CallToAction
-            eyebrow="Votre projet"
-            title="Le prochain parcours pourrait être le vôtre."
-          >
-            Décrivez-nous votre activité, votre zone et vos prestations. Nous verrons ensemble
-            ce qui mérite d’être clarifié en premier.
-          </CallToAction>
-        </Container>
-      </Section>
     </>
   );
 }

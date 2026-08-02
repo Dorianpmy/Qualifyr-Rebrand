@@ -9,7 +9,7 @@
   margin: 0;
   font-family: var(--family-display);
   font-size: var(--text-xl);
-  font-weight: var(--weight-regular);
+  font-weight: var(--weight-semibold);
 }
 
 .intro {
@@ -37,8 +37,9 @@
 }
 
 .channelValue {
-  font-family: var(--family-display);
+  font-family: var(--family-text);
   font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
 }
 
 .fallback {

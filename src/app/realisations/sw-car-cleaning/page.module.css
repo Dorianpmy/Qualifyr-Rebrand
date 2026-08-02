@@ -92,8 +92,9 @@
 }
 
 .aspectValue {
-  font-family: var(--family-display);
+  font-family: var(--family-text);
   font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
 }
 
 @media (min-width: 62rem) {
@@ -132,9 +133,9 @@
 
 .objectiveTitle {
   margin: 0;
-  font-family: var(--family-display);
+  font-family: var(--family-text);
   font-size: var(--text-xl);
-  font-weight: var(--weight-regular);
+  font-weight: var(--weight-bold);
   line-height: var(--leading-snug);
 }
 
@@ -178,9 +179,9 @@
 .deliverableTitle {
   max-inline-size: 16ch;
   margin: 0;
-  font-family: var(--family-display);
+  font-family: var(--family-text);
   font-size: var(--text-2xl);
-  font-weight: var(--weight-regular);
+  font-weight: var(--weight-bold);
   line-height: var(--leading-snug);
 }
 
@@ -229,9 +230,9 @@
 
 .linkTitle {
   margin: 0;
-  font-family: var(--family-display);
+  font-family: var(--family-text);
   font-size: var(--text-xl);
-  font-weight: var(--weight-regular);
+  font-weight: var(--weight-bold);
 }
 
 .linkBody {

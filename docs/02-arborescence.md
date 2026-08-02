@@ -1,6 +1,7 @@
 # 02 — Arborescence du site
 
-Structure courte et volontairement fermée. Huit pages, pas une de plus en V1.
+Structure courte et volontairement fermée. Le journal validé le 31 juillet 2026 ajoute une
+rubrique éditoriale et ses articles, sans modifier les pages commerciales existantes.
 
 ---
 
@@ -9,11 +10,17 @@ Structure courte et volontairement fermée. Huit pages, pas une de plus en V1.
 ```
 /                          Accueil
 /creation-site-web         Création de site web
+/nettoyage-automobile      Expertise nettoyage automobile mobile et detailing
+/conciergerie              Expertise conciergeries
 /methode                   Méthode
 /realisations              Réalisations
+/laboratoire               Laboratoire créatif
 /a-propos                  À propos
 /diagnostic                Diagnostic
+/estimation                Première estimation guidée
 /contact                   Contact
+/blog                      Journal Qualifyr
+/blog/[slug]               Article du journal
 /mentions-legales          Mentions légales
 /politique-de-confidentialite   Politique de confidentialité
 ```
@@ -44,7 +51,7 @@ Pages système (non listées dans la navigation) :
 ```
 
 Le site comprend également une relance de contact globale, affichée une seule fois par
-chargement après environ vingt secondes sans interaction. Elle ne crée aucune URL, ne promet
+chargement après environ soixante secondes sans interaction. Elle ne crée aucune URL, ne promet
 aucune disponibilité et propose uniquement un échange WhatsApp ou la poursuite de la lecture.
 Elle doit rester fermable au clavier et ne jamais réapparaître après fermeture pendant la
 navigation courante.
@@ -58,10 +65,15 @@ initiative.
 Les confirmations d'envoi s'affichent **à la place du formulaire**, sans changement d'URL :
 les pages `/diagnostic/merci` et `/contact/merci` envisagées à la phase 0 ne sont pas créées.
 
-**Interdit en V1** : page « Solutions », page « Services » listant des métiers, page « Blog »,
-page « Tarifs », page « Ressources », page « FAQ » autonome, landing pages sectorielles.
+**Interdit en V1** : page « Solutions », page « Services » listant des métiers,
+page « Tarifs », page « Ressources », page « FAQ » autonome, landing pages sectorielles
+non validées. Les routes `/nettoyage-automobile` et `/conciergerie` sont les deux seules
+exceptions métier autorisées : elles correspondent exactement aux deux verticales
+officielles et ne créent pas une nouvelle offre.
 La page `/creation-site-web` est une exception éditoriale validée : elle explique un service
 réel et renvoie vers une preuve réelle, sans ajouter de métier ni de promesse commerciale.
+Le journal est la seconde exception validée : il apporte des conseils éditoriaux utiles et
+ne crée aucune nouvelle offre.
 
 ---
 
@@ -69,20 +81,32 @@ réel et renvoie vers une preuve réelle, sans ajouter de métier ni de promesse
 
 **Navigation principale**
 
-`Expertise` · `Réalisation` · `Laboratoire` · `À propos` · `Contact` ·
+`Expertise` · `Réalisation` · `Laboratoire` · `Journal` · `À propos` · `Contact` ·
 **`Discuter sur WhatsApp`** *(bouton)*
 
 - Le logo renvoie à l'accueil ; « Accueil » n'apparaît pas dans le menu.
-- « Expertise », « Réalisation » et « Laboratoire » rejoignent les sections
-  correspondantes de l'accueil.
+- « Expertise » et « Réalisation » rejoignent les sections correspondantes de l'accueil.
+- Les deux expertises métier sont accessibles depuis la section « Entreprises accompagnées »
+  de l'accueil et depuis le pied de page. Le header reste volontairement court et ne reçoit
+  pas de sous-menu.
+- « Laboratoire » ouvre une page dédiée afin que les explorations créatives ne rallongent
+  plus le parcours commercial principal.
 - Sur mobile : menu plein écran et accès direct à WhatsApp.
 
 **Pied de page**
 
-- Colonne 1 : logo, promesse en une ligne, canal de contact.
-- Colonne 2 : Méthode, Réalisations, À propos, Diagnostic, Contact.
-- Colonne 3 : Mentions légales, Politique de confidentialité.
-- Ligne basse : « Qualifyr Agence — Nettoyage automobile mobile et conciergeries » + année.
+- Bloc d'appel à l'action global : estimation puis diagnostic.
+- Colonne 1 : logo, description courte et réseaux sociaux réellement configurés.
+- Colonne 2 : services renvoyant uniquement vers des routes ou ancres existantes.
+- Colonne 3 : Réalisations, Méthode, À propos et Contact.
+- Colonne 4 : coordonnées réellement renseignées, calendrier réellement configuré et zone
+  d'accompagnement (France, Belgique, Suisse, Luxembourg).
+- Ligne basse : copyright, Mentions légales, Politique de confidentialité et accès direct à
+  la section Cookies de cette politique.
+
+Les entrées « Développement SaaS » et « Automatisation » demandées dans le brief du footer ne
+sont pas publiées : ces termes sont interdits par `AGENTS.md` et `docs/01`. Aucun lien vers
+une FAQ n'est affiché tant qu'aucune route ou section publique correspondante n'existe.
 
 ---
 
@@ -94,19 +118,99 @@ Objectif : comprendre en dix secondes pour qui, pourquoi et quoi faire ensuite.
 
 Sections, dans l'ordre :
 
-1. **Ouverture** — promesse, calendrier, diagnostic WhatsApp et lien vers la preuve.
-2. **Transformation** — être compris, être choisi, être contacté.
-3. **Réalisation sélectionnée** — SW Car Cleaning, sans résultat chiffré ni faux visuel.
-4. **Entreprises accompagnées** — quelques exemples de services, sans catalogue de métiers.
-5. **Méthode** — Comprendre, Clarifier, Concevoir, Améliorer.
-6. **Laboratoire créatif** — une réalisation réelle et trois explorations honnêtement signalées.
-7. **Estimation guidée** — trois réponses, recommandation, options et coût complet sur douze mois.
-8. **Clôture** — réservation et diagnostic WhatsApp.
+1. **En-tête compact et ligne éditoriale** — marque, navigation et trois repères courts.
+2. **Ouverture vidéo** — promesse, calendrier, diagnostic et lien vers la preuve.
+3. **Transformation** — être compris, être choisi, être contacté.
+4. **Réalisation sélectionnée** — SW Car Cleaning, présentée une seule fois, sans résultat
+   chiffré ni faux visuel.
+5. **Entreprises accompagnées** — les deux verticales officielles, chacune reliée à sa page.
+6. **Méthode** — Comprendre, Clarifier, Concevoir, Améliorer dans une frise compacte.
+7. **Laboratoire compact** — trois concepts locaux, sans iframe ni atelier de personnalisation.
+8. **Clôture** — calendrier, diagnostic et lien vers l'estimation.
+
+Le Journal reste accessible depuis sa route dédiée. Le configurateur tarifaire est retiré de
+l'accueil et vit uniquement à `/estimation`, afin que le prix soit consulté volontairement et
+ne rallonge pas le parcours éditorial principal.
 
 À ne pas mettre : FAQ complète, comparaison avant/après, longue liste de fonctionnalités,
 bandeau de logos, compteur de clients, témoignage, comparatif de formules ou faux écran.
-Le configurateur tarifaire apparaît uniquement après la méthode, la preuve réelle et le
-laboratoire : le prix complète la compréhension de la valeur, il ne la précède pas.
+Le configurateur tarifaire n'est jamais rendu dans la page d'accueil.
+
+### `/nettoyage-automobile` — Nettoyage automobile mobile et detailing
+
+Objectif : montrer aux professionnels du secteur comment Qualifyr clarifie les prestations,
+la zone d'intervention et la prise de rendez-vous.
+
+Structure courte : hero métier, trois freins, trois éléments construits, parcours adapté,
+réalisation réelle SW Carcleaning, méthode en quatre temps, FAQ métier et appel à l'action.
+La page ne présente aucun résultat chiffré ni élément client non fourni.
+
+### `/conciergerie` — Conciergeries
+
+Objectif : montrer comment Qualifyr rend un accompagnement plus lisible et une première
+demande plus précise et rassurante.
+
+Structure courte : hero métier, trois freins, trois éléments construits, parcours adapté,
+exploration créative honnêtement identifiée comme Concept Qualifyr, méthode en quatre temps,
+FAQ métier et appel à l'action. Aucun concept n'est présenté comme une réalisation livrée.
+
+### `/estimation` — Première estimation
+
+Objectif : donner une orientation et un coût indicatif sans transformer l'accueil en page
+tarifaire. La route réutilise le composant `OfferConfigurator`, sa logique régionale, ses cinq
+étapes, son récapitulatif, son accès WhatsApp et son calendrier. Elle ne duplique ni les données
+ni le calcul. La devise est déterminée automatiquement par le pays fourni par l'hébergeur, sans
+choix de pays dans l'interface. Le résultat présente d'abord l'équivalent mensuel sur 12 mois,
+puis le total et l'alternative « mise en place + suivi ». Il reste indicatif jusqu'au cadrage et
+au devis.
+
+---
+
+### `/laboratoire` — Laboratoire créatif
+
+Objectif : montrer la capacité de direction et d'exploration de Qualifyr sans confondre une
+étude créative avec une réalisation client.
+
+Structure :
+
+1. Ouverture courte et avertissement honnête sur la nature des concepts.
+2. Parcours d'orientation compact : un besoin choisi, puis une étude recommandée.
+3. Concept Conciergerie comme étude principale.
+4. Identité visuelle et Motion UI comme explorations secondaires interactives.
+5. Accès à l'estimation ou au diagnostic depuis la recommandation et chaque étude.
+
+Le parcours d'orientation ne calcule pas de tarif et ne reproduit pas le configurateur de
+l'accueil. Il aide uniquement à choisir l'étude la plus pertinente avant de l'ouvrir.
+
+SW Car Cleaning n'y est pas répété : la réalisation réelle possède déjà sa présentation sur
+l'accueil, `/realisations` et sa propre étude de cas. La page Laboratoire ne charge donc
+aucune seconde fenêtre du site SW Car Cleaning.
+
+---
+
+### `/blog` — Le journal
+
+Objectif : répondre aux questions concrètes que se posent les entreprises de services avant
+de clarifier leur offre, leur identité, leur site ou leur parcours de contact.
+
+Structure :
+
+1. Ouverture courte — « Des repères pour mieux présenter et développer votre activité. »
+2. Dernier article publié, traité comme une une éditoriale.
+3. Articles précédents, dans l'ordre antéchronologique.
+4. Appel à l'action discret vers le diagnostic.
+
+Les articles programmés ne sont ni listés, ni accessibles, ni ajoutés au sitemap avant leur
+date de publication. Le calendrier est relu au moins toutes les heures par le rendu serveur.
+Une programmation ne remplace jamais la rédaction : chaque article existe en entier avant
+d'être planifié.
+
+### `/blog/[slug]` — Article du journal
+
+Un seul sujet par page, un seul H1, un chapô, des sections courtes et une conclusion utile.
+Chaque article dispose de son title, de sa description, de son canonical et d'un schéma
+`BlogPosting`. Aucun témoignage, résultat, chiffre commercial ou exemple client n'est
+inventé. Une publication future renvoie une 404 jusqu'à sa date prévue.
 
 ---
 
@@ -116,13 +220,13 @@ Objectif : rendre le parcours crédible en montrant la manière de travailler.
 
 Sections :
 
-1. Ouverture — « La méthode Qualifyr » + une phrase de cadrage.
-2. Les six étapes du parcours, une section par étape : ce qu'on regarde, ce qu'on met en place,
-   ce que ça change pour l'activité.
-3. Le déroulé d'une collaboration : cadrage → conception → mise en place → ajustement.
-   Sans durée chiffrée tant qu'elle n'est pas un engagement réel.
-4. Ce que Qualifyr ne fait pas — section courte et assumée, forte en différenciation.
-5. Appel à l'action de clôture.
+1. Ouverture courte et index des quatre temps.
+2. Les quatre temps regroupés dans une même composition : intention, trois points concrets et
+   aucune sous-section pleine hauteur.
+3. Adaptation aux deux métiers et principe d'outillage réunis dans une seule clôture compacte.
+
+La page détaille la méthode sans répéter l'accueil ni transformer chaque étape en écran
+autonome. L'appel à l'action global du pied de page assure la suite du parcours.
 
 ---
 
@@ -183,31 +287,42 @@ simuler des collaborateurs.
 
 ### `/diagnostic` — Diagnostic
 
-Objectif : recueillir une demande qualifiée, et expliquer honnêtement la suite.
+Objectif : aider une entreprise de services à formuler sa situation avant tout échange,
+sans score automatique ni recommandation inventée.
 
 Contenu :
 
-1. Titre + explication de ce qu'est un diagnostic : un échange de cadrage sur l'activité,
-   la zone, les prestations et les points de blocage.
-2. **Ce qui se passe après l'envoi** — étapes explicites, sans promesse de délai non tenue.
-3. Formulaire, en deux temps pour rester léger sur mobile :
-   - **Votre activité** : nom de l'entreprise, ville et zone d'intervention, ancienneté,
-     types de prestations proposées, travaillez-vous seul ou à plusieurs.
-   - **Votre situation** : comment les clients vous trouvent aujourd'hui, ce qui vous freine
-     le plus, site existant (URL facultative), ce que vous aimeriez changer.
-   - **Vos coordonnées** : prénom et nom, e-mail, téléphone (facultatif), consentement RGPD.
-4. Aucune mention de gratuité, d'urgence ou de place limitée.
+1. Introduction autonome : durée indicative sobre, contenu du parcours et bouton
+   « Commencer ».
+2. Cinq étapes courtes :
+   - **Votre activité** : métier, précision obligatoire pour « autre », entreprise, site
+     et précision facultative adaptée au nettoyage automobile ou à la conciergerie ;
+   - **Votre situation actuelle** : situation principale, trois origines de demandes au
+     maximum et frustration facultative ;
+   - **Votre priorité** : deux objectifs au maximum et résultat souhaité facultatif ;
+   - **Votre projet** : horizon, état du budget, montant facultatif et contraintes ;
+   - **Vos coordonnées** : prénom, nom facultatif, e-mail professionnel, téléphone
+     facultatif, préférence de contact et consentement.
+3. Vérification complète, avec retour éditable vers chaque étape.
+4. Confirmation uniquement après une réponse réussie de `POST /api/diagnostic`, puis accès
+   secondaire à WhatsApp et au calendrier lorsqu'ils sont configurés.
+5. Aucune mention de gratuité, d'urgence, de résultat automatique ou de place limitée.
 
 État à la phase 6 : **formulaire en service.** Validation partagée client/serveur (Zod),
 saisies conservées en cas d'erreur, focus porté sur le premier champ fautif, état d'envoi,
 double envoi impossible, champ piège et temps minimal, limitation de débit par adresse IP.
 
-La confirmation remplace le formulaire **sur place** : aucune redirection, aucune page
-`/diagnostic/merci` — la personne reste où elle est. Les deux pages de remerciement
-initialement prévues ne sont donc pas créées.
+La route `/diagnostic` est l'unique source de vérité. Il n'existe plus de questionnaire
+parallèle dans une modale WhatsApp. Un CTA de diagnostic mène toujours à cette route ; un CTA
+WhatsApp direct ouvre seulement une conversation courte.
 
-Si le service d'e-mail n'est pas configuré, la réponse le dit franchement et **ne prétend
-jamais que le message est parti**.
+La confirmation remplace le formulaire **sur place** : aucune redirection, aucune page
+`/diagnostic/merci`. Les réponses en cours peuvent être conservées temporairement dans
+`sessionStorage`, mais leur reprise ou leur abandon exige un choix explicite.
+
+Si l'envoi échoue ou si le service d'e-mail n'est pas configuré, la réponse le dit franchement
+et **ne prétend jamais que le message est parti**. WhatsApp peut alors servir de repli manuel,
+avec un libellé qui indique clairement que l'envoi serveur a échoué.
 
 ---
 

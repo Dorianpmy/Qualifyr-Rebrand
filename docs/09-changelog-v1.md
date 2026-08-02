@@ -1,5 +1,22 @@
 # 09 — Changelog V1
 
+## 1er août 2026 — refonte de `/diagnostic`
+
+- Remplacement du formulaire vertical par une introduction, cinq étapes courtes et un écran
+  de vérification modifiable.
+- Ajout d'une progression exacte, d'une sauvegarde de session et d'états clavier/reduced
+  motion cohérents avec la direction artistique.
+- Conservation de la validation client et serveur, de l'endpoint e-mail, du champ piège et
+  de la limitation de débit.
+- Séparation des actions : les CTA diagnostic ouvrent `/diagnostic`, les CTA WhatsApp directs
+  n'ouvrent qu'une conversation courte ; l'ancienne modale de diagnostic est supprimée.
+- Envoi systématique vers `POST /api/diagnostic` avant toute confirmation. WhatsApp et le
+  calendrier deviennent des suites facultatives après réussite, ou un repli honnête après
+  échec pour WhatsApp.
+- Ajout des branches métier nettoyage automobile, conciergerie et autre service, ainsi que
+  d'une reprise de session explicitement acceptée ou refusée.
+- Aucun score, conseil automatique, délai de réponse, résultat ou disponibilité inventé.
+
 Reconstruction complète du site de Qualifyr Agence, depuis un dépôt vide.
 Branche `feature/qualifyr-rebrand-v1`. **Rien n'est déployé, le domaine n'est pas connecté.**
 
@@ -11,6 +28,11 @@ conciergerie n'a été ajouté ; SW Carcleaning reste la réalisation réelle pu
 **Accueil resserré — 27 juillet 2026 :** la page d'accueil passe à six grandes sections.
 La comparaison avant/après, les piliers redondants, la liste détaillée de l'offre et la FAQ
 complète sont retirés de l'accueil au profit des pages internes.
+
+**Diagnostic guidé — 1er août 2026 :** le formulaire continu devient un parcours en cinq
+étapes — activité, situation, priorité, projet et coordonnées — avec progression accessible,
+validation avant chaque passage, vérification modifiable et conservation temporaire des
+réponses. La personne choisit explicitement de reprendre ou de recommencer une saisie.
 
 ---
 
@@ -37,7 +59,7 @@ de ce dépôt et ne sont donc pas reproduits ici comme s'ils étaient consultabl
 
 ## 2. Pages
 
-**Publiques — neuf, pas une de plus**
+**Publiques — pages commerciales, journal et articles publiés**
 
 | Route | Rôle |
 |---|---|
@@ -48,6 +70,8 @@ de ce dépôt et ne sont donc pas reproduits ici comme s'ils étaient consultabl
 | `/a-propos` | Philosophie, façon de travailler, ce que nous refusons |
 | `/diagnostic` | Formulaire de qualification avec choix obligatoire de l'activité |
 | `/contact` | Formulaire court, 5 champs |
+| `/blog` | Journal éditorial, articles réellement rédigés et programmables |
+| `/blog/[slug]` | Article publié, métadonnées et données structurées propres |
 | `/mentions-legales` | Éditeur, hébergement, propriété intellectuelle |
 | `/politique-de-confidentialite` | Neuf sections, sommaire ancré |
 
@@ -70,6 +94,7 @@ de ce dépôt et ne sont donc pas reproduits ici comme s'ils étaient consultabl
   `useFormSubmission`, `DiagnosticForm`, `ContactForm`
 - **`motion/` (1)** — `RevealObserver`
 - **`seo/` (1)** — `JsonLd`
+- **Journal (1)** — `ArticleCard`, avec variantes de une et de liste
 
 ---
 
@@ -144,7 +169,7 @@ de ce dépôt et ne sont donc pas reproduits ici comme s'ils étaient consultabl
    de débit est en mémoire : non partagée entre instances, vidée à chaque démarrage à froid.
 3. **Pas de Content-Security-Policy.** Une CSP stricte imposerait un `nonce` sur le script
    d'amorçage et les blocs JSON-LD. À traiter après le premier aperçu, pas à l'aveugle.
-4. **Aucun test de bout en bout.** 48 tests unitaires couvrent la validation et les routes,
+4. **Aucun test de bout en bout automatisé.** 61 tests unitaires couvrent la validation et les routes,
    notamment les messages français lorsque des champs requis sont totalement absents.
    Playwright + axe restent à ajouter si le besoin se confirme.
 5. **Validation sur appareils réels encore requise.** Chrome automatisé couvre les routes,
@@ -193,8 +218,9 @@ Dernier passage : **aucune occurrence**.
 - Accueil recomposé en six sections courtes : ouverture, offre, SW Car Cleaning, deux
   activités, fonctionnement en trois étapes et clôture.
 - Navigation réduite à quatre entrées et un bouton de réservation.
-- Ajout d'un diagnostic WhatsApp exclusivement destiné aux prospects Qualifyr. Le message
-  est construit à partir de six étapes et testé unitairement.
+- Historique : un questionnaire WhatsApp séparé avait été ajouté à cette phase. Il a depuis
+  été retiré au profit de l'unique parcours `/diagnostic` ; seul le résumé structuré subsiste
+  après la soumission serveur ou comme repli manuel explicite.
 - Ajout de `NEXT_PUBLIC_QUALIFYR_BOOKING_URL` et
   `NEXT_PUBLIC_QUALIFYR_WHATSAPP_NUMBER`. Sans configuration, les replis restent explicites
   et aucun lien incomplet n'est rendu.
@@ -215,3 +241,189 @@ Dernier passage : **aucune occurrence**.
   native au site, avec fermeture clavier et lien externe de secours.
 - Ajout d’un bouton WhatsApp carré, fixe en bas à droite sur toutes les pages, en respectant
   les zones sûres mobiles et la palette Qualifyr.
+
+---
+
+## 11. Footer global et identité SEO
+
+- Remplacement du pied de page simple par une clôture globale : grand CTA charbon, quatre
+  colonnes éditoriales, zones d'accompagnement et liens légaux.
+- Suppression des CTA terminaux dupliqués dans les pages : le footer devient l'unique
+  clôture commune sans modifier les tunnels, formulaires ou endpoints.
+- Les réseaux, coordonnées et disponibilités ne sont rendus que s'ils sont réellement
+  configurés. Aucun lien social, e-mail ou horaire n'a été inventé.
+- Ajout des comptes Instagram et TikTok confirmés dans le footer, avec pictogrammes SVG
+  monochromes et libellés explicites. Le bouton flottant WhatsApp utilise désormais le logo
+  complet à la place du sigle « WA ».
+- Recomposition complète du laboratoire sur une grille éditoriale de douze colonnes : concept
+  Conciergerie principal, études Identité et Mouvement non comprimées, cartes entièrement
+  activables et responsive sans troncature.
+- Nouveau title et nouvelle description d'accueil centralisés, propagés à Open Graph,
+  Twitter Card, `Organization`, `ProfessionalService`, `WebSite` et `WebPage`.
+- Ajout d'un manifest, d'une Apple Touch Icon et d'icônes 192/512 générées depuis le nouveau
+  monogramme Qualifyr. L'ancienne image Open Graph publique a été supprimée.
+- Les pages restent canoniques vers `https://qualifyragence.com`, y compris en preview.
+- L'image réelle du laboratoire est désormais optimisée par `next/image`; les iframes de
+  démonstration et du calendrier restent chargées paresseusement.
+
+---
+
+## 12. Tarification régionale du configurateur
+
+- Mise en place portée à 590 € pour la grille France et zone euro ; accompagnement maintenu
+  à 149 €/mois et options maintenues à 290 € / 390 €.
+- Ajout d'une grille Suisse en CHF : majoration commerciale de 16 % et arrondi à la dizaine
+  supérieure, soit 690 CHF pour la mise en place.
+- Le code pays fourni par l'infrastructure Netlify présélectionne la grille Suisse sans
+  exposer ni conserver l'adresse IP. Une route locale sûre conserve l'euro en développement
+  ou lorsque la géolocalisation n'est pas disponible.
+- La devise est affichée automatiquement selon la zone fournie par l'hébergeur, sans sélecteur
+  de pays dans le parcours. L'euro reste le repli sûr lorsque la zone n'est pas disponible.
+- L'estimation présente désormais le paiement réparti sur 12 mois avant le total, avec une
+  alternative « mise en place + suivi » qui ne modifie pas le coût complet.
+- Le message WhatsApp reprend la zone, la devise et les montants réellement affichés.
+
+---
+
+## 13. Ajustements éditoriaux de l'accueil
+
+- Retrait complet de la fenêtre du Journal sur la page d'accueil ; la rubrique et ses
+  articles restent disponibles à leur route dédiée et depuis la navigation.
+- Rééquilibrage du laboratoire : le concept Conciergerie passe de 8 à 7 colonnes sur grand
+  écran, avec une hauteur, un visuel et un titre plus mesurés.
+- Élargissement de la colonne des concepts secondaires et passage à une composition
+  horizontale pour mieux équilibrer les trois études.
+
+---
+
+## 14. Resserrement final du parcours d'accueil — 1 août 2026
+
+- Réduction de l'accueil à cinq temps : ouverture, expertise, preuve réelle, entreprises
+  et méthode fusionnées, puis estimation. Le Journal et le Laboratoire ne sont plus
+  développés sur cette page.
+- Suppression de la seconde présentation de SW Car Cleaning : une seule démonstration
+  interactive reste chargée sur l'accueil, accompagnée de livrables vérifiables et d'un
+  lien vers l'étude de cas.
+- Hiérarchie de conversion simplifiée : l'estimation devient l'action principale, la
+  réalisation l'action secondaire et WhatsApp demeure un canal d'assistance permanent.
+  Le calendrier reste proposé plus loin dans le parcours commun.
+- Création de la route `/laboratoire`, avec métadonnées et navigation dédiées, pour isoler
+  les trois études créatives sans les confondre avec une réalisation client.
+- Mise à jour des audits SEO et accessibilité afin d'inclure la nouvelle route publique.
+- Aucun témoignage, chiffre de performance ou résultat commercial non vérifié n'a été
+  ajouté. Ces preuves resteront absentes tant qu'elles ne pourront pas être documentées.
+
+---
+
+## 15. Méthode raccourcie et orientation du Laboratoire — 1 août 2026
+
+- Page `/methode` ramenée à trois sections : ouverture, grille compacte des quatre temps,
+  puis adaptation aux métiers et principe d'outillage réunis.
+- Contenu de chaque temps limité à une phrase et trois points concrets ; suppression des
+  quatre grandes bandes successives et de la clôture commerciale dupliquée.
+- Ajout dans `/laboratoire` d'une orientation en trois choix qui recommande l'une des études
+  existantes et permet de l'ouvrir directement, sans créer un second calcul tarifaire.
+- Lien secondaire de la recommandation vers l'estimation déjà présente sur l'accueil.
+- Délai de la fenêtre « Discutons » porté de 20 à 60 secondes d'inactivité et toujours remis
+  à zéro lors d'une interaction.
+- Vérification en navigateur à 1280 px et 390 px : aucun débordement horizontal, choix
+  tactiles supérieurs à 44 px, recommandation et fenêtre de concept fonctionnelles, aucune
+  erreur console.
+- `npm run lint`, `npm run typecheck`, `npm run test` (60 tests) et `npm run build` réussis.
+
+---
+
+## 16. Finition du panneau d’orientation — 1 août 2026
+
+- Remplacement de la liste visuellement flottante par un panneau charbon autonome à deux
+  colonnes sur desktop et une colonne sur mobile.
+- Choix numérotés rendus plus lisibles avec une flèche, un état sélectionné explicite et une
+  surface tactile supérieure à 44 px.
+- Ajout d’un état d’attente éditorial dans la zone de recommandation, afin que le bloc reste
+  intentionnel avant la première sélection.
+- Déplacement de la mention sur les concepts après le panneau pour ne plus interrompre la
+  progression entre l’introduction et le choix.
+- Vérification à 1280 px et 390 px : aucune largeur débordante, recommandation fonctionnelle
+  et aucune erreur console.
+
+---
+
+## 17. Rééquilibrage des études du Laboratoire — 1 août 2026
+
+- Correction de la grille desktop : le concept Conciergerie commence désormais au premier
+  rang et occupe les deux rangées, supprimant le grand vide involontaire à gauche.
+- Passage des études Identité visuelle et Motion UI à une composition verticale, avec le
+  visuel au-dessus du contenu, afin de préserver leurs compositions et d'éviter les textes
+  comprimés ou coupés.
+- Conservation de l'asymétrie éditoriale en sept et cinq colonnes, avec des hauteurs,
+  espacements et points d'alignement cohérents entre les trois études.
+- Les règles tablette et mobile restent inchangées : deux colonnes équilibrées puis une seule
+  colonne, sans défilement horizontal.
+- Vérification en navigateur à 1280 px et 390 px : les trois cartes sont lisibles, alignées
+  et aucune largeur ne déborde du viewport.
+- `npm run lint`, `npm run typecheck`, `npm run test` (60 tests) et `npm run build` réussis.
+
+---
+
+## 18. Parcours final de l'accueil et estimation autonome — 1 août 2026
+
+- Décision de retirer le configurateur tarifaire de l'accueil et de le réutiliser sur la
+  nouvelle route `/estimation`, sans dupliquer sa logique, ses prix ni ses cinq étapes.
+- Retour d'un laboratoire compact de trois études sur l'accueil ; retrait de l'atelier de
+  palette, des scénarios et des états qui ne servent pas la compréhension initiale.
+- Séparation des sections Entreprises accompagnées et Méthode, puis ajout d'une clôture unique.
+- SW Car Cleaning reste la seule réalisation et la seule fenêtre distante de la page.
+- Les preuves inventées, témoignages, résultats chiffrés et écrans fictifs restent absents.
+- Limites conservées : estimation indicative avant cadrage, Motion UI explicitement en
+  préparation, aucune promesse de résultat commercial.
+- Vérification navigateur de l'accueil aux largeurs 320, 375, 390, 430, 768, 1024,
+  1280, 1440 et 1600 px : un seul H1, une seule fenêtre SW Car Cleaning et aucun
+  défilement horizontal.
+- Parcours `/estimation` testé jusqu'au récapitulatif final : cinq étapes, tarifs euro et
+  suisse, options, total sur douze mois, liens WhatsApp et prise de rendez-vous.
+- Vérification desktop et mobile des routes `/realisations/sw-car-cleaning`, `/diagnostic`,
+  `/contact` et `/laboratoire` : un seul H1 par page, aucun débordement et aucune erreur
+  ou alerte dans la console navigateur.
+- `npm run lint`, `npm run typecheck`, `npm run test` (60 tests) et `npm run build`
+  réussis avant la validation visuelle finale.
+
+---
+
+## 19. Diagnostic commercial unifié — 1 août 2026
+
+- Reconstruction de `/diagnostic` en une introduction, cinq étapes courtes, une synthèse
+  modifiable et une confirmation honnête après succès réel de `POST /api/diagnostic`.
+- Séparation explicite entre diagnostic, estimation tarifaire et conversation WhatsApp
+  directe ; tous les CTA de diagnostic conduisent désormais à la même route.
+- Suppression de l'ancienne modale `WhatsAppDiagnostic`, de son événement global et de ses
+  styles ; ajout de `DiagnosticLink` et `WhatsAppDirectButton` aux responsabilités stables.
+- Ajout des branches facultatives Nettoyage automobile et Conciergerie, de la précision
+  obligatoire pour une autre activité, des limites à trois canaux et deux priorités, ainsi
+  que de la normalisation des domaines sans protocole.
+- Sauvegarde temporaire dans `sessionStorage`, restauration uniquement après choix explicite,
+  effacement après succès et solution WhatsApp de secours si l'envoi serveur échoue.
+- Message WhatsApp structuré sans champs vides, `null`, clés techniques ni consentement ;
+  calendrier affiché uniquement lorsqu'une URL commerciale réelle est configurée.
+- Vérification du parcours jusqu'à la synthèse, sans envoi : branches, navigation arrière,
+  modification, limites, budget conditionnel et reprise de session fonctionnels.
+- Contrôle navigateur à 320, 375, 390, 430, 768, 1024, 1280 et 1440 px : aucun débordement
+  horizontal, aucune cible interactive sous 44 px et aucune erreur ou alerte console.
+- `npm run lint`, `npm run typecheck`, `npm run test` (61 tests) et `npm run build` réussis.
+
+---
+
+## 20. Acquisition et attribution commerciale — 2 août 2026
+
+- Ajout de sept liens de campagne centralisés et de la redirection fermée `/go/[campaign]`,
+  sans possibilité de redirection ouverte ni publication dans le sitemap.
+- Ajout d'une attribution first touch / last touch limitée aux paramètres UTM autorisés,
+  conservée uniquement dans `sessionStorage` et transmise sans donnée personnelle aux
+  formulaires de contact et de diagnostic.
+- Ajout d'une couche de mesure interne sans fournisseur tiers : événements typés,
+  `CustomEvent` navigateur et `dataLayer` seulement lorsqu'il existe déjà.
+- Harmonisation des CTA commerciaux, des liens internes, des pages verticales et de l'étude
+  de cas SW Car Cleaning autour du diagnostic, de l'estimation, du calendrier et de WhatsApp.
+- Création du dossier `docs/marketing/` : prospection raisonnée, plan de contenu sur 30 jours,
+  partenariats, KPI, suivi des prospects, backlog et checklist Search Console.
+- Ajout de `npm run marketing:links` pour imprimer les liens courts et leurs paramètres sans
+  dupliquer la configuration de campagne.

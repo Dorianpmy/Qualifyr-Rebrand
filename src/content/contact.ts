@@ -17,10 +17,12 @@ type ContactChannel = {
 } | null;
 
 export const contact = {
-  /** Adresse e-mail professionnelle. Exemple de forme attendue une fois connue :
-   *  { label: 'E-mail', value: 'adresse@exemple.tld', href: 'mailto:adresse@exemple.tld' }
-   *  — remplacer par l'adresse réelle, cet exemple n'est jamais affiché. */
-  email: null as ContactChannel,
+  /** Adresse e-mail professionnelle confirmée par Dorian le 1er août 2026. */
+  email: {
+    label: 'E-mail',
+    value: 'qualifyragence@gmail.com',
+    href: 'mailto:qualifyragence@gmail.com',
+  } as ContactChannel,
 
   /** Téléphone. À ne remplir que si Dorian souhaite l'afficher publiquement. */
   phone: null as ContactChannel,
@@ -31,16 +33,38 @@ export const contact = {
   /** Adresse postale — non renseignée, et non inventée. */
   address: null as string | null,
 
-  /** Réseaux sociaux — aucun compte confirmé à ce jour. */
-  social: [] as readonly { readonly label: string; readonly href: string }[],
+  /** Réseaux sociaux publics confirmés par Dorian le 31 juillet 2026. */
+  social: [
+    {
+      label: 'Instagram',
+      icon: 'instagram',
+      href: 'https://www.instagram.com/qualifyragence/',
+    },
+    {
+      label: 'TikTok',
+      icon: 'tiktok',
+      href: 'https://www.tiktok.com/@qualifyragence?_r=1&_t=ZN-98URb6Oe4Re',
+    },
+  ] as const satisfies readonly {
+    readonly label: string;
+    readonly icon: 'instagram' | 'tiktok';
+    readonly href: string;
+  }[],
 
   /** Horaires — non communiqués. */
   hours: null as string | null,
 } as const;
 
-/** Canaux réellement renseignés, dans l'ordre d'affichage. */
+/** Zone d'accompagnement confirmée dans le brief du 30 juillet 2026. */
+export const serviceAreas = ['France', 'Belgique', 'Suisse', 'Luxembourg'] as const;
+
+/**
+ * Coordonnées affichées en toutes lettres dans les blocs génériques.
+ * L'e-mail reste disponible via les boutons dédiés de la page Contact, sans
+ * exposer l'adresse brute dans le footer ou les panneaux éditoriaux.
+ */
 export function availableChannels() {
-  return [contact.email, contact.phone].filter(
+  return [contact.phone].filter(
     (channel): channel is NonNullable<ContactChannel> => channel !== null,
   );
 }
@@ -52,9 +76,10 @@ export function availableChannels() {
  */
 export const contactPage = {
   eyebrow: 'Contact',
-  title: 'Parlons de votre activité.',
-  lead: 'Une question sur notre accompagnement pour le nettoyage automobile mobile ou les conciergeries, sur ce qui est possible ou sur votre situation en particulier ?',
-  orientationSuffix: 'Pour toute autre question, ce formulaire suffit.',
-  noChannel:
-    'Le formulaire est pour l’instant le seul canal de contact. Une adresse directe sera indiquée ici dès qu’elle sera en service.',
+  title: 'Discutons de votre projet.',
+  lead: 'Expliquez-nous ce que vous souhaitez créer, clarifier ou améliorer. Quelques lignes suffisent pour commencer.',
+  briefTitle: 'Votre brief.',
+  briefLead: 'Plus votre message est précis, plus notre première réponse pourra être utile.',
+  directTitle: 'Ou plus direct.',
+  directLead: 'Choisissez simplement le canal qui vous convient.',
 } as const;

@@ -64,8 +64,9 @@ Ces affirmations figurent dans la politique de confidentialité et correspondent
   donc nécessaire.
 - **Aucune donnée n'est stockée en base** — les demandes transitent uniquement par e-mail.
 - **Le consentement n'est jamais pré-coché** et conditionne l'envoi.
-- **Les journaux serveur ne contiennent aucune donnée personnelle** — ni nom, ni e-mail, ni
-  message, ni adresse IP.
+- **Adaptation tarifaire géographique** — l'hébergeur déduit un code pays de la requête afin
+  d'afficher automatiquement EUR ou CHF. Qualifyr ne reçoit que ce code pays, ne conserve ni
+  l'adresse IP ni le résultat et ne constitue aucun profil.
 
 **Si l'une de ces conditions change, ce document et `src/content/legal.ts` doivent être mis à
 jour dans le même commit que le code.** Une politique de confidentialité qui décrit un site

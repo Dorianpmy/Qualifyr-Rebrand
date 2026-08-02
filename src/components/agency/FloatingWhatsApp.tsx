@@ -1,11 +1,18 @@
+'use client';
+
+import { usePathname } from 'next/navigation';
 import { agencyChannels } from '@/content/agency-channels';
+import { BrandIcon } from '@/components/ui/BrandIcon';
+import { buildDirectWhatsAppMessage, buildWhatsAppUrl } from '@/lib/whatsapp';
 import styles from './FloatingWhatsApp.module.css';
 
 export function FloatingWhatsApp() {
+  const pathname = usePathname();
+  if (pathname === '/diagnostic') return null;
   if (!agencyChannels.whatsappNumber) return null;
 
-  const message = 'Bonjour, je souhaite discuter de mon projet avec Qualifyr.';
-  const href = `https://wa.me/${agencyChannels.whatsappNumber}?text=${encodeURIComponent(message)}`;
+  const href = buildWhatsAppUrl(agencyChannels.whatsappNumber, buildDirectWhatsAppMessage());
+  if (!href) return null;
 
   return (
     <a
@@ -16,7 +23,8 @@ export function FloatingWhatsApp() {
       aria-label="Écrire à Qualifyr sur WhatsApp"
       title="WhatsApp"
     >
-      <span aria-hidden="true">WA</span>
+      <BrandIcon name="whatsapp" className={styles.icon} />
+      <span className={styles.tooltip} aria-hidden="true">WhatsApp</span>
       <span className={styles.badge} aria-hidden="true">+1</span>
     </a>
   );

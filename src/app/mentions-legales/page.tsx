@@ -107,8 +107,8 @@ export default function MentionsLegalesPage() {
         <p className={styles.notice}>
           Les textes, la composition et l’identité visuelle de ce site sont la propriété de
           Qualifyr Agence. Les noms et marques cités appartiennent à leurs détenteurs
-          respectifs. Les polices de caractères Newsreader et Manrope sont utilisées sous
-          licence SIL Open Font License 1.1.
+          respectifs. Les polices de caractères Cormorant Garamond et Manrope sont utilisées
+          sous licence SIL Open Font License 1.1.
         </p>
 
         <h2 className={styles.blockTitle}>Données personnelles</h2>

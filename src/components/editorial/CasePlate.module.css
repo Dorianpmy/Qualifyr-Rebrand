@@ -44,6 +44,7 @@
 .name {
   font-family: var(--family-display);
   font-size: var(--text-3xl);
+  font-weight: var(--weight-semibold);
   line-height: 1.05;
   letter-spacing: var(--tracking-tight);
 }

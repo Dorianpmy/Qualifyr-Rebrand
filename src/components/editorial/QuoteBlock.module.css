@@ -17,7 +17,7 @@
   margin: 0;
   font-family: var(--family-display);
   font-size: var(--text-3xl);
-  font-weight: var(--weight-regular);
+  font-weight: var(--weight-semibold);
   line-height: 1.25;
   letter-spacing: var(--tracking-snug);
   text-wrap: balance;

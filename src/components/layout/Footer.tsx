@@ -1,13 +1,22 @@
+'use client';
+
 import Link from 'next/link';
-import { brand } from '@/content/brand';
-import { availableChannels, contact } from '@/content/contact';
-import { footerNav, legalNav } from '@/content/navigation';
+import { usePathname } from 'next/navigation';
+import { agencyChannels } from '@/content/agency-channels';
+import { availableChannels, contact, serviceAreas } from '@/content/contact';
+import {
+  footerCompanyNav,
+  footerServiceNav,
+  legalNav,
+} from '@/content/navigation';
+import { ButtonLink } from '@/components/ui/Button';
+import { BrandIcon } from '@/components/ui/BrandIcon';
 import { Logo } from '@/components/ui/Logo';
 import { Container } from './Container';
 import styles from './Footer.module.css';
 
 /**
- * Pied de page — sobre, sombre, éditorial.
+ * Clôture éditoriale globale : appel à l'action puis pied de page structuré.
  *
  * Les coordonnées viennent de `src/content/contact.ts` et **seules les valeurs
  * réellement renseignées sont affichées**. Si aucun canal n'est connu, la
@@ -16,23 +25,84 @@ import styles from './Footer.module.css';
  * horaires, ni réseaux sociaux.
  */
 export function Footer() {
+  const pathname = usePathname();
   const year = new Date().getFullYear();
   const channels = availableChannels();
+  const hasPageSpecificCta = pathname === '/nettoyage-automobile' || pathname === '/conciergerie';
+
+  if (pathname === '/diagnostic') return null;
 
   return (
-    <footer className={styles.footer} data-surface="inverse">
+    <footer className={styles.footer}>
       <Container>
+        {pathname === '/' || hasPageSpecificCta ? null : <section className={styles.cta} data-surface="inverse" aria-labelledby="footer-cta-title">
+          <div className={styles.ctaCopy}>
+            <p className={styles.ctaEyebrow}>Votre projet</p>
+            <h2 id="footer-cta-title" className={styles.ctaTitle}>
+              Prêt à transformer votre projet digital ?
+            </h2>
+            <p className={styles.ctaText}>
+              Créons un site internet ou une application pensée pour votre activité, vos
+              objectifs et votre croissance.
+            </p>
+          </div>
+          <div className={styles.ctaActions}>
+            <ButtonLink href="/estimation" ctaId="estimation_start" variant="inverse" withArrow>
+              Estimer mon projet
+            </ButtonLink>
+            <ButtonLink href="/diagnostic" ctaId="final_diagnostic" variant="inverseSecondary">
+              Faire le diagnostic
+            </ButtonLink>
+          </div>
+        </section>}
+
         <div className={styles.grid}>
-          <div>
-            <Logo inverse />
-            <p className={styles.positioning}>{brand.descriptor}</p>
-            <p className={styles.domain}>{contact.domain}</p>
+          <div className={styles.brandColumn}>
+            <Link href="/" className={styles.logoLink} aria-label="Qualifyr — Accueil">
+              <Logo />
+            </Link>
+            <p className={styles.positioning}>
+              Nous concevons des sites internet, applications web et solutions
+              digitales modernes pensées pour être utilisées, comprises et rentables.
+            </p>
+            {contact.social.length > 0 ? (
+              <ul className={styles.socials} aria-label="Réseaux sociaux">
+                {contact.social.map((network) => (
+                  <li key={network.href}>
+                    <a
+                      href={network.href}
+                      className={styles.socialLink}
+                      data-network={network.icon}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Suivre Qualifyr sur ${network.label}`}
+                    >
+                      <BrandIcon name={network.icon} className={styles.socialIcon} />
+                      <span>{network.label}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
           </div>
 
-          <nav aria-label="Pages du site">
-            <h2 className={styles.columnTitle}>Le site</h2>
+          <nav aria-label="Services">
+            <h2 className={styles.columnTitle}>Services</h2>
             <ul className={styles.list}>
-              {footerNav.map((item) => (
+              {footerServiceNav.map((item) => (
+                <li key={`${item.label}-${item.href}`}>
+                  <Link href={item.href} className={styles.link}>
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <nav aria-label="Entreprise">
+            <h2 className={styles.columnTitle}>Entreprise</h2>
+            <ul className={styles.list}>
+              {footerCompanyNav.map((item) => (
                 <li key={item.href}>
                   <Link href={item.href} className={styles.link}>
                     {item.label}
@@ -42,9 +112,9 @@ export function Footer() {
             </ul>
           </nav>
 
-          {channels.length > 0 ? (
-            <div>
-              <h2 className={styles.columnTitle}>Contact</h2>
+          <div className={styles.contactColumn}>
+            <h2 className={styles.columnTitle}>Coordonnées</h2>
+            {channels.length > 0 || agencyChannels.bookingUrl || contact.hours ? (
               <ul className={styles.list}>
                 {channels.map((channel) => (
                   <li key={channel.href}>
@@ -53,27 +123,40 @@ export function Footer() {
                     </a>
                   </li>
                 ))}
+                {agencyChannels.bookingUrl ? (
+                  <li>
+                    <a
+                      href={agencyChannels.bookingUrl}
+                      className={styles.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Prendre rendez-vous
+                    </a>
+                  </li>
+                ) : null}
+                {contact.hours ? <li className={styles.detail}>{contact.hours}</li> : null}
               </ul>
-            </div>
-          ) : null}
+            ) : null}
 
+            <p className={styles.areaLabel}>Zone d’accompagnement</p>
+            <ul className={styles.areaList}>
+              {serviceAreas.map((area) => <li key={area}>{area}</li>)}
+            </ul>
+          </div>
+        </div>
+
+        <div className={styles.baseline}>
+          <p>© {year} Qualifyr. Tous droits réservés.</p>
           <nav aria-label="Informations légales">
-            <h2 className={styles.columnTitle}>Informations</h2>
-            <ul className={styles.list}>
+            <ul className={styles.legalList}>
               {legalNav.map((item) => (
-                <li key={item.href}>
-                  <Link href={item.href} className={styles.link}>
-                    {item.label}
-                  </Link>
+                <li key={`${item.label}-${item.href}`}>
+                  <Link href={item.href} className={styles.legalLink}>{item.label}</Link>
                 </li>
               ))}
             </ul>
           </nav>
-        </div>
-
-        <div className={styles.baseline}>
-          <p>{brand.fullName} — identité, site et parcours pour les entreprises de services</p>
-          <p>© {year}</p>
         </div>
       </Container>
     </footer>

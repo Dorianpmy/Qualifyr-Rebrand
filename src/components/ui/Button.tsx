@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from 'react';
 import type { LinkTarget } from '@/types';
+import type { AnalyticsEventName } from '@/lib/analytics';
 import { Icon } from './Icon';
 import styles from './Button.module.css';
 
@@ -12,6 +13,10 @@ type SharedProps = {
   className?: string | undefined;
   /** Flèche de continuité, réservée aux actions qui font avancer le parcours. */
   withArrow?: boolean;
+  ctaId?: string | undefined;
+  analyticsEvent?: AnalyticsEventName | undefined;
+  analyticsVertical?: string | undefined;
+  analyticsDestination?: string | undefined;
 };
 
 function classesFor(variant: Variant, className?: string) {
@@ -39,12 +44,20 @@ export function ButtonLink({
   className,
   withArrow = false,
   onClick,
+  ctaId,
+  analyticsEvent,
+  analyticsVertical,
+  analyticsDestination,
 }: ButtonLinkProps) {
   return (
     <Link
       href={href}
       className={classesFor(variant, className)}
       {...(onClick ? { onClick } : {})}
+      data-cta-id={ctaId}
+      data-analytics-event={analyticsEvent}
+      data-analytics-vertical={analyticsVertical}
+      data-analytics-destination={analyticsDestination ?? href}
     >
       <span className={styles.label}>{children}</span>
       {withArrow ? <Icon name="arrow-right" size={0.95} /> : null}
@@ -65,10 +78,23 @@ export function ButtonAnchor({
   className,
   withArrow = false,
   rel = 'noopener noreferrer',
+  ctaId,
+  analyticsEvent,
+  analyticsVertical,
+  analyticsDestination,
   ...rest
 }: ButtonAnchorProps) {
   return (
-    <a href={href} className={classesFor(variant, className)} rel={rel} {...rest}>
+    <a
+      href={href}
+      className={classesFor(variant, className)}
+      rel={rel}
+      data-cta-id={ctaId}
+      data-analytics-event={analyticsEvent}
+      data-analytics-vertical={analyticsVertical}
+      data-analytics-destination={analyticsDestination ?? href}
+      {...rest}
+    >
       <span className={styles.label}>{children}</span>
       {withArrow ? <Icon name="arrow-right" size={0.95} /> : null}
     </a>
@@ -96,6 +122,10 @@ export function Button({
   loadingLabel = 'Envoi en cours',
   disabled = false,
   type = 'button',
+  ctaId,
+  analyticsEvent,
+  analyticsVertical,
+  analyticsDestination,
   ...rest
 }: ButtonProps) {
   return (
@@ -105,6 +135,10 @@ export function Button({
       disabled={disabled || loading}
       data-loading={loading ? 'true' : undefined}
       aria-busy={loading || undefined}
+      data-cta-id={ctaId}
+      data-analytics-event={analyticsEvent}
+      data-analytics-vertical={analyticsVertical}
+      data-analytics-destination={analyticsDestination}
       {...rest}
     >
       {loading ? <span className={styles.spinner} aria-hidden="true" /> : null}

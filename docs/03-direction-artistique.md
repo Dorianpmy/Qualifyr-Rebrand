@@ -1,5 +1,69 @@
 # 03 — Direction artistique
 
+## Diagnostic guidé — 1er août 2026
+
+Le diagnostic n'affiche plus l'ensemble de ses champs dans une longue fiche continue. Il
+devient un parcours éditorial en trois temps : activité, situation, coordonnées. Un bandeau
+charbon indique l'étape active, le pourcentage accompli et la progression générale. Une seule
+étape reste visible à la fois ; les réponses sont conservées lorsque le visiteur revient en
+arrière.
+
+Les champs conservent des libellés explicites et des contrôles natifs accessibles, mais leur
+présentation abandonne l'aspect de formulaire système : hauteur régulière, surfaces ivoire,
+filets fins, indicateurs de sélection dessinés dans la palette et options traitées comme de
+petites cartes. Aucun effet brillant, dégradé, halo ou rayon excessif n'est ajouté. Le passage
+d'une étape à l'autre utilise seulement un déplacement court, désactivé avec le mouvement
+réduit.
+
+## Resserrement de la Méthode et orientation du Laboratoire — 1er août 2026
+
+La page Méthode ne déroule plus quatre bandes pleine largeur suivies de deux conclusions.
+Les quatre temps sont réunis dans une seule grille éditoriale compacte : le numéro, le titre,
+une phrase et trois points concrets suffisent à comprendre chaque étape. L'adaptation aux deux
+métiers et la règle d'outillage partagent ensuite une même clôture. La hiérarchie reste ample,
+mais la hauteur totale et les répétitions diminuent nettement.
+
+Le Laboratoire reçoit un parcours d'orientation en deux états, placé avant les études : le
+visiteur choisit ce qu'il souhaite clarifier, puis obtient une recommandation éditoriale avec
+accès direct au concept concerné. Ce bloc reste léger, sans prix, sans formulaire et sans
+dupliquer l'estimation. Son état sélectionné est indiqué par le contraste, un filet et du
+texte — jamais par la couleur seule.
+
+L'orientation forme un panneau éditorial autonome, et non une liste ajoutée sous
+l'introduction. Sur grand écran, son en-tête occupe une colonne courte tandis que les trois
+choix et la recommandation occupent une seconde colonne. Les choix sont séparés par des
+filets, disposent d'une flèche directionnelle et conservent des hauteurs régulières. Sur
+mobile, l'ensemble s'empile sans réduire le corps de texte ni créer de défilement horizontal.
+La mention distinguant les concepts des projets livrés reste visible, mais passe après le
+panneau afin de ne pas interrompre la progression.
+
+La relance « Discutons » attend désormais soixante secondes complètes sans interaction. Ce
+délai laisse le temps de comprendre une page avant de proposer un échange et se réinitialise
+à chaque interaction utile.
+
+## Resserrement de l'accueil du 1er août 2026
+
+L'accueil adopte cinq temps seulement : ouverture, transformation, réalisation réelle,
+entreprises et méthode réunies, estimation. Le Laboratoire devient une page autonome. Cette
+séparation retire près de deux écrans de défilement, évite de montrer deux fois SW Car Cleaning
+et laisse chaque composition respirer sans transformer l'accueil en catalogue.
+
+La hiérarchie d'action devient stable : l'estimation est le geste principal de l'ouverture,
+la réalisation réelle constitue la preuve secondaire, WhatsApp reste disponible comme canal
+d'appui et le calendrier n'est proposé qu'après l'estimation. La preuve SW Car Cleaning est
+présentée par des faits vérifiables — activité, zone et éléments réellement livrés — sans
+témoignage, résultat ou chiffre inventé.
+
+Sur la page d'estimation, le prix est traité comme une synthèse éditoriale et non comme un
+encart comptable : mensualité principale, durée explicite, coût complet secondaire et devise
+automatique dans un même bloc. Les compléments restent des lignes compactes, activables en
+entier, avec un état sélectionné porté par un filet cuivre et un fond papier légèrement plus
+chaud. Aucun tableau de pays, gros chiffre débordant ou effet de carte empilée n'est utilisé.
+
+La page Laboratoire conserve la composition asymétrique et les ateliers interactifs, mais ne
+contient plus la réalisation SW Car Cleaning ni son `iframe`. Elle réunit uniquement les trois
+études explicitement signalées comme concepts.
+
 ## Ajustement éditorial du 27 juillet 2026
 
 L'accueil adopte une narration courte en sept sections : hero vidéo, transformation,
@@ -15,6 +79,19 @@ explorations Identité et Mouvement sont traitées comme des études secondaires
 même poids sont évitées ; la hiérarchie vient des proportions, des numéros d'édition et des
 filets, sans faux projet ni effet décoratif gratuit.
 
+Le redesign du 31 juillet 2026 formalise cette composition sur une grille de douze colonnes :
+la Conciergerie occupe sept colonnes dès le premier rang et traverse les deux rangées ; les
+deux études secondaires occupent les cinq colonnes restantes. Elles conservent une composition
+verticale — visuel au-dessus, contenu dessous — afin que ni la typographie ni les compositions
+graphiques ne soient comprimées. À partir du format tablette, les cartes suivent une grille
+simple de deux colonnes ; sur mobile, elles passent dans une seule colonne. Les métadonnées
+peuvent revenir à la ligne : aucune information n'est tronquée pour préserver une composition.
+
+Chaque carte forme une surface d'action unique. Au survol, elle monte de quatre pixels au
+maximum, le visuel avance très légèrement et la flèche prolonge le mouvement. Les transitions
+durent 380 ms, sans ombre décorative, parallaxe ni halo, et disparaissent lorsque le mouvement
+réduit est demandé.
+
 ## Système d'interactions
 
 L'interactivité est distribuée sur tout le site par des réactions courtes et fonctionnelles :
@@ -23,6 +100,33 @@ et les listes éditoriales révèlent leur caractère cliquable ou exploratoire.
 restent compris entre 1 et 6 px, n'altèrent jamais la lecture et ne sont activés au survol que
 sur les appareils qui disposent réellement d'un pointeur. Le focus clavier reste visible et
 `prefers-reduced-motion` supprime tout déplacement non essentiel.
+
+## Pied de page global — ajustement du 30 juillet 2026
+
+Le pied de page devient une clôture éditoriale en deux temps : un appel à l'action charbon
+encadré, puis quatre colonnes de navigation et d'informations sur une surface ivoire. Le bloc
+fort conserve des arêtes presque franches (`--radius-sm`, 4 px) malgré la demande de coins
+arrondis : un rayon plus important contredirait l'identité Qualifyr. Les liens réagissent par
+un filet et un déplacement de 3 px maximum. Les réseaux, coordonnées et calendrier ne sont
+affichés que lorsque leurs URL ou valeurs sont réellement configurées.
+
+Les liens Instagram et TikTok confirmés le 31 juillet 2026 sont affichés avec leur
+pictogramme de marque en SVG monochrome et leur nom écrit en toutes lettres. Le bouton
+WhatsApp fixe utilise lui aussi le pictogramme complet, accompagné d'un libellé contextuel
+au survol et au focus : aucun sigle ambigu ne remplace le nom du canal.
+
+## Journal éditorial — ajustement du 31 juillet 2026
+
+Le journal reprend les codes d'une publication, pas ceux d'une grille de ressources : une
+une généreuse, des numéros d'édition, des filets fins et des titres fortement hiérarchisés.
+Les cartes n'emploient ni photographie générique ni illustration décorative simulant un
+projet. Leur visuel est une composition typographique abstraite construite avec la palette
+existante. Sur l'accueil, la fenêtre du journal reste compacte et ne concurrence ni la preuve
+réelle ni l'estimation.
+
+Les interactions se limitent au déplacement court de la flèche, au dessin du filet et à une
+variation de matière. Aucun carrousel, aucun défilement horizontal et aucun filtre n'est ajouté
+tant que le nombre d'articles ne le justifie pas.
 
 Identité visée : **luxueuse, premium, éditoriale, lumineuse, chaleureuse, précise,
 minimaliste, mature, mémorable.**
@@ -257,6 +361,9 @@ organiques.
   (01, 02, 03…) plutôt que par des icônes — solution à privilégier, plus éditoriale.
 - Aucune icône ne porte seule une information : elle est toujours accompagnée d'un texte, et
   reçoit `aria-hidden="true"` quand elle est décorative.
+- Les trois pictogrammes de réseaux confirmés — WhatsApp, Instagram et TikTok — constituent
+  une exception de marque au jeu linéaire. Ils restent monochromes, utilisent `currentColor`
+  et sont toujours nommés par un libellé visible ou accessible.
 
 ---
 
@@ -302,6 +409,14 @@ Principe : l'animation confirme une intention, elle ne décore pas.
   animations en boucle permanente.
 - **`prefers-reduced-motion: reduce`** : toutes les animations sont désactivées, les contenus
   s'affichent immédiatement à leur état final. Aucune fonctionnalité ne dépend d'une animation.
+
+### Cartes du laboratoire créatif
+
+Les aperçus « Identité visuelle » et « Motion UI » réagissent au survol par un mouvement
+horizontal bref, de droite à gauche. L'aperçu se déplace à l'intérieur de son cadre tandis
+qu'un filet vertical traverse la composition ; le texte de la carte reste fixe et lisible.
+Le mouvement ne se déclenche que sur un appareil doté d'un pointeur précis, possède un
+équivalent au focus clavier et disparaît entièrement avec `prefers-reduced-motion`.
 
 ### Aperçus de sites interactifs
 

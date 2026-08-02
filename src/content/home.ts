@@ -2,10 +2,9 @@ import { objectives, swCarCleaning } from './sw-car-cleaning';
 
 export const hero = {
   eyebrow: 'Agence digitale pour les entreprises de services',
-  title:
-    'Transformez votre savoir-faire en une marque que l’on choisit.',
+  title: 'Faites de votre savoir-faire une évidence.',
   body:
-    'Qualifyr clarifie votre offre, construit votre identité et conçoit le site qui transforme votre savoir-faire en une expérience crédible et facile à choisir.',
+    'Qualifyr clarifie votre offre, construit votre identité et conçoit le site qui aide vos prospects à vous comprendre, vous faire confiance et vous contacter.',
 } as const;
 
 /** Conservé pour la composition éditoriale réutilisée par le design system. */
@@ -63,10 +62,16 @@ export const transformations = [
 ] as const;
 
 export const serviceCompanies = [
-  'Nettoyage automobile et detailing',
-  'Conciergerie',
-  'Services spécialisés',
-  'Entreprises locales à forte valeur de conseil ou d’exécution',
+  {
+    title: 'Nettoyage automobile & detailing',
+    body: 'Présenter les prestations, valoriser le niveau de travail et simplifier le passage vers la prise de contact.',
+    href: '/nettoyage-automobile',
+  },
+  {
+    title: 'Conciergeries',
+    body: 'Clarifier l’accompagnement, inspirer confiance et guider chaque demande vers la bonne action.',
+    href: '/conciergerie',
+  },
 ] as const;
 
 export const method = [

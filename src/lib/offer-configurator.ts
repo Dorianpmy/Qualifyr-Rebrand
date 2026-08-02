@@ -2,10 +2,45 @@ export type ActivityId = 'automobile' | 'detailing' | 'conciergerie' | 'autre';
 export type SituationId = 'lancement' | 'recommandation' | 'site' | 'multicanal' | 'croissance';
 export type ObstacleId = 'comparaison' | 'incompletes' | 'echanges' | 'image' | 'retour';
 export type OptionId = 'acompte' | 'reservation' | 'redaction';
+export type PricingRegion = 'euro' | 'switzerland';
 
-export const setupPrice = 490;
-export const monthlyPrice = 149;
 export const commitmentMonths = 12;
+export const swissPriceFactor = 1.16;
+
+const euroPricing = {
+  setupPrice: 590,
+  monthlyPrice: 149,
+  currency: 'EUR',
+  locale: 'fr-FR',
+} as const;
+
+export function roundUpToTen(amount: number) {
+  return Math.ceil(amount / 10) * 10;
+}
+
+function toSwissPrice(euroPrice: number) {
+  return roundUpToTen(euroPrice * swissPriceFactor);
+}
+
+export const pricingByRegion = {
+  euro: {
+    ...euroPricing,
+    label: 'France et zone euro',
+  },
+  switzerland: {
+    setupPrice: toSwissPrice(euroPricing.setupPrice),
+    monthlyPrice: toSwissPrice(euroPricing.monthlyPrice),
+    currency: 'CHF',
+    locale: 'fr-CH',
+    label: 'Suisse',
+  },
+} as const satisfies Record<PricingRegion, {
+  readonly setupPrice: number;
+  readonly monthlyPrice: number;
+  readonly currency: 'EUR' | 'CHF';
+  readonly locale: string;
+  readonly label: string;
+}>;
 
 export const options = [
   { id: 'acompte', title: 'Sécuriser les rendez-vous importants', description: 'Ajoutez un acompte lorsque certaines prestations mobilisent du temps, un déplacement ou du matériel.', price: 290, recommendedFor: ['echanges'] },
@@ -42,11 +77,35 @@ export function getRecommendations(activity: ActivityId, situation: SituationId,
   return [...ids].map((id) => recommendations[id]).filter((item): item is Recommendation => Boolean(item));
 }
 
-export function calculateOffer(selected: readonly OptionId[]) {
-  const optionTotal = selected.reduce((sum, id) => sum + (options.find((option) => option.id === id)?.price ?? 0), 0);
-  return { optionTotal, firstYearTotal: setupPrice + monthlyPrice * commitmentMonths + optionTotal };
+export function resolvePricingRegion(countryCode: string | null | undefined): PricingRegion {
+  return countryCode?.toUpperCase() === 'CH' ? 'switzerland' : 'euro';
 }
 
-export function formatPrice(price: number) {
-  return new Intl.NumberFormat('fr-FR').format(price);
+export function getOptionPrice(id: OptionId, region: PricingRegion) {
+  const euroPrice = options.find((option) => option.id === id)?.price ?? 0;
+  return region === 'switzerland' ? toSwissPrice(euroPrice) : euroPrice;
+}
+
+export function calculateOffer(selected: readonly OptionId[], region: PricingRegion = 'euro') {
+  const pricing = pricingByRegion[region];
+  const optionTotal = selected.reduce((sum, id) => sum + getOptionPrice(id, region), 0);
+  return {
+    optionTotal,
+    firstYearTotal: pricing.setupPrice + pricing.monthlyPrice * commitmentMonths + optionTotal,
+  };
+}
+
+export function calculateMonthlyEquivalent(firstYearTotal: number) {
+  return firstYearTotal / commitmentMonths;
+}
+
+export function formatMoney(price: number, region: PricingRegion, fractionDigits = 0) {
+  const pricing = pricingByRegion[region];
+  return new Intl.NumberFormat(pricing.locale, {
+    style: 'currency',
+    currency: pricing.currency,
+    currencyDisplay: 'narrowSymbol',
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+  }).format(price);
 }

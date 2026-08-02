@@ -7,8 +7,9 @@ import urllib.request
 
 BASE = sys.argv[1] if len(sys.argv) > 1 else 'http://localhost:3300'
 
-PAGES = ['/', '/methode', '/realisations', '/realisations/sw-car-cleaning',
+PAGES = ['/', '/creation-site-web', '/methode', '/realisations', '/realisations/sw-car-cleaning', '/laboratoire',
          '/a-propos', '/diagnostic', '/contact',
+         '/blog', '/blog/rendre-une-offre-de-services-plus-facile-a-choisir',
          '/mentions-legales', '/politique-de-confidentialite']
 
 problems = []
@@ -40,8 +41,11 @@ for path in PAGES:
         problems.append(f'{path} : {header} <header>')
     if main != 1:
         problems.append(f'{path} : {main} <main>')
-    if footer != 1:
-        problems.append(f'{path} : {footer} <footer>')
+    expected_footer = 0 if path == '/diagnostic' else 1
+    if footer != expected_footer:
+        problems.append(
+            f'{path} : {footer} <footer> (attendu : {expected_footer})'
+        )
     if unlabeled_nav:
         problems.append(f'{path} : {len(unlabeled_nav)} <nav> sans nom accessible')
     if not skip or not main_id:
@@ -102,11 +106,12 @@ print('LIENS ET BOUTONS')
 print('=' * 76)
 for path in PAGES:
     doc = get(path)
-    empty_links = [a for a in re.findall(r'<a[^>]*>(.*?)</a>', doc, re.S)
-                   if not strip(a) and 'aria-label' not in a]
-    buttons = re.findall(r'<button[^>]*>(.*?)</button>', doc, re.S)
-    empty_buttons = [b for b in buttons if not strip(b)]
-    icon_only = [b for b in buttons if '<svg' in b and not strip(b)]
+    links = re.findall(r'(<a[^>]*>)(.*?)</a>', doc, re.S)
+    empty_links = [(opening, content) for opening, content in links
+                   if not strip(content) and 'aria-label' not in opening]
+    buttons = re.findall(r'(<button[^>]*>)(.*?)</button>', doc, re.S)
+    empty_buttons = [(opening, content) for opening, content in buttons
+                     if not strip(content) and 'aria-label' not in opening]
     blank = re.findall(r'<a[^>]*target="_blank"[^>]*>', doc)
     bad_rel = [a for a in blank if 'noopener' not in a or 'noreferrer' not in a]
     if empty_links:
