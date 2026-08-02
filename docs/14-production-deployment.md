@@ -1,5 +1,34 @@
 # 14 — Préparation du déploiement production
 
+## Audit final du 2 août 2026 — production volontairement inchangée
+
+Le système commercial a été finalisé sur la branche
+`feature/qualifyr-rebrand-v1`, au commit applicatif `8e87544`, puis validé sur une
+preview Netlify non indexable :
+
+<https://6a6fa6daa54baeb7346aa987--qualifyragence.netlify.app>
+
+**Aucun déploiement production n'a été effectué pendant cet audit.** Les conditions de
+mise en production ne sont pas toutes satisfaites :
+
+- `RESEND_API_KEY`, `CONTACT_TO_EMAIL` et `CONTACT_FROM_EMAIL` sont absentes de Netlify ;
+- les variables publiques WhatsApp et calendrier ne sont pas déclarées dans Netlify ;
+- les informations légales obligatoires restent incomplètes ;
+- aucun test réel et autorisé de réception d'e-mail n'a donc été réalisé.
+
+Le déploiement de production actuellement publié reste :
+
+- **ID** : `6a6f97570217be86770394b0` ;
+- **URL immuable** :
+  <https://6a6f97570217be86770394b0--qualifyragence.netlify.app> ;
+- **domaine public** : <https://qualifyragence.com>.
+
+Le domaine, `www`, les DNS et les anciens déploiements n'ont pas été modifiés. La
+configuration versionnée dans `netlify.toml` rend les contextes `deploy-preview` et
+`branch-deploy` non indexables et réserve l'indexation explicite au contexte `production`.
+Un futur déploiement production ne doit être lancé qu'après configuration des variables,
+test réel des formulaires et validation des mentions légales.
+
 ## Mise à jour production du 27 juillet 2026 — interface et conversion
 
 La version validée localement a été publiée sur le projet Netlify existant, sans modifier

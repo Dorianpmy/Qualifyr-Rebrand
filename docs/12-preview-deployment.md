@@ -1,5 +1,66 @@
 # 12 — Déploiement preview
 
+## Preview finale du système commercial — 2 août 2026
+
+- **Plateforme** : Netlify, projet existant `qualifyragence`
+- **Contexte** : `deploy-preview` — aucun déploiement production
+- **Branche** : `feature/qualifyr-rebrand-v1`
+- **Commit applicatif poussé** : `8e87544`
+- **Déploiement** : `6a6fa6daa54baeb7346aa987`
+- **URL immuable** : <https://6a6fa6daa54baeb7346aa987--qualifyragence.netlify.app>
+- **Journaux de build** : <https://app.netlify.com/projects/qualifyragence/deploys/6a6fa6daa54baeb7346aa987>
+- **Domaine et DNS** : inchangés
+
+Cette preview est construite avec le contexte Netlify `deploy-preview`. La configuration
+versionnée force `NEXT_PUBLIC_SITE_INDEXABLE=false` pour les previews et les déploiements de
+branche, tout en réservant l'activation explicite de l'indexation au contexte de production.
+
+### Indexation et métadonnées vérifiées
+
+- `meta robots` : `noindex, nofollow, nocache` ;
+- `robots.txt` : `Disallow: /` ;
+- `sitemap.xml` : vide ;
+- canonical : `https://qualifyragence.com`, jamais l'URL temporaire ;
+- HTTPS : actif.
+
+### Contrôles effectués
+
+- Réponses `200` : accueil, deux pages métier, étude de cas SW Car Cleaning, diagnostic,
+  estimation, contact, à propos, méthode et deux pages légales.
+- Route inconnue : réponse `404` correcte.
+- Les sept routes `/go/` répondent en `307` vers les destinations internes et UTM attendus.
+- Responsive réel sur les routes prioritaires à 390 × 844 et 1440 × 900 : aucun débordement
+  horizontal ; H1 unique après hydratation.
+- Navigation, CTA WhatsApp direct et calendrier : destinations centralisées et cohérentes.
+- Aucune erreur console associée à l'hôte de preview pendant le contrôle.
+- Aucun test d'envoi réel n'a été déclenché : les variables Resend sont absentes et aucune
+  adresse de test autorisée n'a été fournie. Le repli `503` honnête est couvert par les tests.
+
+### Variables observées, sans leurs valeurs
+
+Variables publiques disponibles pour la construction locale de la preview :
+
+- `NEXT_PUBLIC_QUALIFYR_WHATSAPP_NUMBER` ;
+- `NEXT_PUBLIC_QUALIFYR_BOOKING_URL`.
+
+Variables présentes dans le projet Netlify mais non utilisées comme remplacement des
+variables Resend attendues par le code actuel :
+
+- `GMAIL_APP_PASSWORD` ;
+- `QUALIFYR_PROSPECT_WEBHOOK_SECRET` ;
+- `QUALIFYR_PROSPECT_WEBHOOK_URL`.
+
+Variables de production encore absentes :
+
+- `RESEND_API_KEY` ;
+- `CONTACT_TO_EMAIL` ;
+- `CONTACT_FROM_EMAIL` ;
+- `NEXT_PUBLIC_QUALIFYR_WHATSAPP_NUMBER` ;
+- `NEXT_PUBLIC_QUALIFYR_BOOKING_URL` ;
+- `GOOGLE_SITE_VERIFICATION` (optionnelle tant que Search Console ne fournit pas de valeur).
+
+La production n'a pas été redéployée depuis cette preview.
+
 ## Dernier déploiement de validation
 
 - **Date** : 27 juillet 2026

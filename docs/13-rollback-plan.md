@@ -5,6 +5,12 @@
 > comme historique. Le retour arrière actuel consiste à republier l'ancien déploiement Netlify
 > immuable documenté ci-dessous, sans changer les DNS et sans supprimer aucun déploiement.
 
+> **Relevé du 2 août 2026.** La production active est le déploiement Netlify
+> `6a6f97570217be86770394b0`, disponible à l'adresse immuable
+> <https://6a6f97570217be86770394b0--qualifyragence.netlify.app>. La preview finale
+> `6a6fa6daa54baeb7346aa987` n'est pas publiée sur le domaine. Aucun DNS n'a été modifié et
+> tous les déploiements antérieurs listés dans ce document restent conservés.
+
 ## Principe
 
 La migration vers Vercel doit rester réversible. L’ancien projet Netlify, son déploiement

@@ -1,0 +1,11 @@
+[context.production.environment]
+  NEXT_PUBLIC_SITE_INDEXABLE = "true"
+  NEXT_PUBLIC_SITE_URL = "https://qualifyragence.com"
+
+[context.deploy-preview.environment]
+  NEXT_PUBLIC_SITE_INDEXABLE = "false"
+  NEXT_PUBLIC_SITE_URL = "https://qualifyragence.com"
+
+[context.branch-deploy.environment]
+  NEXT_PUBLIC_SITE_INDEXABLE = "false"
+  NEXT_PUBLIC_SITE_URL = "https://qualifyragence.com"
