@@ -72,9 +72,9 @@ export const automotiveVertical: VerticalServiceContent = {
   route: '/nettoyage-automobile',
   hero: {
     eyebrow: 'Expertise · Nettoyage automobile mobile',
-    title: 'Un parcours clair, de la formule au rendez-vous.',
+    title: 'Un site internet pour le nettoyage automobile.',
     lead:
-      'Qualifyr aide les professionnels du nettoyage automobile et du detailing à présenter leurs prestations, leur zone d’intervention et la façon de réserver sans perdre le client dans les détails.',
+      'Qualifyr conçoit des sites internet pour les professionnels du nettoyage automobile mobile et du detailing afin de présenter leurs prestations, leur zone d’intervention et la façon de réserver sans perdre le client dans les détails.',
     secondaryHref: '/realisations/sw-car-cleaning',
     secondaryLabel: 'Voir SW Carcleaning',
   },
@@ -186,9 +186,9 @@ export const conciergeVertical: VerticalServiceContent = {
   route: '/conciergerie',
   hero: {
     eyebrow: 'Expertise · Conciergeries',
-    title: 'Un accompagnement clair avant le premier échange.',
+    title: 'Un site internet clair pour votre conciergerie.',
     lead:
-      'Qualifyr aide les conciergeries à expliquer leur rôle, rassurer leurs prospects et recueillir une demande suffisamment précise pour commencer sur de bonnes bases.',
+      'Qualifyr conçoit des sites internet pour les conciergeries afin d’expliquer leur rôle, rassurer leurs prospects et recueillir une demande suffisamment précise pour commencer sur de bonnes bases.',
     secondaryHref: '/laboratoire',
     secondaryLabel: 'Voir le concept Qualifyr',
   },

@@ -2,24 +2,24 @@ import { brand } from '@/content/brand';
 import type { BlogArticle } from '@/content/blog';
 import { company } from '@/content/company';
 import { contact, serviceAreas } from '@/content/contact';
+import type { FaqItem } from '@/content/faq';
 import { homeSeo, pageMeta, site } from '@/content/site';
-import type { Route } from '@/types';
 import type { VerticalServiceContent } from '@/content/verticals';
+import type { Route } from '@/types';
 
 /**
  * Données structurées (JSON-LD).
  *
  * **Uniquement des faits vérifiables.** Les types employés sont
  * `Organization`, `ProfessionalService`, `WebSite`, `WebPage`,
- * `BreadcrumbList` et `Service`.
+ * `BreadcrumbList`, `Service` et `FAQPage`.
  *
  * Interdits, et pour de bonnes raisons :
  * — `SoftwareApplication` : décrit un produit logiciel précis, pas une prestation d'agence ;
  * — `Product` / `Offer` : aucun tarif n'existe ;
  * — `AggregateRating`, `Review` : aucun avis n'a été recueilli ;
  * — `LocalBusiness` : aucune adresse n'est confirmée, et en inventer une pour
- *   obtenir un encart serait une fausse déclaration ;
- * — `FAQPage` : réservé à des cas d'usage restreints, et sans intérêt ici.
+ *   obtenir un encart serait une fausse déclaration.
  *
  * Toute propriété dont la valeur est inconnue est **omise**, jamais devinée.
  */
@@ -123,19 +123,48 @@ export function webDesignService() {
 /** Expertise métier réellement présentée, sans prix, résultat ni implantation inventée. */
 export function verticalService(content: VerticalServiceContent) {
   const url = absolute(content.route);
+  const isAutomotive = content.route === '/nettoyage-automobile';
 
   return {
     '@context': 'https://schema.org',
     '@type': 'Service',
     '@id': `${url}#service`,
-    name: pageMeta[content.route].title,
-    serviceType:
-      content.route === '/nettoyage-automobile'
-        ? 'Conception de site et parcours pour le nettoyage automobile mobile'
-        : 'Conception de site et parcours pour les conciergeries',
+    name: isAutomotive
+      ? 'Création de site internet pour nettoyage automobile et detailing'
+      : 'Création de site internet pour conciergerie',
+    serviceType: isAutomotive
+      ? 'Création de site internet pour les professionnels du nettoyage automobile mobile et du detailing'
+      : 'Création de site internet pour les conciergeries',
     url,
     description: pageMeta[content.route].description,
+    audience: {
+      '@type': 'BusinessAudience',
+      audienceType: isAutomotive
+        ? 'Professionnels du nettoyage automobile mobile et du detailing'
+        : 'Conciergeries',
+    },
     provider: { '@id': `${site.url}/#organization` },
+  };
+}
+
+/** Questions et réponses réellement affichées sur une page métier. */
+export function faqPage(route: Route, items: readonly FaqItem[]) {
+  const url = absolute(route);
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    '@id': `${url}#faq`,
+    url,
+    inLanguage: site.locale,
+    mainEntity: items.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
   };
 }
 

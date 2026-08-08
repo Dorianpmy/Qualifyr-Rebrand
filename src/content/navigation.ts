@@ -37,8 +37,8 @@ export const primaryNav: readonly NavItem[] = [
 ];
 
 export const footerServiceNav: readonly NavItem[] = [
-  { label: 'Nettoyage automobile', href: '/nettoyage-automobile' },
-  { label: 'Conciergeries', href: '/conciergerie' },
+  { label: 'Site pour nettoyage automobile et detailing', href: '/nettoyage-automobile' },
+  { label: 'Site pour conciergerie', href: '/conciergerie' },
   { label: 'Création de site internet', href: '/creation-site-web' },
   { label: 'Refonte de site', href: '/creation-site-web' },
   { label: 'Application web', href: '/diagnostic' },

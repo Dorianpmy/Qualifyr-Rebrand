@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { creativeLab } from '@/content/creative-lab';
 import { pageMeta, sitemapRoutes } from '@/content/site';
 import { automotiveVertical, conciergeVertical } from '@/content/verticals';
+import { faqPage, verticalService } from '@/lib/structured-data';
 
 const projectRoot = fileURLToPath(new URL('../', import.meta.url));
 const source = (path: string) => readFileSync(`${projectRoot}${path}`, 'utf8');
@@ -59,15 +60,30 @@ describe('pages métier', () => {
 
   it('utilise les métadonnées commerciales validées', () => {
     expect(pageMeta['/nettoyage-automobile']).toMatchObject({
-      title: 'Site pour nettoyage automobile et detailing | Qualifyr',
+      title: 'Création de site pour nettoyage auto et detailing | Qualifyr',
       description:
-        'Qualifyr aide les professionnels du nettoyage automobile et du detailing à clarifier leurs prestations, renforcer leur image et obtenir des demandes plus sérieuses.',
+        'Qualifyr crée des sites internet pour le nettoyage automobile mobile et le detailing, afin de clarifier les offres et faciliter la prise de rendez-vous.',
     });
     expect(pageMeta['/conciergerie']).toMatchObject({
-      title: 'Site pour conciergerie | Qualifyr',
+      title: 'Création de site internet pour conciergerie | Qualifyr',
       description:
-        'Qualifyr aide les conciergeries à présenter clairement leur accompagnement, inspirer confiance et guider leurs prospects vers la bonne prise de contact.',
+        'Qualifyr crée des sites internet pour les conciergeries afin de présenter leurs services, rassurer leurs prospects et mieux qualifier chaque demande.',
     });
+  });
+
+  it('décrit chaque expertise avec un Service et la FAQ réellement affichée', () => {
+    expect(verticalService(automotiveVertical)).toMatchObject({
+      '@type': 'Service',
+      name: 'Création de site internet pour nettoyage automobile et detailing',
+    });
+    expect(verticalService(conciergeVertical)).toMatchObject({
+      '@type': 'Service',
+      name: 'Création de site internet pour conciergerie',
+    });
+    expect(faqPage(automotiveVertical.route, automotiveVertical.faq).mainEntity).toHaveLength(5);
+    expect(faqPage(conciergeVertical.route, conciergeVertical.faq).mainEntity).toHaveLength(5);
+    expect(automotivePage).toContain("faqPage('/nettoyage-automobile', automotiveVertical.faq)");
+    expect(conciergePage).toContain("faqPage('/conciergerie', conciergeVertical.faq)");
   });
 
   it('distingue la preuve réelle du concept et ne revendique aucun résultat', () => {

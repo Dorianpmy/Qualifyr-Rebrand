@@ -56,15 +56,15 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
     priority: 0.9,
   },
   '/nettoyage-automobile': {
-    title: 'Site pour nettoyage automobile et detailing | Qualifyr',
+    title: 'Création de site pour nettoyage auto et detailing | Qualifyr',
     description:
-      'Qualifyr aide les professionnels du nettoyage automobile et du detailing à clarifier leurs prestations, renforcer leur image et obtenir des demandes plus sérieuses.',
+      'Qualifyr crée des sites internet pour le nettoyage automobile mobile et le detailing, afin de clarifier les offres et faciliter la prise de rendez-vous.',
     priority: 0.9,
   },
   '/conciergerie': {
-    title: 'Site pour conciergerie | Qualifyr',
+    title: 'Création de site internet pour conciergerie | Qualifyr',
     description:
-      'Qualifyr aide les conciergeries à présenter clairement leur accompagnement, inspirer confiance et guider leurs prospects vers la bonne prise de contact.',
+      'Qualifyr crée des sites internet pour les conciergeries afin de présenter leurs services, rassurer leurs prospects et mieux qualifier chaque demande.',
     priority: 0.9,
   },
   '/methode': {
