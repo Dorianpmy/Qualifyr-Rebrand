@@ -28,6 +28,18 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/', '/design-system', '/go/'],
       },
       {
+        // Robot de découverte des réponses et liens Perplexity.
+        userAgent: 'PerplexityBot',
+        allow: '/',
+        disallow: ['/api/', '/design-system', '/go/'],
+      },
+      {
+        // Contrôle distinct utilisé par les produits Gemini ; sans effet sur Google Search.
+        userAgent: 'Google-Extended',
+        allow: '/',
+        disallow: ['/api/', '/design-system', '/go/'],
+      },
+      {
         userAgent: '*',
         allow: '/',
         disallow: ['/api/', '/design-system', '/go/'],

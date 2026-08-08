@@ -2,9 +2,15 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { creativeLab } from '@/content/creative-lab';
+import { buildLlmsText, geoFacts } from '@/content/geo';
 import { pageMeta, sitemapRoutes } from '@/content/site';
 import { automotiveVertical, conciergeVertical } from '@/content/verticals';
-import { faqPage, verticalService } from '@/lib/structured-data';
+import {
+  faqPage,
+  organization,
+  verticalService,
+  webPage,
+} from '@/lib/structured-data';
 
 const projectRoot = fileURLToPath(new URL('../', import.meta.url));
 const source = (path: string) => readFileSync(`${projectRoot}${path}`, 'utf8');
@@ -75,10 +81,29 @@ describe('pages métier', () => {
     expect(verticalService(automotiveVertical)).toMatchObject({
       '@type': 'Service',
       name: 'Création de site internet pour nettoyage automobile et detailing',
+      category: ['Nettoyage automobile mobile', 'Detailing à domicile'],
+      mainEntityOfPage: {
+        '@id': 'https://qualifyragence.com/nettoyage-automobile#webpage',
+      },
     });
     expect(verticalService(conciergeVertical)).toMatchObject({
       '@type': 'Service',
       name: 'Création de site internet pour conciergerie',
+      category: ['Conciergeries'],
+      mainEntityOfPage: {
+        '@id': 'https://qualifyragence.com/conciergerie#webpage',
+      },
+    });
+    expect(webPage('/nettoyage-automobile')).toMatchObject({
+      mainEntity: {
+        '@id': 'https://qualifyragence.com/nettoyage-automobile#service',
+      },
+    });
+    expect(faqPage(automotiveVertical.route, automotiveVertical.faq)).toMatchObject({
+      about: {
+        '@id': 'https://qualifyragence.com/nettoyage-automobile#service',
+      },
+      mainEntity: expect.arrayContaining([expect.objectContaining({ '@type': 'Question' })]),
     });
     expect(faqPage(automotiveVertical.route, automotiveVertical.faq).mainEntity).toHaveLength(5);
     expect(faqPage(conciergeVertical.route, conciergeVertical.faq).mainEntity).toHaveLength(5);
@@ -98,6 +123,35 @@ describe('pages métier', () => {
     expect(JSON.stringify([automotiveVertical.route, conciergeVertical.route])).toBe(
       '["/nettoyage-automobile","/conciergerie"]',
     );
+  });
+});
+
+describe('lisibilité pour les moteurs génératifs', () => {
+  const llms = buildLlmsText();
+  const robots = source('src/app/robots.ts');
+
+  it('décrit Qualifyr et ses deux expertises sans ajouter de preuve artificielle', () => {
+    expect(geoFacts.specializations).toHaveLength(2);
+    expect(llms).toContain('https://qualifyragence.com/nettoyage-automobile');
+    expect(llms).toContain('https://qualifyragence.com/conciergerie');
+    expect(llms).toContain('SW Carcleaning');
+    expect(llms).toContain('démonstrations créatives et non des projets clients livrés');
+  });
+
+  it('rend les expertises explicites dans l’entité Organization', () => {
+    expect(organization().knowsAbout).toEqual(
+      expect.arrayContaining([
+        'Nettoyage automobile mobile',
+        'Detailing à domicile',
+        'Conciergeries',
+      ]),
+    );
+  });
+
+  it('autorise explicitement les principaux robots concernés en production', () => {
+    expect(robots).toContain("userAgent: 'OAI-SearchBot'");
+    expect(robots).toContain("userAgent: 'PerplexityBot'");
+    expect(robots).toContain("userAgent: 'Google-Extended'");
   });
 });
 

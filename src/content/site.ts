@@ -6,7 +6,7 @@ export const productionDomain = 'qualifyragence.com';
 export const homeSeo = {
   title: 'Qualifyr | Création de sites web et applications sur mesure',
   description:
-    'Qualifyr conçoit des sites web, des applications et des solutions digitales sur mesure pour aider les entreprises à gagner en clarté, en efficacité et en clients.',
+    'Qualifyr est une agence digitale qui conçoit des sites web et des applications pour les entreprises de services, dont le nettoyage automobile et les conciergeries.',
 } as const;
 
 /**

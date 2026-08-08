@@ -60,8 +60,8 @@ et à contacter.
 
 **Meta description de l'accueil :**
 
-> Qualifyr conçoit des sites web, des applications et des solutions digitales sur mesure
-> pour aider les entreprises à gagner en clarté, en efficacité et en clients.
+> Qualifyr est une agence digitale qui conçoit des sites web et des applications pour les
+> entreprises de services, dont le nettoyage automobile et les conciergeries.
 
 Cette décision remplace les formulations historiques contradictoires conservées plus bas à
 titre de contexte de la V1.

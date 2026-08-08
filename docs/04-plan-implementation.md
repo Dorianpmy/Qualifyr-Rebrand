@@ -592,14 +592,16 @@ des polices du projet — le fichier est versionné, rien n'est produit au build
 
 Types employés, **uniquement avec des faits vérifiables** : `Organization` enrichi du type
 `ProfessionalService`, `WebSite` sur toutes les pages, `WebPage` sur l'accueil,
-`Service` sur la page de création de site et `BreadcrumbList` sur les pages qui affichent
-réellement un fil d'Ariane. `sameAs` et les coordonnées restent conditionnels aux vraies
+`Service` sur la page de création de site et les deux pages métier, `FAQPage` lorsque les
+questions et réponses sont réellement visibles, et `BreadcrumbList` sur les pages qui
+affichent réellement un fil d'Ariane. Les pages métier relient explicitement leur `WebPage`,
+leur `Service` et leur FAQ. `sameAs` et les coordonnées restent conditionnels aux vraies
 valeurs centralisées dans le projet.
 
 **Volontairement absents** : `SoftwareApplication` (Qualifyr ne vend pas de logiciel),
 `Product` / `Offer` (aucun tarif), `AggregateRating` et `Review` (aucun avis recueilli),
 `LocalBusiness` (aucune adresse confirmée — en inventer une pour obtenir un encart serait une
-fausse déclaration), `FAQPage`.
+fausse déclaration).
 
 Les propriétés dont la valeur est inconnue sont **omises**, jamais devinées : `legalName`,
 `email`, `telephone`, `taxID` et `vatID` n'apparaîtront qu'une fois renseignés dans
@@ -617,6 +619,20 @@ Générés, et pilotés par le **seul interrupteur** `site.indexable`.
 Les deux états ont été vérifiés en basculant temporairement l'interrupteur. Un aperçu de
 préproduction indexé créerait du contenu dupliqué et des liens morts après la bascule : c'est
 la raison du verrou.
+
+En production, `OAI-SearchBot`, `PerplexityBot` et `Google-Extended` disposent de règles
+explicites identiques à la règle publique générale. Cette déclaration facilite l'audit ; elle
+ne contourne jamais les routes techniques déjà interdites.
+
+### 8.4bis Lisibilité par les moteurs génératifs
+
+- `/llms.txt` fournit un résumé textuel factuel de Qualifyr, des deux expertises métier et de
+  la seule réalisation publique citée. Il renvoie vers les pages canoniques et ne contient ni
+  promesse de résultat, ni faux client, ni tarif.
+- Ce fichier est un complément de lisibilité, **pas un facteur de classement garanti**. Les
+  pages HTML, leurs liens internes, le sitemap et les données structurées restent les sources
+  de référence.
+- Les concepts créatifs y sont explicitement distingués des réalisations clients.
 
 ### 8.5 Intentions couvertes
 

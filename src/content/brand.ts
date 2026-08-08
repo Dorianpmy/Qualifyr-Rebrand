@@ -1,3 +1,5 @@
+import { homeSeo } from './site';
+
 /**
  * Textes stratégiques de la marque.
  * Source : docs/01-positionnement.md — toute modification doit d'abord être
@@ -22,8 +24,7 @@ export const brand = {
     'Qualifyr clarifie votre offre, construit votre identité et conçoit un parcours simple jusqu’à la prise de contact.',
 
   /** Formulation courte, pour le pied de page et les métadonnées. */
-  descriptor:
-    'Qualifyr conçoit des sites web, des applications et des solutions digitales sur mesure pour aider les entreprises à gagner en clarté, en efficacité et en clients.',
+  descriptor: homeSeo.description,
 
   /** Nom provisoire de l'offre unique. */
   offerName: 'Le parcours Qualifyr',

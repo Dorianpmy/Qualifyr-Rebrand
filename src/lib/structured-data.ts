@@ -28,6 +28,13 @@ function absolute(path: string): string {
   return new URL(path, site.url).toString();
 }
 
+function servedCountries() {
+  return serviceAreas.map((area) => ({
+    '@type': 'Country',
+    name: area,
+  }));
+}
+
 export function organization() {
   const data: Record<string, unknown> = {
     '@context': 'https://schema.org',
@@ -39,10 +46,7 @@ export function organization() {
     description: homeSeo.description,
     logo: absolute('/icons/qualifyr-512.png?v=4'),
     image: absolute('/images/og/qualifyr-og-v3.png'),
-    areaServed: serviceAreas.map((area) => ({
-      '@type': 'Country',
-      name: area,
-    })),
+    areaServed: servedCountries(),
     // Compétences réellement présentées, sans revendiquer d'implantation géographique.
     knowsAbout: [
       'Entreprises de services',
@@ -51,6 +55,9 @@ export function organization() {
       'Conception de sites web',
       'Parcours de contact',
       'Expérience utilisateur',
+      'Nettoyage automobile mobile',
+      'Detailing à domicile',
+      'Conciergeries',
     ],
   };
 
@@ -84,6 +91,7 @@ export function website() {
 export function webPage(route: Route) {
   const meta = pageMeta[route];
   const url = absolute(route);
+  const isVertical = route === '/nettoyage-automobile' || route === '/conciergerie';
 
   return {
     '@context': 'https://schema.org',
@@ -96,6 +104,7 @@ export function webPage(route: Route) {
     isPartOf: { '@id': `${site.url}/#website` },
     about: { '@id': `${site.url}/#organization` },
     publisher: { '@id': `${site.url}/#organization` },
+    ...(isVertical ? { mainEntity: { '@id': `${url}#service` } } : {}),
     primaryImageOfPage: {
       '@type': 'ImageObject',
       url: absolute('/images/og/qualifyr-og-v3.png'),
@@ -137,6 +146,10 @@ export function verticalService(content: VerticalServiceContent) {
       : 'Création de site internet pour les conciergeries',
     url,
     description: pageMeta[content.route].description,
+    category: isAutomotive
+      ? ['Nettoyage automobile mobile', 'Detailing à domicile']
+      : ['Conciergeries'],
+    areaServed: servedCountries(),
     audience: {
       '@type': 'BusinessAudience',
       audienceType: isAutomotive
@@ -144,6 +157,7 @@ export function verticalService(content: VerticalServiceContent) {
         : 'Conciergeries',
     },
     provider: { '@id': `${site.url}/#organization` },
+    mainEntityOfPage: { '@id': `${url}#webpage` },
   };
 }
 
@@ -157,6 +171,8 @@ export function faqPage(route: Route, items: readonly FaqItem[]) {
     '@id': `${url}#faq`,
     url,
     inLanguage: site.locale,
+    isPartOf: { '@id': `${url}#webpage` },
+    about: { '@id': `${url}#service` },
     mainEntity: items.map((item) => ({
       '@type': 'Question',
       name: item.question,
