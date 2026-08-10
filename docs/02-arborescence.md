@@ -14,7 +14,6 @@ rubrique éditoriale et ses articles, sans modifier les pages commerciales exist
 /conciergerie              Expertise conciergeries
 /methode                   Méthode
 /realisations              Réalisations
-/laboratoire               Laboratoire créatif
 /a-propos                  À propos
 /diagnostic                Diagnostic
 /estimation                Première estimation guidée
@@ -81,7 +80,7 @@ ne crée aucune nouvelle offre.
 
 **Navigation principale**
 
-`Expertise` · `Réalisation` · `Laboratoire` · `Journal` · `À propos` · `Contact` ·
+`Expertise` · `Réalisation` · `Journal` · `À propos` · `Contact` ·
 **`Discuter sur WhatsApp`** *(bouton)*
 
 - Le logo renvoie à l'accueil ; « Accueil » n'apparaît pas dans le menu.
@@ -89,8 +88,6 @@ ne crée aucune nouvelle offre.
 - Les deux expertises métier sont accessibles depuis la section « Entreprises accompagnées »
   de l'accueil et depuis le pied de page. Le header reste volontairement court et ne reçoit
   pas de sous-menu.
-- « Laboratoire » ouvre une page dédiée afin que les explorations créatives ne rallongent
-  plus le parcours commercial principal.
 - Sur mobile : menu plein écran et accès direct à WhatsApp.
 
 **Pied de page**
@@ -125,8 +122,7 @@ Sections, dans l'ordre :
    chiffré ni faux visuel.
 5. **Entreprises accompagnées** — les deux verticales officielles, chacune reliée à sa page.
 6. **Méthode** — Comprendre, Clarifier, Concevoir, Améliorer dans une frise compacte.
-7. **Laboratoire compact** — trois concepts locaux, sans iframe ni atelier de personnalisation.
-8. **Clôture** — calendrier, diagnostic et lien vers l'estimation.
+7. **Clôture** — calendrier, diagnostic et lien vers l'estimation.
 
 Le Journal reste accessible depuis sa route dédiée. Le configurateur tarifaire est retiré de
 l'accueil et vit uniquement à `/estimation`, afin que le prix soit consulté volontairement et
@@ -151,8 +147,8 @@ Objectif : montrer comment Qualifyr rend un accompagnement plus lisible et une p
 demande plus précise et rassurante.
 
 Structure courte : hero métier, trois freins, trois éléments construits, parcours adapté,
-exploration créative honnêtement identifiée comme Concept Qualifyr, méthode en quatre temps,
-FAQ métier et appel à l'action. Aucun concept n'est présenté comme une réalisation livrée.
+simulateur de revenus locatifs présenté en démonstration, méthode en quatre temps,
+FAQ métier et appel à l'action. Aucune démonstration n'est présentée comme une réalisation livrée.
 
 ### `/estimation` — Première estimation
 
@@ -163,28 +159,6 @@ ni le calcul. La devise est déterminée automatiquement par le pays fourni par 
 choix de pays dans l'interface. Le résultat présente d'abord l'équivalent mensuel sur 12 mois,
 puis le total et l'alternative « mise en place + suivi ». Il reste indicatif jusqu'au cadrage et
 au devis.
-
----
-
-### `/laboratoire` — Laboratoire créatif
-
-Objectif : montrer la capacité de direction et d'exploration de Qualifyr sans confondre une
-étude créative avec une réalisation client.
-
-Structure :
-
-1. Ouverture courte et avertissement honnête sur la nature des concepts.
-2. Parcours d'orientation compact : un besoin choisi, puis une étude recommandée.
-3. Concept Conciergerie comme étude principale.
-4. Identité visuelle et Motion UI comme explorations secondaires interactives.
-5. Accès à l'estimation ou au diagnostic depuis la recommandation et chaque étude.
-
-Le parcours d'orientation ne calcule pas de tarif et ne reproduit pas le configurateur de
-l'accueil. Il aide uniquement à choisir l'étude la plus pertinente avant de l'ouvrir.
-
-SW Car Cleaning n'y est pas répété : la réalisation réelle possède déjà sa présentation sur
-l'accueil, `/realisations` et sa propre étude de cas. La page Laboratoire ne charge donc
-aucune seconde fenêtre du site SW Car Cleaning.
 
 ---
 

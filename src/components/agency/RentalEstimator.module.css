@@ -1,0 +1,119 @@
+.estimator { display: grid; gap: var(--space-6); align-items: start; margin-block-start: var(--space-6); }
+.controls { display: grid; gap: var(--space-4); align-content: start; padding: clamp(1.5rem, 3vw, 2.25rem); border: 1px solid var(--rule-strong); background: var(--surface-page); }
+.field { display: grid; gap: var(--space-2); min-inline-size: 0; }
+.field > span { color: var(--text-secondary); font-size: var(--text-2xs); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+.field select { min-block-size: 3rem; padding-inline: var(--space-3); border: 1px solid var(--rule-hairline); background: var(--surface-raised); color: var(--text-primary); font: inherit; font-size: var(--text-base); cursor: pointer; appearance: none; background-image: linear-gradient(45deg, transparent 50%, currentcolor 50%), linear-gradient(135deg, currentcolor 50%, transparent 50%); background-position: right 1.15rem center, right .9rem center; background-size: .35rem .35rem, .35rem .35rem; background-repeat: no-repeat; }
+.field select:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+
+/* --- Sélecteurs segmentés ---------------------------------------------------
+   Une liste déroulante cache ses options et demande deux gestes. Un sélecteur
+   segmenté montre l'éventail et n'en demande qu'un : sur un simulateur, c'est
+   la différence entre explorer et remplir un formulaire.
+   --------------------------------------------------------------------------- */
+
+.group { min-inline-size: 0; padding: 0; border: 0; }
+
+.group legend {
+  margin-block-end: var(--space-3);
+  padding: 0;
+  color: var(--text-secondary);
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.segments {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  border: var(--border-width) solid var(--rule-hairline);
+  background: var(--surface-raised);
+}
+
+.segment {
+  min-block-size: 3rem;
+  padding-inline: var(--space-2);
+  border: 0;
+  border-inline-end: var(--border-width) solid var(--rule-hairline);
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.segment:last-child { border-inline-end: 0; }
+.segment:hover { background: var(--surface-sunken); color: var(--text-primary); }
+
+.segment[data-active='true'] {
+  background: var(--color-ink);
+  color: var(--text-inverse);
+}
+
+.segmentUnit { font-weight: var(--weight-regular); opacity: 0.7; }
+
+/* Les équipements sont multiples : des pastilles, pas un segment unique. */
+.chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+.chip {
+  min-block-size: 2.75rem;
+  padding-inline: var(--space-4);
+  border: var(--border-width) solid var(--rule-hairline);
+  background: var(--surface-raised);
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.chip:hover { border-color: var(--rule-strong); color: var(--text-primary); }
+
+.chip[data-active='true'] {
+  border-color: var(--color-copper-deep);
+  background: var(--color-copper-deep);
+  color: var(--color-paper);
+}
+
+.segment:focus-visible,
+.chip:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+@media (max-width: 34rem) {
+  /* Sous cette largeur, quatre segments deviennent illisibles : on repasse en
+     grille à deux colonnes plutôt que d'écraser les libellés. */
+  .segments {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .segment { border-inline-end: var(--border-width) solid var(--rule-hairline); }
+  .segment:nth-child(2n) { border-inline-end: 0; }
+}
+
+.result { display: grid; gap: var(--space-3); padding: clamp(1.5rem, 3vw, 2.25rem); border: 1px solid var(--color-espresso); border-block-start: 3px solid var(--color-brass); background: var(--surface-inverse); color: var(--text-inverse); }
+.resultKicker { color: var(--color-brass); font-size: var(--text-2xs); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+.headline { font-family: var(--family-display); font-size: clamp(2.25rem, 4vw, 3.5rem); font-weight: var(--weight-semibold); font-variant-numeric: tabular-nums; line-height: .95; overflow-wrap: anywhere; }
+.caption { max-inline-size: 46ch; color: var(--text-inverse-secondary); font-size: var(--text-sm); line-height: 1.55; }
+
+.breakdown { display: grid; gap: var(--space-2); margin-block-start: var(--space-2); padding-block-start: var(--space-4); border-block-start: 1px solid var(--rule-inverse); }
+.breakdown > div { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: baseline; justify-content: space-between; }
+.breakdown dt { color: var(--text-inverse-secondary); font-size: var(--text-sm); }
+.breakdown dd { font-size: var(--text-base); font-weight: var(--weight-semibold); font-variant-numeric: tabular-nums; }
+
+.disclaimer { max-inline-size: 60ch; margin-block-start: var(--space-2); padding-block-start: var(--space-3); border-block-start: 1px solid var(--rule-inverse); color: var(--text-inverse-secondary); font-size: var(--text-xs); line-height: 1.5; }
+.cta { display: inline-flex; align-items: center; justify-content: center; min-block-size: 3.25rem; margin-block-start: var(--space-2); padding-inline: var(--space-5); border: 1px solid var(--color-brass); background: var(--color-brass); color: var(--color-ink); font-weight: var(--weight-semibold); text-align: center; text-decoration: none; }
+.cta:hover { background: transparent; color: var(--text-inverse); }
+.cta:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+
+@media (min-width: 60rem) {
+  .estimator { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: var(--space-5); }
+}

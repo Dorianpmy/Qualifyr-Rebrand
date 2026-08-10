@@ -1,7 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { creativeLab } from '@/content/creative-lab';
 import { buildLlmsText, geoFacts } from '@/content/geo';
 import { pageMeta, sitemapRoutes } from '@/content/site';
 import { automotiveVertical, conciergeVertical } from '@/content/verticals';
@@ -29,18 +28,17 @@ describe('architecture commerciale', () => {
     expect(homepage).toContain('href="/realisations/sw-car-cleaning"');
   });
 
-  it('affiche le laboratoire compact et un lien vers l’estimation', () => {
-    expect(homepage).toContain('<CreativeLab />');
-    expect(creativeLab.items).toHaveLength(3);
-    expect(creativeLab.items.some((item) => item.title === 'SW Car Cleaning')).toBe(false);
+  it('ne contient plus de section laboratoire et garde un lien vers l’estimation', () => {
+    expect(homepage).not.toContain('CreativeLab');
+    expect(homepage).not.toContain('id="laboratoire"');
     expect(homepage).toContain('href="/estimation"');
   });
 
   it('publie une route estimation canonique qui réutilise le configurateur', () => {
     expect(estimation).toContain('<OfferConfigurator showIntro={false} />');
-    expect(pageMeta['/estimation'].title).toBe('Estimation de projet | Qualifyr');
+    expect(pageMeta['/estimation'].title).toBe('Estimation de votre projet de site — Qualifyr');
     expect(pageMeta['/estimation'].description).toBe(
-      'Obtenez une première orientation et une estimation indicative avant un échange avec Qualifyr.',
+      'Obtenez une orientation claire et une fourchette de budget indicative en quelques minutes, avant même le premier échange.',
     );
     expect(sitemapRoutes).toContain('/estimation');
   });
@@ -66,14 +64,14 @@ describe('pages métier', () => {
 
   it('utilise les métadonnées commerciales validées', () => {
     expect(pageMeta['/nettoyage-automobile']).toMatchObject({
-      title: 'Création de site pour nettoyage auto et detailing | Qualifyr',
+      title: 'Site pour detailing et nettoyage auto — plus de réservations',
       description:
-        'Qualifyr crée des sites internet pour le nettoyage automobile mobile et le detailing, afin de clarifier les offres et faciliter la prise de rendez-vous.',
+        'Vos prestations présentées clairement, vos tarifs par type de véhicule et une prise de rendez-vous simple. Pour les detailers qui veulent moins de DM et plus de RDV.',
     });
     expect(pageMeta['/conciergerie']).toMatchObject({
-      title: 'Création de site internet pour conciergerie | Qualifyr',
+      title: 'Site pour conciergerie — attirer et convaincre des propriétaires',
       description:
-        'Qualifyr crée des sites internet pour les conciergeries afin de présenter leurs services, rassurer leurs prospects et mieux qualifier chaque demande.',
+        'Un site qui rassure les propriétaires, met en avant vos garanties et qualifie chaque demande. Pour les conciergeries qui veulent signer plus de mandats.',
     });
   });
 
@@ -105,16 +103,17 @@ describe('pages métier', () => {
       },
       mainEntity: expect.arrayContaining([expect.objectContaining({ '@type': 'Question' })]),
     });
-    expect(faqPage(automotiveVertical.route, automotiveVertical.faq).mainEntity).toHaveLength(5);
-    expect(faqPage(conciergeVertical.route, conciergeVertical.faq).mainEntity).toHaveLength(5);
+    expect(faqPage(automotiveVertical.route, automotiveVertical.faq).mainEntity).toHaveLength(6);
+    expect(faqPage(conciergeVertical.route, conciergeVertical.faq).mainEntity).toHaveLength(6);
     expect(automotivePage).toContain("faqPage('/nettoyage-automobile', automotiveVertical.faq)");
     expect(conciergePage).toContain("faqPage('/conciergerie', conciergeVertical.faq)");
   });
 
-  it('distingue la preuve réelle du concept et ne revendique aucun résultat', () => {
+  it('distingue la preuve réelle du simulateur en démonstration et ne revendique aucun résultat', () => {
     expect(automotiveVertical.proof.kind).toBe('real');
     expect(conciergeVertical.proof.kind).toBe('concept');
-    expect(conciergeVertical.proof.eyebrow).toContain('Concept Qualifyr');
+    expect(conciergeVertical.proof.eyebrow).toContain('Simulateur en ligne');
+    expect(conciergeVertical.proof.link).toBe('/simulateur-revenus-locatifs');
     expect(JSON.stringify([automotiveVertical, conciergeVertical])).not.toMatch(/\d+\s?%|témoignage|clients satisfaits/i);
   });
 
@@ -135,7 +134,8 @@ describe('lisibilité pour les moteurs génératifs', () => {
     expect(llms).toContain('https://qualifyragence.com/nettoyage-automobile');
     expect(llms).toContain('https://qualifyragence.com/conciergerie');
     expect(llms).toContain('SW Carcleaning');
-    expect(llms).toContain('démonstrations créatives et non des projets clients livrés');
+    expect(llms).not.toContain('laboratoire');
+    expect(llms).toContain('Aucun avis, résultat chiffré ou client supplémentaire n’est revendiqué sans preuve publiée.');
   });
 
   it('rend les expertises explicites dans l’entité Organization', () => {
@@ -155,16 +155,23 @@ describe('lisibilité pour les moteurs génératifs', () => {
   });
 });
 
-describe('laboratoire sobre', () => {
-  const component = source('src/components/editorial/CreativeLab.tsx');
+describe('laboratoire supprimé', () => {
+  const homepage = source('src/app/page.tsx');
+  const navigation = source('src/content/navigation.ts');
+  const siteContent = source('src/content/site.ts');
+  const types = source('src/types/index.ts');
 
-  it('conserve une fenêtre accessible et restaure le focus', () => {
-    expect(component).toContain('<dialog');
-    expect(component).toContain('aria-labelledby={titleId}');
-    expect(component).toContain('lastTriggerRef.current?.focus()');
+  it('supprime le composant, la route et le contenu dédiés', () => {
+    expect(() => source('src/app/laboratoire/page.tsx')).toThrow();
+    expect(() => source('src/components/editorial/CreativeLab.tsx')).toThrow();
+    expect(() => source('src/content/creative-lab.ts')).toThrow();
   });
 
-  it('ne contient plus d’atelier de palette ou de scénarios', () => {
-    expect(component).not.toMatch(/Atelier palette|composez votre palette|scenarioChoices|orientationGoals/);
+  it('ne laisse aucune référence dans la navigation, les métadonnées ou les types', () => {
+    expect(homepage).not.toContain('CreativeLab');
+    expect(navigation).not.toContain('laboratoire');
+    expect(siteContent).not.toContain('/laboratoire');
+    expect(types).not.toContain("'/laboratoire'");
+    expect(sitemapRoutes).not.toContain('/laboratoire');
   });
 });

@@ -28,7 +28,14 @@ describe('calendrier éditorial', () => {
   });
 
   it('rend chaque article futur visible le jour prévu', () => {
-    const now = new Date('2026-08-04T09:00:00+02:00');
+    // La date de référence est déduite du dernier article programmé plutôt que
+    // codée en dur : avec une date figée, ce test échouait dès qu'un article
+    // était publié après elle — ce qui n'est pas un défaut du calendrier, mais
+    // du test lui-même.
+    const lastPublication = Math.max(
+      ...blogArticles.map((article) => new Date(article.publishedAt).getTime()),
+    );
+    const now = new Date(lastPublication + 60_000);
 
     expect(getPublishedArticles(now)).toHaveLength(blogArticles.length);
     expect(

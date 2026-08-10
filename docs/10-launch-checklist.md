@@ -186,7 +186,6 @@ Dans cet ordre, sans en sauter.
 
 - [ ] `/estimation` répond 200, possède une canonical propre et apparaît une seule fois dans le sitemap
 - [ ] L'accueil ne contient ni configurateur ni prix et ne charge qu'une iframe SW Car Cleaning
-- [ ] Le Laboratoire affiche exactement trois concepts, sans atelier de palette ni scénario
 - [ ] Les CTA calendrier, WhatsApp et estimation fonctionnent au clavier et sur mobile
 
 ```bash

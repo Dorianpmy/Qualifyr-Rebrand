@@ -194,8 +194,8 @@ export const conciergeVertical: VerticalServiceContent = {
     title: 'Un site qui convainc les propriétaires de vous confier leur bien.',
     lead:
       'Votre métier se joue avant la première visite : un propriétaire décide de confier un bien de plusieurs centaines de milliers d’euros à quelqu’un qu’il ne connaît pas. Qualifyr conçoit le site qui installe cette confiance et qualifie chaque demande.',
-    secondaryHref: '/laboratoire',
-    secondaryLabel: 'Voir le concept Qualifyr',
+    secondaryHref: '/simulateur-revenus-locatifs',
+    secondaryLabel: 'Voir le simulateur en direct',
   },
   problems: {
     eyebrow: 'Ce qui freine la signature',
@@ -257,13 +257,13 @@ export const conciergeVertical: VerticalServiceContent = {
   },
   proof: {
     kind: 'concept',
-    eyebrow: 'Exploration créative · Concept Qualifyr',
-    title: 'Une conciergerie présentée avec calme et précision.',
+    eyebrow: 'Simulateur en ligne · Qualifyr',
+    title: 'Un simulateur de revenus, testable en direct.',
     body:
-      'Cette étude interne explore une direction éditoriale, une hiérarchie de services et un parcours de demande. Elle illustre une piste de travail et ne correspond pas à un projet client livré.',
-    points: ['Compréhension du besoin', 'Cadre de l’accompagnement', 'Passage vers un échange'],
-    link: '/laboratoire',
-    linkLabel: 'Explorer le concept',
+      'Avant de parler mandat, montrez au propriétaire ce que son bien peut rapporter. Le simulateur que nous avons conçu pour nos clients conciergeries est utilisable dès maintenant, en démonstration.',
+    points: ['Fourchette de revenus en quatre choix', 'Barèmes ajustables par zone', 'Collecte des coordonnées propriétaire'],
+    link: '/simulateur-revenus-locatifs',
+    linkLabel: 'Voir une estimation en direct',
   },
   faq: [
     {
@@ -277,9 +277,9 @@ export const conciergeVertical: VerticalServiceContent = {
         'Oui, c’est l’élément qui déclenche le plus de demandes dans ce métier. L’estimation est présentée sous forme de fourchette indicative, calibrée sur votre zone, et sert à ouvrir la conversation — pas à engager un chiffre précis.',
     },
     {
-      question: 'Cette page présente-t-elle un client Qualifyr ?',
+      question: 'Le simulateur de revenus est-il vraiment fonctionnel ?',
       answer:
-        'Non. La composition présentée est un Concept Qualifyr, créé pour explorer une direction possible. Elle est volontairement distinguée de nos réalisations clients.',
+        'Oui. Il s’agit du même outil que nous proposons à nos clients conciergeries, présenté ici en démonstration avec des barèmes indicatifs plutôt qu’avec les vôtres.',
     },
     {
       question: 'Peut-on gérer plusieurs types de demandes ?',

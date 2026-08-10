@@ -74,6 +74,18 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
       'Un site qui rassure les propriétaires, met en avant vos garanties et qualifie chaque demande. Pour les conciergeries qui veulent signer plus de mandats.',
     priority: 0.9,
   },
+  '/outil-conciergerie': {
+    title: 'Logiciel d’acquisition pour conciergerie — 79 €/mois | Qualifyr',
+    description:
+      'Une page qui estime les revenus d’un bien, capte les propriétaires intéressés et range chaque demande dans votre tableau de bord. Essai gratuit, sans engagement.',
+    priority: 0.9,
+  },
+  '/tarifs': {
+    title: 'Tarifs — création de site et outil pour conciergerie | Qualifyr',
+    description:
+      'Nos fourchettes de prix, affichées : site vitrine, site avec parcours de demande, et outil d’acquisition à 79 € par mois. Pas de devis à rallonge.',
+    priority: 0.9,
+  },
   '/methode': {
     title: 'Notre méthode — du premier contact à la demande qualifiée',
     description:
@@ -92,12 +104,6 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
       'Comment nous avons clarifié les formules, construit l’identité et simplifié la prise de contact d’un service de lavage et detailing à domicile à Fribourg.',
     priority: 0.7,
   },
-  '/laboratoire': {
-    title: 'Laboratoire créatif — explorations design | Qualifyr',
-    description:
-      'Trois études créatives autour de la conciergerie, de l’identité visuelle et du mouvement. Des concepts de démonstration, distingués des projets clients.',
-    priority: 0.5,
-  },
   '/a-propos': {
     title: 'À propos — l’agence des conciergeries et du detailing | Qualifyr',
     description:
@@ -108,6 +114,12 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
     title: 'Diagnostic gratuit de votre présence en ligne — Qualifyr',
     description:
       'Décrivez votre activité et vos priorités. Nous identifions ce qui freine vos demandes entrantes, et ce qu’il faut corriger en premier.',
+    priority: 0.9,
+  },
+  '/simulateur-revenus-locatifs': {
+    title: 'Simulateur de revenus Airbnb — estimez le potentiel d’un bien',
+    description:
+      'Estimez en quelques secondes ce qu’un logement peut générer en location courte durée : fourchette annuelle, prix moyen par nuit et revenu net après conciergerie.',
     priority: 0.9,
   },
   '/estimation': {

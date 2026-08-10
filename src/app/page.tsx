@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { BookingButton } from '@/components/agency/BookingButton';
 import { DiagnosticLink } from '@/components/agency/DiagnosticLink';
-import { CreativeLab } from '@/components/editorial/CreativeLab';
 import { InteractiveSitePreview } from '@/components/editorial/InteractiveSitePreview';
 import { MethodStep } from '@/components/editorial/MethodStep';
 import { SectionHeading } from '@/components/editorial/SectionHeading';
@@ -68,8 +67,11 @@ export default function HomePage() {
       <Section id="expertise" spacing="tight" ruled>
         <Container>
           <div className={styles.transformationIntro}>
+            {/* Numérotation de l'arc : le visiteur doit toujours savoir où il
+                en est dans le raisonnement. 01 le constat, 02 la preuve,
+                03 pour qui, 04 le produit, 05 la méthode, 06 le prix. */}
             <SectionHeading
-              eyebrow="Ce que nous transformons"
+              eyebrow="01 — Ce que nous transformons"
               title="Votre activité mérite plus qu’un site correct."
             />
             <p>
@@ -93,7 +95,7 @@ export default function HomePage() {
         <Container>
           <div className={styles.caseGrid}>
             <div className={styles.caseContent}>
-              <Eyebrow inverse>Réalisation sélectionnée</Eyebrow>
+              <Eyebrow inverse>02 — Réalisation sélectionnée</Eyebrow>
               <h2>SW Car Cleaning</h2>
               <p className={styles.caseLead}>
                 Une identité et une expérience digitale conçues pour rendre l’offre plus
@@ -124,7 +126,7 @@ export default function HomePage() {
         <Container>
           <div className={styles.sectionIntro}>
             <SectionHeading
-              eyebrow="Entreprises de services"
+              eyebrow="03 — Entreprises de services"
               title="Conçu pour les entreprises où la confiance précède la prise de contact."
               lead="Qualifyr accompagne les entreprises de services dont le savoir-faire doit être compris et crédible avant le premier échange."
             />
@@ -154,10 +156,68 @@ export default function HomePage() {
         </Container>
       </Section>
 
+      {/* Le produit est présenté juste après les deux verticales : le visiteur
+          vient de comprendre ce que nous faisons sur mesure, c'est le bon
+          moment pour lui proposer la formule légère. */}
+      <Section id="outil" surface="inverse" spacing="tight">
+        <Container>
+          <div className={styles.product}>
+            <div className={styles.productCopy}>
+              <Eyebrow inverse>04 — Produit · Conciergeries</Eyebrow>
+              <h2>Le propriétaire veut un chiffre avant de vous appeler.</h2>
+              <p>
+                Tant qu’il ne l’a pas, il ne vous contacte pas — et vous ne saurez jamais qu’il a
+                hésité. Notre outil lui donne ce chiffre, récupère ses coordonnées et vous transmet
+                la demande avec le logement décrit et l’estimation déjà calculée.
+              </p>
+              <ol className={styles.productSteps}>
+                <li>
+                  <strong>Il estime</strong>
+                  <span>Quatre choix, une fourchette de revenus annuels.</span>
+                </li>
+                <li>
+                  <strong>Vous recevez</strong>
+                  <span>Ville, bien, contact et estimation, dans votre tableau de bord.</span>
+                </li>
+                <li>
+                  <strong>Vous rappelez</strong>
+                  <span>Un propriétaire déjà convaincu par le montant qu’il a vu.</span>
+                </li>
+              </ol>
+              <ButtonLink href="/outil-conciergerie" ctaId="home_tool" variant="inverse" withArrow>
+                Découvrir l’outil
+              </ButtonLink>
+            </div>
+
+            <aside className={styles.productCard}>
+              <p className={styles.productPrice}>
+                79 € <span>par mois</span>
+              </p>
+              <p className={styles.productArgument}>
+                Un mandat signé rapporte plusieurs milliers d’euros par an. Le premier propriétaire
+                converti rembourse l’année.
+              </p>
+              <ul className={styles.productFacts}>
+                <li>En ligne en dix minutes</li>
+                <li>Vos secteurs, vos barèmes</li>
+                <li>Essai gratuit, sans engagement</li>
+              </ul>
+              <Link
+                className={styles.productLink}
+                href="/simulateur-revenus-locatifs"
+                data-cta-id="home_simulator"
+              >
+                Voir une estimation en direct ↗
+              </Link>
+            </aside>
+          </div>
+        </Container>
+      </Section>
+
       <Section id="methode" spacing="tight" ruled>
         <Container>
           <SectionHeading
-            eyebrow="Notre méthode"
+            eyebrow="05 — Notre méthode"
             title="Quatre étapes. Une direction claire."
             lead="Nous avançons sans ajouter de complexité inutile à votre quotidien."
           />
@@ -171,9 +231,27 @@ export default function HomePage() {
         </Container>
       </Section>
 
-      <Section id="laboratoire" surface="raised" spacing="tight" ruled>
+      {/* Le prix avant l'appel à l'action : c'est la question que tout le monde
+          se pose et que personne n'ose poser. La masquer fait fuir ceux qui
+          n'ont pas le budget, et fait hésiter ceux qui l'ont. */}
+      <Section id="tarifs" surface="sunken" spacing="tight" ruled>
         <Container>
-          <CreativeLab />
+          <div className={styles.pricing}>
+            <div>
+              <Eyebrow>06 — Tarifs</Eyebrow>
+              <h2>Ce que ça coûte, sans devoir demander.</h2>
+              <p>
+                Un outil à 79 € par mois, un site vitrine à partir de 990 €, un site avec parcours
+                de demande entre 2 200 et 3 800 €. Les fourchettes sont affichées, les facteurs qui
+                les font varier aussi.
+              </p>
+            </div>
+            <div className={styles.pricingAction}>
+              <ButtonLink href="/tarifs" ctaId="home_pricing" withArrow>
+                Voir les tarifs
+              </ButtonLink>
+            </div>
+          </div>
         </Container>
       </Section>
 
@@ -181,20 +259,25 @@ export default function HomePage() {
         <Container>
           <div className={styles.finalCta}>
             <div>
-              <Eyebrow>Votre prochaine étape</Eyebrow>
+              <Eyebrow>07 — Votre prochaine étape</Eyebrow>
               <h2>Votre activité est déjà solide. Sa présentation doit l’être aussi.</h2>
               <p>
                 Parlez-nous de votre entreprise et découvrons comment mieux traduire votre
                 savoir-faire en une expérience que vos prospects comprennent et choisissent.
               </p>
             </div>
+            {/* Le diagnostic passe en action principale : c'est le seul
+                parcours qui répond à la question que tout le monde se pose —
+                ce que ça coûte, et ce qu'il faut faire en premier. */}
             <div className={styles.finalActions}>
-              <BookingButton ctaId="final_booking" withArrow>Réserver un échange</BookingButton>
-              <DiagnosticLink ctaId="final_diagnostic" variant="secondary">
+              <DiagnosticLink ctaId="final_diagnostic" variant="primary">
                 Faire le diagnostic
               </DiagnosticLink>
+              <BookingButton ctaId="final_booking" variant="secondary">
+                Réserver un échange
+              </BookingButton>
               <ButtonLink href="/estimation" ctaId="estimation_start" variant="text">
-                Obtenir une première estimation
+                Obtenir une estimation de budget
               </ButtonLink>
             </div>
           </div>

@@ -377,6 +377,196 @@ export const blogArticles = [
     conclusion:
       'Trouver des propriétaires est moins une question de volume que d’ordre. Donner un chiffre, traiter le risque, qualifier la demande, relancer sans y penser. Un mandat rapporte plusieurs milliers d’euros par an : il justifie largement de soigner les quelques minutes qui précèdent le premier appel.',
   },
+  {
+    slug: 'combien-facturer-conciergerie-airbnb',
+    number: '09',
+    category: 'Conciergerie',
+    title: 'Combien facturer quand on lance sa conciergerie ?',
+    excerpt:
+      'La commission n’est qu’une partie de la réponse. Ce qui décide de votre rentabilité, c’est ce qu’elle inclut et le temps que chaque logement vous coûte réellement.',
+    seoTitle: 'Combien facturer sa conciergerie Airbnb ? — Qualifyr',
+    seoDescription:
+      'Commission, frais de ménage, forfait de mise en service : comment construire une grille tarifaire de conciergerie qui tient sur la durée.',
+    publishedAt: '2026-08-10T11:00:00+02:00',
+    introduction:
+      'La question arrive toujours dans cet ordre : quel pourcentage prendre ? C’est pourtant la dernière à traiter. Une commission ne veut rien dire tant qu’on n’a pas défini ce qu’elle couvre, ni combien d’heures un logement consomme chaque mois.',
+    sections: [
+      {
+        title: 'Partir du temps réel, pas du marché',
+        paragraphs: [
+          'Un logement demande du temps de manière très inégale : la mise en ligne, les premières semaines et la haute saison concentrent l’essentiel de la charge. Comptez les heures sur un cycle complet plutôt que sur un mois calme.',
+          'Ce calcul donne un plancher. En dessous, chaque logement supplémentaire vous appauvrit — et c’est ce qui arrive aux conciergeries qui alignent leur commission sur celle du voisin sans avoir mesuré leur propre organisation.',
+        ],
+      },
+      {
+        title: 'Séparer ce qui est récurrent de ce qui est ponctuel',
+        paragraphs: [
+          'Trois lignes suffisent le plus souvent : une commission sur les revenus, un forfait de mise en service au démarrage, et le ménage refacturé au voyageur.',
+          'Le forfait de démarrage est celui qu’on oublie le plus souvent. Il couvre les photographies, la rédaction de l’annonce, l’installation des équipements manquants et la déclaration en mairie. Sans lui, vous financez l’installation d’un bien qui peut vous quitter au bout de six mois.',
+        ],
+        points: [
+          'Commission : votre rémunération récurrente.',
+          'Mise en service : le travail non répétable du démarrage.',
+          'Ménage : refacturé, jamais absorbé.',
+          'Interventions exceptionnelles : facturées à l’heure, annoncées d’avance.',
+        ],
+      },
+      {
+        title: 'Assumer une commission plus haute et la justifier',
+        paragraphs: [
+          'Baisser sa commission pour signer est le réflexe le plus coûteux du métier : vous attirez les propriétaires les plus exigeants sur le prix, qui sont aussi les plus difficiles à satisfaire.',
+          'Un point de commission se défend par ce qu’il produit. Une annonce mieux rédigée, une tarification ajustée au jour le jour et une meilleure réactivité augmentent le revenu du propriétaire bien au-delà de l’écart de commission. Montrez ce calcul plutôt que de négocier le pourcentage.',
+        ],
+      },
+    ],
+    conclusion:
+      'Une grille tarifaire tient quand vous pouvez expliquer chaque ligne en une phrase et qu’aucune ne vous fait perdre d’argent. Si vous hésitez à annoncer votre commission, c’est rarement qu’elle est trop élevée — c’est qu’elle n’est pas encore adossée à ce qu’elle finance.',
+  },
+  {
+    slug: 'convaincre-un-proprietaire-de-confier-son-bien',
+    number: '10',
+    category: 'Conciergerie',
+    title: 'Convaincre un propriétaire de vous confier son bien',
+    excerpt:
+      'Il ne compare pas des prestations, il évalue un risque. Tant que ce risque n’est pas traité, aucun argument de service ne porte.',
+    seoTitle: 'Convaincre un propriétaire — conciergerie | Qualifyr',
+    seoDescription:
+      'Pourquoi les propriétaires hésitent, dans quel ordre traiter leurs objections, et ce qui fait vraiment basculer une décision de mandat.',
+    publishedAt: '2026-08-10T12:00:00+02:00',
+    introduction:
+      'Un propriétaire qui hésite ne se demande pas si votre service est bon. Il se demande ce qu’il risque à confier un bien de plusieurs centaines de milliers d’euros à quelqu’un qu’il connaît peu, pour y loger des inconnus. Répondre à côté de cette question fait perdre la majorité des dossiers.',
+    sections: [
+      {
+        title: 'Donner le chiffre avant tout le reste',
+        paragraphs: [
+          'La première question est toujours la même : combien mon logement rapporterait-il ? Tant qu’il n’a pas d’ordre de grandeur, le propriétaire n’a aucune raison d’engager une conversation.',
+          'Une fourchette honnête vaut mieux qu’un montant précis. Elle montre que vous connaissez votre marché sans promettre ce que vous ne maîtrisez pas — et elle vous protège le jour où la saison est mauvaise.',
+        ],
+      },
+      {
+        title: 'Traiter les quatre objections dans l’ordre',
+        paragraphs: [
+          'Elles reviennent presque toujours, et presque toujours dans cet ordre. Les anticiper évite de les subir au milieu d’un rendez-vous.',
+        ],
+        points: [
+          'Puis-je encore utiliser mon logement ? Le calendrier reste sous son contrôle.',
+          'Qui gère les voyageurs ? Vous, entièrement, sans le solliciter.',
+          'Et les dégradations ? Garanties des plateformes et filtrage des réservations.',
+          'Suis-je engagé ? Précisez la durée et les conditions de sortie, sans détour.',
+        ],
+      },
+      {
+        title: 'Montrer l’écart, pas le montant',
+        paragraphs: [
+          'Un propriétaire qui loue déjà à l’année ne se lève pas pour gagner plus : il se lève pour arrêter de perdre. Comparez ce qu’il touche aujourd’hui et ce qu’il pourrait toucher, nettement, une fois votre commission déduite.',
+          'C’est cet écart qu’il répétera à son conjoint le soir même. Le revenu brut, lui, s’oublie en dix minutes.',
+        ],
+      },
+      {
+        title: 'Rappeler vite',
+        paragraphs: [
+          'Une demande traitée dans la journée n’a pas le même destin qu’une demande rappelée la semaine suivante. Entre-temps, le propriétaire a parlé à deux concurrents, ou a simplement laissé retomber son projet.',
+          'Si vous ne deviez suivre qu’une seule règle dans tout cet article, ce serait celle-là.',
+        ],
+      },
+    ],
+    conclusion:
+      'Convaincre un propriétaire tient moins à l’argumentaire qu’à l’ordre : un chiffre, puis le risque, puis l’écart, puis un rappel rapide. Les conciergeries qui signent le plus ne sont pas celles qui parlent le mieux de leur service — ce sont celles qui répondent aux questions qu’on ne leur pose pas à voix haute.',
+  },
+  {
+    slug: 'trouver-des-clients-en-detailing',
+    number: '11',
+    category: 'Nettoyage automobile',
+    title: 'Trouver des clients en detailing sans dépendre d’Instagram',
+    excerpt:
+      'Instagram vous fait découvrir, mais il ne remplit pas un agenda. Ce qui manque à la plupart des detailers se situe juste après la découverte.',
+    seoTitle: 'Trouver des clients en detailing automobile — Qualifyr',
+    seoDescription:
+      'Pourquoi les réseaux sociaux ne suffisent pas à remplir un agenda de detailing, et quels canaux apportent réellement des réservations.',
+    publishedAt: '2026-08-10T13:00:00+02:00',
+    introduction:
+      'La plupart des professionnels du detailing ont une vitrine correcte : un compte Instagram, de belles photos, des avant-après convaincants. Et pourtant leur agenda reste irrégulier. Le problème n’est presque jamais la visibilité — c’est ce qui se passe entre l’instant où quelqu’un admire votre travail et celui où il réserve.',
+    sections: [
+      {
+        title: 'Ce qu’Instagram ne fait pas',
+        paragraphs: [
+          'Il ne prend pas de rendez-vous. Il ne classe pas vos tarifs par type de véhicule. Il n’encaisse pas d’acompte, donc il ne protège pas vos créneaux. Et surtout, il n’existe pas sur Google : celui qui cherche un detailer dans sa ville ne tombera jamais sur un compte social.',
+          'Ces clients-là, vous ne les voyez même pas passer. C’est la partie invisible de votre manque à gagner.',
+        ],
+      },
+      {
+        title: 'Les trois canaux qui apportent vraiment des réservations',
+        paragraphs: [
+          'Aucun n’est spectaculaire, tous se cumulent.',
+        ],
+        points: [
+          'La fiche Google : la première chose que consulte quelqu’un qui cherche près de chez lui.',
+          'Une page qui permet de réserver, pas seulement d’admirer.',
+          'La recommandation, entretenue par une demande d’avis au bon moment.',
+        ],
+      },
+      {
+        title: 'Supprimer les frictions plutôt qu’ajouter du contenu',
+        paragraphs: [
+          'Publier davantage ne compense pas un parcours qui perd les gens. Trois obstacles reviennent systématiquement : des tarifs impossibles à comparer, une zone d’intervention floue, et une réservation qui passe par une conversation privée le soir.',
+          'Corriger ces trois points fait plus pour votre agenda que trois mois de publications supplémentaires.',
+        ],
+      },
+      {
+        title: 'Sécuriser les créneaux',
+        paragraphs: [
+          'Un rendez-vous non honoré coûte une demi-journée. Un acompte à la réservation supprime l’essentiel des désistements, et n’a jamais fait fuir un client sérieux.',
+          'C’est aussi un signal de professionnalisme : personne ne s’étonne de verser un acompte chez un garagiste.',
+        ],
+      },
+    ],
+    conclusion:
+      'Gardez Instagram pour ce qu’il fait très bien : montrer votre niveau de finition. Mais ajoutez derrière un chemin qui permet de comparer, de choisir et de réserver. La plupart des detailers n’ont pas un problème d’audience — ils ont un problème de conversion.',
+  },
+  {
+    slug: 'grille-tarifaire-detailing-par-vehicule',
+    number: '12',
+    category: 'Nettoyage automobile',
+    title: 'Construire une grille tarifaire de detailing lisible',
+    excerpt:
+      'Un client qui ne comprend pas votre grille ne négocie pas : il n’écrit pas. Voici comment structurer des tarifs qui décident à votre place.',
+    seoTitle: 'Grille tarifaire detailing par type de véhicule — Qualifyr',
+    seoDescription:
+      'Formules, suppléments et tarifs par gabarit : comment présenter ses prix de detailing pour supprimer les questions et accélérer la réservation.',
+    publishedAt: '2026-08-10T14:00:00+02:00',
+    introduction:
+      'La question « c’est combien pour un SUV ? » revient des dizaines de fois par mois. Chaque occurrence est le symptôme d’une grille qui ne répond pas d’elle-même — et chaque réponse manuelle est du temps qui ne vous est pas payé.',
+    sections: [
+      {
+        title: 'Trois formules, pas sept',
+        paragraphs: [
+          'Au-delà de trois niveaux, le client ne compare plus : il reporte. Distinguez l’entretien courant, la remise en état et la préparation avant vente ou avant remise du véhicule.',
+          'Chaque formule doit répondre à une situation, pas à une liste d’opérations. Le client se reconnaît dans une situation ; il se perd dans un inventaire technique.',
+        ],
+      },
+      {
+        title: 'Le gabarit plutôt que le modèle',
+        paragraphs: [
+          'Trois catégories suffisent : citadine, berline ou break, SUV et utilitaire. Elles couvrent l’essentiel du parc et évitent d’avoir à trancher au cas par cas.',
+          'Affichez un prix par formule et par gabarit. Le tableau paraît plus long, mais il supprime la totalité des messages de demande de devis.',
+        ],
+      },
+      {
+        title: 'Les suppléments annoncés d’avance',
+        paragraphs: [
+          'Poils d’animaux, taches organiques, véhicule très encrassé, déplacement au-delà d’une certaine distance : ces situations existent, elles ont un coût, et les découvrir sur place crée un malaise.',
+          'Annoncées à l’avance, elles rassurent : le client comprend que votre prix de base correspond à un travail précis, pas à une estimation optimiste.',
+        ],
+        points: [
+          'Un supplément nommé, avec son montant.',
+          'La condition qui le déclenche, en une phrase.',
+          'La possibilité de le confirmer avant l’intervention.',
+        ],
+      },
+    ],
+    conclusion:
+      'Une grille lisible ne sert pas à justifier vos prix, elle sert à ce que le client décide sans vous écrire. Chaque question qu’elle supprime est une réservation qui arrive plus vite, et une soirée que vous ne passez pas à répondre à des messages.',
+  },
 ] as const satisfies readonly BlogArticle[];
 
 export function isArticlePublished(article: BlogArticle, now = new Date()): boolean {

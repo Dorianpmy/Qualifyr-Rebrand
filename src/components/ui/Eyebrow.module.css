@@ -1,3 +1,11 @@
+/**
+ * Sur-titre.
+ *
+ * Les chiffres sont alignés par défaut : le corps de page est en
+ * `oldstyle-nums`, dont les hauteurs variables font paraître « 01 » plus petit
+ * que les capitales qui le suivent. Sur un texte en petites capitales espacées,
+ * l'écart se voit immédiatement.
+ */
 .eyebrow {
   display: flex;
   align-items: center;
@@ -5,6 +13,7 @@
   font-family: var(--family-text);
   font-size: var(--text-3xs);
   font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums lining-nums;
   line-height: 1.2;
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;

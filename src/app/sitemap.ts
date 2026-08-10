@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { getPublishedArticles } from '@/content/blog';
+import { cities } from '@/content/cities';
 import { pageMeta, site, sitemapRoutes } from '@/content/site';
 
 export const revalidate = 3600;
@@ -34,5 +35,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  return [...pages, ...articles];
+  // Pages locales : générées statiquement, déclarées comme les articles.
+  const localPages: MetadataRoute.Sitemap = cities.map((city) => ({
+    url: new URL(`/conciergerie/${city.slug}`, site.url).toString(),
+    lastModified,
+    changeFrequency: 'monthly',
+    priority: 0.7,
+  }));
+
+  return [...pages, ...articles, ...localPages];
 }

@@ -114,7 +114,6 @@ qu'hors production : **ni la route ni sa feuille de style n'existent dans le bui
 | `ComparisonPanel` | — | Comparatif avant / après |
 | `CasePlate` | `tone` : `sand` \| `ink` · `size` · `logo` · `priority` | Panneau d'identification d'un projet |
 | `CaseGallery` | `priorityFirst` | Galerie d'une étude de cas — masquée si vide |
-| `CreativeLab` | — | Portfolio asymétrique de concepts ouvrant leur étude ; les aperçus Identité et Motion réagissent horizontalement au survol et au focus |
 | `ArticleCard` | `featured` · `compact` | Entrée éditoriale du journal : numéro, catégorie, date, titre, résumé et lien de lecture |
 | `VerticalServicePage` | `content` | Page commerciale métier partagée : hero, freins, réponse Qualifyr, parcours, preuve ou concept, méthode, FAQ et CTA |
 
@@ -345,35 +344,6 @@ Les liens Instagram et TikTok sont rendus sous forme de boutons éditoriaux avec
 SVG et nom du réseau. Le bouton WhatsApp fixe remplace le sigle « WA » par le pictogramme de
 marque et expose aussi le mot « WhatsApp » au survol et au focus. Chaque cible conserve un
 nom accessible complet et une surface tactile d'au moins 44 px.
-
----
-
-### `CreativeLab`
-
-Portfolio éditorial généré depuis `src/content/creative-lab.ts`, rendu sur la route
-`/laboratoire`. Il associe un concept principal et deux explorations secondaires sans
-dupliquer la structure des cartes ni la réalisation déjà présentée ailleurs.
-
-- introduction courte avec surtitre, titre et phrase de démarche ;
-- orientation légère avant la grille : trois besoins réels, une recommandation et un accès
-  direct à l'étude correspondante ; elle ne calcule aucun prix et ne remplace pas l'estimation ;
-- panneau d'orientation encadré, composé en deux colonnes sur desktop et en une seule colonne
-  sur mobile ; les choix sont des boutons complets avec numéro, texte, flèche et état pressé ;
-- recommandation intégrée au même panneau, avec un état d'attente explicite qui conserve la
-  hauteur du bloc sans donner l'impression d'un contenu manquant ;
-- grille desktop de douze colonnes : Conciergerie 7/12, colonne secondaire 5/12 ;
-- carte Conciergerie plafonnée en hauteur, avec titre et visuel réduits pour ne plus dominer
-  les autres études ; elle commence dès le premier rang et traverse les deux rangées ;
-- les deux cartes secondaires utilisent une composition verticale avec un visuel panoramique
-  au-dessus du texte afin d'éviter toute coupe ou colonne de lecture trop étroite ;
-- cartes verticales sur tablette et mobile, sans sous-grille susceptible de comprimer le texte ;
-- carte entière activable au clavier et au pointeur ;
-- fenêtre interactive conservée pour chaque concept ;
-- aucune réalisation réelle ni fenêtre distante : SW Car Cleaning reste présenté une seule
-  fois sur l'accueil puis sur ses pages dédiées ;
-- badge « En préparation » traité comme un statut éditorial valorisé ;
-- mouvement limité à une montée courte, un léger agrandissement du visuel et une flèche animée,
-  avec désactivation complète via `prefers-reduced-motion`.
 
 ---
 
@@ -742,7 +712,7 @@ sont réservés aux repères globaux de la page.
 
 ## 4bis. Structure de la page d'accueil
 
-Huit temps éditoriaux, dans cet ordre. L'alternance des surfaces porte le rythme : ivoire par
+Sept temps éditoriaux, dans cet ordre. L'alternance des surfaces porte le rythme : ivoire par
 défaut, sable pour les respirations, **une seule section charbon** — la réalisation réelle.
 
 | # | Section | Surface | Composants |
@@ -752,8 +722,7 @@ défaut, sable pour les respirations, **une seule section charbon** — la réal
 | 3 | Réalisation | **inverse** | preuve factuelle + `InteractiveSitePreview` unique |
 | 4 | Entreprises | sunken | trois familles de services, sans déplacement au survol |
 | 5 | Méthode | page | `MethodStep` ×4 |
-| 6 | Laboratoire compact | raised | `CreativeLab` ×3, fenêtre accessible, aucun atelier |
-| 7 | Clôture | page | calendrier, WhatsApp et lien texte vers `/estimation` |
+| 6 | Clôture | page | calendrier, WhatsApp et lien texte vers `/estimation` |
 
 Règles de la page :
 
@@ -764,8 +733,7 @@ Règles de la page :
 - WhatsApp reste disponible dans l'en-tête et le bouton fixe ; le calendrier apparaît dans
   le hero et la clôture.
 - L'estimation vit uniquement à `/estimation` et n'est jamais rendue dans l'accueil.
-- Le Journal reste sur sa route. Le Laboratoire apparaît en version compacte et conserve sa
-  route dédiée sans atelier de personnalisation.
+- Le Journal reste sur sa route.
 
 ---
 
@@ -784,7 +752,6 @@ la mise en page de l'accueil.
 | `/realisations/sw-car-cleaning` | Hero en diptyque avec panneau de projet, contexte à deux colonnes, objectifs en séquence numérotée, travail réalisé en négatif sur trois colonnes, galerie conditionnelle, enseignement | page → raised → page → **inverse** → sunken (si galerie) → raised → page |
 | `/blog` | Ouverture courte, une éditoriale, puis grille des articles précédents et orientation vers le diagnostic | page → raised → page |
 | `/blog/[slug]` | Ouverture en largeur de lecture, contenu séquencé, repère de publication et appel à l'action discret | page → raised → page |
-| `/laboratoire` | Ouverture courte, orientation en deux états puis portfolio asymétrique de trois concepts interactifs, sans réalisation dupliquée | page → raised |
 
 Note : `/contact` est la seule page sans `CallToAction` final. Y placer un appel à l'action
 vers le diagnostic juste sous un formulaire de contact serait redondant ; l'orientation vers

@@ -7,7 +7,7 @@ import urllib.request
 
 BASE = sys.argv[1] if len(sys.argv) > 1 else 'http://localhost:3300'
 
-PAGES = ['/', '/creation-site-web', '/methode', '/realisations', '/realisations/sw-car-cleaning', '/laboratoire',
+PAGES = ['/', '/creation-site-web', '/methode', '/realisations', '/realisations/sw-car-cleaning',
          '/a-propos', '/diagnostic', '/contact',
          '/blog', '/blog/rendre-une-offre-de-services-plus-facile-a-choisir',
          '/mentions-legales', '/politique-de-confidentialite']

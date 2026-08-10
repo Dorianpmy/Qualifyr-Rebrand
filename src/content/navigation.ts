@@ -14,10 +14,11 @@ export const routeLabels: Readonly<Record<string, string>> = {
   '/creation-site-web': 'Création de site web',
   '/nettoyage-automobile': 'Nettoyage automobile',
   '/conciergerie': 'Conciergerie',
+  '/outil-conciergerie': 'Outil conciergerie',
+  '/tarifs': 'Tarifs',
   '/methode': 'Méthode',
   '/realisations': 'Réalisations',
   '/realisations/sw-car-cleaning': 'SW Carcleaning',
-  '/laboratoire': 'Laboratoire',
   '/a-propos': 'À propos',
   '/diagnostic': 'Diagnostic',
   '/estimation': 'Estimation',
@@ -27,35 +28,47 @@ export const routeLabels: Readonly<Record<string, string>> = {
   '/politique-de-confidentialite': 'Politique de confidentialité',
 };
 
+/**
+ * Menu principal — six entrées, jamais sept.
+ *
+ * L'outil prend la place de « Contact » : le bouton WhatsApp de l'en-tête et la
+ * colonne du pied de page couvrent déjà la prise de contact, alors que le
+ * produit n'avait aucune entrée. Il est placé avant les tarifs, parce qu'on
+ * regarde un prix après avoir compris ce qu'on achète.
+ */
 export const primaryNav: readonly NavItem[] = [
   { label: 'Expertise', href: '/#expertise' },
   { label: 'Réalisation', href: '/#sw-car-cleaning' },
-  { label: 'Laboratoire', href: '/laboratoire' },
+  { label: 'Outil', href: '/outil-conciergerie' },
+  { label: 'Tarifs', href: '/tarifs' },
   { label: 'Journal', href: '/blog' },
   { label: 'À propos', href: '/a-propos' },
-  { label: 'Contact', href: '/contact' },
 ];
 
+/**
+ * Pied de page — une entrée par destination réelle.
+ *
+ * Les doublons précédents (« Refonte de site » et « Création de site internet »
+ * pointaient au même endroit, « Application web » et « Produit web » aussi)
+ * allongeaient la colonne sans rien apporter : un lien répété ne renforce pas
+ * le maillage interne, il dilue l'attention et le budget d'exploration.
+ */
 export const footerServiceNav: readonly NavItem[] = [
   { label: 'Site pour nettoyage automobile et detailing', href: '/nettoyage-automobile' },
   { label: 'Site pour conciergerie', href: '/conciergerie' },
-  { label: 'Création de site internet', href: '/creation-site-web' },
-  { label: 'Refonte de site', href: '/creation-site-web' },
-  { label: 'Application web', href: '/diagnostic' },
-  { label: 'Produit web', href: '/diagnostic' },
-  { label: 'Parcours de demande', href: '/methode' },
+  { label: 'Outil d’acquisition pour conciergerie', href: '/outil-conciergerie' },
+  { label: 'Simulateur de revenus locatifs', href: '/simulateur-revenus-locatifs' },
+  { label: 'Création et refonte de site', href: '/creation-site-web' },
+  { label: 'Tarifs', href: '/tarifs' },
   { label: 'Diagnostic', href: '/diagnostic' },
-  { label: 'Estimation', href: '/estimation' },
 ];
 
 export const footerCompanyNav: readonly NavItem[] = [
   { label: 'Réalisations', href: '/realisations' },
-  { label: 'Étude de cas SW Car Cleaning', href: '/realisations/sw-car-cleaning' },
-  { label: 'Laboratoire', href: '/laboratoire' },
   { label: 'Méthode', href: '/methode' },
+  { label: 'Journal', href: '/blog' },
   { label: 'À propos', href: '/a-propos' },
   { label: 'Contact', href: '/contact' },
-  { label: 'Journal', href: '/blog' },
 ];
 
 export const legalNav: readonly NavItem[] = [

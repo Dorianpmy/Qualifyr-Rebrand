@@ -11,7 +11,12 @@ export function FloatingWhatsApp() {
   if (pathname === '/diagnostic') return null;
   if (!agencyChannels.whatsappNumber) return null;
 
-  const href = buildWhatsAppUrl(agencyChannels.whatsappNumber, buildDirectWhatsAppMessage());
+  // Le message reprend le contexte de la page : le visiteur n'a plus qu'à
+  // envoyer, au lieu de devoir formuler sa demande depuis une page blanche.
+  const href = buildWhatsAppUrl(
+    agencyChannels.whatsappNumber,
+    buildDirectWhatsAppMessage(pathname),
+  );
   if (!href) return null;
 
   return (
