@@ -71,56 +71,56 @@ const sharedMethod = method;
 export const automotiveVertical: VerticalServiceContent = {
   route: '/nettoyage-automobile',
   hero: {
-    eyebrow: 'Expertise · Nettoyage automobile mobile',
-    title: 'Un site internet pour le nettoyage automobile.',
+    eyebrow: 'Expertise · Nettoyage automobile & detailing',
+    title: 'Un site qui transforme vos abonnés en réservations.',
     lead:
-      'Qualifyr conçoit des sites internet pour les professionnels du nettoyage automobile mobile et du detailing afin de présenter leurs prestations, leur zone d’intervention et la façon de réserver sans perdre le client dans les détails.',
+      'Instagram vous fait connaître, mais il ne prend pas de rendez-vous. Qualifyr conçoit le site qui présente vos formules, affiche vos tarifs par type de véhicule et transforme une visite en demande de créneau — sans passer par vingt messages privés.',
     secondaryHref: '/realisations/sw-car-cleaning',
     secondaryLabel: 'Voir SW Carcleaning',
   },
   problems: {
-    eyebrow: 'Ce qui freine la demande',
-    title: 'Votre travail peut être précis. Le parcours doit l’être aussi.',
+    eyebrow: 'Ce qui vous coûte des créneaux',
+    title: 'Le travail est irréprochable. Le chemin pour réserver, beaucoup moins.',
     lead:
-      'Avant de confier son véhicule, un client cherche surtout à comprendre ce qui lui convient et comment avancer.',
+      'Entre le moment où quelqu’un découvre votre travail et celui où il bloque un créneau, tout se joue en quelques minutes.',
     items: [
       {
         number: '01',
-        title: 'Des formules difficiles à comparer',
-        body: 'Le client hésite entre plusieurs niveaux de soin sans voir clairement ce qui change pour son véhicule.',
+        title: 'Tout se négocie en message privé',
+        body: 'Disponibilités, tarifs, type de véhicule : chaque réservation demande une conversation entière, le soir, une fois les prestations terminées.',
       },
       {
         number: '02',
-        title: 'Une zone d’intervention incertaine',
-        body: 'La question du déplacement arrive trop tard et crée des échanges qui auraient pu être évités.',
+        title: 'Des formules impossibles à comparer',
+        body: 'Le client hésite entre plusieurs niveaux de soin sans voir ce qui change concrètement pour son véhicule, et repousse sa décision.',
       },
       {
         number: '03',
-        title: 'Des demandes incomplètes',
-        body: 'Type de véhicule, prestation souhaitée et disponibilité manquent au moment du premier message.',
+        title: 'Introuvable sur Google',
+        body: 'Celui qui cherche un detailer dans votre ville ne tombe jamais sur un compte Instagram. Ces clients-là, vous ne les voyez même pas passer.',
       },
     ],
   },
   response: {
     eyebrow: 'Ce que Qualifyr construit',
-    title: 'Une présentation qui aide le client à décider.',
+    title: 'Un site qui répond à votre place.',
     lead:
-      'Nous relions votre positionnement, votre identité et votre site dans un même parcours, pensé pour le téléphone comme pour l’ordinateur.',
+      'Votre Instagram reste votre vitrine — nous n’y touchons pas. Le site prend le relais là où il s’arrête : comparer, décider, réserver.',
     items: [
       {
         number: '01',
-        title: 'Une offre immédiatement lisible',
-        body: 'Les prestations, les différences entre formules et les informations utiles sont organisées dans l’ordre des questions du client.',
+        title: 'Des formules et des tarifs lisibles',
+        body: 'Les prestations et les prix par type de véhicule sont organisés dans l’ordre des questions du client. La moitié des messages disparaît d’elle-même.',
       },
       {
         number: '02',
-        title: 'Un site à la hauteur du soin apporté',
-        body: 'L’identité, les images et les textes rendent votre méthode tangible sans exagérer ce que vous faites.',
+        title: 'Une demande de créneau complète',
+        body: 'Le client choisit sa prestation, précise son véhicule et propose une disponibilité. Vous recevez un dossier, plus un « bonjour, c’est combien ? ».',
       },
       {
         number: '03',
-        title: 'Une demande mieux préparée',
-        body: 'Le véhicule, la prestation, la zone et le créneau souhaité peuvent être réunis avant le premier échange.',
+        title: 'Une présence sur Google',
+        body: 'Vos prestations et votre zone d’intervention deviennent trouvables par ceux qui ne vous suivent pas encore — et qui cherchent maintenant.',
       },
     ],
   },
@@ -128,12 +128,12 @@ export const automotiveVertical: VerticalServiceContent = {
     eyebrow: 'Parcours adapté au métier',
     title: 'Les bonnes informations, dans le bon ordre.',
     lead:
-      'Chaque étape répond à une question réelle du client et prépare la suivante sans transformer la réservation en formulaire interminable.',
+      'Chaque étape répond à une question réelle du client et prépare la suivante, sans transformer la réservation en formulaire interminable.',
     steps: [
-      { number: '01', title: 'Découvrir', body: 'Comprendre votre niveau de soin et votre zone.' },
-      { number: '02', title: 'Choisir', body: 'Comparer les formules selon le besoin réel.' },
-      { number: '03', title: 'Préciser', body: 'Indiquer le véhicule et les informations utiles.' },
-      { number: '04', title: 'Demander', body: 'Proposer un créneau ou commencer un échange préparé.' },
+      { number: '01', title: 'Découvrir', body: 'Voir votre niveau de finition et votre zone.' },
+      { number: '02', title: 'Choisir', body: 'Comparer les formules selon son véhicule.' },
+      { number: '03', title: 'Préciser', body: 'Indiquer le véhicule, l’état et le lieu.' },
+      { number: '04', title: 'Réserver', body: 'Proposer un créneau avec tout ce qu’il vous faut.' },
     ],
   },
   proof: {
@@ -149,9 +149,14 @@ export const automotiveVertical: VerticalServiceContent = {
   },
   faq: [
     {
+      question: 'J’ai déjà Instagram, à quoi sert un site ?',
+      answer:
+        'Instagram vous fait découvrir, il ne fait pas réserver. Il ne classe pas vos tarifs par véhicule, ne bloque pas de créneau et n’apparaît pas quand quelqu’un cherche un detailer sur Google. Le site prend le relais exactement là où votre compte s’arrête.',
+    },
+    {
       question: 'Travaillez-vous uniquement avec le nettoyage automobile mobile ?',
       answer:
-        'Cette page s’adresse au nettoyage automobile mobile et au detailing à domicile. Nous adaptons le parcours à vos prestations, à votre zone et à votre manière de recevoir les demandes.',
+        'Cette page s’adresse au nettoyage automobile mobile et au detailing, à domicile comme en atelier. Nous adaptons le parcours à vos prestations, à votre zone et à votre manière de recevoir les demandes.',
     },
     {
       question: 'Puis-je conserver mon site actuel ?',
@@ -176,78 +181,78 @@ export const automotiveVertical: VerticalServiceContent = {
   ],
   cta: {
     eyebrow: 'Votre activité',
-    title: 'Votre savoir-faire mérite un parcours aussi soigné que vos prestations.',
+    title: 'Moins de messages à traiter. Plus de créneaux réservés.',
     body:
-      'Présentez-nous vos formules, votre zone et votre façon de travailler. Nous verrons ce qui doit devenir plus simple pour vos clients.',
+      'Présentez-nous vos formules, votre zone et la façon dont vos clients vous contactent aujourd’hui. Nous verrons ce qui peut être simplifié en premier.',
   },
 };
 
 export const conciergeVertical: VerticalServiceContent = {
   route: '/conciergerie',
   hero: {
-    eyebrow: 'Expertise · Conciergeries',
-    title: 'Un site internet clair pour votre conciergerie.',
+    eyebrow: 'Expertise · Conciergeries de location courte durée',
+    title: 'Un site qui convainc les propriétaires de vous confier leur bien.',
     lead:
-      'Qualifyr conçoit des sites internet pour les conciergeries afin d’expliquer leur rôle, rassurer leurs prospects et recueillir une demande suffisamment précise pour commencer sur de bonnes bases.',
+      'Votre métier se joue avant la première visite : un propriétaire décide de confier un bien de plusieurs centaines de milliers d’euros à quelqu’un qu’il ne connaît pas. Qualifyr conçoit le site qui installe cette confiance et qualifie chaque demande.',
     secondaryHref: '/laboratoire',
     secondaryLabel: 'Voir le concept Qualifyr',
   },
   problems: {
-    eyebrow: 'Ce qui freine la confiance',
-    title: 'Un service sur mesure reste difficile à saisir sans cadre clair.',
+    eyebrow: 'Ce qui freine la signature',
+    title: 'Le propriétaire ne compare pas des services. Il évalue un risque.',
     lead:
-      'Le prospect doit comprendre jusqu’où va votre accompagnement avant de vous confier son séjour, son bien ou son organisation.',
+      'Avant de signer un mandat, il veut savoir ce que son bien peut rapporter, ce que vous prenez réellement en charge, et pourquoi vous plutôt qu’un autre.',
     items: [
       {
         number: '01',
-        title: 'Un périmètre difficile à expliquer',
-        body: 'Les prestations varient selon le besoin et peuvent sembler floues lorsqu’elles sont présentées comme une longue liste.',
+        title: 'Aucune idée du revenu possible',
+        body: 'Le propriétaire hésite parce qu’il ignore ce que son logement générerait vraiment. Sans ce chiffre, la conversation ne démarre jamais.',
       },
       {
         number: '02',
-        title: 'Des demandes sans contexte',
-        body: 'Destination, dates, contraintes et niveau d’accompagnement manquent souvent au premier message.',
+        title: 'Une offre qui ressemble à toutes les autres',
+        body: 'Ménage, linge, accueil, gestion des annonces : la liste est la même partout, et rien n’explique ce qui vous distingue.',
       },
       {
         number: '03',
-        title: 'Une confiance à construire à distance',
-        body: 'La qualité du service doit être perceptible avant même qu’un échange personnel ait commencé.',
+        title: 'Des demandes trop vagues pour être traitées',
+        body: 'Ville, type de bien, nombre de logements et disponibilité manquent au premier message, et chaque échange s’allonge inutilement.',
       },
     ],
   },
   response: {
     eyebrow: 'Ce que Qualifyr construit',
-    title: 'Une expérience qui pose le cadre et rassure.',
+    title: 'Un site qui fait le premier travail de conviction.',
     lead:
-      'Nous transformons un accompagnement parfois complexe en une présentation calme, structurée et facile à parcourir.',
+      'Nous transformons votre offre en un parcours qui chiffre, rassure et qualifie — avant même votre premier appel.',
     items: [
       {
         number: '01',
-        title: 'Un positionnement compréhensible',
-        body: 'Le rôle de la conciergerie, les besoins couverts et la façon d’être accompagné sont expliqués sans jargon.',
+        title: 'Une estimation de revenus en entrée de parcours',
+        body: 'Le propriétaire découvre ce que son bien pourrait générer et laisse ses coordonnées pour en savoir plus. C’est le point de départ le plus efficace du métier.',
       },
       {
         number: '02',
-        title: 'Une identité cohérente',
-        body: 'Le ton, les images, les couleurs et la composition forment une présence crédible d’un support à l’autre.',
+        title: 'Des garanties rendues visibles',
+        body: 'Vos engagements, votre process, vos assurances et vos résultats rendent le risque acceptable. C’est ce que le propriétaire cherche vraiment.',
       },
       {
         number: '03',
-        title: 'Une demande guidée',
-        body: 'Le prospect peut partager le contexte essentiel avant le premier échange, sans devoir écrire un message à partir de rien.',
+        title: 'Une demande déjà qualifiée',
+        body: 'Ville, type de logement, nombre de biens et disponibilité arrivent avec la demande. Vous cessez de perdre du temps sur les dossiers hors cible.',
       },
     ],
   },
   journey: {
     eyebrow: 'Parcours adapté au métier',
-    title: 'Du besoin exprimé à un échange utile.',
+    title: 'Du premier doute au mandat signé.',
     lead:
-      'Le parcours reste court, mais il prépare la conversation avec les éléments qui comptent vraiment pour votre équipe.',
+      'Le parcours reste court, mais il traite les questions dans l’ordre où le propriétaire se les pose réellement.',
     steps: [
-      { number: '01', title: 'Comprendre', body: 'Identifier votre approche et le cadre du service.' },
-      { number: '02', title: 'Se situer', body: 'Reconnaître le besoin ou le type d’accompagnement.' },
-      { number: '03', title: 'Préciser', body: 'Partager le lieu, les dates et les attentes essentielles.' },
-      { number: '04', title: 'Échanger', body: 'Commencer une conversation déjà contextualisée.' },
+      { number: '01', title: 'Comprendre', body: 'Situer votre approche, votre zone et vos garanties.' },
+      { number: '02', title: 'Estimer', body: 'Découvrir le revenu possible pour son bien.' },
+      { number: '03', title: 'Préciser', body: 'Partager le logement, la ville et ses attentes.' },
+      { number: '04', title: 'Échanger', body: 'Ouvrir une conversation déjà cadrée.' },
     ],
   },
   proof: {
@@ -264,7 +269,12 @@ export const conciergeVertical: VerticalServiceContent = {
     {
       question: 'Avec quels types de conciergeries travaillez-vous ?',
       answer:
-        'La méthode peut s’adapter à une conciergerie de séjour, de gestion, de services, d’installation ou d’accompagnement. Le projet commence par la réalité de votre offre, pas par une catégorie imposée.',
+        'Principalement les conciergeries de location courte durée qui gèrent des biens pour le compte de propriétaires. La méthode s’adapte aussi aux conciergeries de services et d’accompagnement : le projet part de la réalité de votre offre, pas d’une catégorie imposée.',
+    },
+    {
+      question: 'Pouvez-vous intégrer un simulateur de revenus locatifs ?',
+      answer:
+        'Oui, c’est l’élément qui déclenche le plus de demandes dans ce métier. L’estimation est présentée sous forme de fourchette indicative, calibrée sur votre zone, et sert à ouvrir la conversation — pas à engager un chiffre précis.',
     },
     {
       question: 'Cette page présente-t-elle un client Qualifyr ?',
@@ -277,21 +287,21 @@ export const conciergeVertical: VerticalServiceContent = {
         'Oui. Le parcours peut orienter le prospect selon son besoin et recueillir uniquement les informations pertinentes pour la demande concernée.',
     },
     {
-      question: 'Dois-je déjà avoir défini toutes mes prestations ?',
+      question: 'Faut-il déjà gérer plusieurs logements ?',
       answer:
-        'Non. La clarification de l’offre fait partie du travail. Nous vous aidons à distinguer ce qui doit être expliqué publiquement de ce qui se précise pendant l’échange.',
+        'Non, mais le site produit son plein effet à partir de quelques biens en gestion, quand la question devient celle de la croissance. La clarification de l’offre fait partie du travail.',
     },
     {
       question: 'Comment commence le projet ?',
       answer:
-        'Nous examinons votre accompagnement, les demandes que vous recevez et les informations qui vous manquent aujourd’hui. Le diagnostic permet de poser ce cadre avant de parler de solution.',
+        'Nous examinons votre offre, les demandes que vous recevez aujourd’hui et la façon dont vous signez vos mandats. Le diagnostic sert à identifier où se perdent les propriétaires avant de parler de solution.',
     },
   ],
   cta: {
     eyebrow: 'Votre conciergerie',
-    title: 'Faites comprendre la qualité de votre accompagnement avant le premier échange.',
+    title: 'Le prochain mandat se gagne avant le premier appel.',
     body:
-      'Présentez-nous votre service, les demandes que vous recevez et ce qui reste difficile à expliquer. Nous clarifierons la prochaine étape utile.',
+      'Présentez-nous votre offre, votre zone et la façon dont les propriétaires vous trouvent aujourd’hui. Nous verrons où se perdent les demandes.',
   },
 };
 

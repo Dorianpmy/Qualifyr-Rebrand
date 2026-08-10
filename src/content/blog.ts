@@ -326,6 +326,57 @@ export const blogArticles = [
     conclusion:
       'La bonne question n’est pas seulement “dois-je afficher mes prix ?”, mais “puis-je expliquer honnêtement ce que le client obtient à ce prix et ce qui peut le faire varier ?”.',
   },
+  {
+    slug: 'trouver-des-proprietaires-pour-sa-conciergerie',
+    number: '08',
+    category: 'Conciergerie',
+    title: 'Comment trouver des propriétaires pour sa conciergerie',
+    excerpt:
+      'Le mandat ne se gagne pas au moment du rendez-vous. Il se gagne avant, quand le propriétaire cherche à savoir ce que son bien pourrait rapporter.',
+    seoTitle: 'Comment trouver des propriétaires pour sa conciergerie — Qualifyr',
+    seoDescription:
+      'Les canaux qui apportent réellement des mandats à une conciergerie de location courte durée, et la raison pour laquelle la plupart des demandes se perdent avant l’appel.',
+    publishedAt: '2026-08-10T09:00:00+02:00',
+    introduction:
+      'Une conciergerie ne manque presque jamais de logements à gérer par manque de compétence. Elle en manque parce que les propriétaires ne savent pas qu’elle existe, ou parce qu’ils n’ont pas assez d’éléments pour franchir le pas. La question n’est donc pas seulement “où les trouver”, mais “que doivent-ils comprendre avant d’accepter un rendez-vous”.',
+    sections: [
+      {
+        title: 'Le propriétaire n’achète pas un service, il accepte un risque',
+        paragraphs: [
+          'Confier un bien à une conciergerie, c’est remettre un appartement de plusieurs centaines de milliers d’euros à quelqu’un que l’on connaît peu, pour y loger des inconnus. La décision n’est pas commerciale, elle est prudentielle.',
+          'Cela change complètement l’ordre des arguments. Détailler ses prestations avant d’avoir traité la question du risque revient à répondre à une question que le propriétaire ne s’est pas encore posée.',
+        ],
+      },
+      {
+        title: 'Commencer par le chiffre, pas par l’offre',
+        paragraphs: [
+          'La première chose qu’un propriétaire cherche est un montant : combien mon logement pourrait-il rapporter ? Tant qu’il n’a pas cet ordre de grandeur, il n’a aucune raison d’aller plus loin.',
+          'C’est pourquoi une estimation de revenus, présentée sous forme de fourchette honnête et calibrée sur la zone, ouvre plus de conversations que n’importe quelle page de présentation. Elle donne une réponse utile avant de demander quoi que ce soit en retour.',
+        ],
+      },
+      {
+        title: 'Les canaux qui produisent vraiment des mandats',
+        paragraphs: [
+          'Les conciergeries qui se développent ne multiplient pas les canaux : elles en travaillent deux ou trois sérieusement.',
+        ],
+        points: [
+          'La recommandation par les propriétaires déjà gérés — le meilleur taux de transformation, de loin, mais lent à démarrer.',
+          'Les partenariats avec agences immobilières, notaires et comptables — un flux régulier et déjà qualifié.',
+          'La présence en ligne : site, fiche Google et référencement local — le seul canal qui travaille pendant que vous gérez vos logements.',
+          'Le démarchage direct — utile au lancement, difficile à tenir dans la durée.',
+        ],
+      },
+      {
+        title: 'Le point où la plupart des demandes se perdent',
+        paragraphs: [
+          'Beaucoup de conciergeries obtiennent des contacts, puis les perdent entre le premier message et le rendez-vous. Le propriétaire écrit, reçoit une réponse tardive ou générique, et poursuit ailleurs.',
+          'Deux corrections suffisent souvent. Recueillir dès la demande la ville, le type de logement, le nombre de biens et la disponibilité, afin de traiter en priorité ce qui est traitable. Et relancer automatiquement ceux qui ne répondent pas : c’est la tâche que personne n’a le temps de faire, et c’est là que se trouve la moitié des mandats perdus.',
+        ],
+      },
+    ],
+    conclusion:
+      'Trouver des propriétaires est moins une question de volume que d’ordre. Donner un chiffre, traiter le risque, qualifier la demande, relancer sans y penser. Un mandat rapporte plusieurs milliers d’euros par an : il justifie largement de soigner les quelques minutes qui précèdent le premier appel.',
+  },
 ] as const satisfies readonly BlogArticle[];
 
 export function isArticlePublished(article: BlogArticle, now = new Date()): boolean {

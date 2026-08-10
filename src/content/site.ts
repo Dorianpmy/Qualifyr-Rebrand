@@ -4,9 +4,9 @@ export const productionUrl = 'https://qualifyragence.com';
 export const productionDomain = 'qualifyragence.com';
 
 export const homeSeo = {
-  title: 'Qualifyr | Création de sites web et applications sur mesure',
+  title: 'Qualifyr — Sites web pour conciergeries et nettoyage auto',
   description:
-    'Qualifyr est une agence digitale qui conçoit des sites web et des applications pour les entreprises de services, dont le nettoyage automobile et les conciergeries.',
+    'Agence spécialisée dans deux métiers : conciergerie et nettoyage automobile. Nous concevons les sites qui attirent des propriétaires et remplissent un agenda.',
 } as const;
 
 /**
@@ -42,6 +42,13 @@ type PageMeta = {
  * artificielle de mots-clés. Les intentions visées sont B2B et portent sur le
  * développement des deux verticales officielles. Elles sont servies par le
  * contenu réel des pages, pas par une accumulation de termes.
+ *
+ * **Angle éditorial.** Les intentions sont formulées du côté du problème du
+ * prospect, pas du côté de la prestation vendue. Personne ne cherche « création
+ * de site pour conciergerie » ; en revanche les gérants cherchent comment
+ * signer plus de mandats, et les detailers comment remplir leur agenda. Chaque
+ * titre relie donc le livrable au résultat attendu — sans promettre ce que la
+ * page ne traite pas réellement.
  */
 export const pageMeta: Readonly<Record<Route, PageMeta>> = {
   '/': {
@@ -50,63 +57,63 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
     priority: 1,
   },
   '/creation-site-web': {
-    title: 'Création de site web sur mesure — Qualifyr',
+    title: 'Création de site internet pour entreprise de services — Qualifyr',
     description:
-      'Qualifyr conçoit des sites web clairs, rapides et adaptés aux besoins réels des entreprises, de la structure des contenus jusqu’à la prise de contact.',
+      'Un site pensé pour convertir : offre lisible, preuves de sérieux et parcours de contact simple. Pour les entreprises de services qui veulent plus de demandes.',
     priority: 0.9,
   },
   '/nettoyage-automobile': {
-    title: 'Création de site pour nettoyage auto et detailing | Qualifyr',
+    title: 'Site pour detailing et nettoyage auto — plus de réservations',
     description:
-      'Qualifyr crée des sites internet pour le nettoyage automobile mobile et le detailing, afin de clarifier les offres et faciliter la prise de rendez-vous.',
+      'Vos prestations présentées clairement, vos tarifs par type de véhicule et une prise de rendez-vous simple. Pour les detailers qui veulent moins de DM et plus de RDV.',
     priority: 0.9,
   },
   '/conciergerie': {
-    title: 'Création de site internet pour conciergerie | Qualifyr',
+    title: 'Site pour conciergerie — attirer et convaincre des propriétaires',
     description:
-      'Qualifyr crée des sites internet pour les conciergeries afin de présenter leurs services, rassurer leurs prospects et mieux qualifier chaque demande.',
+      'Un site qui rassure les propriétaires, met en avant vos garanties et qualifie chaque demande. Pour les conciergeries qui veulent signer plus de mandats.',
     priority: 0.9,
   },
   '/methode': {
-    title: 'Parcours client pour entreprises de services — Qualifyr',
+    title: 'Notre méthode — du premier contact à la demande qualifiée',
     description:
-      'Découvrez comment Qualifyr structure le parcours client des entreprises de nettoyage automobile mobile et des conciergeries, de la découverte à la recommandation.',
+      'Comprendre, clarifier, concevoir, améliorer. La méthode Qualifyr pour transformer un savoir-faire en un parcours que vos prospects comprennent et suivent.',
     priority: 0.9,
   },
   '/realisations': {
-    title: 'Sites pour nettoyage automobile et conciergeries — Qualifyr',
+    title: 'Réalisations — sites pour conciergeries et nettoyage auto',
     description:
-      'Découvrez les projets conçus par Qualifyr pour présenter plus clairement une activité de service et faciliter la prise de contact.',
+      'Les projets conçus par Qualifyr : structure de l’offre, identité et parcours de contact. Des exemples concrets de ce que change un site bien pensé.',
     priority: 0.8,
   },
   '/realisations/sw-car-cleaning': {
-    title: 'SW Carcleaning — Réalisation Qualifyr',
+    title: 'SW Car Cleaning, detailing à Fribourg — étude de cas Qualifyr',
     description:
-      'Le projet réalisé pour SW Carcleaning, lavage et detailing à domicile à Fribourg : identité, structure des formules et parcours de prise de contact.',
+      'Comment nous avons clarifié les formules, construit l’identité et simplifié la prise de contact d’un service de lavage et detailing à domicile à Fribourg.',
     priority: 0.7,
   },
   '/laboratoire': {
-    title: 'Laboratoire créatif — Qualifyr',
+    title: 'Laboratoire créatif — explorations design | Qualifyr',
     description:
-      'Explorez les études créatives de Qualifyr autour de la conciergerie, de l’identité visuelle et du mouvement, clairement distinguées des projets clients.',
+      'Trois études créatives autour de la conciergerie, de l’identité visuelle et du mouvement. Des concepts de démonstration, distingués des projets clients.',
     priority: 0.5,
   },
   '/a-propos': {
-    title: 'Agence spécialisée nettoyage auto et conciergeries — Qualifyr',
+    title: 'À propos — l’agence des conciergeries et du detailing | Qualifyr',
     description:
-      'Une agence dédiée à deux verticales : le nettoyage automobile mobile et les conciergeries. Notre façon de travailler, et ce que nous refusons de faire.',
+      'Deux verticales, une méthode, et ce que nous refusons de faire. Pourquoi Qualifyr ne travaille qu’avec les entreprises de services.',
     priority: 0.6,
   },
   '/diagnostic': {
-    title: 'Diagnostic de votre projet | Qualifyr',
+    title: 'Diagnostic gratuit de votre présence en ligne — Qualifyr',
     description:
-      'Présentez votre activité, vos priorités et votre projet afin de préparer un échange plus concret avec Qualifyr.',
+      'Décrivez votre activité et vos priorités. Nous identifions ce qui freine vos demandes entrantes, et ce qu’il faut corriger en premier.',
     priority: 0.9,
   },
   '/estimation': {
-    title: 'Estimation de projet | Qualifyr',
+    title: 'Estimation de votre projet de site — Qualifyr',
     description:
-      'Obtenez une première orientation et une estimation indicative avant un échange avec Qualifyr.',
+      'Obtenez une orientation claire et une fourchette de budget indicative en quelques minutes, avant même le premier échange.',
     priority: 0.8,
   },
   '/contact': {
@@ -116,9 +123,9 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
     priority: 0.5,
   },
   '/blog': {
-    title: 'Le journal — Conseils pour entreprises de services | Qualifyr',
+    title: 'Le journal — conseils pour conciergeries et detailers | Qualifyr',
     description:
-      'Des articles concrets pour clarifier une offre, construire une identité, concevoir un site utile et simplifier la prise de contact.',
+      'Trouver des propriétaires, remplir son agenda, clarifier son offre : des articles concrets pour développer une activité de service.',
     priority: 0.7,
   },
   '/mentions-legales': {
