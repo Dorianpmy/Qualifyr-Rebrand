@@ -57,6 +57,42 @@ export type VerticalServiceContent = {
     readonly lead: string;
     readonly steps: readonly EditorialItem[];
   };
+  /**
+   * Ce que ça change — conséquences commerciales, jamais livrables.
+   *
+   * `response` décrit ce que Qualifyr construit ; cette section décrit ce que
+   * le client cesse de subir. Règle de rédaction : si la phrase pourrait
+   * figurer sur une facture, elle n'a rien à faire ici.
+   *
+   * Optionnel le temps que les deux verticales soient traitées.
+   */
+  readonly outcomes?: {
+    readonly eyebrow: string;
+    readonly title: string;
+    readonly lead: string;
+    readonly items: readonly EditorialItem[];
+  };
+  /**
+   * Pourquoi nous — l'argument de spécialiste.
+   *
+   * Le hero de l'accueil engage publiquement sur deux métiers seulement
+   * (`docs/11-refonte-copywriting.md`, §2.1). Cette section est l'endroit où
+   * cette promesse se démontre, faute de quoi elle reste une affirmation.
+   *
+   * Contrainte `AGENTS.md` §6 : la crédibilité vient de la connaissance du
+   * métier et de ce qui est vérifiable — jamais d'un chiffre de résultat,
+   * d'un volume de clients ou d'un témoignage. Ne rien y ajouter qui ne
+   * puisse être vérifié par le lecteur lui-même.
+   */
+  readonly whyUs?: {
+    readonly eyebrow: string;
+    readonly title: string;
+    readonly lead: string;
+    readonly items: readonly {
+      readonly title: string;
+      readonly body: string;
+    }[];
+  };
   readonly proof: VerticalProof;
   readonly faq: readonly FaqItem[];
   readonly cta: {
@@ -134,6 +170,53 @@ export const automotiveVertical: VerticalServiceContent = {
       { number: '02', title: 'Choisir', body: 'Comparer les formules selon son véhicule.' },
       { number: '03', title: 'Préciser', body: 'Indiquer le véhicule, l’état et le lieu.' },
       { number: '04', title: 'Réserver', body: 'Proposer un créneau avec tout ce qu’il vous faut.' },
+    ],
+  },
+  outcomes: {
+    eyebrow: 'Ce que ça change',
+    title: 'Trois choses cessent, le jour où le site est juste.',
+    lead:
+      'Ce ne sont pas des fonctionnalités. Ce sont les situations que vous ne vivez plus une fois que le parcours fait son travail.',
+    items: [
+      {
+        number: '01',
+        title: 'Vous récupérez vos soirées',
+        body: 'Les tarifs, les durées, les disponibilités et la zone d’intervention répondent pendant que vous travaillez. Les messages qui restent sont ceux qui méritent une réponse — pas les vingt qui demandent un prix déjà affiché.',
+      },
+      {
+        number: '02',
+        title: 'Vous cessez d’être comparé à un lavage à 15 €',
+        body: 'Tant que rien ne montre l’écart entre passer un rouleau et corriger une peinture, votre prix paraît élevé sans raison. Quand le niveau de soin se voit avant le tarif, le tarif cesse d’être le sujet.',
+      },
+      {
+        number: '03',
+        title: 'Vous ne vous déplacez plus pour rien',
+        body: 'Véhicule, état réel, lieu d’intervention, accès à l’eau et à l’électricité : la demande arrive avec ce qu’il faut pour savoir si le créneau est tenable. Les mauvaises surprises se règlent avant le trajet, pas devant le portail.',
+      },
+    ],
+  },
+  whyUs: {
+    eyebrow: 'Pourquoi nous',
+    title: 'Nous connaissons vos objections mieux que votre prochaine agence.',
+    lead:
+      'Nous ne faisons des sites que pour deux métiers. Voici ce que cette restriction vous fait gagner concrètement.',
+    items: [
+      {
+        title: 'Nous n’écrirons pas « lavage » sur votre site',
+        body: 'Une agence généraliste range le detailing dans « nettoyage de voiture », confond une correction de peinture avec un polissage et vend une protection céramique comme une cire. Vos clients avertis le voient en une phrase — et ce sont eux qui paient le plus cher.',
+      },
+      {
+        title: 'Nous savons ce qu’il demande avant de réserver',
+        body: 'Combien de temps ça prend. Si les rayures partent vraiment. Ce qui se passe si le véhicule est plus sale que prévu. Où vous vous installez, et ce dont vous avez besoin sur place. Ces réponses ne sont pas des détails à caser en bas de page : ce sont elles qui débloquent la réservation.',
+      },
+      {
+        title: 'Vous pouvez vérifier notre travail en ligne',
+        body: 'SW Carcleaning est en ligne, publique, ouvrable maintenant. Nous préférons un site que vous pouvez juger vous-même à une liste de logos et de chiffres que personne ne vérifie jamais.',
+      },
+      {
+        title: 'Vous restez propriétaire de tout',
+        body: 'Le nom de domaine, les contenus, les accès, les photographies de vos véhicules. Aucun abonnement construit pour vous retenir, aucune dépendance installée exprès. Si vous partez, vous partez avec le site.',
+      },
     ],
   },
   proof: {
@@ -253,6 +336,53 @@ export const conciergeVertical: VerticalServiceContent = {
       { number: '02', title: 'Estimer', body: 'Découvrir le revenu possible pour son bien.' },
       { number: '03', title: 'Préciser', body: 'Partager le logement, la ville et ses attentes.' },
       { number: '04', title: 'Échanger', body: 'Ouvrir une conversation déjà cadrée.' },
+    ],
+  },
+  outcomes: {
+    eyebrow: 'Ce que ça change',
+    title: 'Trois choses cessent, le jour où le site est juste.',
+    lead:
+      'Ce ne sont pas des fonctionnalités. Ce sont les situations que vous ne vivez plus une fois que le parcours fait son travail.',
+    items: [
+      {
+        number: '01',
+        title: 'Vous arrêtez de rattraper au téléphone',
+        body: 'Zone couverte, commission, ce que vous prenez en charge, ce qui reste au propriétaire : tout ce que vous répétez dix fois par semaine est écrit et lu avant qu’on vous appelle. L’échange commence là où il s’arrêtait avant.',
+      },
+      {
+        number: '02',
+        title: 'Vous cessez d’être choisi au pourcentage',
+        body: 'Quand rien ne distingue deux conciergeries, le propriétaire tranche sur la commission — et vous perdez face à moins cher que vous. Une offre lisible déplace la comparaison sur le revenu qu’il touchera vraiment, pas sur ce que vous prélevez.',
+      },
+      {
+        number: '03',
+        title: 'Vous ne perdez plus les propriétaires qui hésitent',
+        body: 'Confier un bien de plusieurs centaines de milliers d’euros ne se décide pas en une visite. Le parcours laisse une trace utile — une estimation, un document, une raison de revenir — au lieu de compter sur un souvenir.',
+      },
+    ],
+  },
+  whyUs: {
+    eyebrow: 'Pourquoi nous',
+    title: 'Nous connaissons vos objections mieux que votre prochaine agence.',
+    lead:
+      'Nous ne faisons des sites que pour deux métiers. Voici ce que cette restriction vous fait gagner concrètement.',
+    items: [
+      {
+        title: 'Nous n’apprenons pas votre métier sur votre budget',
+        body: 'Une agence généraliste passe la première moitié du projet à comprendre pourquoi un propriétaire ne signe pas comme un client ordinaire : il ne compare pas un service, il évalue un risque sur son patrimoine. Nous démarrons après cette étape.',
+      },
+      {
+        title: 'Nous savons ce qu’il demande avant de dire oui',
+        body: 'Combien ça rapporte. Qui détient les clés. Ce qui se passe en cas de dégât. Comment les voyageurs sont sélectionnés. À quoi il s’engage, et pour combien de temps. Ces réponses ne sont pas des mentions à caser en bas de page : ce sont elles qui déclenchent le mandat.',
+      },
+      {
+        title: 'Nous avons construit l’outil, pas seulement le site',
+        body: 'Le simulateur de revenus que nous intégrons, nous l’éditons aussi comme produit pour les conciergeries. Vous pouvez l’essayer sans nous demander la permission. Peu d’agences peuvent montrer un outil de votre métier qui tourne en production.',
+      },
+      {
+        title: 'Vous restez propriétaire de tout',
+        body: 'Le nom de domaine, les contenus, les accès, les photographies. Aucun abonnement construit pour vous retenir, aucune dépendance installée exprès. Si vous partez, vous partez avec le site.',
+      },
     ],
   },
   proof: {

@@ -187,6 +187,66 @@
   font-size: var(--text-sm);
 }
 
+/* --- Preuve d'édition logicielle ------------------------------------------- */
+
+/* La copie passe au-dessus et l'aperçu occupe toute la largeur : un produit
+   qu'on veut faire juger doit être vu, pas illustré dans une colonne. */
+.software {
+  display: grid;
+  gap: var(--space-7);
+}
+
+.softwareCopy {
+  display: grid;
+  gap: var(--space-4);
+  max-inline-size: 62ch;
+}
+
+.softwareCopy h2 {
+  max-inline-size: 22ch;
+  color: var(--text-inverse);
+  font-size: var(--text-3xl) !important;
+  line-height: var(--leading-snug) !important;
+}
+
+.softwareCopy p {
+  color: var(--text-inverse-secondary);
+  font-size: var(--text-lg);
+}
+
+/* Trois faits, filets seuls : la grille encadrée ferait « carte SaaS », que la
+   direction artistique proscrit. Le filet suffit à structurer. */
+.softwareFacts {
+  display: grid;
+  gap: var(--space-4);
+  margin-block-start: var(--space-2);
+  padding-block-start: var(--space-5);
+  border-block-start: var(--border-width) solid var(--rule-inverse);
+}
+
+@media (min-width: 48rem) {
+  .softwareFacts {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+}
+
+.softwareFacts strong {
+  display: block;
+  margin-block-end: var(--space-2);
+  color: var(--color-brass);
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.softwareFacts span {
+  color: var(--text-inverse-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
 /* --- Tarif ---------------------------------------------------------------- */
 
 /* Le tarif tient dans une carte : séparés par toute la largeur de page, le
@@ -306,6 +366,12 @@
 .cta:hover {
   background: transparent;
   color: var(--color-brass);
+}
+
+.pricingNote {
+  color: var(--text-inverse-secondary);
+  font-size: var(--text-3xs);
+  line-height: var(--leading-normal);
 }
 
 .secondary {

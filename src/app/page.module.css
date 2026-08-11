@@ -66,6 +66,31 @@
   color: var(--color-sand) !important;
 }
 
+/**
+ * Signature d'autorité du hero.
+ *
+ * Elle remplace une section produit entière : le poids typographique doit donc
+ * rester délibérément faible — c'est une mention, pas une troisième offre. Le
+ * lien souligné est le seul élément qui appelle le clic ; la phrase qui le
+ * porte se lit comme une note de bas de page.
+ */
+.heroSignature {
+  max-inline-size: 54ch;
+  color: var(--color-sand);
+  font-size: var(--text-xs);
+  line-height: var(--leading-normal);
+}
+
+.heroSignature a {
+  color: inherit;
+  text-decoration-color: var(--color-brass);
+  text-underline-offset: 0.25em;
+}
+
+.heroSignature a:hover {
+  color: var(--color-brass);
+}
+
 .transformationIntro,
 .sectionIntro,
 .finalCta {

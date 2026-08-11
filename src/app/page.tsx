@@ -3,14 +3,13 @@ import Link from 'next/link';
 import { BookingButton } from '@/components/agency/BookingButton';
 import { DiagnosticLink } from '@/components/agency/DiagnosticLink';
 import { InteractiveSitePreview } from '@/components/editorial/InteractiveSitePreview';
-import { MethodStep } from '@/components/editorial/MethodStep';
 import { SectionHeading } from '@/components/editorial/SectionHeading';
 import { Container } from '@/components/layout/Container';
 import { Section } from '@/components/layout/Section';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { ButtonLink } from '@/components/ui/Button';
 import { Eyebrow } from '@/components/ui/Eyebrow';
-import { hero, method, serviceCompanies, transformations } from '@/content/home';
+import { hero, serviceCompanies } from '@/content/home';
 import { swCarCleaning } from '@/content/sw-car-cleaning';
 import { buildMetadata } from '@/lib/metadata';
 import { webPage } from '@/lib/structured-data';
@@ -48,87 +47,65 @@ export default function HomePage() {
               <Eyebrow inverse>{hero.eyebrow}</Eyebrow>
               <h1 className={styles.heroTitle}>{hero.title}</h1>
               <p className={styles.heroBody}>{hero.body}</p>
+              {/* Carrefour : les deux actions du hero sont les deux entonnoirs
+                  métier, pas des verbes génériques. « Réserver un échange » et
+                  « Faire le diagnostic » n'orientaient personne — ils
+                  demandaient au visiteur de s'engager avant de savoir si le
+                  site le concernait. Les deux conversions restent disponibles
+                  en clôture de page et sur chaque page métier. */}
               <div className={styles.heroActions}>
-                <BookingButton ctaId="hero_booking" variant="inverse" withArrow>
-                  Réserver un échange
-                </BookingButton>
-                <DiagnosticLink ctaId="hero_diagnostic" variant="inverseSecondary">
-                  Faire le diagnostic
-                </DiagnosticLink>
+                <ButtonLink
+                  href="/conciergerie"
+                  ctaId="hero_concierge"
+                  variant="inverse"
+                  withArrow
+                >
+                  Je gère une conciergerie
+                </ButtonLink>
+                <ButtonLink
+                  href="/nettoyage-automobile"
+                  ctaId="hero_cleaning"
+                  variant="inverseSecondary"
+                  withArrow
+                >
+                  Je fais du nettoyage automobile
+                </ButtonLink>
               </div>
-              <ButtonLink href="#sw-car-cleaning" variant="text" className={styles.heroTextLink}>
-                Découvrir notre réalisation
-              </ButtonLink>
+              {/* Autorité technique en une ligne. Le bloc produit occupait une
+                  section entière au milieu du carrefour et concurrençait les
+                  deux portes ; réduit à une phrase, il pose l'argument — nous
+                  éditons un logiciel de votre métier — sans ouvrir un troisième
+                  parcours. La démonstration se fait sur la page dédiée. */}
+              <p className={styles.heroSignature}>
+                Nous éditons aussi notre propre outil d’acquisition pour conciergeries.{' '}
+                <Link href="/outil-conciergerie" data-cta-id="hero_tool">
+                  En ligne, essayable sans nous demander la permission
+                </Link>
+                .
+              </p>
             </div>
           </Container>
         </div>
       </Section>
 
-      <Section id="expertise" spacing="tight" ruled>
-        <Container>
-          <div className={styles.transformationIntro}>
-            {/* Numérotation de l'arc : le visiteur doit toujours savoir où il
-                en est dans le raisonnement. 01 le constat, 02 la preuve,
-                03 pour qui, 04 le produit, 05 la méthode, 06 le prix. */}
-            <SectionHeading
-              eyebrow="01 — Ce que nous transformons"
-              title="Votre activité mérite plus qu’un site correct."
-            />
-            <p>
-              Elle mérite une présentation à la hauteur de votre savoir-faire et un parcours
-              qui donne envie de vous choisir.
-            </p>
-          </div>
-          <ol className={styles.transformations}>
-            {transformations.map((item) => (
-              <li key={item.number} className={styles.transformation}>
-                <span>{item.number}</span>
-                <h3>{item.title}</h3>
-                <p>{item.body}</p>
-              </li>
-            ))}
-          </ol>
-        </Container>
-      </Section>
+      {/* Numérotation de l'arc : le visiteur doit toujours savoir où il en est
+          dans le raisonnement. 01 le tri, 02 la preuve, 03 le prix, 04 l'appel
+          à l'action.
 
-      <Section id="sw-car-cleaning" surface="inverse" spacing="tight">
-        <Container>
-          <div className={styles.caseGrid}>
-            <div className={styles.caseContent}>
-              <Eyebrow inverse>02 — Réalisation sélectionnée</Eyebrow>
-              <h2>SW Car Cleaning</h2>
-              <p className={styles.caseLead}>
-                Une identité et une expérience digitale conçues pour rendre l’offre plus
-                claire, renforcer la crédibilité et simplifier la prise de contact.
-              </p>
-              <ul className={styles.factList} aria-label="Éléments réalisés">
-                <li>Clarification des prestations</li>
-                <li>Identité cohérente</li>
-                <li>Expérience mobile optimisée</li>
-              </ul>
-              <ButtonLink href="/realisations/sw-car-cleaning" ctaId="home_sw_case" variant="inverse" withArrow>
-                Découvrir la réalisation
-              </ButtonLink>
-            </div>
-            {swCarCleaning.externalUrl ? (
-              <InteractiveSitePreview
-                url={swCarCleaning.externalUrl}
-                title="Site SW Carcleaning interactif"
-                domain="swcarcleaning.ch"
-                caption="Site réel · Fribourg"
-              />
-            ) : null}
-          </div>
-        </Container>
-      </Section>
-
+          L'accueil est un carrefour, pas une page de vente : les pages métier
+          portent désormais tout le travail de persuasion (problème, réponse,
+          conséquences, pourquoi nous). Deux sections ont été retirées le
+          11/08/2026 parce qu'elles répétaient ce travail en moins précis —
+          « Ce que nous transformons », abstrait et sans métier, et « Notre
+          méthode », doublon littéral de `verticalMethod` rendu sur les deux
+          pages métier et sur `/methode`. */}
       <Section id="pour-qui" surface="sunken" ruled spacing="tight">
         <Container>
           <div className={styles.sectionIntro}>
             <SectionHeading
-              eyebrow="03 — Entreprises de services"
-              title="Conçu pour les entreprises où la confiance précède la prise de contact."
-              lead="Qualifyr accompagne les entreprises de services dont le savoir-faire doit être compris et crédible avant le premier échange."
+              eyebrow="01 — Les deux métiers"
+              title="Deux métiers, deux façons de perdre un client."
+              lead="Dans les deux cas, le client décide avant de vous parler. Ce qu’il cherche à ce moment-là n’est pas le même — et c’est là que tout se joue."
             />
           </div>
           <ol className={styles.companyList}>
@@ -143,7 +120,7 @@ export default function HomePage() {
                   <span className={styles.companyCopy}>
                     <span className={styles.companyTitle}>{company.title}</span>
                     <span className={styles.companyBody}>{company.body}</span>
-                    <span className={styles.companyBody}>Découvrir notre approche</span>
+                    <span className={styles.companyBody}>Voir notre approche</span>
                   </span>
                   <span className={styles.companyArrow} aria-hidden="true">↗</span>
                 </Link>
@@ -156,78 +133,34 @@ export default function HomePage() {
         </Container>
       </Section>
 
-      {/* Le produit est présenté juste après les deux verticales : le visiteur
-          vient de comprendre ce que nous faisons sur mesure, c'est le bon
-          moment pour lui proposer la formule légère. */}
-      <Section id="outil" surface="inverse" spacing="tight">
+      <Section id="sw-car-cleaning" surface="inverse" spacing="tight">
         <Container>
-          <div className={styles.product}>
-            <div className={styles.productCopy}>
-              <Eyebrow inverse>04 — Produit · Conciergeries</Eyebrow>
-              <h2>Le propriétaire veut un chiffre avant de vous appeler.</h2>
-              <p>
-                Tant qu’il ne l’a pas, il ne vous contacte pas — et vous ne saurez jamais qu’il a
-                hésité. Notre outil lui donne ce chiffre, récupère ses coordonnées et vous transmet
-                la demande avec le logement décrit et l’estimation déjà calculée.
+          <div className={styles.caseGrid}>
+            <div className={styles.caseContent}>
+              <Eyebrow inverse>02 — Réalisation réelle</Eyebrow>
+              <h2>SW Car Cleaning</h2>
+              <p className={styles.caseLead}>
+                Une identité et une expérience digitale conçues pour rendre l’offre plus
+                claire, renforcer la crédibilité et simplifier la prise de contact.
               </p>
-              <ol className={styles.productSteps}>
-                <li>
-                  <strong>Il estime</strong>
-                  <span>Quatre choix, une fourchette de revenus annuels.</span>
-                </li>
-                <li>
-                  <strong>Vous recevez</strong>
-                  <span>Ville, bien, contact et estimation, dans votre tableau de bord.</span>
-                </li>
-                <li>
-                  <strong>Vous rappelez</strong>
-                  <span>Un propriétaire déjà convaincu par le montant qu’il a vu.</span>
-                </li>
-              </ol>
-              <ButtonLink href="/outil-conciergerie" ctaId="home_tool" variant="inverse" withArrow>
-                Découvrir l’outil
+              <ul className={styles.factList} aria-label="Éléments réalisés">
+                <li>Clarification des prestations</li>
+                <li>Identité cohérente</li>
+                <li>Expérience mobile optimisée</li>
+              </ul>
+              <ButtonLink href="/realisations/sw-car-cleaning" ctaId="home_sw_case" variant="inverse" withArrow>
+                Voir comment nous l’avons construit
               </ButtonLink>
             </div>
-
-            <aside className={styles.productCard}>
-              <p className={styles.productPrice}>
-                79 € <span>par mois</span>
-              </p>
-              <p className={styles.productArgument}>
-                Un mandat signé rapporte plusieurs milliers d’euros par an. Le premier propriétaire
-                converti rembourse l’année.
-              </p>
-              <ul className={styles.productFacts}>
-                <li>En ligne en dix minutes</li>
-                <li>Vos secteurs, vos barèmes</li>
-                <li>Essai gratuit, sans engagement</li>
-              </ul>
-              <Link
-                className={styles.productLink}
-                href="/simulateur-revenus-locatifs"
-                data-cta-id="home_simulator"
-              >
-                Voir une estimation en direct ↗
-              </Link>
-            </aside>
+            {swCarCleaning.externalUrl ? (
+              <InteractiveSitePreview
+                url={swCarCleaning.externalUrl}
+                title="Site SW Carcleaning interactif"
+                domain="swcarcleaning.ch"
+                caption="Site réel · Fribourg"
+              />
+            ) : null}
           </div>
-        </Container>
-      </Section>
-
-      <Section id="methode" spacing="tight" ruled>
-        <Container>
-          <SectionHeading
-            eyebrow="05 — Notre méthode"
-            title="Quatre étapes. Une direction claire."
-            lead="Nous avançons sans ajouter de complexité inutile à votre quotidien."
-          />
-          <ol className={styles.methodGrid}>
-            {method.map((step) => (
-              <MethodStep key={step.number} number={step.number} title={step.title}>
-                {step.body}
-              </MethodStep>
-            ))}
-          </ol>
         </Container>
       </Section>
 
@@ -238,7 +171,7 @@ export default function HomePage() {
         <Container>
           <div className={styles.pricing}>
             <div>
-              <Eyebrow>06 — Tarifs</Eyebrow>
+              <Eyebrow>03 — Tarifs</Eyebrow>
               <h2>Ce que ça coûte, sans devoir demander.</h2>
               <p>
                 Un outil à 79 € par mois, un site vitrine à partir de 990 €, un site avec parcours
@@ -259,26 +192,25 @@ export default function HomePage() {
         <Container>
           <div className={styles.finalCta}>
             <div>
-              <Eyebrow>07 — Votre prochaine étape</Eyebrow>
+              <Eyebrow>04 — Votre prochaine étape</Eyebrow>
               <h2>Votre activité est déjà solide. Sa présentation doit l’être aussi.</h2>
               <p>
                 Parlez-nous de votre entreprise et découvrons comment mieux traduire votre
                 savoir-faire en une expérience que vos prospects comprennent et choisissent.
               </p>
             </div>
-            {/* Le diagnostic passe en action principale : c'est le seul
-                parcours qui répond à la question que tout le monde se pose —
-                ce que ça coûte, et ce qu'il faut faire en premier. */}
+            {/* Deux actions, plus trois. Le diagnostic reste principal : c'est
+                le seul parcours qui répond à la question que tout le monde se
+                pose — ce que ça coûte, et ce qu'il faut faire en premier.
+                L'estimation de budget faisait doublon avec lui et diluait le
+                choix ; elle reste accessible depuis la page Tarifs. */}
             <div className={styles.finalActions}>
               <DiagnosticLink ctaId="final_diagnostic" variant="primary">
-                Faire le diagnostic
+                Voir ce qui bloque mes demandes
               </DiagnosticLink>
               <BookingButton ctaId="final_booking" variant="secondary">
                 Réserver un échange
               </BookingButton>
-              <ButtonLink href="/estimation" ctaId="estimation_start" variant="text">
-                Obtenir une estimation de budget
-              </ButtonLink>
             </div>
           </div>
         </Container>

@@ -70,6 +70,20 @@
   --family-display: var(--font-display), Georgia, 'Times New Roman', serif;
   --family-text: var(--font-body), system-ui, -apple-system, 'Segoe UI', sans-serif;
 
+  /**
+   * Chasse fixe — **données produites par une machine, jamais de la prose.**
+   *
+   * Adresses déployées, identifiants, durées, états techniques. Un seul signal,
+   * appliqué avec parcimonie, suffit à dire « ceci vient d'un logiciel » sans
+   * emprunter l'esthétique d'un template SaaS, que la direction artistique
+   * proscrit (`AGENTS.md` §7).
+   *
+   * Aucune police n'est chargée : la pile système évite une requête réseau pour
+   * quelques mots, et ces polices sont précisément celles que le lecteur
+   * associe déjà à du code.
+   */
+  --family-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
   /* Échelle fluide, base 16px, mobile 360px → desktop 1280px */
   --text-3xs: 0.75rem;
   --text-2xs: 0.8125rem;

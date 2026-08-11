@@ -31,15 +31,28 @@ export const routeLabels: Readonly<Record<string, string>> = {
 /**
  * Menu principal — six entrées, jamais sept.
  *
- * L'outil prend la place de « Contact » : le bouton WhatsApp de l'en-tête et la
- * colonne du pied de page couvrent déjà la prise de contact, alors que le
- * produit n'avait aucune entrée. Il est placé avant les tarifs, parce qu'on
- * regarde un prix après avoir compris ce qu'on achète.
+ * **On segmente par métier, pas par produit** (arbitrage du 11/08/2026, cf.
+ * `docs/11-refonte-copywriting.md`, §1.2). Les deux premières entrées sont des
+ * portes : le visiteur se reconnaît avant d'avoir à comprendre ce que Qualifyr
+ * vend. Un menu qui liste des produits impose l'ordre inverse — savoir ce qu'on
+ * veut acheter avant de savoir si on est au bon endroit.
+ *
+ * Trois décisions à ne pas défaire sans raison :
+ *
+ * - `Expertise` et `Réalisation` pointaient vers des ancres de l'accueil. Un
+ *   lien de menu qui fait défiler la page où l'on se trouve déjà donne
+ *   l'impression d'une navigation cassée. `Réalisations` devient la vraie page.
+ * - `Outil` sort du menu. Le libellé ne disait ni pour qui, ni pourquoi, et sa
+ *   cible passe forcément par `/conciergerie`, qui l'y mène. Le produit reste
+ *   atteignable depuis cette page, l'accueil (section 04), les pages de ville,
+ *   le simulateur, la table des tarifs et le pied de page : le retirer d'ici
+ *   ne l'orpheline pas.
+ * - Le nettoyage automobile ne voit jamais un produit qui ne le concerne pas.
  */
 export const primaryNav: readonly NavItem[] = [
-  { label: 'Expertise', href: '/#expertise' },
-  { label: 'Réalisation', href: '/#sw-car-cleaning' },
-  { label: 'Outil', href: '/outil-conciergerie' },
+  { label: 'Conciergeries', href: '/conciergerie' },
+  { label: 'Nettoyage automobile', href: '/nettoyage-automobile' },
+  { label: 'Réalisations', href: '/realisations' },
   { label: 'Tarifs', href: '/tarifs' },
   { label: 'Journal', href: '/blog' },
   { label: 'À propos', href: '/a-propos' },

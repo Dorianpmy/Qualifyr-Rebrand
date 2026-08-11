@@ -1,10 +1,24 @@
 import { objectives, swCarCleaning } from './sw-car-cleaning';
 
+/**
+ * Hero — pari de la spécialité (arbitrage du 11/08/2026, cf.
+ * `docs/11-refonte-copywriting.md`, §2.1 option B).
+ *
+ * La restriction **est** l'argument : dire non à trente métiers est la preuve
+ * la plus économique qu'on connaît les deux qu'on garde. Un titre de bénéfice
+ * générique — « faites de votre savoir-faire une évidence » — pouvait coiffer
+ * un cabinet de conseil ou un ébéniste ; il ne disqualifiait aucun concurrent
+ * généraliste et ne justifiait aucune prime de spécialiste.
+ *
+ * **Contrepartie assumée** : ce titre engage publiquement sur deux métiers. Le
+ * jour où l'offre élargie d'`AGENTS.md` §2 devient prioritaire, c'est le titre
+ * qu'il faut changer — pas l'ajuster. L'option de repli est documentée.
+ */
 export const hero = {
-  eyebrow: 'Agence digitale pour les entreprises de services',
-  title: 'Faites de votre savoir-faire une évidence.',
+  eyebrow: 'Agence digitale · Deux métiers, pas trente',
+  title: 'Nous ne faisons des sites que pour deux métiers.',
   body:
-    'Qualifyr clarifie votre offre, construit votre identité et conçoit le site qui aide vos prospects à vous comprendre, vous faire confiance et vous contacter.',
+    'Le nettoyage automobile et les conciergeries de location courte durée. Assez peu pour connaître vos objections client par cœur. Assez longtemps pour savoir ce qui déclenche une demande.',
 } as const;
 
 /** Conservé pour la composition éditoriale réutilisée par le design system. */

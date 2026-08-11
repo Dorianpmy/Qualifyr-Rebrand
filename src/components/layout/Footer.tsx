@@ -28,7 +28,21 @@ export function Footer() {
   const pathname = usePathname();
   const year = new Date().getFullYear();
   const channels = availableChannels();
-  const hasPageSpecificCta = pathname === '/nettoyage-automobile' || pathname === '/conciergerie';
+  /**
+   * Pages qui portent déjà leur propre clôture.
+   *
+   * Le bloc générique proposait « Estimer mon projet » sous une page qui vend
+   * un abonnement à 79 € sans accompagnement : il contredisait l'offre au lieu
+   * de la conclure. Une page qui a son appel à l'action n'en veut pas un
+   * second, contradictoire.
+   */
+  const hasPageSpecificCta =
+    pathname === '/nettoyage-automobile' ||
+    pathname === '/conciergerie' ||
+    pathname === '/outil-conciergerie' ||
+    pathname === '/tarifs' ||
+    pathname === '/simulateur-revenus-locatifs' ||
+    pathname.startsWith('/conciergerie/');
 
   if (pathname === '/diagnostic') return null;
 
@@ -37,21 +51,21 @@ export function Footer() {
       <Container>
         {pathname === '/' || hasPageSpecificCta ? null : <section className={styles.cta} data-surface="inverse" aria-labelledby="footer-cta-title">
           <div className={styles.ctaCopy}>
-            <p className={styles.ctaEyebrow}>Votre projet</p>
+            <p className={styles.ctaEyebrow}>Votre prochaine étape</p>
             <h2 id="footer-cta-title" className={styles.ctaTitle}>
-              Prêt à transformer votre projet digital ?
+              Savoir ce qui freine vos demandes.
             </h2>
             <p className={styles.ctaText}>
-              Créons un site internet ou une application pensée pour votre activité, vos
-              objectifs et votre croissance.
+              Le diagnostic prend trois minutes. Il identifie ce qui bloque aujourd’hui et ce qu’il
+              faut corriger en premier — avant même de parler de budget.
             </p>
           </div>
           <div className={styles.ctaActions}>
-            <ButtonLink href="/estimation" ctaId="estimation_start" variant="inverse" withArrow>
-              Estimer mon projet
-            </ButtonLink>
-            <ButtonLink href="/diagnostic" ctaId="final_diagnostic" variant="inverseSecondary">
+            <ButtonLink href="/diagnostic" ctaId="final_diagnostic" variant="inverse" withArrow>
               Faire le diagnostic
+            </ButtonLink>
+            <ButtonLink href="/tarifs" ctaId="footer_pricing" variant="inverseSecondary">
+              Voir les tarifs
             </ButtonLink>
           </div>
         </section>}
@@ -61,9 +75,13 @@ export function Footer() {
             <Link href="/" className={styles.logoLink} aria-label="Qualifyr — Accueil">
               <Logo />
             </Link>
+            {/* Le positionnement doit dire la même chose que la colonne des
+                services : deux verticales assumées. Une formulation
+                généraliste juste au-dessus les contredit et fait perdre la
+                prime de spécialiste. */}
             <p className={styles.positioning}>
-              Nous concevons des sites internet, applications web et solutions
-              digitales modernes pensées pour être utilisées, comprises et rentables.
+              Nous concevons les sites et les outils d’acquisition des entreprises de services —
+              nettoyage automobile et conciergeries de location courte durée.
             </p>
             {contact.social.length > 0 ? (
               <ul className={styles.socials} aria-label="Réseaux sociaux">

@@ -94,6 +94,32 @@ export function VerticalServicePage({ content }: VerticalServicePageProps) {
         </Container>
       </Section>
 
+      {/* Ce que ça change — placé juste après `response` : le lecteur vient
+          d'apprendre ce qu'on construit, c'est le moment exact où il se
+          demande « et alors ? ». */}
+      {content.outcomes ? (
+        <Section surface="sunken" spacing="tight" ruled ariaLabelledBy="consequences-title">
+          <Container>
+            <SectionHeading
+              id="consequences-title"
+              eyebrow={content.outcomes.eyebrow}
+              title={content.outcomes.title}
+              lead={content.outcomes.lead}
+              split
+            />
+            <ol className={`${styles.editorialGrid} ${styles.responseGrid}`}>
+              {content.outcomes.items.map((item) => (
+                <li key={item.number}>
+                  <span>{item.number}</span>
+                  <h3>{item.title}</h3>
+                  <p>{item.body}</p>
+                </li>
+              ))}
+            </ol>
+          </Container>
+        </Section>
+      ) : null}
+
       <Section surface="raised" spacing="tight" ruled ariaLabelledBy="parcours-title">
         <Container>
           <div className={styles.journeyLayout}>
@@ -191,6 +217,35 @@ export function VerticalServicePage({ content }: VerticalServicePageProps) {
           </ol>
         </Container>
       </Section>
+
+      {/* Pourquoi nous — dernier argument avant les objections (FAQ) et
+          l'appel à l'action. Le lecteur a vu le problème, la réponse, le
+          parcours, la preuve et la méthode : il ne lui reste qu'à choisir
+          entre nous et une autre agence. C'est ici que ça se joue.
+
+          Liste non numérotée : ce sont des arguments, pas des étapes. La
+          numérotation impliquerait un ordre qui n'existe pas. */}
+      {content.whyUs ? (
+        <Section surface="sunken" spacing="tight" ruled ariaLabelledBy="pourquoi-title">
+          <Container>
+            <SectionHeading
+              id="pourquoi-title"
+              eyebrow={content.whyUs.eyebrow}
+              title={content.whyUs.title}
+              lead={content.whyUs.lead}
+              split
+            />
+            <ul className={styles.methodGrid}>
+              {content.whyUs.items.map((item) => (
+                <li key={item.title}>
+                  <h3>{item.title}</h3>
+                  <p>{item.body}</p>
+                </li>
+              ))}
+            </ul>
+          </Container>
+        </Section>
+      ) : null}
 
       <Section surface="raised" spacing="tight" ruled ariaLabelledBy="faq-title">
         <Container>

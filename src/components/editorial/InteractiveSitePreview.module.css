@@ -31,6 +31,14 @@
   background: var(--surface-raised);
 }
 
+/**
+ * Barre d'état de l'aperçu.
+ *
+ * Chasse fixe et casse conservée : ce n'est pas un titre mais une métadonnée
+ * technique — une adresse réellement déployée. C'est le seul endroit du site
+ * où le registre « logiciel » est justifié, parce que l'information *est*
+ * machine. Le reste de la page garde sa voix éditoriale.
+ */
 .preview figcaption {
   display: flex;
   gap: var(--space-3);
@@ -39,9 +47,37 @@
   padding: var(--space-3);
   border-block-start: 1px solid var(--rule-inverse);
   color: var(--color-stone);
+  font-family: var(--family-mono);
   font-size: var(--text-3xs);
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
+  letter-spacing: var(--tracking-tight);
+}
+
+/* Micro-état : le point signale « en ligne maintenant ». Il pulse une fois par
+   cycle lent — un logiciel qui tourne se remarque, il ne clignote pas. */
+.preview figcaption > span:first-child {
+  display: inline-flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.preview figcaption > span:first-child::before {
+  content: '';
+  inline-size: 0.4rem;
+  block-size: 0.4rem;
+  border-radius: 50%;
+  background: var(--color-brass);
+  animation: statusPulse 2.4s var(--ease-out) infinite;
+}
+
+@keyframes statusPulse {
+  0%, 70%, 100% { opacity: 1; }
+  85% { opacity: 0.25; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preview figcaption > span:first-child::before {
+    animation: none;
+  }
 }
 
 .preview figcaption a {

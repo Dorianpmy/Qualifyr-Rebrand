@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { InteractiveSitePreview } from '@/components/editorial/InteractiveSitePreview';
 import { Container } from '@/components/layout/Container';
 import { Section } from '@/components/layout/Section';
 import { JsonLd } from '@/components/seo/JsonLd';
@@ -10,7 +11,15 @@ import styles from './page.module.css';
 
 export const metadata: Metadata = buildMetadata('/outil-conciergerie');
 
-/** Adresse publique du produit, hébergé séparément du site d'agence. */
+/**
+ * Adresse publique du produit, hébergé séparément du site d'agence.
+ *
+ * Le SaaS est en ligne depuis le 11/08/2026 (domaine vérifié, parcours
+ * lead → tableau de bord → notification testé de bout en bout). La liste
+ * d'attente WhatsApp qui tenait lieu d'inscription est donc retirée : faire
+ * patienter un prospect devant un produit disponible coûte exactement ce que
+ * le lien mort coûtait avant, sans la raison qui le justifiait.
+ */
 const appUrl = 'https://app.qualifyragence.com';
 
 export default function ConciergeToolPage() {
@@ -133,6 +142,50 @@ export default function ConciergeToolPage() {
         </Container>
       </Section>
 
+      {/* Preuve d'édition logicielle.
+          `AGENTS.md` §6 interdit les faux écrans d'application et §7 interdit
+          d'emprunter l'esthétique d'un template SaaS. La seule preuve
+          admissible est donc le produit lui-même, chargé en direct : il est
+          vérifiable, il ne ressemble à aucune bibliothèque de composants, et
+          il dit ce qu'aucun visuel décoratif ne peut dire — ce logiciel
+          existe, il tourne, ouvrez-le. */}
+      <Section surface="inverse" ruled>
+        <Container>
+          <div className={styles.software}>
+            <div className={styles.softwareCopy}>
+              <Eyebrow inverse>Le produit, en vrai</Eyebrow>
+              <h2>Ce n’est pas une maquette. C’est le produit, en ligne.</h2>
+              <p>
+                La plupart des agences vous montrent des visuels. Nous éditons ce logiciel :
+                il tourne en production, il envoie de vrais e-mails, et vous pouvez l’ouvrir
+                maintenant, dans un autre onglet, sans nous demander la permission.
+              </p>
+              <ul className={styles.softwareFacts}>
+                <li>
+                  <strong>Estimation</strong>
+                  <span>Quatre choix, une fourchette annuelle et la saisonnalité</span>
+                </li>
+                <li>
+                  <strong>Tableau de bord</strong>
+                  <span>Chaque demande avec sa ville, son bien et son estimation figée</span>
+                </li>
+                <li>
+                  <strong>Relances</strong>
+                  <span>Notification à chaque nouveau lead, relance automatique ensuite</span>
+                </li>
+              </ul>
+            </div>
+
+            <InteractiveSitePreview
+              url={appUrl}
+              title="Qualifyr Conciergerie — application en production"
+              domain="app.qualifyragence.com"
+              caption="Produit réel · en production"
+            />
+          </div>
+        </Container>
+      </Section>
+
       <Section surface="sunken" ruled>
         <Container>
           <div className={styles.pricing}>
@@ -144,14 +197,19 @@ export default function ConciergeToolPage() {
               </p>
 
               <ul className={styles.pricingList}>
-                <li>Essai gratuit, sans carte bancaire</li>
+                <li>Tarif de lancement, garanti à vie</li>
                 <li>Résiliable à tout moment</li>
                 <li>Toutes les fonctions incluses, sans palier</li>
               </ul>
 
               <a className={styles.cta} href={appUrl} rel="noopener">
-                Essayer gratuitement
+                Créer ma page maintenant
               </a>
+
+              <p className={styles.pricingNote}>
+                Sans carte bancaire. En ligne en dix minutes. Le tarif de lancement reste le vôtre
+                tant que vous êtes abonné.
+              </p>
 
               <Link className={styles.secondary} href="/simulateur-revenus-locatifs">
                 Voir le simulateur en démonstration
