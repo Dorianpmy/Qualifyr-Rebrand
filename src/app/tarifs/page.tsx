@@ -100,7 +100,7 @@ export default function PricingPage() {
             <div className={styles.finalActions}>
               <DiagnosticLink ctaId="pricing_diagnostic">Faire le diagnostic</DiagnosticLink>
               <BookingButton ctaId="pricing_booking" variant="secondary">
-                Réserver un échange
+                Réserver une analyse de parcours
               </BookingButton>
             </div>
           </div>

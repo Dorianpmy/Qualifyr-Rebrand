@@ -692,7 +692,7 @@ export function DiagnosticForm({ initialActivity }: { initialActivity?: Diagnost
               {whatsappUrl ? (
                 <ButtonAnchor href={whatsappUrl} target="_blank" withArrow ctaId="diagnostic_whatsapp_complete" analyticsEvent="diagnostic_whatsapp_opened" analyticsDestination="whatsapp">Continuer sur WhatsApp</ButtonAnchor>
               ) : null}
-              {agencyChannels.bookingUrl ? <BookingButton ctaId="diagnostic_booking_complete" variant="secondary">Réserver un échange</BookingButton> : null}
+              {agencyChannels.bookingUrl ? <BookingButton ctaId="diagnostic_booking_complete" variant="secondary">Réserver une analyse de parcours</BookingButton> : null}
               <ButtonLink href="/" variant="secondary">Retour à l’accueil</ButtonLink>
             </div>
             <p className={styles.legalLinks}>

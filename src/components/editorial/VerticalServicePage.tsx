@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { FAQAccordion } from '@/components/editorial/FAQAccordion';
+import { InteractiveSitePreview } from '@/components/editorial/InteractiveSitePreview';
 import { SectionHeading } from '@/components/editorial/SectionHeading';
 import { CallToAction } from '@/components/editorial/CallToAction';
 import { Container } from '@/components/layout/Container';
@@ -168,16 +169,29 @@ export function VerticalServicePage({ content }: VerticalServicePageProps) {
               </ButtonLink>
             </div>
             {content.proof.kind === 'real' ? (
-              <figure className={styles.realVisual}>
-                <Image
-                  src={content.proof.image.src}
-                  alt={content.proof.image.alt}
-                  width={content.proof.image.width}
-                  height={content.proof.image.height}
-                  sizes="(max-width: 61.99rem) calc(100vw - 2.5rem), 58vw"
+              /* Le site livré, chargé en direct plutôt qu'en capture : une
+                 image montre ce que nous avons choisi de montrer, le site
+                 laisse juger le reste. La capture reste le repli tant qu'une
+                 réalisation n'a pas d'adresse publique. */
+              content.proof.externalUrl ? (
+                <InteractiveSitePreview
+                  url={content.proof.externalUrl}
+                  title={`Site ${content.proof.title}, en ligne`}
+                  domain={content.proof.domain ?? content.proof.externalUrl}
+                  caption="Site livré · en ligne"
                 />
-                <figcaption>{content.proof.image.caption} Image réelle.</figcaption>
-              </figure>
+              ) : (
+                <figure className={styles.realVisual}>
+                  <Image
+                    src={content.proof.image.src}
+                    alt={content.proof.image.alt}
+                    width={content.proof.image.width}
+                    height={content.proof.image.height}
+                    sizes="(max-width: 61.99rem) calc(100vw - 2.5rem), 58vw"
+                  />
+                  <figcaption>{content.proof.image.caption} Image réelle.</figcaption>
+                </figure>
+              )
             ) : (
               <div className={styles.conceptVisual} aria-hidden="true">
                 <span className={styles.conceptLetter}>C</span>

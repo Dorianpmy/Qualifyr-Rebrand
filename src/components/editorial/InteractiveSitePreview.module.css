@@ -31,6 +31,22 @@
   background: var(--surface-raised);
 }
 
+/* Substitut affiché tant que le site distant n'est pas chargé. Volontairement
+   inerte : pas d'animation de squelette, qui promettrait un contenu imminent
+   alors que rien n'est encore demandé au réseau. */
+.placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  margin: 0;
+  background: var(--surface-raised);
+  color: var(--text-secondary);
+  font-family: var(--family-mono);
+  font-size: var(--text-3xs);
+  letter-spacing: var(--tracking-tight);
+}
+
 /**
  * Barre d'état de l'aperçu.
  *
@@ -94,6 +110,33 @@
   transform: translate(0.15rem, -0.15rem);
 }
 
+/**
+ * Écrans tactiles — la seule configuration réellement fluide.
+ *
+ * Un iframe interactif au milieu d'une page ne peut pas être les deux à la
+ * fois sur mobile : soit il capte le geste et piège le défilement de la page,
+ * soit il le laisse passer et ne défile pas lui-même. iOS tranche d'ailleurs
+ * seul, en refusant le défilement tactile dans un cadre distant.
+ *
+ * On choisit donc explicitement : sur pointeur grossier, le site reste
+ * **chargé en direct** — donc réel, et non une capture — mais ne capte aucun
+ * geste. Le doigt traverse le cadre et fait défiler la page. Pour manipuler
+ * le site, on l'ouvre en plein écran : c'est un tap, et l'expérience y est
+ * meilleure que dans une fenêtre de trois cents pixels.
+ *
+ * Sur pointeur fin, rien ne change : la souris navigue dans le cadre.
+ */
+@media (pointer: coarse) {
+  .viewport iframe {
+    pointer-events: none;
+  }
+
+  .preview figcaption a {
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-brass);
+  }
+}
+
 @media (max-width: 47.99rem) {
   .viewport,
   .compact .viewport {
@@ -103,6 +146,17 @@
   .preview figcaption {
     align-items: start;
     flex-direction: column;
+  }
+
+  /* Le cadre ne doit jamais dicter la largeur de la page : sans cette borne,
+     un site distant en largeur fixe déborde et provoque un défilement
+     horizontal sur toute la page. */
+  .preview {
+    max-inline-size: 100%;
+  }
+
+  .viewport {
+    overscroll-behavior: contain;
   }
 }
 

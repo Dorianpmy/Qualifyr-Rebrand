@@ -77,7 +77,7 @@ export default function BlogPage() {
             light
             secondaryAction={(
               <ButtonLink href="/contact" variant="secondary" withArrow>
-                Nous contacter
+                Demander mon audit de parcours
               </ButtonLink>
             )}
           >

@@ -149,7 +149,7 @@ export function Footer() {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      Prendre rendez-vous
+                      Réserver une analyse de parcours
                     </a>
                   </li>
                 ) : null}

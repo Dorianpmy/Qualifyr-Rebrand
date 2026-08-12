@@ -209,7 +209,7 @@ export default function HomePage() {
                 Voir ce qui bloque mes demandes
               </DiagnosticLink>
               <BookingButton ctaId="final_booking" variant="secondary">
-                Réserver un échange
+                Réserver une analyse de parcours
               </BookingButton>
             </div>
           </div>

@@ -16,7 +16,17 @@ type VerticalProof =
       readonly title: string;
       readonly body: string;
       readonly points: readonly string[];
+      /** Capture, servie en repli quand aucune adresse publique n'est fournie. */
       readonly image: (typeof swCarCleaning.gallery)[number];
+      /**
+       * Adresse publique du site livré.
+       *
+       * Renseignée, la preuve devient le site lui-même chargé en direct plutôt
+       * qu'une capture : le visiteur juge un site qui existe, pas une image que
+       * nous avons choisie. Laisser vide tant que le site n'est pas public.
+       */
+      readonly externalUrl?: string | undefined;
+      readonly domain?: string | undefined;
       readonly link: Route;
       readonly linkLabel: string;
     }
@@ -227,8 +237,10 @@ export const automotiveVertical: VerticalServiceContent = {
       'Une identité et un site conçus pour présenter une activité de lavage et detailing à domicile à Fribourg, clarifier les formules et faciliter la prise de contact.',
     points: ['Présentation des formules', 'Zone d’intervention visible', 'Parcours pensé pour le mobile'],
     image: swCarCleaning.gallery[0],
+    externalUrl: swCarCleaning.externalUrl ?? undefined,
+    domain: 'swcarcleaning.ch',
     link: '/realisations/sw-car-cleaning',
-    linkLabel: 'Découvrir la réalisation',
+    linkLabel: 'Voir comment nous l’avons construit',
   },
   faq: [
     {
