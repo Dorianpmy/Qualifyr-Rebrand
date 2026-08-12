@@ -6,8 +6,7 @@ import {
   amenities,
   capacities,
   cityBenchmarks,
-  estimateRevenue,
-  formatEuros,
+  defaultCommissionRate,
   formatPercent,
   propertyTypes,
   standings,
@@ -17,6 +16,7 @@ import {
   type PropertyType,
   type Standing,
 } from '@/lib/rental-estimate';
+import { EstimateResult } from '@/components/estimate/EstimateResult';
 import styles from './RentalEstimator.module.css';
 
 /**
@@ -34,8 +34,16 @@ export function RentalEstimator() {
   const [standing, setStanding] = useState<Standing>('confort');
   const [selected, setSelected] = useState<readonly AmenityId[]>([]);
 
-  const result = useMemo(
-    () => estimateRevenue({ city, propertyType, capacity, standing, amenities: selected }),
+  /**
+   * Entrée du moteur étendu, qui produit la cascade du net.
+   *
+   * Le formulaire reste ici — il fonctionne — et le résultat détaillé est
+   * délégué à `EstimateResult`, seul détenteur de l'état des hypothèses. Le
+   * mur est désactivé : cette page cherche à convaincre une conciergerie
+   * d'acheter l'outil, pas à capter les coordonnées d'un propriétaire.
+   */
+  const estimateInput = useMemo(
+    () => ({ city, propertyType, capacity, standing, amenities: selected }),
     [city, propertyType, capacity, standing, selected],
   );
 
@@ -132,36 +140,18 @@ export function RentalEstimator() {
         </fieldset>
       </form>
 
+      {/* Le résumé de l'ancien moteur a été retiré le 12/08/2026.
+          Il affichait une fourchette calculée sur un tarif non arrondi, tandis
+          que la cascade travaillait sur le tarif arrondi : deux montants
+          différents pour le même bien, dans le même panneau. Un propriétaire
+          attentif l'aurait vu, et c'est exactement la crédibilité que cette
+          page cherche à construire. Un seul moteur, désormais. */}
       <output className={styles.result}>
-        <p className={styles.resultKicker}>Revenu annuel brut estimé</p>
-        <strong className={styles.headline}>
-          {formatEuros(result.grossLow)} — {formatEuros(result.grossHigh)}
-        </strong>
-        <p className={styles.caption}>
-          Sur la base de {result.nightsPerYear} nuits louées par an, soit un taux d’occupation de{' '}
-          {formatPercent(result.occupancy)}, à environ {formatEuros(result.nightlyRate)} la nuit.
-        </p>
-
-        <dl className={styles.breakdown}>
-          <div>
-            <dt>Prix moyen par nuit</dt>
-            <dd>{formatEuros(result.nightlyRate)}</dd>
-          </div>
-          <div>
-            <dt>Nuits louées par an</dt>
-            <dd>{result.nightsPerYear}</dd>
-          </div>
-          <div>
-            <dt>Net propriétaire après conciergerie</dt>
-            <dd>
-              {formatEuros(result.ownerLow)} — {formatEuros(result.ownerHigh)}
-            </dd>
-          </div>
-        </dl>
+        <EstimateResult input={estimateInput} gated={false} />
 
         <p className={styles.disclaimer}>
           Estimation indicative, calculée à partir de moyennes de marché pour une commission de
-          conciergerie de {formatPercent(result.commissionRate)}. Elle ne tient compte ni des
+          conciergerie de {formatPercent(defaultCommissionRate)}. Elle ne tient compte ni des
           charges, ni de la fiscalité, ni des règles locales de location courte durée, et ne
           constitue pas un engagement.
         </p>

@@ -1,0 +1,136 @@
+/**
+ * Bloc 3 — comparaison des deux modes de location.
+ *
+ * Deux barres horizontales à la même échelle. La gagnante est en cuivre,
+ * l'autre en gris : une seule couleur d'accent, comme partout ailleurs.
+ * Aucun cadre, aucune carte — les filets et l'espace suffisent.
+ */
+
+.block {
+  display: grid;
+  gap: var(--space-4);
+  color: var(--text-inverse);
+}
+
+.kicker {
+  color: var(--color-brass);
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.title {
+  max-inline-size: 24ch;
+  color: var(--text-inverse);
+  font-size: var(--text-2xl);
+  line-height: var(--leading-snug);
+}
+
+.bars {
+  display: grid;
+  gap: var(--space-5);
+  margin-block-start: var(--space-2);
+}
+
+.row {
+  display: grid;
+  gap: var(--space-2);
+  min-inline-size: 0;
+}
+
+.rowLabel {
+  color: var(--text-inverse-secondary);
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.row[data-winner='true'] .rowLabel {
+  color: var(--color-brass);
+}
+
+.rowValue {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  align-items: center;
+  margin: 0;
+  min-inline-size: 0;
+}
+
+/* La piste occupe l'espace disponible, le montant garde sa largeur : sans
+   `flex: 1`, une barre courte laisserait le montant flotter au milieu. */
+.track {
+  flex: 1 1 12rem;
+  min-inline-size: 0;
+  block-size: 0.75rem;
+  background: var(--rule-inverse);
+}
+
+.fill {
+  display: block;
+  block-size: 100%;
+  background: var(--color-stone);
+  transition: inline-size var(--duration-base) var(--ease-out);
+}
+
+.row[data-winner='true'] .fill {
+  background: var(--color-brass);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fill {
+    transition: none;
+  }
+}
+
+.amount {
+  color: var(--text-inverse-secondary);
+  font-family: var(--family-mono);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-tight);
+  white-space: nowrap;
+}
+
+.row[data-winner='true'] .amount {
+  color: var(--text-inverse);
+  font-weight: var(--weight-semibold);
+}
+
+.difference {
+  color: var(--text-inverse-secondary);
+  font-size: var(--text-sm);
+}
+
+.difference strong {
+  color: var(--text-inverse);
+  font-family: var(--family-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-tight);
+}
+
+/* Le seuil de bascule : filet supérieur épais, comme le total de la cascade.
+   C'est la même nature d'information — une conclusion, pas une donnée. */
+.breakEven {
+  max-inline-size: 52ch;
+  padding-block-start: var(--space-4);
+  border-block-start: 2px solid var(--color-brass);
+  color: var(--text-inverse);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+}
+
+.breakEven strong {
+  color: var(--color-brass);
+  font-weight: var(--weight-semibold);
+}
+
+.method {
+  max-inline-size: 60ch;
+  color: var(--text-inverse-secondary);
+  font-size: var(--text-3xs);
+  line-height: var(--leading-normal);
+}

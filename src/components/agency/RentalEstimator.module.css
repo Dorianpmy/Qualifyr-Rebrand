@@ -99,26 +99,35 @@
   .segment:nth-child(2n) { border-inline-end: 0; }
 }
 
-.result { display: grid; gap: var(--space-3); padding: clamp(1.5rem, 3vw, 2.25rem); border: 1px solid var(--color-espresso); border-block-start: 3px solid var(--color-brass); background: var(--surface-inverse); color: var(--text-inverse); }
-.resultKicker { color: var(--color-brass); font-size: var(--text-2xs); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
-.headline { font-family: var(--family-display); font-size: clamp(2.25rem, 4vw, 3.5rem); font-weight: var(--weight-semibold); font-variant-numeric: tabular-nums; line-height: .95; overflow-wrap: anywhere; }
-.caption { max-inline-size: 46ch; color: var(--text-inverse-secondary); font-size: var(--text-sm); line-height: 1.55; }
+/* `align-content: start` est indispensable : à partir de 60rem le panneau est
+   une colonne de grille étirée sur la hauteur de la carte de gauche. Sans lui,
+   les pistes se répartissent l'espace restant et la note de méthode venait
+   recouvrir le bouton. C'était la cause du chevauchement, pas une marge. */
+.result { display: grid; gap: var(--space-5); align-content: start; padding: clamp(1.5rem, 3vw, 2.25rem); border: 1px solid var(--color-espresso); border-block-start: 3px solid var(--color-brass); background: var(--surface-inverse); color: var(--text-inverse); }
 
-.breakdown { display: grid; gap: var(--space-2); margin-block-start: var(--space-2); padding-block-start: var(--space-4); border-block-start: 1px solid var(--rule-inverse); }
-.breakdown > div { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: baseline; justify-content: space-between; }
-.breakdown dt { color: var(--text-inverse-secondary); font-size: var(--text-sm); }
-/* Chasse fixe : ces trois valeurs sont calculées par le simulateur, pas
-   rédigées. Le changement de famille les désigne comme sortie de machine et
-   aligne les montants d'une ligne à l'autre. Le grand chiffre de l'estimation,
-   lui, reste en display : c'est le moment éditorial de la page, pas une
-   ligne de tableau. */
-.breakdown dd { font-family: var(--family-mono); font-size: var(--text-sm); font-weight: var(--weight-semibold); font-variant-numeric: tabular-nums; letter-spacing: var(--tracking-tight); }
-
-.disclaimer { max-inline-size: 60ch; margin-block-start: var(--space-2); padding-block-start: var(--space-3); border-block-start: 1px solid var(--rule-inverse); color: var(--text-inverse-secondary); font-size: var(--text-xs); line-height: 1.5; }
-.cta { display: inline-flex; align-items: center; justify-content: center; min-block-size: 3.25rem; margin-block-start: var(--space-2); padding-inline: var(--space-5); border: 1px solid var(--color-brass); background: var(--color-brass); color: var(--color-ink); font-weight: var(--weight-semibold); text-align: center; text-decoration: none; }
+.disclaimer { max-inline-size: 60ch; margin: 0; padding-block-start: var(--space-5); border-block-start: 1px solid var(--rule-inverse); color: var(--text-inverse-secondary); font-size: var(--text-xs); line-height: 1.5; }
+.cta { display: inline-flex; align-items: center; justify-content: center; min-block-size: 3.25rem; margin: 0; padding: var(--space-3) var(--space-5); border: 1px solid var(--color-brass); background: var(--color-brass); color: var(--color-ink); font-weight: var(--weight-semibold); text-align: center; text-decoration: none; }
 .cta:hover { background: transparent; color: var(--text-inverse); }
 .cta:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
 
 @media (min-width: 60rem) {
-  .estimator { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: var(--space-5); }
+  .estimator { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: var(--space-6); }
+
+  /* Le panneau de résultats est désormais trois à quatre fois plus haut que le
+     formulaire : en colonnes figées, toute la moitié gauche se vidait dès le
+     premier défilement. Le formulaire suit donc la lecture.
+     
+     Ce n'est pas qu'un remplissage du vide : les curseurs du bloc 6 et les
+     sélecteurs de bien restent atteignables pendant qu'on lit la comparaison,
+     ce qui est exactement l'usage — corriger une hypothèse et voir l'effet. */
+  .controls {
+    position: sticky;
+    inset-block-start: calc(var(--header-height) + var(--space-4));
+    /* Garde-fou : si le formulaire dépassait la hauteur visible, `sticky`
+       collerait le bas hors de l'écran et deviendrait inutilisable. */
+    max-block-size: calc(100svh - var(--header-height) - var(--space-6));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
 }
+
