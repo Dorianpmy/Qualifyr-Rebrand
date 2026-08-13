@@ -18,11 +18,6 @@ export const activityOptions = [
     description: 'Prestations mobiles, à domicile ou dans votre atelier.',
   },
   {
-    value: 'conciergerie',
-    label: 'Conciergerie',
-    description: 'Séjours, intendance, coordination ou accompagnement.',
-  },
-  {
     value: 'autre-service',
     label: 'Autre entreprise de services',
     description: 'Présentez votre activité : nous vérifierons si le projet est cohérent.',
@@ -35,6 +30,7 @@ export const practiceModeOptions = [
   { value: 'les-deux', label: 'Les deux' },
 ] as const satisfies readonly SelectOption[];
 
+/** Conservé pour compat serveur si une ancienne soumission arrive encore. */
 export const conciergeTypeOptions = [
   { value: 'voyage-sejour', label: 'Voyage et séjour' },
   { value: 'installation-expatriation', label: 'Installation / expatriation' },
@@ -94,10 +90,6 @@ export const preferredContactOptions = [
   { value: 'email', label: 'E-mail' },
 ] as const satisfies readonly SelectOption[];
 
-/**
- * Consentement, découpé pour insérer un vrai lien vers la politique de
- * confidentialité. La case n'est jamais pré-cochée.
- */
 export const consent = {
   before: 'J’accepte que Qualifyr utilise ces informations uniquement afin de répondre à ma demande. ',
   linkLabel: 'Politique de confidentialité',
