@@ -12,7 +12,7 @@ export function AppShell({
   detailerName: string;
   detailerSlug: string;
   city?: string | null;
-  active: 'demandes' | 'planning' | 'tarifs';
+  active: 'demandes' | 'planning' | 'tarifs' | 'factures';
   children: ReactNode;
 }) {
   return (
@@ -31,14 +31,17 @@ export function AppShell({
           >
             Demandes
           </Link>
+          <Link
+            href="/app/invoices"
+            className={`${styles.navItem} ${active === 'factures' ? styles.navItemActive : ''}`}
+          >
+            Factures
+          </Link>
           <span className={`${styles.navItem} ${styles.navSoon}`}>
             Insights <small>bientôt</small>
           </span>
           <span className={`${styles.navItem} ${styles.navSoon}`}>
             Planning <small>bientôt</small>
-          </span>
-          <span className={`${styles.navItem} ${styles.navSoon}`}>
-            Tarifs <small>bientôt</small>
           </span>
         </nav>
 
