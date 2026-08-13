@@ -1,4 +1,5 @@
 import { getPublicSupabaseClient } from './supabase-browser';
+import { getServiceSupabaseClient } from './supabase-server';
 import type {
   AvailabilityConfig,
   DetailerConfig,
@@ -22,11 +23,11 @@ export type DetailerRecord = {
 };
 
 /**
- * Charge la fiche publique d'un professionnel et tout ce dont les moteurs de
- * devis et de créneaux ont besoin.
+ * Charge la fiche publique d'un professionnel.
+ * Préfère le service role côté serveur (ignore RLS) ; fallback anon.
  */
 export async function loadDetailerBySlug(slug: string): Promise<DetailerRecord | null> {
-  const client = getPublicSupabaseClient();
+  const client = getServiceSupabaseClient() ?? getPublicSupabaseClient();
   if (!client) return null;
 
   const { data: detailer, error: detailerError } = await client
