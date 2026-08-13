@@ -30,7 +30,7 @@ export function VerticalServicePage({ content }: VerticalServicePageProps) {
               <p className={styles.heroLead}>{content.hero.lead}</p>
               <div className={styles.heroActions}>
                 <DiagnosticLink
-                  ctaId={content.route === '/conciergerie' ? 'concierge_diagnostic' : 'cleaning_diagnostic'}
+                  ctaId="cleaning_diagnostic"
                   analyticsVertical={content.route.slice(1)}
                   withArrow
                 >
@@ -95,9 +95,6 @@ export function VerticalServicePage({ content }: VerticalServicePageProps) {
         </Container>
       </Section>
 
-      {/* Ce que ça change — placé juste après `response` : le lecteur vient
-          d'apprendre ce qu'on construit, c'est le moment exact où il se
-          demande « et alors ? ». */}
       {content.outcomes ? (
         <Section surface="sunken" spacing="tight" ruled ariaLabelledBy="consequences-title">
           <Container>
@@ -169,10 +166,6 @@ export function VerticalServicePage({ content }: VerticalServicePageProps) {
               </ButtonLink>
             </div>
             {content.proof.kind === 'real' ? (
-              /* Le site livré, chargé en direct plutôt qu'en capture : une
-                 image montre ce que nous avons choisi de montrer, le site
-                 laisse juger le reste. La capture reste le repli tant qu'une
-                 réalisation n'a pas d'adresse publique. */
               content.proof.externalUrl ? (
                 <InteractiveSitePreview
                   url={content.proof.externalUrl}
@@ -232,13 +225,6 @@ export function VerticalServicePage({ content }: VerticalServicePageProps) {
         </Container>
       </Section>
 
-      {/* Pourquoi nous — dernier argument avant les objections (FAQ) et
-          l'appel à l'action. Le lecteur a vu le problème, la réponse, le
-          parcours, la preuve et la méthode : il ne lui reste qu'à choisir
-          entre nous et une autre agence. C'est ici que ça se joue.
-
-          Liste non numérotée : ce sont des arguments, pas des étapes. La
-          numérotation impliquerait un ordre qui n'existe pas. */}
       {content.whyUs ? (
         <Section surface="sunken" spacing="tight" ruled ariaLabelledBy="pourquoi-title">
           <Container>
@@ -281,7 +267,7 @@ export function VerticalServicePage({ content }: VerticalServicePageProps) {
             title={content.cta.title}
             actionLabel="Présenter mon activité"
             actionHref={`/diagnostic?activity=${content.route.slice(1)}`}
-            ctaId={content.route === '/conciergerie' ? 'concierge_diagnostic' : 'cleaning_diagnostic'}
+            ctaId="cleaning_diagnostic"
           >
             <p>{content.cta.body}</p>
           </CallToAction>
