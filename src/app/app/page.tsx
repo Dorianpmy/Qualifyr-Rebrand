@@ -73,6 +73,8 @@ export default async function AppHomePage({
     .filter((b) => b.status === 'confirme' || b.status === 'realise')
     .reduce((sum, b) => sum + b.quotedPrice, 0);
 
+  const publicPath = `/reservation/${detailer.slug}`;
+
   return (
     <AppShell
       detailerName={detailer.name}
@@ -84,20 +86,28 @@ export default async function AppHomePage({
         <div className={styles.topbar}>
           <div>
             <h1 className={styles.title}>Demandes</h1>
-            <p className={styles.subtitle}>/reservation/{detailer.slug}</p>
+            <p className={styles.subtitle}>
+              Pipeline réservations ·{' '}
+              <Link href={publicPath} target="_blank">
+                {publicPath}
+              </Link>
+            </p>
           </div>
           <div className={styles.topActions}>
-            <Link href={`/reservation/${detailer.slug}`} className={styles.btnGhost} target="_blank">
+            <Link href={publicPath} className={styles.btnGhost} target="_blank">
               Page publique
+            </Link>
+            <Link href={publicPath} className={styles.btnPrimary} target="_blank">
+              Partager le lien
             </Link>
           </div>
         </div>
 
         <div className={styles.kpis}>
-          <div className={styles.kpi}>
+          <div className={`${styles.kpi} ${styles.kpiAccent}`}>
             <div className={styles.kpiLabel}>En attente</div>
             <div className={styles.kpiValue}>{pending}</div>
-            <div className={styles.kpiHint}>À traiter</div>
+            <div className={styles.kpiHint}>À traiter en priorité</div>
           </div>
           <div className={styles.kpi}>
             <div className={styles.kpiLabel}>Confirmées</div>
@@ -131,8 +141,19 @@ export default async function AppHomePage({
         <div className={styles.panel}>
           {bookings.length === 0 ? (
             <div className={styles.empty}>
-              <strong>Aucune demande</strong>
-              Partage le lien /reservation/{detailer.slug} à tes clients.
+              <strong>Ton pipeline est vide</strong>
+              <p className={styles.emptyHint}>
+                Partage ta page de réservation. Chaque demande arrive ici avec estimation,
+                créneau et photos — prêt à confirmer.
+              </p>
+              <div className={styles.emptyActions}>
+                <Link href={publicPath} className={styles.btnPrimary} target="_blank">
+                  Ouvrir la page client
+                </Link>
+                <Link href={publicPath} className={styles.btnGhost} target="_blank">
+                  Copier le parcours
+                </Link>
+              </div>
             </div>
           ) : (
             <>
