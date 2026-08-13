@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { AppShell } from '@/components/app/AppShell';
 import {
   formatPrice,
   formatSlot,
@@ -36,54 +37,79 @@ export default async function AppHomePage({
   const detailer = await getDetailerForOwner(user.id);
   if (!detailer) {
     return (
-      <>
-        <header className={styles.header}>
-          <div className={styles.brand}>
-            Qualifyr <span>· Espace detailer</span>
-          </div>
-          <nav className={styles.nav}>
-            <form action="/api/app/logout" method="post">
-              <button type="submit">Déconnexion</button>
-            </form>
-          </nav>
-        </header>
-        <main className={styles.main}>
+      <div className={styles.loginShell}>
+        <div className={styles.unlinked}>
           <h1 className={styles.title}>Compte non lié</h1>
           <p className={styles.subtitle}>
-            Votre e-mail ({user.email}) n’est pas encore rattaché à une fiche detailer.
-            Dans Supabase, renseignez <code>detailers.owner_id</code> avec votre user id.
+            {user.email} n’est pas rattaché à une fiche detailer.
+            Renseigne <code>detailers.owner_id</code> dans Supabase.
           </p>
-        </main>
-      </>
+          <form action="/api/app/logout" method="post" style={{ marginTop: '1.25rem' }}>
+            <button type="submit" className={styles.btnGhost}>
+              Déconnexion
+            </button>
+          </form>
+        </div>
+      </div>
     );
   }
 
   const params = await searchParams;
   const status = params.status ?? 'all';
-  const bookings = await listBookingsForDetailer(detailer.id, status);
+  const all = await listBookingsForDetailer(detailer.id, 'all');
+  const bookings = status === 'all' ? all : all.filter((b) => b.status === status);
+
+  const pending = all.filter((b) => b.status === 'en_attente_paiement').length;
+  const confirmed = all.filter((b) => b.status === 'confirme').length;
+  const done = all.filter((b) => b.status === 'realise').length;
+  const revenue = all
+    .filter((b) => b.status === 'confirme' || b.status === 'realise')
+    .reduce((sum, b) => sum + b.quotedPrice, 0);
 
   return (
-    <>
-      <header className={styles.header}>
-        <div className={styles.brand}>
-          {detailer.name} <span>· Dashboard</span>
-        </div>
-        <nav className={styles.nav}>
-          <Link href={`/reservation/${detailer.slug}`} target="_blank">
-            Page publique
-          </Link>
-          <form action="/api/app/logout" method="post">
-            <button type="submit">Déconnexion</button>
-          </form>
-        </nav>
-      </header>
-
+    <AppShell
+      detailerName={detailer.name}
+      detailerSlug={detailer.slug}
+      city={detailer.city}
+      active="demandes"
+    >
       <main className={styles.main}>
-        <h1 className={styles.title}>Demandes</h1>
-        <p className={styles.subtitle}>
-          {detailer.city ? `${detailer.city} · ` : ''}
-          /reservation/{detailer.slug}
-        </p>
+        <div className={styles.topbar}>
+          <div>
+            <h1 className={styles.title}>Demandes</h1>
+            <p className={styles.subtitle}>
+              Suivi des réservations · /reservation/{detailer.slug}
+            </p>
+          </div>
+          <div className={styles.topActions}>
+            <Link href={`/reservation/${detailer.slug}`} className={styles.btnGhost} target="_blank">
+              Voir la page publique
+            </Link>
+          </div>
+        </div>
+
+        <div className={styles.kpis}>
+          <div className={styles.kpi}>
+            <div className={styles.kpiLabel}>En attente</div>
+            <div className={styles.kpiValue}>{pending}</div>
+            <div className={styles.kpiHint}>À traiter</div>
+          </div>
+          <div className={styles.kpi}>
+            <div className={styles.kpiLabel}>Confirmées</div>
+            <div className={styles.kpiValue}>{confirmed}</div>
+            <div className={styles.kpiHint}>Au planning</div>
+          </div>
+          <div className={styles.kpi}>
+            <div className={styles.kpiLabel}>Réalisées</div>
+            <div className={styles.kpiValue}>{done}</div>
+            <div className={styles.kpiHint}>Terminées</div>
+          </div>
+          <div className={styles.kpi}>
+            <div className={styles.kpiLabel}>Volume</div>
+            <div className={styles.kpiValue}>{formatPrice(revenue)}</div>
+            <div className={styles.kpiHint}>Confirmé + réalisé</div>
+          </div>
+        </div>
 
         <div className={styles.filters}>
           {FILTERS.map((filter) => (
@@ -97,27 +123,67 @@ export default async function AppHomePage({
           ))}
         </div>
 
-        {bookings.length === 0 ? (
-          <div className={styles.empty}>Aucune demande pour ce filtre.</div>
-        ) : (
-          <div className={styles.list}>
-            {bookings.map((booking) => (
-              <Link key={booking.id} href={`/app/bookings/${booking.id}`} className={styles.card}>
-                <div className={styles.cardTop}>
-                  <span className={styles.cardTitle}>
-                    {booking.vehicleSize}
-                    {booking.vehicleModel ? ` · ${booking.vehicleModel}` : ''} · {booking.scope}
-                  </span>
-                  <span className={badgeClass(booking.status)}>{statusLabel(booking.status)}</span>
-                </div>
-                <div className={styles.meta}>
-                  {formatSlot(booking.slotRaw)} · {formatPrice(booking.quotedPrice)} · {booking.email}
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
+        <div className={styles.panel}>
+          {bookings.length === 0 ? (
+            <div className={styles.empty}>
+              <strong>Aucune demande</strong>
+              Les réservations de ta page publique apparaîtront ici.
+            </div>
+          ) : (
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Client</th>
+                  <th>Prestation</th>
+                  <th>Créneau</th>
+                  <th>Montant</th>
+                  <th>Statut</th>
+                </tr>
+              </thead>
+              <tbody>
+                {bookings.map((booking) => (
+                  <tr key={booking.id}>
+                    <td>
+                      <Link href={`/app/bookings/${booking.id}`} className={styles.rowLink}>
+                        <span className={styles.clientCell}>
+                          <span className={styles.clientName}>{booking.email}</span>
+                          <span className={styles.clientMeta}>
+                            {booking.phone ?? 'Pas de téléphone'}
+                          </span>
+                        </span>
+                      </Link>
+                    </td>
+                    <td>
+                      <Link href={`/app/bookings/${booking.id}`} className={styles.rowLink}>
+                        {booking.vehicleSize}
+                        {booking.vehicleModel ? ` · ${booking.vehicleModel}` : ''}
+                        <div className={styles.clientMeta}>{booking.scope}</div>
+                      </Link>
+                    </td>
+                    <td>
+                      <Link href={`/app/bookings/${booking.id}`} className={styles.rowLink}>
+                        {formatSlot(booking.slotRaw)}
+                      </Link>
+                    </td>
+                    <td>
+                      <Link href={`/app/bookings/${booking.id}`} className={styles.rowLink}>
+                        {formatPrice(booking.quotedPrice)}
+                      </Link>
+                    </td>
+                    <td>
+                      <Link href={`/app/bookings/${booking.id}`} className={styles.rowLink}>
+                        <span className={badgeClass(booking.status)}>
+                          {statusLabel(booking.status)}
+                        </span>
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
       </main>
-    </>
+    </AppShell>
   );
 }

@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { redirect, notFound } from 'next/navigation';
+import { AppShell } from '@/components/app/AppShell';
+import { StatusActions } from '@/components/app/StatusActions';
 import {
   formatPrice,
   formatSlot,
@@ -8,7 +10,6 @@ import {
   statusLabel,
 } from '@/lib/detailing/dashboard';
 import { getSessionUser } from '@/lib/detailing/session';
-import { StatusActions } from '@/components/app/StatusActions';
 import styles from '../../app.module.css';
 
 export default async function BookingDetailPage({
@@ -27,30 +28,28 @@ export default async function BookingDetailPage({
   if (!booking) notFound();
 
   return (
-    <>
-      <header className={styles.header}>
-        <div className={styles.brand}>
-          {detailer.name} <span>· Demande</span>
-        </div>
-        <nav className={styles.nav}>
-          <form action="/api/app/logout" method="post">
-            <button type="submit">Déconnexion</button>
-          </form>
-        </nav>
-      </header>
-
+    <AppShell
+      detailerName={detailer.name}
+      detailerSlug={detailer.slug}
+      city={detailer.city}
+      active="demandes"
+    >
       <main className={styles.main}>
         <Link href="/app" className={styles.back}>
-          ← Toutes les demandes
+          ← Demandes
         </Link>
 
-        <h1 className={styles.title}>
-          {booking.vehicleSize}
-          {booking.vehicleModel ? ` · ${booking.vehicleModel}` : ''}
-        </h1>
-        <p className={styles.subtitle}>
-          {statusLabel(booking.status)} · {formatSlot(booking.slotRaw)}
-        </p>
+        <div className={styles.topbar}>
+          <div>
+            <h1 className={styles.title}>
+              {booking.vehicleSize}
+              {booking.vehicleModel ? ` · ${booking.vehicleModel}` : ''}
+            </h1>
+            <p className={styles.subtitle}>
+              {statusLabel(booking.status)} · {formatSlot(booking.slotRaw)}
+            </p>
+          </div>
+        </div>
 
         <dl className={styles.detailGrid}>
           <div className={styles.detailItem}>
@@ -92,7 +91,7 @@ export default async function BookingDetailPage({
         </dl>
 
         {booking.photos.length > 0 ? (
-          <div className={styles.detailItem}>
+          <div className={styles.detailItem} style={{ marginBottom: '1.25rem' }}>
             <dt>Photos</dt>
             <div className={styles.photos}>
               {booking.photos.map((url, index) => (
@@ -106,6 +105,6 @@ export default async function BookingDetailPage({
 
         <StatusActions bookingId={booking.id} currentStatus={booking.status} />
       </main>
-    </>
+    </AppShell>
   );
 }
