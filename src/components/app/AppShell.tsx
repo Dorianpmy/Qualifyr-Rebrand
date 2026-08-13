@@ -24,25 +24,43 @@ export function AppShell({
           <span className={styles.brandTag}>Qualifyr</span>
         </div>
 
-        <nav className={styles.sidebarNav}>
+        <nav className={styles.sidebarNav} aria-label="Navigation espace pro">
           <Link
             href="/app"
             className={`${styles.navItem} ${active === 'demandes' ? styles.navItemActive : ''}`}
           >
-            Demandes
+            <span className={styles.navIcon} aria-hidden="true">
+              ▦
+            </span>
+            <span className={styles.navLabel}>Demandes</span>
           </Link>
           <Link
             href="/app/invoices"
             className={`${styles.navItem} ${active === 'factures' ? styles.navItemActive : ''}`}
           >
-            Factures
+            <span className={styles.navIcon} aria-hidden="true">
+              €
+            </span>
+            <span className={styles.navLabel}>Factures</span>
           </Link>
-          <span className={`${styles.navItem} ${styles.navSoon}`}>
-            Insights <small>bientôt</small>
-          </span>
-          <span className={`${styles.navItem} ${styles.navSoon}`}>
-            Planning <small>bientôt</small>
-          </span>
+          <Link
+            href={`/reservation/${detailerSlug}`}
+            className={styles.navItem}
+            target="_blank"
+          >
+            <span className={styles.navIcon} aria-hidden="true">
+              ↗
+            </span>
+            <span className={styles.navLabel}>Page client</span>
+          </Link>
+          <form action="/api/app/logout" method="post" className={styles.navLogoutMobile}>
+            <button type="submit" className={styles.navItem}>
+              <span className={styles.navIcon} aria-hidden="true">
+                ⎋
+              </span>
+              <span className={styles.navLabel}>Sortir</span>
+            </button>
+          </form>
         </nav>
 
         <div className={styles.sidebarFooter}>
@@ -57,7 +75,7 @@ export function AppShell({
         </div>
       </aside>
 
-      <div>{children}</div>
+      <div className={styles.shellMain}>{children}</div>
     </div>
   );
 }
