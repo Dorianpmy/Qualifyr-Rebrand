@@ -20,10 +20,17 @@ const FILTERS = [
 ] as const;
 
 function badgeClass(status: string): string {
-  if (status === 'confirme' || status === 'realise') return `${styles.badge} ${styles.badgeConfirme}`;
-  if (status === 'en_attente_paiement' || status === 'ajuste') return `${styles.badge} ${styles.badgeAttente}`;
-  if (status === 'annule' || status === 'expire') return `${styles.badge} ${styles.badgeAnnule}`;
-  return styles.badge;
+  const base = styles.badge ?? '';
+  if (status === 'confirme' || status === 'realise') {
+    return `${base} ${styles.badgeConfirme ?? ''}`.trim();
+  }
+  if (status === 'en_attente_paiement' || status === 'ajuste') {
+    return `${base} ${styles.badgeAttente ?? ''}`.trim();
+  }
+  if (status === 'annule' || status === 'expire') {
+    return `${base} ${styles.badgeAnnule ?? ''}`.trim();
+  }
+  return base;
 }
 
 export default async function AppHomePage({
@@ -114,7 +121,7 @@ export default async function AppHomePage({
             <Link
               key={filter.key}
               href={filter.key === 'all' ? '/app' : `/app?status=${filter.key}`}
-              className={`${styles.filter} ${status === filter.key ? styles.filterActive : ''}`}
+              className={`${styles.filter ?? ''} ${status === filter.key ? styles.filterActive ?? '' : ''}`.trim()}
             >
               {filter.label}
             </Link>
