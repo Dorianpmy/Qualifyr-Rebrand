@@ -47,75 +47,43 @@ export default function HomePage() {
               <Eyebrow inverse>{hero.eyebrow}</Eyebrow>
               <h1 className={styles.heroTitle}>{hero.title}</h1>
               <p className={styles.heroBody}>{hero.body}</p>
-              {/* Carrefour : les deux actions du hero sont les deux entonnoirs
-                  métier, pas des verbes génériques. « Réserver un échange » et
-                  « Faire le diagnostic » n'orientaient personne — ils
-                  demandaient au visiteur de s'engager avant de savoir si le
-                  site le concernait. Les deux conversions restent disponibles
-                  en clôture de page et sur chaque page métier. */}
               <div className={styles.heroActions}>
-                <ButtonLink
-                  href="/conciergerie"
-                  ctaId="hero_concierge"
-                  variant="inverse"
-                  withArrow
-                >
-                  Je gère une conciergerie
-                </ButtonLink>
-                {/* Retour sur la page métier, qui héberge maintenant le tunnel
-                    de réservation en démonstration. Le prospect trouve donc
-                    l'outil *et* les arguments au même endroit, au lieu d'être
-                    envoyé dans un tunnel sans savoir pourquoi nous choisir. */}
                 <ButtonLink
                   href="/nettoyage-automobile"
                   ctaId="hero_cleaning"
+                  variant="inverse"
+                  withArrow
+                >
+                  Voir l’approche detailing
+                </ButtonLink>
+                <ButtonLink
+                  href="/diagnostic"
+                  ctaId="hero_diagnostic"
                   variant="inverseSecondary"
                   withArrow
                 >
-                  Je fais du nettoyage automobile
+                  Faire le diagnostic
                 </ButtonLink>
               </div>
-              {/* Autorité technique en une ligne. Le bloc produit occupait une
-                  section entière au milieu du carrefour et concurrençait les
-                  deux portes ; réduit à une phrase, il pose l'argument — nous
-                  éditons un logiciel de votre métier — sans ouvrir un troisième
-                  parcours. La démonstration se fait sur la page dédiée. */}
-              {/* Les deux outils sont désormais en ligne : la phrase les traite
-                  à égalité plutôt que de répéter la même formule deux fois. */}
               <p className={styles.heroSignature}>
-                Nous éditons aussi nos propres outils métier.{' '}
-                <Link href="/outil-conciergerie" data-cta-id="hero_tool">
-                  Celui des conciergeries
-                </Link>{' '}
-                et{' '}
+                Nous concevons aussi le parcours de réservation.{' '}
                 <Link href="/nettoyage-automobile#demonstration" data-cta-id="hero_tool_cleaning_demo">
-                  celui du nettoyage automobile
-                </Link>{' '}
-                sont en ligne, essayables sans nous demander la permission.
+                  Voir la démonstration
+                </Link>
+                .
               </p>
             </div>
           </Container>
         </div>
       </Section>
 
-      {/* Numérotation de l'arc : le visiteur doit toujours savoir où il en est
-          dans le raisonnement. 01 le tri, 02 la preuve, 03 le prix, 04 l'appel
-          à l'action.
-
-          L'accueil est un carrefour, pas une page de vente : les pages métier
-          portent désormais tout le travail de persuasion (problème, réponse,
-          conséquences, pourquoi nous). Deux sections ont été retirées le
-          11/08/2026 parce qu'elles répétaient ce travail en moins précis —
-          « Ce que nous transformons », abstrait et sans métier, et « Notre
-          méthode », doublon littéral de `verticalMethod` rendu sur les deux
-          pages métier et sur `/methode`. */}
       <Section id="pour-qui" surface="sunken" ruled spacing="tight">
         <Container>
           <div className={styles.sectionIntro}>
             <SectionHeading
-              eyebrow="01 — Les deux métiers"
-              title="Deux métiers, deux façons de perdre un client."
-              lead="Dans les deux cas, le client décide avant de vous parler. Ce qu’il cherche à ce moment-là n’est pas le même — et c’est là que tout se joue."
+              eyebrow="01 — Pour qui"
+              title="Un métier, une façon de perdre un client."
+              lead="Dans le nettoyage automobile, le client décide souvent avant de vous parler. Ce qu’il cherche à ce moment-là, c’est de la clarté — et c’est là que tout se joue."
             />
           </div>
           <ol className={styles.companyList}>
@@ -124,7 +92,7 @@ export default function HomePage() {
                 <Link
                   href={company.href}
                   className={styles.companyLink}
-                  data-cta-id={company.href === '/conciergerie' ? 'home_concierge_page' : 'home_cleaning_page'}
+                  data-cta-id="home_cleaning_page"
                 >
                   <span className={styles.companyNumber}>{String(index + 1).padStart(2, '0')}</span>
                   <span className={styles.companyCopy}>
@@ -138,7 +106,7 @@ export default function HomePage() {
             ))}
           </ol>
           <p className={styles.companyNote}>
-            Une même exigence de clarté, adaptée au fonctionnement réel de chaque activité.
+            Une exigence de clarté adaptée au fonctionnement réel de votre activité.
           </p>
         </Container>
       </Section>
@@ -174,9 +142,6 @@ export default function HomePage() {
         </Container>
       </Section>
 
-      {/* Le prix avant l'appel à l'action : c'est la question que tout le monde
-          se pose et que personne n'ose poser. La masquer fait fuir ceux qui
-          n'ont pas le budget, et fait hésiter ceux qui l'ont. */}
       <Section id="tarifs" surface="sunken" spacing="tight" ruled>
         <Container>
           <div className={styles.pricing}>
@@ -184,9 +149,8 @@ export default function HomePage() {
               <Eyebrow>03 — Tarifs</Eyebrow>
               <h2>Ce que ça coûte, sans devoir demander.</h2>
               <p>
-                Un outil à 79 € par mois, un site vitrine à partir de 990 €, un site avec parcours
-                de demande entre 2 200 et 3 800 €. Les fourchettes sont affichées, les facteurs qui
-                les font varier aussi.
+                Un site vitrine à partir de 990 €, un site avec parcours de demande entre 2 200 et 3 800 €.
+                Les fourchettes sont affichées, les facteurs qui les font varier aussi.
               </p>
             </div>
             <div className={styles.pricingAction}>
@@ -209,11 +173,6 @@ export default function HomePage() {
                 savoir-faire en une expérience que vos prospects comprennent et choisissent.
               </p>
             </div>
-            {/* Deux actions, plus trois. Le diagnostic reste principal : c'est
-                le seul parcours qui répond à la question que tout le monde se
-                pose — ce que ça coûte, et ce qu'il faut faire en premier.
-                L'estimation de budget faisait doublon avec lui et diluait le
-                choix ; elle reste accessible depuis la page Tarifs. */}
             <div className={styles.finalActions}>
               <DiagnosticLink ctaId="final_diagnostic" variant="primary">
                 Voir ce qui bloque mes demandes
