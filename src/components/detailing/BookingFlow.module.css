@@ -1,6 +1,9 @@
-/* Réservation — app mobile claire, sans sidebar desktop */
+/* Réservation — clair + accent orange-corail (pas Detailr) */
 
 .flow {
+  --accent: #e85d04;
+  --accent-soft: rgba(232, 93, 4, 0.12);
+  --accent-mid: rgba(232, 93, 4, 0.22);
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
@@ -18,7 +21,6 @@
   white-space: nowrap;
 }
 
-/* Header compact — pas de menu latéral */
 .context {
   position: sticky;
   top: 0;
@@ -34,8 +36,8 @@
   font-size: 0.7rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(20, 20, 20, 0.45);
-  font-weight: 600;
+  color: var(--accent);
+  font-weight: 700;
 }
 
 .contextStep {
@@ -55,12 +57,11 @@
 .progress span {
   display: block;
   height: 100%;
-  background: #141414;
+  background: linear-gradient(90deg, #f48c06, var(--accent));
   border-radius: 999px;
   transition: width 0.25s ease;
 }
 
-/* Jamais de liste d’étapes latérale */
 .stepList,
 .priceCard {
   display: none !important;
@@ -117,6 +118,13 @@
   box-sizing: border-box;
 }
 
+.dateInput:focus,
+.numberInput:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
 .optionGrid {
   display: grid;
   gap: 0.65rem;
@@ -141,8 +149,9 @@
 }
 
 .optionCard[data-checked='true'] {
-  border-color: #141414;
-  box-shadow: 0 0 0 1px #141414;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+  background: var(--accent-soft);
 }
 
 .optionCard input {
@@ -151,6 +160,7 @@
   right: 1.1rem;
   width: 1.15rem;
   height: 1.15rem;
+  accent-color: var(--accent);
 }
 
 .optionCard p {
@@ -173,7 +183,8 @@
 
 .optionPrice {
   font-size: 0.85rem;
-  color: rgba(20, 20, 20, 0.55);
+  color: var(--accent);
+  font-weight: 600;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
@@ -198,9 +209,9 @@
 }
 
 .slotButton[data-selected='true'] {
-  background: #141414;
+  background: var(--accent);
   color: #fff;
-  border-color: #141414;
+  border-color: var(--accent);
   font-weight: 600;
 }
 
@@ -228,7 +239,8 @@
 .photoStatus {
   margin: 0;
   font-size: 0.85rem;
-  color: #15803d;
+  color: var(--accent);
+  font-weight: 600;
 }
 
 .summary {
@@ -249,7 +261,6 @@
   color: #b91c1c;
 }
 
-/* Barre bas claire + CTA fort */
 .actions {
   position: fixed;
   bottom: 0;
@@ -261,7 +272,7 @@
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0.9rem 1.15rem calc(0.9rem + env(safe-area-inset-bottom));
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(16px);
   border-top: 1px solid rgba(20, 20, 20, 0.08);
   box-shadow: 0 -8px 24px rgba(20, 20, 20, 0.04);
@@ -287,7 +298,7 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
-  color: #141414;
+  color: var(--accent);
 }
 
 .confirmation {
@@ -333,7 +344,6 @@
   font-size: 0.85rem;
 }
 
-/* Cartes ChoiceGroup → style app claire */
 .flow :global(label[class*='choiceCard']) {
   display: flex !important;
   flex-direction: column !important;
@@ -353,15 +363,15 @@
 }
 
 .flow :global(label[class*='choiceCard']:hover) {
-  border-color: rgba(20, 20, 20, 0.28) !important;
+  border-color: var(--accent-mid) !important;
   transform: translateY(-1px) !important;
-  box-shadow: 0 6px 18px rgba(20, 20, 20, 0.06) !important;
+  box-shadow: 0 6px 18px rgba(232, 93, 4, 0.08) !important;
 }
 
 .flow :global(label[class*='choiceCard']:has(input:checked)) {
-  background: #fff !important;
-  border-color: #141414 !important;
-  box-shadow: 0 0 0 1px #141414 !important;
+  background: var(--accent-soft) !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 1px var(--accent) !important;
   color: #141414 !important;
 }
 
@@ -394,8 +404,8 @@
 }
 
 .flow :global(label[class*='choiceCard']:has(input:checked) span[class*='choiceMark']) {
-  background: #141414 !important;
-  border-color: #141414 !important;
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
   box-shadow: inset 0 0 0 3px #fff !important;
 }
 
@@ -411,20 +421,43 @@
   border-radius: 16px !important;
 }
 
+.flow :global(input[class*='control']:focus),
+.flow :global(textarea[class*='control']:focus) {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px var(--accent-soft) !important;
+}
+
 .flow :global(label[class*='label']),
 .flow :global(span[class*='optional']),
 .flow :global(p[class*='hint']) {
   color: rgba(20, 20, 20, 0.6) !important;
 }
 
-/* CTA dans la barre : forcer contraste */
-.flow :global(button),
-.actions :global(button) {
+/* Bouton principal = orange plein */
+.actions :global(button:not([class*='secondary'])) {
+  background: var(--accent) !important;
+  color: #fff !important;
+  border-color: var(--accent) !important;
+  border-radius: 14px !important;
+  font-weight: 600 !important;
+}
+
+.actions :global(button:not([class*='secondary']):hover) {
+  filter: brightness(1.05);
+}
+
+.actions :global(button[class*='secondary']) {
+  border-radius: 14px !important;
+  border: 1.5px solid rgba(20, 20, 20, 0.15) !important;
+  background: #fff !important;
+  color: #141414 !important;
+}
+
+.flow :global(button) {
   border-radius: 14px !important;
 }
 
 @media (min-width: 64rem) {
-  /* Toujours une colonne centrée — pas de sidebar */
   .flow {
     display: flex;
     flex-direction: column;
