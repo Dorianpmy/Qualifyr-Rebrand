@@ -62,6 +62,10 @@ export default function HomePage() {
                 >
                   Je gère une conciergerie
                 </ButtonLink>
+                {/* Retour sur la page métier, qui héberge maintenant le tunnel
+                    de réservation en démonstration. Le prospect trouve donc
+                    l'outil *et* les arguments au même endroit, au lieu d'être
+                    envoyé dans un tunnel sans savoir pourquoi nous choisir. */}
                 <ButtonLink
                   href="/nettoyage-automobile"
                   ctaId="hero_cleaning"
@@ -76,12 +80,18 @@ export default function HomePage() {
                   deux portes ; réduit à une phrase, il pose l'argument — nous
                   éditons un logiciel de votre métier — sans ouvrir un troisième
                   parcours. La démonstration se fait sur la page dédiée. */}
+              {/* Les deux outils sont désormais en ligne : la phrase les traite
+                  à égalité plutôt que de répéter la même formule deux fois. */}
               <p className={styles.heroSignature}>
-                Nous éditons aussi notre propre outil d’acquisition pour conciergeries.{' '}
+                Nous éditons aussi nos propres outils métier.{' '}
                 <Link href="/outil-conciergerie" data-cta-id="hero_tool">
-                  En ligne, essayable sans nous demander la permission
-                </Link>
-                .
+                  Celui des conciergeries
+                </Link>{' '}
+                et{' '}
+                <Link href="/nettoyage-automobile#demonstration" data-cta-id="hero_tool_cleaning_demo">
+                  celui du nettoyage automobile
+                </Link>{' '}
+                sont en ligne, essayables sans nous demander la permission.
               </p>
             </div>
           </Container>

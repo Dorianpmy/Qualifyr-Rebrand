@@ -30,12 +30,28 @@ export type Anchor = `#${string}`;
 export type HomeAnchor = `/#${string}`;
 
 /** Ancre d'une route publique, par exemple la section Cookies de la politique. */
+/**
+ * Page publique de réservation d'un professionnel du nettoyage automobile.
+ *
+ * Séparée de `Route` parce qu'elle est paramétrée : le slug vient de la base,
+ * il ne peut pas être énuméré. Elle reste typée plutôt que laissée en `string`
+ * pour qu'un lien mal formé — `/reservations/…`, au pluriel — échoue à la
+ * compilation et non en production.
+ */
+export type ReservationRoute = `/reservation/${string}`;
+
 export type RouteAnchor = `${Route}#${string}`;
 
 /** Route publique accompagnée de paramètres de campagne ou de préremplissage. */
 export type RouteQuery = `${Route}?${string}`;
 
 /** Cible d'un lien : route du site ou ancre. Interdit tout lien arbitraire. */
-export type LinkTarget = Route | Anchor | HomeAnchor | RouteAnchor | RouteQuery;
+export type LinkTarget =
+  | Route
+  | ReservationRoute
+  | Anchor
+  | HomeAnchor
+  | RouteAnchor
+  | RouteQuery;
 
 export type Surface = 'page' | 'raised' | 'sunken' | 'inverse';

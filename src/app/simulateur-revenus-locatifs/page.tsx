@@ -16,6 +16,12 @@ export default function RentalEstimatorPage() {
     <>
       <JsonLd data={webPage('/simulateur-revenus-locatifs')} />
 
+      {/* Introduction volontairement courte.
+          Sur un téléphone de 667 px, un titre, un paragraphe complet, des
+          repères et le premier champ du simulateur ne tiennent pas ensemble
+          au-dessus de la ligne de flottaison. L'explication détaillée est donc
+          descendue sous l'outil : c'est elle qu'on lit après avoir joué, pas
+          avant. Reste ici une seule phrase, qui dit ce qu'on obtient. */}
       <Section spacing="tight" ruled>
         <Container>
           <div className={styles.intro}>
@@ -24,12 +30,8 @@ export default function RentalEstimatorPage() {
               <h1>Combien ce logement pourrait-il rapporter ?</h1>
             </div>
             <div className={styles.introCopy}>
-              <p>
-                Quatre choix suffisent pour obtenir une fourchette de revenus annuels, le prix moyen
-                par nuit correspondant et ce qu’il resterait au propriétaire une fois la conciergerie
-                rémunérée.
-              </p>
-              <ul aria-label="Repères du simulateur">
+              <p>Quatre choix, une fourchette de revenus annuels et ce qu’il en resterait.</p>
+              <ul className={styles.markers} aria-label="Repères du simulateur">
                 <li>Résultat immédiat</li>
                 <li>Sans inscription</li>
                 <li>Fourchette indicative</li>
@@ -49,6 +51,11 @@ export default function RentalEstimatorPage() {
         <Container>
           <div className={styles.notes}>
             <h2>Comment lire cette estimation</h2>
+            <p>
+              Quatre choix suffisent pour obtenir une fourchette de revenus annuels, le prix moyen
+              par nuit correspondant et ce qu’il resterait au propriétaire une fois la conciergerie
+              rémunérée.
+            </p>
             <p>
               Le calcul croise un prix moyen par nuit et un taux d’occupation observés dans la ville
               choisie, puis les corrige selon le type de logement, sa capacité d’accueil et son

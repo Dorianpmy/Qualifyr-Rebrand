@@ -243,3 +243,13 @@ html[data-motion='on'] main > [data-reveal-target]:first-child > :first-child {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Ancres et en-tête collant.
+   C'est le seul cas où un en-tête `sticky` masque réellement du contenu :
+   le navigateur amène la cible en haut du cadre, donc sous l'en-tête. Cette
+   marge de défilement l'en écarte, pour les liens internes comme pour le
+   retour du focus au clavier. */
+:target,
+[id] {
+  scroll-margin-block-start: calc(var(--header-height) + var(--space-4));
+}

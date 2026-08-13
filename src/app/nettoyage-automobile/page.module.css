@@ -1,0 +1,32 @@
+/**
+ * Encadrement de la démonstration produit.
+ *
+ * Le tunnel possède ses propres styles : cette feuille ne fait que l'introduire
+ * et l'isoler du reste de la page. Un filet supérieur en laiton le désigne
+ * comme un objet distinct — c'est un logiciel posé dans une page éditoriale,
+ * et le lecteur doit le comprendre sans qu'on le lui écrive.
+ */
+
+.demoIntro {
+  display: grid;
+  gap: var(--space-3);
+  max-inline-size: 60ch;
+  margin-block-end: var(--space-6);
+}
+
+.demoIntro h2 {
+  max-inline-size: 22ch;
+  font-size: var(--text-2xl) !important;
+  line-height: var(--leading-snug) !important;
+}
+
+.demoIntro p {
+  color: var(--text-secondary);
+}
+
+.demoFrame {
+  padding: clamp(1.25rem, 3vw, 2.25rem);
+  border: var(--border-width) solid var(--rule-hairline);
+  border-block-start: 3px solid var(--color-brass);
+  background: var(--surface-page);
+}
