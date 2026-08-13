@@ -12,6 +12,7 @@ export type DetailerRecord = {
   readonly id: string;
   readonly slug: string;
   readonly name: string;
+  readonly email: string | null;
   readonly city: string | null;
   readonly mobileService: boolean;
   readonly workshopService: boolean;
@@ -22,11 +23,7 @@ export type DetailerRecord = {
 
 /**
  * Charge la fiche publique d'un professionnel et tout ce dont les moteurs de
- * devis et de créneaux ont besoin, en un seul aller-retour logique.
- *
- * Retourne `null` si le slug n'existe pas, si la fiche n'est pas publiée, ou
- * si la configuration Supabase est absente — jamais d'exception : la page
- * décide elle-même comment réagir à une fiche introuvable.
+ * devis et de créneaux ont besoin.
  */
 export async function loadDetailerBySlug(slug: string): Promise<DetailerRecord | null> {
   const client = getPublicSupabaseClient();
@@ -99,6 +96,7 @@ export async function loadDetailerBySlug(slug: string): Promise<DetailerRecord |
     id: detailer.id as string,
     slug: detailer.slug as string,
     name: detailer.name as string,
+    email: (detailer.email as string | null) ?? null,
     city: (detailer.city as string | null) ?? null,
     mobileService: Boolean(detailer.mobile_service),
     workshopService: Boolean(detailer.workshop_service),

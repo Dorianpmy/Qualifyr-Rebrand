@@ -1,8 +1,6 @@
 /**
- * Variables d'environnement du produit detailing. Même contrainte que
- * `src/lib/env.ts` : aucune valeur lue au chargement, aucune exception levée
- * — une variable manquante dégrade la fonctionnalité, elle ne casse pas le
- * site vitrine qui héberge cette page.
+ * Variables d'environnement du produit detailing.
+ * Une variable manquante dégrade la fonctionnalité, elle ne casse pas le site.
  */
 
 function read(name: string): string | null {
@@ -36,4 +34,25 @@ export function detailingServiceEnv(): DetailingServiceEnv | null {
   const serviceRoleKey = read('SUPABASE_SERVICE_ROLE_KEY');
   if (!url || !serviceRoleKey) return null;
   return { url, serviceRoleKey };
+}
+
+/** Clé Resend pour les emails de réservation. */
+export function resendApiKey(): string | null {
+  return read('RESEND_API_KEY');
+}
+
+/**
+ * Expéditeur Resend.
+ * Sans domaine vérifié : onboarding@resend.dev
+ */
+export function bookingFromEmail(): string {
+  return read('BOOKING_FROM_EMAIL') ?? 'Qualifyr <onboarding@resend.dev>';
+}
+
+/**
+ * Email de secours pour notifier le detailer (tests / demo)
+ * si la fiche detailer n'a pas d'email.
+ */
+export function bookingNotifyEmail(): string | null {
+  return read('BOOKING_NOTIFY_EMAIL');
 }

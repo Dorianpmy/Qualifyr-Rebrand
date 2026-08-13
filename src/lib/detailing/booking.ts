@@ -1,4 +1,5 @@
 import { loadDetailerBySlug } from './config';
+import { notifyBookingEmails } from './email';
 import { quote } from './quote';
 import { getServiceSupabaseClient } from './supabase-server';
 import type { LocationMode, OptionKey, Scope, SoilingLevel, VehicleSize } from './types';
@@ -6,12 +7,8 @@ import type { LocationMode, OptionKey, Scope, SoilingLevel, VehicleSize } from '
 /**
  * Création d'une réservation — serveur uniquement.
  *
- * Le devis est recalculé ici à partir de la configuration du professionnel,
- * jamais accepté tel quel depuis le client : un prix envoyé par le
- * navigateur ne prouve rien. Le créneau naît en attente de paiement, avec une
- * expiration — la garantie de non-chevauchement vient de la contrainte
- * d'exclusion posée en base (§2.4-2.5 de docs/13-saas-nettoyage-automobile.md),
- * pas d'une vérification applicative.
+ * Le devis est recalculé ici à partir de la configuration du professionnel.
+ * Après insert réussi : notifications email (client + detailer) en best-effort.
  */
 
 export type CreateBookingInput = {
@@ -27,9 +24,7 @@ export type CreateBookingInput = {
   readonly locationMode: LocationMode;
   readonly postalCode?: string | undefined;
   readonly travelKm?: number | undefined;
-  /** Chemins déjà déposés dans le bucket `detailer-photos`. Trois minimum. */
   readonly photos: readonly string[];
-  /** Début du créneau choisi, tel que renvoyé par `/slots`. */
   readonly slotStart: string;
 };
 
@@ -155,10 +150,33 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
     };
   }
 
+  const bookingId = data.id as string;
+
+  // Best-effort : un échec d'email ne annule pas la réservation.
+  void notifyBookingEmails({
+    bookingId,
+    detailerName: detailer.name,
+    detailerEmail: detailer.email ?? null,
+    clientEmail: input.email,
+    clientPhone: input.phone,
+    vehicleSize: input.vehicleSize,
+    vehicleModel: input.vehicleModel,
+    plate: input.plate,
+    scope: input.scope,
+    soiling: input.soiling,
+    optionKeys: input.optionKeys,
+    locationMode: input.locationMode,
+    postalCode: input.postalCode,
+    slotStart: input.slotStart,
+    quotedPrice: computed.totalPrice,
+    quotedMinutes: computed.totalMinutes,
+    depositAmount: computed.depositAmount,
+  });
+
   return {
     ok: true,
     booking: {
-      id: data.id as string,
+      id: bookingId,
       status: data.status as string,
       quotedPrice: computed.totalPrice,
       quotedMinutes: computed.totalMinutes,
