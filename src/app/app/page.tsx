@@ -77,13 +77,11 @@ export default async function AppHomePage({
         <div className={styles.topbar}>
           <div>
             <h1 className={styles.title}>Demandes</h1>
-            <p className={styles.subtitle}>
-              Suivi des réservations · /reservation/{detailer.slug}
-            </p>
+            <p className={styles.subtitle}>/reservation/{detailer.slug}</p>
           </div>
           <div className={styles.topActions}>
             <Link href={`/reservation/${detailer.slug}`} className={styles.btnGhost} target="_blank">
-              Voir la page publique
+              Page publique
             </Link>
           </div>
         </div>
@@ -127,60 +125,85 @@ export default async function AppHomePage({
           {bookings.length === 0 ? (
             <div className={styles.empty}>
               <strong>Aucune demande</strong>
-              Les réservations de ta page publique apparaîtront ici.
+              Partage le lien /reservation/{detailer.slug} à tes clients.
             </div>
           ) : (
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>Client</th>
-                  <th>Prestation</th>
-                  <th>Créneau</th>
-                  <th>Montant</th>
-                  <th>Statut</th>
-                </tr>
-              </thead>
-              <tbody>
+            <>
+              <div className={styles.mobileList}>
                 {bookings.map((booking) => (
-                  <tr key={booking.id}>
-                    <td>
-                      <Link href={`/app/bookings/${booking.id}`} className={styles.rowLink}>
-                        <span className={styles.clientCell}>
-                          <span className={styles.clientName}>{booking.email}</span>
-                          <span className={styles.clientMeta}>
-                            {booking.phone ?? 'Pas de téléphone'}
-                          </span>
-                        </span>
-                      </Link>
-                    </td>
-                    <td>
-                      <Link href={`/app/bookings/${booking.id}`} className={styles.rowLink}>
-                        {booking.vehicleSize}
-                        {booking.vehicleModel ? ` · ${booking.vehicleModel}` : ''}
-                        <div className={styles.clientMeta}>{booking.scope}</div>
-                      </Link>
-                    </td>
-                    <td>
-                      <Link href={`/app/bookings/${booking.id}`} className={styles.rowLink}>
-                        {formatSlot(booking.slotRaw)}
-                      </Link>
-                    </td>
-                    <td>
-                      <Link href={`/app/bookings/${booking.id}`} className={styles.rowLink}>
-                        {formatPrice(booking.quotedPrice)}
-                      </Link>
-                    </td>
-                    <td>
-                      <Link href={`/app/bookings/${booking.id}`} className={styles.rowLink}>
-                        <span className={badgeClass(booking.status)}>
-                          {statusLabel(booking.status)}
-                        </span>
-                      </Link>
-                    </td>
-                  </tr>
+                  <Link
+                    key={booking.id}
+                    href={`/app/bookings/${booking.id}`}
+                    className={styles.mobileCard}
+                  >
+                    <div className={styles.mobileCardTop}>
+                      <span className={styles.clientName}>{booking.email}</span>
+                      <span className={badgeClass(booking.status)}>
+                        {statusLabel(booking.status)}
+                      </span>
+                    </div>
+                    <div className={styles.clientMeta}>
+                      {booking.vehicleSize}
+                      {booking.vehicleModel ? ` · ${booking.vehicleModel}` : ''} ·{' '}
+                      {formatPrice(booking.quotedPrice)}
+                    </div>
+                    <div className={styles.clientMeta}>{formatSlot(booking.slotRaw)}</div>
+                  </Link>
                 ))}
-              </tbody>
-            </table>
+              </div>
+
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>Client</th>
+                    <th>Prestation</th>
+                    <th>Créneau</th>
+                    <th>Montant</th>
+                    <th>Statut</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {bookings.map((booking) => (
+                    <tr key={booking.id}>
+                      <td>
+                        <Link href={`/app/bookings/${booking.id}`} className={styles.rowLink}>
+                          <span className={styles.clientCell}>
+                            <span className={styles.clientName}>{booking.email}</span>
+                            <span className={styles.clientMeta}>
+                              {booking.phone ?? 'Pas de téléphone'}
+                            </span>
+                          </span>
+                        </Link>
+                      </td>
+                      <td>
+                        <Link href={`/app/bookings/${booking.id}`} className={styles.rowLink}>
+                          {booking.vehicleSize}
+                          {booking.vehicleModel ? ` · ${booking.vehicleModel}` : ''}
+                          <div className={styles.clientMeta}>{booking.scope}</div>
+                        </Link>
+                      </td>
+                      <td>
+                        <Link href={`/app/bookings/${booking.id}`} className={styles.rowLink}>
+                          {formatSlot(booking.slotRaw)}
+                        </Link>
+                      </td>
+                      <td>
+                        <Link href={`/app/bookings/${booking.id}`} className={styles.rowLink}>
+                          {formatPrice(booking.quotedPrice)}
+                        </Link>
+                      </td>
+                      <td>
+                        <Link href={`/app/bookings/${booking.id}`} className={styles.rowLink}>
+                          <span className={badgeClass(booking.status)}>
+                            {statusLabel(booking.status)}
+                          </span>
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
           )}
         </div>
       </main>

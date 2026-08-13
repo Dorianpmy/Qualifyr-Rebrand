@@ -1,132 +1,92 @@
-/* ---------------------------------------------------------------------
-   Parcours de réservation detailing — deux volets : contexte + prix figés
-   à gauche dès l'écran 62rem, contenu de l'étape à droite. En dessous,
-   le contexte passe au-dessus du contenu.
-   --------------------------------------------------------------------- */
+/* Page de réservation — mobile first (Detailr-like)
+   Sticky prix + CTA en bas, grandes zones tactiles, une étape à l’écran. */
 
 .flow {
-  display: grid;
-  min-block-size: calc(100svh - 5.5rem);
-  background: var(--surface-raised);
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: #0a0a0b;
+  color: #fafafa;
+  font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
 .srOnly {
   position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
+  width: 1px;
+  height: 1px;
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
 
-/* ------------------------------- Contexte ------------------------------ */
-
+/* —— Header mobile —— */
 .context {
-  display: grid;
-  align-content: start;
-  gap: var(--space-5);
-  padding: clamp(2rem, 5vw, 3.5rem);
-  background: var(--surface-inverse);
-  color: var(--text-inverse);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 0.85rem 1rem 0.75rem;
+  background: rgba(10, 10, 11, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .eyebrow {
   margin: 0;
-  font-family: var(--family-mono);
-  font-size: var(--text-2xs);
-  letter-spacing: var(--tracking-wide);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-inverse-secondary);
+  color: rgba(250, 250, 250, 0.45);
 }
 
 .contextStep {
-  margin: 0;
-  font-size: var(--text-sm);
-  color: var(--text-inverse-secondary);
+  margin: 0.2rem 0 0.65rem;
+  font-size: 0.8rem;
+  color: rgba(250, 250, 250, 0.55);
 }
 
 .progress {
-  inline-size: 100%;
-  block-size: 3px;
-  background: var(--rule-inverse);
-  border-radius: var(--radius-full);
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
   overflow: hidden;
 }
 
 .progress span {
   display: block;
-  block-size: 100%;
-  background: var(--color-brass);
-  transition: inline-size var(--duration-base) var(--ease-out);
+  height: 100%;
+  background: #f5f0e6;
+  border-radius: 999px;
+  transition: width 0.25s ease;
 }
 
 .stepList {
-  display: grid;
-  gap: var(--space-2);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-size: var(--text-sm);
-}
-
-.stepList li {
-  color: var(--text-inverse-secondary);
-}
-
-.stepList li[data-state='current'] {
-  color: var(--text-inverse);
-  font-weight: var(--weight-semibold);
-}
-
-.stepList li[data-state='complete'] {
-  color: var(--color-sand);
+  display: none;
 }
 
 .priceCard {
-  display: grid;
-  gap: var(--space-1);
-  margin-block-start: var(--space-4);
-  padding: var(--space-5);
-  background: rgb(245 240 231 / 8%);
-  border: var(--border-width) solid var(--rule-inverse);
-  border-radius: var(--radius-md);
+  display: none;
 }
 
-.priceLabel {
-  font-size: var(--text-2xs);
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
-  color: var(--text-inverse-secondary);
-}
-
-.priceAmount {
-  font-family: var(--family-display);
-  font-size: var(--text-2xl);
-  line-height: var(--leading-tight);
-}
-
-.priceDuration,
-.priceLine {
-  font-size: var(--text-sm);
-  color: var(--text-inverse-secondary);
-  font-family: var(--family-mono);
-}
-
-/* ------------------------------ Contenu --------------------------------- */
-
+/* —— Corps étape —— */
 .workspace {
-  display: grid;
-  align-content: start;
-  gap: var(--space-6);
-  padding: clamp(2rem, 5vw, 3.5rem);
-  max-inline-size: 42rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.25rem 1rem 7.5rem;
+  max-width: 28rem;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .stepTitle {
   margin: 0;
-  font-family: var(--family-display);
-  font-size: var(--text-2xl);
-  line-height: var(--leading-tight);
+  font-size: 1.55rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
 }
 
 .stepTitle:focus {
@@ -134,150 +94,152 @@
 }
 
 .stepBody {
-  display: grid;
-  gap: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .dayLabel {
-  margin: calc(var(--space-3) * -1) 0 0;
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
+  margin: -0.35rem 0 0;
+  font-size: 0.85rem;
+  color: rgba(250, 250, 250, 0.5);
   text-transform: capitalize;
 }
 
-.dateInput {
-  min-block-size: 3rem;
-  padding: 0 var(--space-4);
+.dateInput,
+.numberInput {
+  min-height: 3.1rem;
+  padding: 0 0.95rem;
   font-size: 1rem;
-  font-family: var(--family-text);
-  color: var(--text-primary);
-  background: var(--surface-page);
-  border: var(--border-width) solid var(--rule-strong);
-  border-radius: var(--radius-sm);
+  color: #fafafa;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .numberInput {
-  min-block-size: 3rem;
-  padding: 0 var(--space-4);
-  font-size: 1rem;
-  font-family: var(--family-text);
-  color: var(--text-primary);
-  background: var(--surface-page);
-  border: var(--border-width) solid var(--rule-strong);
-  border-radius: var(--radius-sm);
-  max-inline-size: 12rem;
+  max-width: 100%;
 }
 
-/* -------------------------------- Options -------------------------------- */
-
+/* Options / cartes sélection */
 .optionGrid {
   display: grid;
-  gap: var(--space-4);
+  gap: 0.65rem;
 }
 
 .optionCard {
   position: relative;
   display: grid;
-  gap: var(--space-2);
-  padding: var(--space-5);
-  background: var(--surface-page);
-  border: var(--border-width) solid var(--rule-hairline);
-  border-radius: var(--radius-md);
+  gap: 0.35rem;
+  padding: 1rem 1.05rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .optionCard[data-checked='true'] {
-  border-color: var(--rule-strong);
-  background: var(--surface-sunken);
+  border-color: #f5f0e6;
+  background: rgba(245, 240, 230, 0.08);
 }
 
 .optionCard input {
   position: absolute;
-  inset-block-start: var(--space-4);
-  inset-inline-end: var(--space-4);
+  top: 1rem;
+  right: 1rem;
+  width: 1.1rem;
+  height: 1.1rem;
 }
 
 .optionCard p {
   margin: 0;
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
-  line-height: var(--leading-normal);
+  font-size: 0.85rem;
+  color: rgba(250, 250, 250, 0.55);
+  line-height: 1.4;
+  padding-right: 1.5rem;
 }
 
 .optionHead {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--space-3);
-  padding-inline-end: var(--space-6);
+  gap: 0.75rem;
+  padding-right: 1.5rem;
+  font-weight: 500;
 }
 
 .optionPrice {
-  font-family: var(--family-mono);
-  font-size: var(--text-sm);
-  color: var(--text-accent);
+  font-size: 0.85rem;
+  color: #e8e0d0;
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
-/* -------------------------------- Créneaux -------------------------------- */
-
+/* Créneaux */
 .slotGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-3);
+  gap: 0.5rem;
 }
 
 .slotButton {
-  padding: var(--space-3);
-  font-family: var(--family-mono);
-  font-size: var(--text-sm);
-  color: var(--text-primary);
-  background: var(--surface-page);
-  border: var(--border-width) solid var(--rule-hairline);
-  border-radius: var(--radius-sm);
+  min-height: 2.85rem;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  color: #fafafa;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .slotButton[data-selected='true'] {
-  color: var(--text-inverse);
-  background: var(--surface-inverse);
-  border-color: var(--surface-inverse);
+  background: #f5f0e6;
+  color: #0a0a0b;
+  border-color: #f5f0e6;
+  font-weight: 600;
 }
 
-/* --------------------------------- Photos --------------------------------- */
-
+/* Photos */
 .photoIntro {
   margin: 0;
-  color: var(--text-secondary);
+  color: rgba(250, 250, 250, 0.55);
+  font-size: 0.9rem;
 }
 
 .photoGrid {
   display: grid;
-  gap: var(--space-5);
+  gap: 1rem;
 }
 
 .photoSlot {
   display: grid;
-  gap: var(--space-2);
+  gap: 0.4rem;
 }
 
 .photoSlot label {
-  font-weight: var(--weight-semibold);
+  font-weight: 500;
+  font-size: 0.9rem;
 }
 
 .photoStatus {
   margin: 0;
-  font-size: var(--text-sm);
-  color: var(--text-accent);
+  font-size: 0.85rem;
+  color: #86efac;
 }
 
 .summary {
   display: grid;
-  gap: var(--space-3);
-  padding: var(--space-5);
-  background: var(--surface-sunken);
-  border-radius: var(--radius-md);
-  font-size: var(--text-sm);
+  gap: 0.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  font-size: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .summary p {
@@ -285,80 +247,158 @@
 }
 
 .submitError {
-  color: var(--state-error);
+  color: #f87171;
 }
 
-/* -------------------------------- Actions --------------------------------- */
-
+/* —— Barre sticky bas (prix + actions) —— */
 .actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
-  padding-block-start: var(--space-5);
-  border-block-start: var(--border-width) solid var(--rule-hairline);
+  gap: 0.75rem;
+  padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+  background: rgba(10, 10, 11, 0.94);
+  backdrop-filter: blur(14px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* ---------------------------------------------------------------------
-   Confirmation
-   --------------------------------------------------------------------- */
+.actions::before {
+  content: attr(data-price);
+  display: none;
+}
 
+/* Confirmation */
 .confirmation {
   display: grid;
-  gap: var(--space-4);
-  max-inline-size: var(--container-reading);
-  margin-inline: auto;
-  padding: clamp(3rem, 8vw, 6rem) var(--gutter);
+  gap: 1rem;
+  max-width: 28rem;
+  margin: 0 auto;
+  padding: 2.5rem 1rem 3rem;
+  color: #fafafa;
 }
 
 .confirmation h1 {
   margin: 0;
-  font-family: var(--family-display);
-  font-size: var(--text-3xl);
-  line-height: var(--leading-tight);
+  font-size: 1.75rem;
+  letter-spacing: -0.03em;
 }
 
 .confirmList {
   display: grid;
-  gap: var(--space-2);
+  gap: 0.5rem;
   margin: 0;
-  padding: var(--space-5);
+  padding: 1rem;
   list-style: none;
-  background: var(--surface-sunken);
-  border-radius: var(--radius-md);
-  font-size: var(--text-sm);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  font-size: 0.9rem;
 }
 
 .confirmList li strong {
   display: inline-block;
-  min-inline-size: 7rem;
-  margin-inline-end: var(--space-2);
-  color: var(--text-secondary);
-  font-weight: var(--weight-medium);
+  min-width: 6.5rem;
+  margin-right: 0.5rem;
+  color: rgba(250, 250, 250, 0.5);
+  font-weight: 500;
 }
 
 .note {
-  color: var(--text-secondary);
-  font-size: var(--text-sm);
+  color: rgba(250, 250, 250, 0.5);
+  font-size: 0.85rem;
 }
 
-/* -------------------------------- Réponsif -------------------------------- */
+/* —— Desktop : deux colonnes —— */
+@media (min-width: 64rem) {
+  .flow {
+    display: grid;
+    grid-template-columns: minmax(18rem, 28%) 1fr;
+    min-height: 100dvh;
+  }
 
-@media (min-width: 48rem) {
+  .context {
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border-bottom: none;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .stepList {
+    display: grid;
+    gap: 0.4rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.85rem;
+  }
+
+  .stepList li {
+    color: rgba(250, 250, 250, 0.4);
+  }
+
+  .stepList li[data-state='current'] {
+    color: #fafafa;
+    font-weight: 600;
+  }
+
+  .stepList li[data-state='complete'] {
+    color: rgba(245, 240, 230, 0.7);
+  }
+
+  .priceCard {
+    display: grid;
+    gap: 0.25rem;
+    margin-top: auto;
+    padding: 1.1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+  }
+
+  .priceLabel {
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(250, 250, 250, 0.45);
+  }
+
+  .priceAmount {
+    font-size: 1.75rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .priceDuration,
+  .priceLine {
+    font-size: 0.85rem;
+    color: rgba(250, 250, 250, 0.5);
+  }
+
+  .workspace {
+    max-width: 36rem;
+    margin: 0;
+    padding: 2.5rem 2.5rem 3rem;
+  }
+
+  .actions {
+    position: static;
+    padding: 1rem 0 0;
+    background: transparent;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 1.5rem;
+  }
+
   .slotGrid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 62rem) {
-  .flow {
-    grid-template-columns: minmax(22rem, 34%) minmax(0, 66%);
-  }
-}
-
-@media (max-width: 61.999rem) {
-  .flow {
-    min-block-size: auto;
   }
 }
 

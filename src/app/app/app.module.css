@@ -1,42 +1,67 @@
 .shell {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr auto;
   background: #09090b;
   color: #fafafa;
   font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
-@media (max-width: 860px) {
+@media (min-width: 860px) {
   .shell {
-    grid-template-columns: 1fr;
-  }
-
-  .sidebar {
-    display: none;
+    grid-template-columns: 240px 1fr;
+    grid-template-rows: 1fr;
   }
 }
 
-/* —— Sidebar —— */
+/* —— Sidebar desktop / bottom nav mobile —— */
 .sidebar {
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
-  background: #0c0c0e;
-  padding: 1.25rem 0.85rem;
+  order: 2;
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.45rem 0.5rem calc(0.45rem + env(safe-area-inset-bottom));
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: #0c0c0e;
+  position: sticky;
+  bottom: 0;
+  z-index: 40;
+}
+
+@media (min-width: 860px) {
+  .sidebar {
+    order: 0;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 1.5rem;
+    padding: 1.25rem 0.85rem;
+    border-top: none;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+  }
 }
 
 .sidebarBrand {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  padding: 0.35rem 0.65rem 0.85rem;
+  display: none;
+}
+
+@media (min-width: 860px) {
+  .sidebarBrand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.35rem 0.65rem 0.85rem;
+  }
 }
 
 .sidebarBrand strong {
   font-size: 0.95rem;
-  letter-spacing: 0.01em;
 }
 
 .sidebarBrand span {
@@ -46,25 +71,43 @@
 
 .sidebarNav {
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
   flex: 1;
+  justify-content: space-around;
+  gap: 0.25rem;
+}
+
+@media (min-width: 860px) {
+  .sidebarNav {
+    flex-direction: column;
+    justify-content: flex-start;
+  }
 }
 
 .navItem {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.65rem;
-  padding: 0.55rem 0.7rem;
-  border-radius: 8px;
-  color: rgba(250, 250, 250, 0.65);
+  gap: 0.15rem;
+  padding: 0.4rem 0.65rem;
+  border-radius: 10px;
+  color: rgba(250, 250, 250, 0.55);
   text-decoration: none;
-  font-size: 0.875rem;
+  font-size: 0.7rem;
   border: none;
   background: none;
   cursor: pointer;
-  text-align: left;
-  width: 100%;
+  text-align: center;
+}
+
+@media (min-width: 860px) {
+  .navItem {
+    flex-direction: row;
+    text-align: left;
+    font-size: 0.875rem;
+    width: 100%;
+    padding: 0.55rem 0.7rem;
+    gap: 0.65rem;
+  }
 }
 
 .navItem:hover {
@@ -73,30 +116,39 @@
 }
 
 .navItemActive {
-  background: rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.1);
   color: #fafafa;
   font-weight: 500;
 }
 
 .sidebarFooter {
-  padding: 0.5rem 0.65rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  padding-top: 1rem;
+  display: none;
 }
 
-.sidebarFooter form {
-  margin: 0;
+@media (min-width: 860px) {
+  .sidebarFooter {
+    display: block;
+    padding: 0.5rem 0.65rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 1rem;
+    margin-top: auto;
+  }
+
+  .sidebarFooter form {
+    margin: 0;
+  }
 }
 
 /* —— Main —— */
 .main {
-  padding: 1.75rem 2rem 3rem;
+  order: 1;
+  padding: 1.15rem 1rem 1.5rem;
   max-width: 1100px;
 }
 
-@media (max-width: 860px) {
+@media (min-width: 860px) {
   .main {
-    padding: 1.25rem 1rem 2.5rem;
+    padding: 1.75rem 2rem 3rem;
   }
 }
 
@@ -105,26 +157,38 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.25rem;
 }
 
 .title {
   margin: 0;
-  font-size: 1.65rem;
+  font-size: 1.45rem;
   font-weight: 600;
   letter-spacing: -0.02em;
 }
 
+@media (min-width: 860px) {
+  .title {
+    font-size: 1.65rem;
+  }
+}
+
 .subtitle {
   margin: 0.3rem 0 0;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: rgba(250, 250, 250, 0.5);
 }
 
 .topActions {
-  display: flex;
-  gap: 0.5rem;
-  flex-shrink: 0;
+  display: none;
+}
+
+@media (min-width: 860px) {
+  .topActions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
 }
 
 .btnGhost {
@@ -155,57 +219,56 @@
   cursor: pointer;
 }
 
-.btnPrimary:hover {
-  background: #e4e4e7;
-}
-
-/* —— KPI cards —— */
+/* KPI */
 .kpis {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.75rem;
-  margin-bottom: 1.75rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
 }
 
-@media (max-width: 900px) {
+@media (min-width: 900px) {
   .kpis {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
   }
 }
 
 .kpi {
-  padding: 1rem 1.1rem;
+  padding: 0.9rem 1rem;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
 }
 
 .kpiLabel {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: rgba(250, 250, 250, 0.45);
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.35rem;
 }
 
 .kpiValue {
-  font-size: 1.55rem;
+  font-size: 1.35rem;
   font-weight: 600;
   letter-spacing: -0.02em;
 }
 
 .kpiHint {
-  margin-top: 0.25rem;
-  font-size: 0.75rem;
+  margin-top: 0.2rem;
+  font-size: 0.72rem;
   color: rgba(250, 250, 250, 0.4);
 }
 
-/* —— Filters —— */
 .filters {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 0.4rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.85rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 0.15rem;
 }
 
 .filter {
@@ -215,11 +278,8 @@
   color: rgba(250, 250, 250, 0.6);
   text-decoration: none;
   font-size: 0.78rem;
-}
-
-.filter:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-  color: #fafafa;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .filterActive {
@@ -229,7 +289,6 @@
   font-weight: 500;
 }
 
-/* —— Table —— */
 .panel {
   border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -237,10 +296,18 @@
   overflow: hidden;
 }
 
+/* Mobile: cards instead of table */
 .table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.875rem;
+  display: none;
+}
+
+@media (min-width: 720px) {
+  .table {
+    display: table;
+  }
 }
 
 .table th {
@@ -264,11 +331,6 @@
   border-bottom: none;
 }
 
-.table tbody tr {
-  cursor: pointer;
-  transition: background 0.12s ease;
-}
-
 .table tbody tr:hover {
   background: rgba(255, 255, 255, 0.035);
 }
@@ -277,6 +339,36 @@
   color: inherit;
   text-decoration: none;
   display: contents;
+}
+
+.mobileList {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 720px) {
+  .mobileList {
+    display: none;
+  }
+}
+
+.mobileCard {
+  display: block;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  color: inherit;
+  text-decoration: none;
+}
+
+.mobileCard:last-child {
+  border-bottom: none;
+}
+
+.mobileCardTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.35rem;
 }
 
 .clientCell {
@@ -322,7 +414,7 @@
 }
 
 .empty {
-  padding: 3rem 1.5rem;
+  padding: 2.5rem 1.25rem;
   text-align: center;
   color: rgba(250, 250, 250, 0.45);
   font-size: 0.9rem;
@@ -335,9 +427,8 @@
   font-weight: 500;
 }
 
-/* —— Login —— */
 .loginShell {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
   place-items: center;
   background: #09090b;
@@ -348,7 +439,7 @@
 .loginBox {
   width: 100%;
   max-width: 400px;
-  padding: 2rem;
+  padding: 1.75rem;
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.03);
@@ -356,7 +447,7 @@
 
 .loginBox h1 {
   margin: 0 0 0.4rem;
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   letter-spacing: -0.02em;
 }
 
@@ -379,29 +470,24 @@
 }
 
 .field input {
-  padding: 0.7rem 0.85rem;
-  border-radius: 8px;
+  padding: 0.75rem 0.85rem;
+  border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(0, 0, 0, 0.35);
   color: #fafafa;
-  font-size: 0.95rem;
-}
-
-.field input:focus {
-  outline: none;
-  border-color: rgba(250, 250, 250, 0.35);
+  font-size: 1rem;
 }
 
 .btn {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: 0.8rem 1rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   background: #fafafa;
   color: #09090b;
   font-weight: 600;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
 
 .btn:disabled {
@@ -421,47 +507,40 @@
   color: #f87171;
 }
 
-/* —— Detail —— */
 .back {
   display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
   color: rgba(250, 250, 250, 0.5);
   text-decoration: none;
   font-size: 0.85rem;
 }
 
-.back:hover {
-  color: #fafafa;
-}
-
 .detailGrid {
   display: grid;
-  gap: 0.75rem;
-  margin: 1.25rem 0 1.5rem;
-  grid-template-columns: repeat(2, 1fr);
+  gap: 0.65rem;
+  margin: 1rem 0 1.25rem;
+  grid-template-columns: 1fr;
 }
 
-@media (max-width: 640px) {
+@media (min-width: 640px) {
   .detailGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 .detailItem {
-  padding: 1rem 1.1rem;
+  padding: 0.95rem 1rem;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.02);
 }
 
 .detailItem dt {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: rgba(250, 250, 250, 0.4);
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.3rem;
 }
 
 .detailItem dd {
@@ -477,13 +556,14 @@
 }
 
 .actions button {
-  padding: 0.55rem 1rem;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 250, 0.12);
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(255, 255, 255, 0.05);
   color: #fafafa;
   cursor: pointer;
   font-size: 0.85rem;
+  min-height: 2.75rem;
 }
 
 .actions button[data-primary='true'] {
@@ -491,11 +571,6 @@
   color: #09090b;
   border-color: #fafafa;
   font-weight: 600;
-}
-
-.actions button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .photos {
@@ -510,14 +585,10 @@
   font-size: 0.85rem;
 }
 
-.photos a:hover {
-  color: #fafafa;
-}
-
 .unlinked {
   max-width: 520px;
   margin: 10vh auto;
-  padding: 2rem;
+  padding: 1.75rem;
   border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.03);
