@@ -5,8 +5,12 @@ export default function AppLoginPage() {
   return (
     <div className={styles.loginShell}>
       <div className={styles.loginBox}>
-        <h1>Espace detailer</h1>
-        <p>Connexion par lien magique. Aucun mot de passe.</p>
+        <p className={styles.loginEyebrow}>Qualifyr · Detailers</p>
+        <h1>Remplis ton planning.</h1>
+        <p>
+          Parcours de réservation + estimation pour detailers en France et en Suisse.
+          Connexion par lien magique — aucun mot de passe.
+        </p>
         <LoginForm />
       </div>
     </div>
