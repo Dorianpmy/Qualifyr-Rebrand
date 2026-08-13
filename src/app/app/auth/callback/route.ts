@@ -1,21 +1,15 @@
 import { NextResponse } from 'next/server';
-import { exchangeMagicToken, setSessionCookies } from '@/lib/detailing/session';
 
+/**
+ * Ancienne route serveur — redirige vers la page client qui lit le hash.
+ * Les tokens implicit flow arrivent en #access_token=…, illisibles ici.
+ */
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const tokenHash = url.searchParams.get('token_hash');
-  const type = url.searchParams.get('type') ?? 'email';
-  const origin = url.origin;
-
-  if (!tokenHash) {
-    return NextResponse.redirect(`${origin}/app/login?error=link`);
-  }
-
-  const session = await exchangeMagicToken(tokenHash, type);
-  if (!session?.access_token || !session.refresh_token) {
-    return NextResponse.redirect(`${origin}/app/login?error=session`);
-  }
-
-  await setSessionCookies(session.access_token, session.refresh_token);
-  return NextResponse.redirect(`${origin}/app`);
+  // Conserve query éventuelle (token_hash) ; le hash est géré côté page.
+  const target = new URL('/app/auth/callback', url.origin);
+  url.searchParams.forEach((value, key) => {
+    target.searchParams.set(key, value);
+  });
+  return NextResponse.redirect(target);
 }
