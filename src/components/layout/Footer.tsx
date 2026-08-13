@@ -15,27 +15,14 @@ import { Logo } from '@/components/ui/Logo';
 import { Container } from './Container';
 import styles from './Footer.module.css';
 
-/**
- * Clôture éditoriale globale : appel à l'action puis pied de page structuré.
- *
- * Les coordonnées viennent de `src/content/contact.ts` et **seules les valeurs
- * réellement renseignées sont affichées**. Si aucun canal n'est connu, la
- * colonne « Contact » disparaît entièrement plutôt que d'afficher un
- * placeholder ou une information inventée : ni adresse, ni téléphone, ni
- * horaires, ni réseaux sociaux.
- */
 export function Footer() {
   const pathname = usePathname();
   const year = new Date().getFullYear();
   const channels = availableChannels();
-  /**
-   * Pages qui portent déjà leur propre clôture.
-   *
-   * Le bloc générique proposait « Estimer mon projet » sous une page qui vend
-   * un abonnement à 79 € sans accompagnement : il contredisait l'offre au lieu
-   * de la conclure. Une page qui a son appel à l'action n'en veut pas un
-   * second, contradictoire.
-   */
+
+  if (pathname.startsWith('/app') || pathname.startsWith('/reservation')) return null;
+  if (pathname === '/diagnostic') return null;
+
   const hasPageSpecificCta =
     pathname === '/nettoyage-automobile' ||
     pathname === '/conciergerie' ||
@@ -44,41 +31,37 @@ export function Footer() {
     pathname === '/simulateur-revenus-locatifs' ||
     pathname.startsWith('/conciergerie/');
 
-  if (pathname === '/diagnostic') return null;
-
   return (
     <footer className={styles.footer}>
       <Container>
-        {pathname === '/' || hasPageSpecificCta ? null : <section className={styles.cta} data-surface="inverse" aria-labelledby="footer-cta-title">
-          <div className={styles.ctaCopy}>
-            <p className={styles.ctaEyebrow}>Votre prochaine étape</p>
-            <h2 id="footer-cta-title" className={styles.ctaTitle}>
-              Savoir ce qui freine vos demandes.
-            </h2>
-            <p className={styles.ctaText}>
-              Le diagnostic prend trois minutes. Il identifie ce qui bloque aujourd’hui et ce qu’il
-              faut corriger en premier — avant même de parler de budget.
-            </p>
-          </div>
-          <div className={styles.ctaActions}>
-            <ButtonLink href="/diagnostic" ctaId="final_diagnostic" variant="inverse" withArrow>
-              Faire le diagnostic
-            </ButtonLink>
-            <ButtonLink href="/tarifs" ctaId="footer_pricing" variant="inverseSecondary">
-              Voir les tarifs
-            </ButtonLink>
-          </div>
-        </section>}
+        {pathname === '/' || hasPageSpecificCta ? null : (
+          <section className={styles.cta} data-surface="inverse" aria-labelledby="footer-cta-title">
+            <div className={styles.ctaCopy}>
+              <p className={styles.ctaEyebrow}>Votre prochaine étape</p>
+              <h2 id="footer-cta-title" className={styles.ctaTitle}>
+                Savoir ce qui freine vos demandes.
+              </h2>
+              <p className={styles.ctaText}>
+                Le diagnostic prend trois minutes. Il identifie ce qui bloque aujourd’hui et ce qu’il
+                faut corriger en premier — avant même de parler de budget.
+              </p>
+            </div>
+            <div className={styles.ctaActions}>
+              <ButtonLink href="/diagnostic" ctaId="final_diagnostic" variant="inverse" withArrow>
+                Faire le diagnostic
+              </ButtonLink>
+              <ButtonLink href="/tarifs" ctaId="footer_pricing" variant="inverseSecondary">
+                Voir les tarifs
+              </ButtonLink>
+            </div>
+          </section>
+        )}
 
         <div className={styles.grid}>
           <div className={styles.brandColumn}>
             <Link href="/" className={styles.logoLink} aria-label="Qualifyr — Accueil">
               <Logo />
             </Link>
-            {/* Le positionnement doit dire la même chose que la colonne des
-                services : deux verticales assumées. Une formulation
-                généraliste juste au-dessus les contredit et fait perdre la
-                prime de spécialiste. */}
             <p className={styles.positioning}>
               Nous concevons les sites et les outils d’acquisition des entreprises de services —
               nettoyage automobile et conciergeries de location courte durée.
@@ -159,7 +142,9 @@ export function Footer() {
 
             <p className={styles.areaLabel}>Zone d’accompagnement</p>
             <ul className={styles.areaList}>
-              {serviceAreas.map((area) => <li key={area}>{area}</li>)}
+              {serviceAreas.map((area) => (
+                <li key={area}>{area}</li>
+              ))}
             </ul>
           </div>
         </div>
@@ -170,7 +155,9 @@ export function Footer() {
             <ul className={styles.legalList}>
               {legalNav.map((item) => (
                 <li key={`${item.label}-${item.href}`}>
-                  <Link href={item.href} className={styles.legalLink}>{item.label}</Link>
+                  <Link href={item.href} className={styles.legalLink}>
+                    {item.label}
+                  </Link>
                 </li>
               ))}
             </ul>
