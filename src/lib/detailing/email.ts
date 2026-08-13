@@ -3,11 +3,9 @@ import { vehicleSizeCopy, scopeCopy, soilingCopy, optionCopy } from '@/component
 import type { LocationMode, OptionKey, Scope, SoilingLevel, VehicleSize } from './types';
 
 /**
- * Envoi des emails de réservation via Resend.
- *
- * Si RESEND_API_KEY est absent, les envois sont ignorés (la réservation reste valide).
- * En test sans domaine vérifié : FROM = onboarding@resend.dev
- * et les destinataires limités à l'email du compte Resend.
+ * Emails de réservation via Resend.
+ * Échec silencieux côté client (la réservation reste valide),
+ * mais log serveur pour le debug.
  */
 
 function readEnv(name: string): string | null {
@@ -19,7 +17,10 @@ function readEnv(name: string): string | null {
 
 function getResend(): Resend | null {
   const key = readEnv('RESEND_API_KEY');
-  if (!key) return null;
+  if (!key) {
+    console.warn('[booking-email] RESEND_API_KEY manquante — emails désactivés');
+    return null;
+  }
   return new Resend(key);
 }
 
@@ -47,11 +48,8 @@ export type BookingEmailPayload = {
   readonly depositAmount: number;
 };
 
-function formatPrice(centsOrEuros: number): string {
-  return new Intl.NumberFormat('fr-FR', {
-    style: 'currency',
-    currency: 'EUR',
-  }).format(centsOrEuros);
+function formatPrice(amount: number): string {
+  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(amount);
 }
 
 function formatSlot(iso: string): string {
@@ -77,95 +75,116 @@ function locationLabel(mode: LocationMode, postalCode?: string): string {
   return postalCode ? `Domicile · ${postalCode}` : 'Domicile';
 }
 
-function summaryLines(p: BookingEmailPayload): string {
+function rows(payload: BookingEmailPayload): { label: string; value: string }[] {
   return [
-    `Professionnel : ${p.detailerName}`,
-    `Créneau : ${formatSlot(p.slotStart)}`,
-    `Véhicule : ${vehicleSizeCopy[p.vehicleSize].label}${p.vehicleModel ? ` · ${p.vehicleModel}` : ''}${p.plate ? ` · ${p.plate}` : ''}`,
-    `Formule : ${scopeCopy[p.scope].label}`,
-    `État : ${soilingCopy[p.soiling].label}`,
-    `Options : ${optionsLabel(p.optionKeys)}`,
-    `Lieu : ${locationLabel(p.locationMode, p.postalCode)}`,
-    `Durée estimée : ${p.quotedMinutes} min`,
-    `Montant : ${formatPrice(p.quotedPrice)}`,
-    p.depositAmount > 0 ? `Acompte : ${formatPrice(p.depositAmount)}` : null,
-    `Réf. : ${p.bookingId}`,
-  ]
-    .filter(Boolean)
-    .join('\n');
+    { label: 'Professionnel', value: payload.detailerName },
+    { label: 'Créneau', value: formatSlot(payload.slotStart) },
+    {
+      label: 'Véhicule',
+      value: [
+        vehicleSizeCopy[payload.vehicleSize].label,
+        payload.vehicleModel,
+        payload.plate,
+      ]
+        .filter(Boolean)
+        .join(' · '),
+    },
+    { label: 'Formule', value: scopeCopy[payload.scope].label },
+    { label: 'État', value: soilingCopy[payload.soiling].label },
+    { label: 'Options', value: optionsLabel(payload.optionKeys) },
+    { label: 'Lieu', value: locationLabel(payload.locationMode, payload.postalCode) },
+    { label: 'Durée estimée', value: `${payload.quotedMinutes} min` },
+    { label: 'Montant', value: formatPrice(payload.quotedPrice) },
+    ...(payload.depositAmount > 0
+      ? [{ label: 'Acompte', value: formatPrice(payload.depositAmount) }]
+      : []),
+    { label: 'Référence', value: payload.bookingId },
+  ];
 }
 
-/** Email au client — confirmation de demande. */
+function textBody(title: string, intro: string, payload: BookingEmailPayload, outro: string): string {
+  const lines = rows(payload).map((r) => `${r.label} : ${r.value}`);
+  return [title, '', intro, '', ...lines, '', outro, '', '— Qualifyr'].join('\n');
+}
+
+function htmlBody(title: string, intro: string, payload: BookingEmailPayload, outro: string): string {
+  const list = rows(payload)
+    .map(
+      (r) =>
+        `<tr><td style="padding:6px 12px 6px 0;color:#666;vertical-align:top">${r.label}</td><td style="padding:6px 0;font-weight:500">${r.value}</td></tr>`,
+    )
+    .join('');
+  return `<!DOCTYPE html><html><body style="font-family:system-ui,-apple-system,sans-serif;line-height:1.5;color:#111;max-width:560px;margin:0 auto;padding:24px">
+  <h1 style="font-size:20px;margin:0 0 12px">${title}</h1>
+  <p style="margin:0 0 20px;color:#333">${intro}</p>
+  <table style="border-collapse:collapse;width:100%;font-size:14px">${list}</table>
+  <p style="margin:24px 0 0;color:#333">${outro}</p>
+  <p style="margin:16px 0 0;color:#888;font-size:13px">— Qualifyr</p>
+</body></html>`;
+}
+
 export async function sendClientBookingEmail(payload: BookingEmailPayload): Promise<boolean> {
   const resend = getResend();
   if (!resend) return false;
 
-  const text = [
-    `Bonjour,`,
-    ``,
-    `Votre demande de réservation avec ${payload.detailerName} a bien été enregistrée.`,
-    ``,
-    summaryLines(payload),
-    ``,
-    `Le professionnel va la traiter. Vous serez recontacté si besoin.`,
-    ``,
-    `— Qualifyr`,
-  ].join('\n');
+  const title = 'Demande enregistrée';
+  const intro = `Votre demande de réservation avec ${payload.detailerName} a bien été enregistrée.`;
+  const outro = 'Le professionnel va la traiter. Vous serez recontacté si besoin.';
 
   try {
-    const { error } = await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: fromAddress(),
       to: payload.clientEmail,
       subject: `Demande enregistrée — ${payload.detailerName}`,
-      text,
+      text: textBody(title, intro, payload, outro),
+      html: htmlBody(title, intro, payload, outro),
     });
-    return !error;
-  } catch {
+    if (error) {
+      console.error('[booking-email] client failed', error);
+      return false;
+    }
+    console.info('[booking-email] client sent', data?.id, '→', payload.clientEmail);
+    return true;
+  } catch (err) {
+    console.error('[booking-email] client exception', err);
     return false;
   }
 }
 
-/** Email au detailer — nouvelle demande. */
 export async function sendDetailerBookingEmail(payload: BookingEmailPayload): Promise<boolean> {
   const resend = getResend();
   if (!resend) return false;
 
-  const to =
-    payload.detailerEmail?.trim() ||
-    readEnv('BOOKING_NOTIFY_EMAIL') ||
-    null;
+  const to = payload.detailerEmail?.trim() || readEnv('BOOKING_NOTIFY_EMAIL') || null;
+  if (!to) {
+    console.warn('[booking-email] aucun destinataire detailer (email fiche ou BOOKING_NOTIFY_EMAIL)');
+    return false;
+  }
 
-  if (!to) return false;
-
-  const text = [
-    `Nouvelle demande de réservation`,
-    ``,
-    `Client : ${payload.clientEmail}${payload.clientPhone ? ` · ${payload.clientPhone}` : ''}`,
-    ``,
-    summaryLines(payload),
-    ``,
-    `Connectez-vous à votre espace pour confirmer ou ajuster.`,
-    ``,
-    `— Qualifyr`,
-  ].join('\n');
+  const title = 'Nouvelle demande de réservation';
+  const intro = `Client : ${payload.clientEmail}${payload.clientPhone ? ` · ${payload.clientPhone}` : ''}`;
+  const outro = 'Connectez-vous à votre espace pour confirmer ou ajuster.';
 
   try {
-    const { error } = await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: fromAddress(),
       to,
       subject: `Nouvelle réservation — ${formatSlot(payload.slotStart)}`,
-      text,
+      text: textBody(title, intro, payload, outro),
+      html: htmlBody(title, intro, payload, outro),
     });
-    return !error;
-  } catch {
+    if (error) {
+      console.error('[booking-email] detailer failed', error);
+      return false;
+    }
+    console.info('[booking-email] detailer sent', data?.id, '→', to);
+    return true;
+  } catch (err) {
+    console.error('[booking-email] detailer exception', err);
     return false;
   }
 }
 
-/** Envoie les deux mails sans faire échouer la réservation. */
 export async function notifyBookingEmails(payload: BookingEmailPayload): Promise<void> {
-  await Promise.allSettled([
-    sendClientBookingEmail(payload),
-    sendDetailerBookingEmail(payload),
-  ]);
+  await Promise.allSettled([sendClientBookingEmail(payload), sendDetailerBookingEmail(payload)]);
 }

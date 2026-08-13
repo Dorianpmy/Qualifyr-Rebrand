@@ -72,6 +72,16 @@ function formatDayLabel(iso: string): string {
   return new Date(iso).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
 }
 
+function formatSlotLong(iso: string): string {
+  return new Date(iso).toLocaleString('fr-FR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
 function tomorrowIso(): string {
   const date = new Date();
   date.setDate(date.getDate() + 1);
@@ -178,18 +188,14 @@ export function BookingFlow({
       window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
     }, 0);
     return () => window.clearTimeout(timer);
-  }, [stepIndex]);
+  }, [stepIndex, phase]);
 
   const activeStep = steps[stepIndex] ?? steps[0]!;
   const durationMinutes = currentQuote?.totalMinutes ?? null;
 
-  // Créneaux disponibles : rechargés à chaque changement de jour ou de durée
-  // (§2.6 — la durée vient du moteur de devis, jamais d'une estimation locale).
   useEffect(() => {
     if (activeStep.id !== 'creneau' || durationMinutes === null) return;
     let cancelled = false;
-    // Différé au micro-tour suivant : une mise à jour d'état synchrone dans le
-    // corps de l'effet déclenche un second rendu en cascade évitable.
     queueMicrotask(() => {
       if (cancelled) return;
       setSlotsState('loading');
@@ -307,22 +313,37 @@ export function BookingFlow({
       <section className={styles.confirmation} aria-labelledby="booking-confirmation-title">
         <p className={styles.eyebrow}>Demande envoyée</p>
         <h1 ref={headingRef} tabIndex={-1} id="booking-confirmation-title">
-          Votre créneau est réservé, sous quinze minutes.
+          C’est noté. {detailer.name} a bien reçu votre demande.
         </h1>
-        <p>
-          {formatDuration(bookingSummary.quotedMinutes)} d’intervention, estimés à{' '}
-          {formatPrice(bookingSummary.quotedPrice)}.
-        </p>
+        <ul className={styles.confirmList}>
+          {selectedSlot ? (
+            <li>
+              <strong>Créneau</strong> {formatSlotLong(selectedSlot.start)}
+            </li>
+          ) : null}
+          <li>
+            <strong>Durée</strong> {formatDuration(bookingSummary.quotedMinutes)}
+          </li>
+          <li>
+            <strong>Estimation</strong> {formatPrice(bookingSummary.quotedPrice)}
+          </li>
+          <li>
+            <strong>Confirmation</strong> un e-mail a été envoyé à {email}
+          </li>
+        </ul>
         {quoteConfig.depositEnabled && bookingSummary.depositAmount > 0 ? (
           <p>
-            {detailer.name} vous recontacte pour régler l’acompte de{' '}
+            {detailer.name} vous recontacte pour l’acompte de{' '}
             {formatPrice(bookingSummary.depositAmount)} avant{' '}
-            {formatTime(bookingSummary.holdExpiresAt)} — au-delà, le créneau est remis à disposition.
+            {formatTime(bookingSummary.holdExpiresAt)} — au-delà, le créneau est libéré.
           </p>
         ) : (
           <p>{detailer.name} vous recontacte pour confirmer définitivement ce créneau.</p>
         )}
         <p className={styles.note}>{revisionNotice(detailer.name)}</p>
+        <p className={styles.note}>
+          Pensez à vérifier vos spams si le message n’apparaît pas dans la boîte de réception.
+        </p>
       </section>
     );
   }
