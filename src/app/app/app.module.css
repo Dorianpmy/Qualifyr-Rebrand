@@ -5,7 +5,7 @@
   grid-template-rows: 1fr auto;
   background: #09090b;
   color: #fafafa;
-  font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
 }
 
 @media (min-width: 860px) {
@@ -15,7 +15,6 @@
   }
 }
 
-/* —— Sidebar desktop / bottom nav mobile —— */
 .sidebar {
   order: 2;
   display: flex;
@@ -116,8 +115,8 @@
 }
 
 .navItemActive {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fafafa;
+  background: rgba(18, 183, 106, 0.15);
+  color: #32d583;
   font-weight: 500;
 }
 
@@ -139,7 +138,6 @@
   }
 }
 
-/* —— Main —— */
 .main {
   order: 1;
   padding: 1.15rem 1rem 1.5rem;
@@ -165,6 +163,7 @@
   font-size: 1.45rem;
   font-weight: 600;
   letter-spacing: -0.02em;
+  font-family: var(--font-body), system-ui, sans-serif;
 }
 
 @media (min-width: 860px) {
@@ -211,15 +210,14 @@
   padding: 0.45rem 0.95rem;
   border-radius: 8px;
   border: none;
-  background: #fafafa;
-  color: #09090b;
+  background: #12b76a;
+  color: #fff;
   font-size: 0.8rem;
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
 }
 
-/* KPI */
 .kpis {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -283,9 +281,9 @@
 }
 
 .filterActive {
-  background: #fafafa;
-  color: #09090b;
-  border-color: #fafafa;
+  background: #12b76a;
+  color: #fff;
+  border-color: #12b76a;
   font-weight: 500;
 }
 
@@ -296,7 +294,6 @@
   overflow: hidden;
 }
 
-/* Mobile: cards instead of table */
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -399,8 +396,8 @@
 }
 
 .badgeConfirme {
-  background: rgba(34, 197, 94, 0.15);
-  color: #4ade80;
+  background: rgba(18, 183, 106, 0.15);
+  color: #32d583;
 }
 
 .badgeAttente {
@@ -434,6 +431,7 @@
   background: #09090b;
   color: #fafafa;
   padding: 1.5rem;
+  font-family: var(--font-body), system-ui, sans-serif;
 }
 
 .loginBox {
@@ -445,16 +443,28 @@
   background: rgba(255, 255, 255, 0.03);
 }
 
+.loginEyebrow {
+  margin: 0 0 0.65rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #12b76a;
+}
+
 .loginBox h1 {
-  margin: 0 0 0.4rem;
-  font-size: 1.35rem;
-  letter-spacing: -0.02em;
+  margin: 0 0 0.5rem;
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-family: var(--font-body), system-ui, sans-serif;
 }
 
 .loginBox > p {
   margin: 0 0 1.5rem;
-  color: rgba(250, 250, 250, 0.5);
+  color: rgba(250, 250, 250, 0.55);
   font-size: 0.9rem;
+  line-height: 1.45;
 }
 
 .field {
@@ -483,8 +493,8 @@
   padding: 0.8rem 1rem;
   border: none;
   border-radius: 10px;
-  background: #fafafa;
-  color: #09090b;
+  background: #12b76a;
+  color: #fff;
   font-weight: 600;
   cursor: pointer;
   font-size: 0.95rem;
@@ -498,7 +508,7 @@
 .message {
   margin-top: 1rem;
   font-size: 0.85rem;
-  color: #4ade80;
+  color: #32d583;
 }
 
 .error {
@@ -567,9 +577,9 @@
 }
 
 .actions button[data-primary='true'] {
-  background: #fafafa;
-  color: #09090b;
-  border-color: #fafafa;
+  background: #12b76a;
+  color: #fff;
+  border-color: #12b76a;
   font-weight: 600;
 }
 
