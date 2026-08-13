@@ -17,7 +17,7 @@ type Offer = {
   readonly convertible: boolean;
   readonly audience: string;
   readonly items: readonly string[];
-  readonly href: Route;
+  readonly href: Route | `${Route}#${string}`;
   readonly linkLabel: string;
   readonly featured?: boolean;
 };
@@ -60,6 +60,24 @@ const offers: readonly Offer[] = [
     href: '/estimation',
     linkLabel: 'Obtenir une estimation',
   },
+  {
+    kicker: 'Abonnement',
+    title: 'Module de réservation',
+    from: 49,
+    cadence: 'par mois',
+    convertible: false,
+    audience:
+      'Pour recevoir des demandes de créneau structurées, sans gérer vingt messages Instagram.',
+    items: [
+      'Page de réservation publique (formules + véhicule + créneau)',
+      'Notification email et WhatsApp à chaque demande',
+      'Confirmation automatique au client',
+      'Tableau de bord des demandes',
+      'Essai gratuit · sans engagement long',
+    ],
+    href: '/nettoyage-automobile#demonstration',
+    linkLabel: 'Voir la démonstration',
+  },
 ];
 
 function convert(amount: number, region: PricingRegion, convertible: boolean) {
@@ -69,7 +87,7 @@ function convert(amount: number, region: PricingRegion, convertible: boolean) {
 
 /**
  * Tarifs affichés, ajustés au pays du visiteur.
- * Recentrés 100 % nettoyage automobile / detailing.
+ * Sites (ponctuel) + module de réservation (abonnement).
  */
 export function PricingTable() {
   const [region, setRegion] = useState<PricingRegion>('euro');
@@ -125,8 +143,9 @@ export function PricingTable() {
       </div>
 
       <p className={styles.note}>
-        L’hébergement, le nom de domaine et les évolutions ultérieures sont facturés à part et
-        annoncés avant le démarrage. Aucun abonnement caché sur les prestations ponctuelles.
+        L’hébergement, le nom de domaine et les évolutions ultérieures des sites sont facturés à part
+        et annoncés avant le démarrage. Le module de réservation est un abonnement mensuel facturé
+        en euros, résiliable à tout moment.
         {region === 'switzerland'
           ? ' Les prestations d’agence sont affichées en francs suisses.'
           : null}
