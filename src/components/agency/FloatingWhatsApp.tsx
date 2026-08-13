@@ -9,10 +9,9 @@ import styles from './FloatingWhatsApp.module.css';
 export function FloatingWhatsApp() {
   const pathname = usePathname();
   if (pathname === '/diagnostic') return null;
+  if (pathname.startsWith('/app') || pathname.startsWith('/reservation')) return null;
   if (!agencyChannels.whatsappNumber) return null;
 
-  // Le message reprend le contexte de la page : le visiteur n'a plus qu'à
-  // envoyer, au lieu de devoir formuler sa demande depuis une page blanche.
   const href = buildWhatsAppUrl(
     agencyChannels.whatsappNumber,
     buildDirectWhatsAppMessage(pathname),
@@ -29,8 +28,12 @@ export function FloatingWhatsApp() {
       title="WhatsApp"
     >
       <BrandIcon name="whatsapp" className={styles.icon} />
-      <span className={styles.tooltip} aria-hidden="true">WhatsApp</span>
-      <span className={styles.badge} aria-hidden="true">+1</span>
+      <span className={styles.tooltip} aria-hidden="true">
+        WhatsApp
+      </span>
+      <span className={styles.badge} aria-hidden="true">
+        +1
+      </span>
     </a>
   );
 }
