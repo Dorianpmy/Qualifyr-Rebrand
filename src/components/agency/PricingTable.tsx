@@ -9,20 +9,37 @@ import styles from './PricingTable.module.css';
 type Offer = {
   readonly kicker: string;
   readonly title: string;
-  /** Montant unique, ou fourchette. Exprimés en euros. */
   readonly from: number;
   readonly to?: number;
   readonly cadence: string;
-  /** Prestation d'agence : convertie en francs pour un visiteur suisse. */
   readonly convertible: boolean;
   readonly audience: string;
   readonly items: readonly string[];
-  readonly href: Route | `${Route}#${string}`;
+  readonly href: Route;
   readonly linkLabel: string;
   readonly featured?: boolean;
 };
 
+/** Ordre : SaaS d’abord (récurrent), puis offres site. */
 const offers: readonly Offer[] = [
+  {
+    kicker: 'Abonnement',
+    title: 'Module de réservation',
+    from: 49,
+    cadence: 'par mois',
+    convertible: false,
+    audience:
+      'Pour recevoir des demandes de créneau structurées, sans gérer vingt messages Instagram.',
+    items: [
+      'Page de réservation publique (formules + véhicule + créneau)',
+      'Notification email et WhatsApp à chaque demande',
+      'Confirmation automatique au client',
+      'Tableau de bord des demandes',
+      'Essai gratuit · sans engagement long',
+    ],
+    href: '/nettoyage-automobile',
+    linkLabel: 'Voir la démonstration',
+  },
   {
     kicker: 'Le plus demandé',
     title: 'Site et parcours de demande',
@@ -60,24 +77,6 @@ const offers: readonly Offer[] = [
     href: '/estimation',
     linkLabel: 'Obtenir une estimation',
   },
-  {
-    kicker: 'Abonnement',
-    title: 'Module de réservation',
-    from: 49,
-    cadence: 'par mois',
-    convertible: false,
-    audience:
-      'Pour recevoir des demandes de créneau structurées, sans gérer vingt messages Instagram.',
-    items: [
-      'Page de réservation publique (formules + véhicule + créneau)',
-      'Notification email et WhatsApp à chaque demande',
-      'Confirmation automatique au client',
-      'Tableau de bord des demandes',
-      'Essai gratuit · sans engagement long',
-    ],
-    href: '/nettoyage-automobile#demonstration',
-    linkLabel: 'Voir la démonstration',
-  },
 ];
 
 function convert(amount: number, region: PricingRegion, convertible: boolean) {
@@ -85,10 +84,6 @@ function convert(amount: number, region: PricingRegion, convertible: boolean) {
   return roundUpToTen(amount * swissPriceFactor);
 }
 
-/**
- * Tarifs affichés, ajustés au pays du visiteur.
- * Sites (ponctuel) + module de réservation (abonnement).
- */
 export function PricingTable() {
   const [region, setRegion] = useState<PricingRegion>('euro');
 
@@ -100,9 +95,7 @@ export function PricingTable() {
       .then((data: { region?: PricingRegion } | null) => {
         if (active && data?.region) setRegion(data.region);
       })
-      .catch(() => {
-        // Sans réponse, on reste en euros.
-      });
+      .catch(() => {});
 
     return () => {
       active = false;

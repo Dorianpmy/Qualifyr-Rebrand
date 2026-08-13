@@ -100,6 +100,7 @@ export function BookingFlow({
   const [stepIndex, setStepIndex] = useState(0);
   const [phase, setPhase] = useState<'flow' | 'submitting' | 'done'>('flow');
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const workspaceRef = useRef<HTMLDivElement>(null);
   const draftId = useState(() => crypto.randomUUID())[0];
 
   const [vehicleSize, setVehicleSize] = useState<VehicleSize | ''>('');
@@ -181,11 +182,11 @@ export function BookingFlow({
     return withOption.totalPrice - base.totalPrice;
   }
 
+  // Focus le titre d'étape sans faire scroller toute la page (effet de rechargement).
   useEffect(() => {
     const timer = window.setTimeout(() => {
       headingRef.current?.focus({ preventScroll: true });
-      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
+      workspaceRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }, 0);
     return () => window.clearTimeout(timer);
   }, [stepIndex, phase]);
@@ -222,6 +223,14 @@ export function BookingFlow({
     setSelectedOptions((current) =>
       current.includes(key) ? current.filter((existing) => existing !== key) : [...current, key],
     );
+  }
+
+  function goNext() {
+    setStepIndex((current) => Math.min(steps.length - 1, current + 1));
+  }
+
+  function goPrev() {
+    setStepIndex((current) => Math.max(0, current - 1));
   }
 
   async function handlePhotoChange(index: number, file: File | undefined) {
@@ -385,7 +394,7 @@ export function BookingFlow({
         ) : null}
       </aside>
 
-      <div className={styles.workspace}>
+      <div className={styles.workspace} ref={workspaceRef}>
         <p className={styles.srOnly} aria-live="polite">
           Étape {stepIndex + 1} sur {steps.length} : {activeStep.title}
         </p>
@@ -654,11 +663,7 @@ export function BookingFlow({
 
         <div className={styles.actions}>
           {stepIndex > 0 ? (
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => setStepIndex((current) => Math.max(0, current - 1))}
-            >
+            <Button type="button" variant="secondary" onClick={goPrev}>
               Précédent
             </Button>
           ) : (
@@ -679,7 +684,7 @@ export function BookingFlow({
               type="button"
               withArrow
               disabled={!canProceed[activeStep.id]}
-              onClick={() => setStepIndex((current) => Math.min(steps.length - 1, current + 1))}
+              onClick={goNext}
             >
               Continuer
             </Button>
