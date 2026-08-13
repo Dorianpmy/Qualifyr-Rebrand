@@ -1,0 +1,316 @@
+.shell {
+  min-height: 100vh;
+  background: #0b0b0c;
+  color: #f4f1ea;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.brand {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.brand span {
+  color: rgba(244, 241, 234, 0.5);
+  font-weight: 400;
+}
+
+.nav {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.nav a,
+.nav button {
+  color: rgba(244, 241, 234, 0.75);
+  font-size: 0.875rem;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.35rem 0.5rem;
+}
+
+.nav a:hover,
+.nav button:hover {
+  color: #f4f1ea;
+}
+
+.main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 0.35rem;
+}
+
+.subtitle {
+  margin: 0 0 1.75rem;
+  color: rgba(244, 241, 234, 0.55);
+  font-size: 0.95rem;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.filter {
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(244, 241, 234, 0.7);
+  text-decoration: none;
+  font-size: 0.8rem;
+}
+
+.filterActive {
+  background: #f4f1ea;
+  color: #0b0b0c;
+  border-color: #f4f1ea;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.card {
+  display: block;
+  padding: 1.1rem 1.25rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s ease;
+}
+
+.card:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: baseline;
+  margin-bottom: 0.35rem;
+}
+
+.cardTitle {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.badge {
+  font-size: 0.72rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(244, 241, 234, 0.12);
+  color: rgba(244, 241, 234, 0.85);
+  white-space: nowrap;
+}
+
+.badgeConfirme {
+  background: rgba(80, 180, 120, 0.2);
+  color: #8fdfb0;
+}
+
+.badgeAttente {
+  background: rgba(220, 170, 60, 0.2);
+  color: #e8c56a;
+}
+
+.badgeAnnule {
+  background: rgba(200, 80, 80, 0.2);
+  color: #f0a0a0;
+}
+
+.meta {
+  font-size: 0.85rem;
+  color: rgba(244, 241, 234, 0.55);
+}
+
+.empty {
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  color: rgba(244, 241, 234, 0.5);
+}
+
+.loginBox {
+  max-width: 400px;
+  margin: 10vh auto 0;
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.loginBox h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.35rem;
+}
+
+.loginBox p {
+  margin: 0 0 1.5rem;
+  color: rgba(244, 241, 234, 0.55);
+  font-size: 0.9rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.field label {
+  font-size: 0.8rem;
+  color: rgba(244, 241, 234, 0.7);
+}
+
+.field input {
+  padding: 0.7rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.35);
+  color: #f4f1ea;
+  font-size: 1rem;
+}
+
+.btn {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: #f4f1ea;
+  color: #0b0b0c;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btnSecondary {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #f4f1ea;
+}
+
+.message {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: #8fdfb0;
+}
+
+.error {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: #f0a0a0;
+}
+
+.detailGrid {
+  display: grid;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+@media (min-width: 640px) {
+  .detailGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.detailItem {
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.detailItem dt {
+  font-size: 0.75rem;
+  color: rgba(244, 241, 234, 0.5);
+  margin-bottom: 0.25rem;
+}
+
+.detailItem dd {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+
+.actions form {
+  display: inline;
+}
+
+.actions button {
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+  color: #f4f1ea;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.actions button[data-primary='true'] {
+  background: #f4f1ea;
+  color: #0b0b0c;
+  border-color: #f4f1ea;
+  font-weight: 600;
+}
+
+.back {
+  display: inline-block;
+  margin-bottom: 1.25rem;
+  color: rgba(244, 241, 234, 0.55);
+  text-decoration: none;
+  font-size: 0.875rem;
+}
+
+.back:hover {
+  color: #f4f1ea;
+}
+
+.photos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.photos a {
+  color: #c9b896;
+  font-size: 0.85rem;
+}
