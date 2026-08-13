@@ -9,7 +9,7 @@ import { Section } from '@/components/layout/Section';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { ButtonLink } from '@/components/ui/Button';
 import { Eyebrow } from '@/components/ui/Eyebrow';
-import { hero, serviceCompanies } from '@/content/home';
+import { frictionPoints, hero } from '@/content/home';
 import { swCarCleaning } from '@/content/sw-car-cleaning';
 import { buildMetadata } from '@/lib/metadata';
 import { webPage } from '@/lib/structured-data';
@@ -81,32 +81,28 @@ export default function HomePage() {
         <Container>
           <div className={styles.sectionIntro}>
             <SectionHeading
-              eyebrow="01 — Pour qui"
-              title="Un métier, une façon de perdre un client."
-              lead="Dans le nettoyage automobile, le client décide souvent avant de vous parler. Ce qu’il cherche à ce moment-là, c’est de la clarté — et c’est là que tout se joue."
+              eyebrow="01 — Le problème"
+              title="Trois freins qui font partir un client prêt à réserver."
+              lead="Dans le nettoyage automobile, le prospect décide souvent avant de vous parler. S’il ne comprend pas l’offre, ne voit pas les tarifs ou ne trouve pas comment réserver, il passe au suivant."
             />
           </div>
           <ol className={styles.companyList}>
-            {serviceCompanies.map((company, index) => (
-              <li key={company.title}>
-                <Link
-                  href={company.href}
-                  className={styles.companyLink}
-                  data-cta-id="home_cleaning_page"
-                >
-                  <span className={styles.companyNumber}>{String(index + 1).padStart(2, '0')}</span>
+            {frictionPoints.map((point) => (
+              <li key={point.number}>
+                <div className={styles.companyLink}>
+                  <span className={styles.companyNumber}>{point.number}</span>
                   <span className={styles.companyCopy}>
-                    <span className={styles.companyTitle}>{company.title}</span>
-                    <span className={styles.companyBody}>{company.body}</span>
-                    <span className={styles.companyBody}>Voir notre approche</span>
+                    <span className={styles.companyTitle}>{point.title}</span>
+                    <span className={styles.companyBody}>{point.body}</span>
                   </span>
-                  <span className={styles.companyArrow} aria-hidden="true">↗</span>
-                </Link>
+                </div>
               </li>
             ))}
           </ol>
           <p className={styles.companyNote}>
-            Une exigence de clarté adaptée au fonctionnement réel de votre activité.
+            <Link href="/nettoyage-automobile" data-cta-id="home_cleaning_from_friction">
+              Voir comment on résout ça →
+            </Link>
           </p>
         </Container>
       </Section>

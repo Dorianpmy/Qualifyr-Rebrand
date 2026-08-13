@@ -2,8 +2,6 @@ import { objectives, swCarCleaning } from './sw-car-cleaning';
 
 /**
  * Hero — positionnement recentré nettoyage automobile / detailing.
- *
- * La restriction est l'argument : un seul métier, bien connu.
  */
 export const hero = {
   eyebrow: 'Agence digitale · Nettoyage automobile & detailing',
@@ -12,7 +10,6 @@ export const hero = {
     'Instagram vous fait connaître. Un site clair présente vos formules, affiche vos tarifs et transforme une visite en demande de créneau — sans passer par vingt messages privés.',
 } as const;
 
-/** Conservé pour la composition éditoriale réutilisée par le design system. */
 export const heroMoments = [
   { number: '01', label: 'Comprendre' },
   { number: '02', label: 'Convaincre' },
@@ -34,6 +31,28 @@ export const offerBlocks = [
     number: '03',
     title: 'Un parcours mieux organisé',
     body: 'Les informations importantes arrivent au bon moment, sans compliquer votre quotidien.',
+  },
+] as const;
+
+/**
+ * Section « Pour qui » — freins concrets du métier detailing.
+ * Plus de liste de verticales : un seul métier, trois points de friction.
+ */
+export const frictionPoints = [
+  {
+    number: '01',
+    title: 'Des formules floues',
+    body: 'Intérieur, extérieur, detailing complet — sans hiérarchie claire, le prospect compare au prix et part ailleurs.',
+  },
+  {
+    number: '02',
+    title: 'Des tarifs absents ou cachés',
+    body: 'Sans fourchette visible, la conversation commence par « ça coûte combien ? » au lieu de « je veux réserver ».',
+  },
+  {
+    number: '03',
+    title: 'Un contact qui freine',
+    body: 'DM Instagram, appels manqués, messages incomplets. Le client prêt à réserver abandonne faute de parcours simple.',
   },
 ] as const;
 
@@ -62,6 +81,7 @@ export const transformations = [
   },
 ] as const;
 
+/** @deprecated Conservé pour compat — préférer frictionPoints. */
 export const serviceCompanies = [
   {
     title: 'Nettoyage automobile & detailing',
