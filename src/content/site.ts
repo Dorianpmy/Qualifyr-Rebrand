@@ -4,21 +4,19 @@ export const productionUrl = 'https://qualifyragence.com';
 export const productionDomain = 'qualifyragence.com';
 
 export const homeSeo = {
-  title: 'Qualifyr — Sites web pour conciergeries et nettoyage auto',
+  title: 'Qualifyr — Sites web pour nettoyage automobile et detailing',
   description:
-    'Agence spécialisée dans deux métiers : conciergerie et nettoyage automobile. Nous concevons les sites qui attirent des propriétaires et remplissent un agenda.',
+    'Agence spécialisée dans le nettoyage automobile et le detailing. Nous concevons les sites qui présentent vos formules, affichent vos tarifs et remplissent votre agenda.',
 } as const;
 
 /**
  * Configuration du site et métadonnées par page.
  *
  * `indexable` reste à `false` tant que la variable de production explicite
- * n'est pas activée : les aperçus de préproduction ne doivent pas être indexés. Il
- * commande à la fois les balises `robots` de chaque page, `robots.txt` et le
- * `sitemap.xml`. Un seul interrupteur, actionné le jour de la mise en ligne.
+ * n'est pas activée : les aperçus de préproduction ne doivent pas être indexés.
  */
 export const site = {
-  /** Domaine canonique public. Les previews pointent elles aussi vers ce domaine. */
+  /** Domaine canonique public. */
   url: productionUrl,
   locale: 'fr-FR',
   lang: 'fr',
@@ -37,18 +35,7 @@ type PageMeta = {
 
 /**
  * Métadonnées par route.
- *
- * Titres et descriptions **uniques**, rédigés à la main, sans répétition
- * artificielle de mots-clés. Les intentions visées sont B2B et portent sur le
- * développement des deux verticales officielles. Elles sont servies par le
- * contenu réel des pages, pas par une accumulation de termes.
- *
- * **Angle éditorial.** Les intentions sont formulées du côté du problème du
- * prospect, pas du côté de la prestation vendue. Personne ne cherche « création
- * de site pour conciergerie » ; en revanche les gérants cherchent comment
- * signer plus de mandats, et les detailers comment remplir leur agenda. Chaque
- * titre relie donc le livrable au résultat attendu — sans promettre ce que la
- * page ne traite pas réellement.
+ * Recentrées 100 % sur le nettoyage automobile / detailing.
  */
 export const pageMeta: Readonly<Record<Route, PageMeta>> = {
   '/': {
@@ -68,22 +55,10 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
       'Vos prestations présentées clairement, vos tarifs par type de véhicule et une prise de rendez-vous simple. Pour les detailers qui veulent moins de DM et plus de RDV.',
     priority: 0.9,
   },
-  '/conciergerie': {
-    title: 'Site pour conciergerie — attirer et convaincre des propriétaires',
-    description:
-      'Un site qui rassure les propriétaires, met en avant vos garanties et qualifie chaque demande. Pour les conciergeries qui veulent signer plus de mandats.',
-    priority: 0.9,
-  },
-  '/outil-conciergerie': {
-    title: 'Logiciel d’acquisition pour conciergerie — 79 €/mois | Qualifyr',
-    description:
-      'Une page qui estime les revenus d’un bien, capte les propriétaires intéressés et range chaque demande dans votre tableau de bord. Essai gratuit, sans engagement.',
-    priority: 0.9,
-  },
   '/tarifs': {
-    title: 'Tarifs — création de site et outil pour conciergerie | Qualifyr',
+    title: 'Tarifs — création de site pour detailing | Qualifyr',
     description:
-      'Nos fourchettes de prix, affichées : site vitrine, site avec parcours de demande, et outil d’acquisition à 79 € par mois. Pas de devis à rallonge.',
+      'Nos fourchettes de prix, affichées : site vitrine et site avec parcours de demande. Pas de devis à rallonge.',
     priority: 0.9,
   },
   '/methode': {
@@ -93,7 +68,7 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
     priority: 0.9,
   },
   '/realisations': {
-    title: 'Réalisations — sites pour conciergeries et nettoyage auto',
+    title: 'Réalisations — sites pour nettoyage auto et detailing',
     description:
       'Les projets conçus par Qualifyr : structure de l’offre, identité et parcours de contact. Des exemples concrets de ce que change un site bien pensé.',
     priority: 0.8,
@@ -105,21 +80,15 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
     priority: 0.7,
   },
   '/a-propos': {
-    title: 'À propos — l’agence des conciergeries et du detailing | Qualifyr',
+    title: 'À propos — l’agence du detailing et du nettoyage auto | Qualifyr',
     description:
-      'Deux verticales, une méthode, et ce que nous refusons de faire. Pourquoi Qualifyr ne travaille qu’avec les entreprises de services.',
+      'Une verticale, une méthode, et ce que nous refusons de faire. Pourquoi Qualifyr se concentre sur le nettoyage automobile et le detailing.',
     priority: 0.6,
   },
   '/diagnostic': {
     title: 'Diagnostic gratuit de votre présence en ligne — Qualifyr',
     description:
       'Décrivez votre activité et vos priorités. Nous identifions ce qui freine vos demandes entrantes, et ce qu’il faut corriger en premier.',
-    priority: 0.9,
-  },
-  '/simulateur-revenus-locatifs': {
-    title: 'Simulateur de revenus Airbnb — estimez le potentiel d’un bien',
-    description:
-      'Estimez en quelques secondes ce qu’un logement peut générer en location courte durée : fourchette annuelle, prix moyen par nuit et revenu net après conciergerie.',
     priority: 0.9,
   },
   '/estimation': {
@@ -135,9 +104,9 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
     priority: 0.5,
   },
   '/blog': {
-    title: 'Le journal — conseils pour conciergeries et detailers | Qualifyr',
+    title: 'Le journal — conseils pour detailers et nettoyage auto | Qualifyr',
     description:
-      'Trouver des propriétaires, remplir son agenda, clarifier son offre : des articles concrets pour développer une activité de service.',
+      'Remplir son agenda, clarifier son offre, être trouvé sur Google : des articles concrets pour développer une activité de detailing.',
     priority: 0.7,
   },
   '/mentions-legales': {
