@@ -4,17 +4,6 @@ import type { ReactNode } from 'react';
 import type { SelectOption } from '@/content/forms';
 import styles from './form.module.css';
 
-/**
- * Contrôles de formulaire.
- *
- * Chaque contrôle est piloté par React (`value` + `onChange`) : les saisies
- * survivent à une erreur de validation, y compris serveur.
- *
- * En cas d'erreur, le contrôle porte `aria-invalid` **et** un
- * `aria-describedby` pointant sur le message. L'erreur n'est jamais véhiculée
- * par la seule couleur : un texte l'accompagne toujours.
- */
-
 type Described = {
   readonly id: string;
   readonly hasHint?: boolean;
@@ -33,8 +22,6 @@ function controlProps(props: Described) {
     ...describedBy(props),
   };
 }
-
-/* ---------------------------------- Texte --------------------------------- */
 
 export function TextInput({
   id,
@@ -112,8 +99,6 @@ export function TextArea({
   );
 }
 
-/* ----------------------- Choix éditoriaux natifs ----------------------- */
-
 export function ChoiceGroup({
   id,
   name,
@@ -123,6 +108,7 @@ export function ChoiceGroup({
   onToggle,
   error,
   columns = 1,
+  tone = 'light',
 }: {
   id: string;
   name: string;
@@ -132,17 +118,24 @@ export function ChoiceGroup({
   onToggle: (value: string) => void;
   error?: string | undefined;
   columns?: 1 | 2;
+  tone?: 'light' | 'dark';
 }) {
+  const gridClass =
+    tone === 'dark'
+      ? `${styles.choiceGridDark} ${columns === 2 ? styles.choiceGridDarkTwo : ''}`
+      : `${styles.choiceGrid} ${columns === 2 ? styles.choiceGridTwo : ''}`;
+  const cardClass = tone === 'dark' ? styles.choiceCardDark : styles.choiceCard;
+
   return (
     <div
       id={id}
-      className={`${styles.choiceGrid} ${columns === 2 ? styles.choiceGridTwo : ''}`}
+      className={gridClass}
       {...(error ? { 'aria-describedby': `${id}-error` } : {})}
     >
       {options.map((option, index) => {
         const checked = selected.includes(option.value);
         return (
-          <label key={option.value} className={styles.choiceCard}>
+          <label key={option.value} className={cardClass} data-checked={checked}>
             <input
               type={type}
               name={name}
@@ -151,14 +144,19 @@ export function ChoiceGroup({
               onChange={() => onToggle(option.value)}
               {...(error ? { 'aria-invalid': true as const } : {})}
             />
-            <span className={styles.choiceIndex} aria-hidden="true">
-              {String(index + 1).padStart(2, '0')}
-            </span>
-            <span className={styles.choiceCopy}>
+            {tone === 'light' ? (
+              <span className={styles.choiceIndex} aria-hidden="true">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+            ) : null}
+            <span className={tone === 'dark' ? styles.choiceCopyDark : styles.choiceCopy}>
               <strong>{option.label}</strong>
               {option.description ? <small>{option.description}</small> : null}
             </span>
-            <span className={styles.choiceMark} aria-hidden="true" />
+            <span
+              className={tone === 'dark' ? styles.choiceMarkDark : styles.choiceMark}
+              aria-hidden="true"
+            />
           </label>
         );
       })}
@@ -207,8 +205,6 @@ export function Select({
   );
 }
 
-/* ------------------------------ Cases à cocher ----------------------------- */
-
 export function CheckboxGroup({
   id,
   name,
@@ -247,8 +243,6 @@ export function CheckboxGroup({
   );
 }
 
-/* ------------------------------- Consentement ------------------------------ */
-
 export function Consent({
   id,
   name,
@@ -286,8 +280,6 @@ export function Consent({
   );
 }
 
-/* --------------------------------- Erreurs -------------------------------- */
-
 export function FieldError({ id, children }: { id: string; children: ReactNode }) {
   return (
     <p className={styles.error} id={`${id}-error`}>
@@ -297,18 +289,6 @@ export function FieldError({ id, children }: { id: string; children: ReactNode }
   );
 }
 
-/* ----------------------------- Champ piège -------------------------------- */
-
-/**
- * Champ piège.
- *
- * Masqué visuellement, retiré du flux de tabulation et de l'arbre
- * d'accessibilité : jamais rencontré par un humain, y compris au lecteur
- * d'écran. Un robot qui remplit tous les champs le remplira.
- *
- * **Ce n'est pas une protection absolue** : c'est un filtre bon marché, qui
- * évite d'imposer un CAPTCHA au visiteur.
- */
 export function HoneypotField({
   value,
   onChange,
@@ -331,8 +311,6 @@ export function HoneypotField({
     </div>
   );
 }
-
-/* ----------------------------- Divers ------------------------------------- */
 
 export function FormActions({ children }: { children: ReactNode }) {
   return <div className={styles.actions}>{children}</div>;
