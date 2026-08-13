@@ -10,18 +10,8 @@ import type { Route } from '@/types';
 /**
  * Données structurées (JSON-LD).
  *
- * **Uniquement des faits vérifiables.** Les types employés sont
- * `Organization`, `ProfessionalService`, `WebSite`, `WebPage`,
- * `BreadcrumbList`, `Service` et `FAQPage`.
- *
- * Interdits, et pour de bonnes raisons :
- * — `SoftwareApplication` : décrit un produit logiciel précis, pas une prestation d'agence ;
- * — `Product` / `Offer` : aucun tarif n'existe ;
- * — `AggregateRating`, `Review` : aucun avis n'a été recueilli ;
- * — `LocalBusiness` : aucune adresse n'est confirmée, et en inventer une pour
- *   obtenir un encart serait une fausse déclaration.
- *
- * Toute propriété dont la valeur est inconnue est **omise**, jamais devinée.
+ * **Uniquement des faits vérifiables.**
+ * Recentrées 100 % nettoyage automobile / detailing.
  */
 
 function absolute(path: string): string {
@@ -47,7 +37,6 @@ export function organization() {
     logo: absolute('/icons/qualifyr-512.png?v=4'),
     image: absolute('/images/og/qualifyr-og-v3.png'),
     areaServed: servedCountries(),
-    // Compétences réellement présentées, sans revendiquer d'implantation géographique.
     knowsAbout: [
       'Entreprises de services',
       'Clarification de l’offre',
@@ -57,11 +46,9 @@ export function organization() {
       'Expérience utilisateur',
       'Nettoyage automobile mobile',
       'Detailing à domicile',
-      'Conciergeries',
     ],
   };
 
-  // Ajoutées uniquement si elles existent réellement dans company.ts.
   if (company.legalName) data.legalName = company.legalName;
   if (company.email) data.email = company.email;
   if (company.phone) data.telephone = company.phone;
@@ -91,7 +78,7 @@ export function website() {
 export function webPage(route: Route) {
   const meta = pageMeta[route];
   const url = absolute(route);
-  const isVertical = route === '/nettoyage-automobile' || route === '/conciergerie';
+  const isVertical = route === '/nettoyage-automobile';
 
   return {
     '@context': 'https://schema.org',
@@ -132,29 +119,21 @@ export function webDesignService() {
 /** Expertise métier réellement présentée, sans prix, résultat ni implantation inventée. */
 export function verticalService(content: VerticalServiceContent) {
   const url = absolute(content.route);
-  const isAutomotive = content.route === '/nettoyage-automobile';
 
   return {
     '@context': 'https://schema.org',
     '@type': 'Service',
     '@id': `${url}#service`,
-    name: isAutomotive
-      ? 'Création de site internet pour nettoyage automobile et detailing'
-      : 'Création de site internet pour conciergerie',
-    serviceType: isAutomotive
-      ? 'Création de site internet pour les professionnels du nettoyage automobile mobile et du detailing'
-      : 'Création de site internet pour les conciergeries',
+    name: 'Création de site internet pour nettoyage automobile et detailing',
+    serviceType:
+      'Création de site internet pour les professionnels du nettoyage automobile mobile et du detailing',
     url,
     description: pageMeta[content.route].description,
-    category: isAutomotive
-      ? ['Nettoyage automobile mobile', 'Detailing à domicile']
-      : ['Conciergeries'],
+    category: ['Nettoyage automobile mobile', 'Detailing à domicile'],
     areaServed: servedCountries(),
     audience: {
       '@type': 'BusinessAudience',
-      audienceType: isAutomotive
-        ? 'Professionnels du nettoyage automobile mobile et du detailing'
-        : 'Conciergeries',
+      audienceType: 'Professionnels du nettoyage automobile mobile et du detailing',
     },
     provider: { '@id': `${site.url}/#organization` },
     mainEntityOfPage: { '@id': `${url}#webpage` },
@@ -234,8 +213,7 @@ export type Crumb = {
 
 /**
  * Fil d'Ariane structuré.
- * À n'ajouter que sur les pages qui affichent réellement un fil d'Ariane :
- * les données structurées doivent refléter ce que voit le visiteur.
+ * À n'ajouter que sur les pages qui affichent réellement un fil d'Ariane.
  */
 export function breadcrumbList(items: readonly Crumb[]) {
   return {
