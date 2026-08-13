@@ -1,5 +1,5 @@
-/* Page de réservation — mobile first (Detailr-like)
-   Sticky prix + CTA en bas, grandes zones tactiles, une étape à l’écran. */
+/* Page de réservation — mobile first (inspiré Detailr, DA Qualifyr)
+   Plein écran, sticky prix + CTA, grandes zones tactiles. */
 
 .flow {
   display: flex;
@@ -19,27 +19,26 @@
   white-space: nowrap;
 }
 
-/* —— Header mobile —— */
 .context {
   position: sticky;
   top: 0;
   z-index: 20;
   padding: 0.85rem 1rem 0.75rem;
-  background: rgba(10, 10, 11, 0.92);
-  backdrop-filter: blur(12px);
+  background: rgba(10, 10, 11, 0.94);
+  backdrop-filter: blur(16px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .eyebrow {
   margin: 0;
   font-size: 0.68rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: rgba(250, 250, 250, 0.45);
 }
 
 .contextStep {
-  margin: 0.2rem 0 0.65rem;
+  margin: 0.25rem 0 0.7rem;
   font-size: 0.8rem;
   color: rgba(250, 250, 250, 0.55);
 }
@@ -55,7 +54,7 @@
 .progress span {
   display: block;
   height: 100%;
-  background: #f5f0e6;
+  background: linear-gradient(90deg, #e8e0d0, #f5f0e6);
   border-radius: 999px;
   transition: width 0.25s ease;
 }
@@ -68,13 +67,12 @@
   display: none;
 }
 
-/* —— Corps étape —— */
 .workspace {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  padding: 1.25rem 1rem 7.5rem;
+  padding: 1.25rem 1rem 8.5rem;
   max-width: 28rem;
   width: 100%;
   margin: 0 auto;
@@ -83,10 +81,10 @@
 
 .stepTitle {
   margin: 0;
-  font-size: 1.55rem;
+  font-size: 1.65rem;
   font-weight: 600;
-  letter-spacing: -0.03em;
-  line-height: 1.2;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
 }
 
 .stepTitle:focus {
@@ -108,22 +106,17 @@
 
 .dateInput,
 .numberInput {
-  min-height: 3.1rem;
+  min-height: 3.15rem;
   padding: 0 0.95rem;
   font-size: 1rem;
   color: #fafafa;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 12px;
+  border-radius: 14px;
   width: 100%;
   box-sizing: border-box;
 }
 
-.numberInput {
-  max-width: 100%;
-}
-
-/* Options / cartes sélection */
 .optionGrid {
   display: grid;
   gap: 0.65rem;
@@ -133,25 +126,26 @@
   position: relative;
   display: grid;
   gap: 0.35rem;
-  padding: 1rem 1.05rem;
-  background: rgba(255, 255, 255, 0.04);
+  padding: 1.05rem 1.1rem;
+  background: rgba(255, 255, 255, 0.045);
   border: 1.5px solid rgba(255, 255, 255, 0.1);
-  border-radius: 14px;
+  border-radius: 16px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
 
 .optionCard[data-checked='true'] {
   border-color: #f5f0e6;
-  background: rgba(245, 240, 230, 0.08);
+  background: rgba(245, 240, 230, 0.1);
 }
 
 .optionCard input {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  width: 1.1rem;
-  height: 1.1rem;
+  top: 1.05rem;
+  right: 1.05rem;
+  width: 1.15rem;
+  height: 1.15rem;
 }
 
 .optionCard p {
@@ -178,7 +172,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Créneaux */
 .slotGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -186,13 +179,13 @@
 }
 
 .slotButton {
-  min-height: 2.85rem;
+  min-height: 3rem;
   padding: 0.5rem;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: #fafafa;
   background: rgba(255, 255, 255, 0.05);
   border: 1.5px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
+  border-radius: 14px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
@@ -204,7 +197,6 @@
   font-weight: 600;
 }
 
-/* Photos */
 .photoIntro {
   margin: 0;
   color: rgba(250, 250, 250, 0.55);
@@ -237,7 +229,7 @@
   gap: 0.5rem;
   padding: 1rem;
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 14px;
+  border-radius: 16px;
   font-size: 0.9rem;
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -250,7 +242,7 @@
   color: #f87171;
 }
 
-/* —— Barre sticky bas (prix + actions) —— */
+/* Barre sticky : prix à gauche, CTA à droite */
 .actions {
   position: fixed;
   bottom: 0;
@@ -261,18 +253,33 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
-  background: rgba(10, 10, 11, 0.94);
-  backdrop-filter: blur(14px);
+  padding: 0.85rem 1rem calc(0.85rem + env(safe-area-inset-bottom));
+  background: rgba(10, 10, 11, 0.96);
+  backdrop-filter: blur(16px);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.actions::before {
-  content: attr(data-price);
-  display: none;
+.actionsPrice {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 4.5rem;
 }
 
-/* Confirmation */
+.actionsPriceLabel {
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(250, 250, 250, 0.45);
+}
+
+.actionsPriceValue {
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
 .confirmation {
   display: grid;
   gap: 1rem;
@@ -280,6 +287,9 @@
   margin: 0 auto;
   padding: 2.5rem 1rem 3rem;
   color: #fafafa;
+  min-height: 100dvh;
+  background: #0a0a0b;
+  box-sizing: border-box;
 }
 
 .confirmation h1 {
@@ -295,7 +305,7 @@
   padding: 1rem;
   list-style: none;
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 14px;
+  border-radius: 16px;
   font-size: 0.9rem;
 }
 
@@ -312,7 +322,6 @@
   font-size: 0.85rem;
 }
 
-/* —— Desktop : deux colonnes —— */
 @media (min-width: 64rem) {
   .flow {
     display: grid;
@@ -361,7 +370,7 @@
     padding: 1.1rem;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 14px;
+    border-radius: 16px;
   }
 
   .priceLabel {
@@ -395,6 +404,10 @@
     background: transparent;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     margin-top: 1.5rem;
+  }
+
+  .actionsPrice {
+    display: none;
   }
 
   .slotGrid {
