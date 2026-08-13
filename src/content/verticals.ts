@@ -18,13 +18,6 @@ type VerticalProof =
       readonly points: readonly string[];
       /** Capture, servie en repli quand aucune adresse publique n'est fournie. */
       readonly image: (typeof swCarCleaning.gallery)[number];
-      /**
-       * Adresse publique du site livré.
-       *
-       * Renseignée, la preuve devient le site lui-même chargé en direct plutôt
-       * qu'une capture : le visiteur juge un site qui existe, pas une image que
-       * nous avons choisie. Laisser vide tant que le site n'est pas public.
-       */
       readonly externalUrl?: string | undefined;
       readonly domain?: string | undefined;
       readonly link: Route;
@@ -41,7 +34,7 @@ type VerticalProof =
     };
 
 export type VerticalServiceContent = {
-  readonly route: '/nettoyage-automobile' | '/conciergerie';
+  readonly route: '/nettoyage-automobile';
   readonly hero: {
     readonly eyebrow: string;
     readonly title: string;
@@ -67,33 +60,12 @@ export type VerticalServiceContent = {
     readonly lead: string;
     readonly steps: readonly EditorialItem[];
   };
-  /**
-   * Ce que ça change — conséquences commerciales, jamais livrables.
-   *
-   * `response` décrit ce que Qualifyr construit ; cette section décrit ce que
-   * le client cesse de subir. Règle de rédaction : si la phrase pourrait
-   * figurer sur une facture, elle n'a rien à faire ici.
-   *
-   * Optionnel le temps que les deux verticales soient traitées.
-   */
   readonly outcomes?: {
     readonly eyebrow: string;
     readonly title: string;
     readonly lead: string;
     readonly items: readonly EditorialItem[];
   };
-  /**
-   * Pourquoi nous — l'argument de spécialiste.
-   *
-   * Le hero de l'accueil engage publiquement sur deux métiers seulement
-   * (`docs/11-refonte-copywriting.md`, §2.1). Cette section est l'endroit où
-   * cette promesse se démontre, faute de quoi elle reste une affirmation.
-   *
-   * Contrainte `AGENTS.md` §6 : la crédibilité vient de la connaissance du
-   * métier et de ce qui est vérifiable — jamais d'un chiffre de résultat,
-   * d'un volume de clients ou d'un témoignage. Ne rien y ajouter qui ne
-   * puisse être vérifié par le lecteur lui-même.
-   */
   readonly whyUs?: {
     readonly eyebrow: string;
     readonly title: string;
@@ -209,7 +181,7 @@ export const automotiveVertical: VerticalServiceContent = {
     eyebrow: 'Pourquoi nous',
     title: 'Nous connaissons vos objections mieux que votre prochaine agence.',
     lead:
-      'Nous ne faisons des sites que pour deux métiers. Voici ce que cette restriction vous fait gagner concrètement.',
+      'Nous nous concentrons sur le nettoyage automobile et le detailing. Voici ce que cette spécialisation vous fait gagner concrètement.',
     items: [
       {
         title: 'Nous n’écrirons pas « lavage » sur votre site',
@@ -279,171 +251,6 @@ export const automotiveVertical: VerticalServiceContent = {
     title: 'Moins de messages à traiter. Plus de créneaux réservés.',
     body:
       'Présentez-nous vos formules, votre zone et la façon dont vos clients vous contactent aujourd’hui. Nous verrons ce qui peut être simplifié en premier.',
-  },
-};
-
-export const conciergeVertical: VerticalServiceContent = {
-  route: '/conciergerie',
-  hero: {
-    eyebrow: 'Expertise · Conciergeries de location courte durée',
-    title: 'Un site qui convainc les propriétaires de vous confier leur bien.',
-    lead:
-      'Votre métier se joue avant la première visite : un propriétaire décide de confier un bien de plusieurs centaines de milliers d’euros à quelqu’un qu’il ne connaît pas. Qualifyr conçoit le site qui installe cette confiance et qualifie chaque demande.',
-    secondaryHref: '/simulateur-revenus-locatifs',
-    secondaryLabel: 'Voir le simulateur en direct',
-  },
-  problems: {
-    eyebrow: 'Ce qui freine la signature',
-    title: 'Le propriétaire ne compare pas des services. Il évalue un risque.',
-    lead:
-      'Avant de signer un mandat, il veut savoir ce que son bien peut rapporter, ce que vous prenez réellement en charge, et pourquoi vous plutôt qu’un autre.',
-    items: [
-      {
-        number: '01',
-        title: 'Aucune idée du revenu possible',
-        body: 'Le propriétaire hésite parce qu’il ignore ce que son logement générerait vraiment. Sans ce chiffre, la conversation ne démarre jamais.',
-      },
-      {
-        number: '02',
-        title: 'Une offre qui ressemble à toutes les autres',
-        body: 'Ménage, linge, accueil, gestion des annonces : la liste est la même partout, et rien n’explique ce qui vous distingue.',
-      },
-      {
-        number: '03',
-        title: 'Des demandes trop vagues pour être traitées',
-        body: 'Ville, type de bien, nombre de logements et disponibilité manquent au premier message, et chaque échange s’allonge inutilement.',
-      },
-    ],
-  },
-  response: {
-    eyebrow: 'Ce que Qualifyr construit',
-    title: 'Un site qui fait le premier travail de conviction.',
-    lead:
-      'Nous transformons votre offre en un parcours qui chiffre, rassure et qualifie — avant même votre premier appel.',
-    items: [
-      {
-        number: '01',
-        title: 'Une estimation de revenus en entrée de parcours',
-        body: 'Le propriétaire découvre ce que son bien pourrait générer et laisse ses coordonnées pour en savoir plus. C’est le point de départ le plus efficace du métier.',
-      },
-      {
-        number: '02',
-        title: 'Des garanties rendues visibles',
-        body: 'Vos engagements, votre process, vos assurances et vos résultats rendent le risque acceptable. C’est ce que le propriétaire cherche vraiment.',
-      },
-      {
-        number: '03',
-        title: 'Une demande déjà qualifiée',
-        body: 'Ville, type de logement, nombre de biens et disponibilité arrivent avec la demande. Vous cessez de perdre du temps sur les dossiers hors cible.',
-      },
-    ],
-  },
-  journey: {
-    eyebrow: 'Parcours adapté au métier',
-    title: 'Du premier doute au mandat signé.',
-    lead:
-      'Le parcours reste court, mais il traite les questions dans l’ordre où le propriétaire se les pose réellement.',
-    steps: [
-      { number: '01', title: 'Comprendre', body: 'Situer votre approche, votre zone et vos garanties.' },
-      { number: '02', title: 'Estimer', body: 'Découvrir le revenu possible pour son bien.' },
-      { number: '03', title: 'Préciser', body: 'Partager le logement, la ville et ses attentes.' },
-      { number: '04', title: 'Échanger', body: 'Ouvrir une conversation déjà cadrée.' },
-    ],
-  },
-  outcomes: {
-    eyebrow: 'Ce que ça change',
-    title: 'Trois choses cessent, le jour où le site est juste.',
-    lead:
-      'Ce ne sont pas des fonctionnalités. Ce sont les situations que vous ne vivez plus une fois que le parcours fait son travail.',
-    items: [
-      {
-        number: '01',
-        title: 'Vous arrêtez de rattraper au téléphone',
-        body: 'Zone couverte, commission, ce que vous prenez en charge, ce qui reste au propriétaire : tout ce que vous répétez dix fois par semaine est écrit et lu avant qu’on vous appelle. L’échange commence là où il s’arrêtait avant.',
-      },
-      {
-        number: '02',
-        title: 'Vous cessez d’être choisi au pourcentage',
-        body: 'Quand rien ne distingue deux conciergeries, le propriétaire tranche sur la commission — et vous perdez face à moins cher que vous. Une offre lisible déplace la comparaison sur le revenu qu’il touchera vraiment, pas sur ce que vous prélevez.',
-      },
-      {
-        number: '03',
-        title: 'Vous ne perdez plus les propriétaires qui hésitent',
-        body: 'Confier un bien de plusieurs centaines de milliers d’euros ne se décide pas en une visite. Le parcours laisse une trace utile — une estimation, un document, une raison de revenir — au lieu de compter sur un souvenir.',
-      },
-    ],
-  },
-  whyUs: {
-    eyebrow: 'Pourquoi nous',
-    title: 'Nous connaissons vos objections mieux que votre prochaine agence.',
-    lead:
-      'Nous ne faisons des sites que pour deux métiers. Voici ce que cette restriction vous fait gagner concrètement.',
-    items: [
-      {
-        title: 'Nous n’apprenons pas votre métier sur votre budget',
-        body: 'Une agence généraliste passe la première moitié du projet à comprendre pourquoi un propriétaire ne signe pas comme un client ordinaire : il ne compare pas un service, il évalue un risque sur son patrimoine. Nous démarrons après cette étape.',
-      },
-      {
-        title: 'Nous savons ce qu’il demande avant de dire oui',
-        body: 'Combien ça rapporte. Qui détient les clés. Ce qui se passe en cas de dégât. Comment les voyageurs sont sélectionnés. À quoi il s’engage, et pour combien de temps. Ces réponses ne sont pas des mentions à caser en bas de page : ce sont elles qui déclenchent le mandat.',
-      },
-      {
-        title: 'Nous avons construit l’outil, pas seulement le site',
-        body: 'Le simulateur de revenus que nous intégrons, nous l’éditons aussi comme produit pour les conciergeries. Vous pouvez l’essayer sans nous demander la permission. Peu d’agences peuvent montrer un outil de votre métier qui tourne en production.',
-      },
-      {
-        title: 'Vous restez propriétaire de tout',
-        body: 'Le nom de domaine, les contenus, les accès, les photographies. Aucun abonnement construit pour vous retenir, aucune dépendance installée exprès. Si vous partez, vous partez avec le site.',
-      },
-    ],
-  },
-  proof: {
-    kind: 'concept',
-    eyebrow: 'Simulateur en ligne · Qualifyr',
-    title: 'Un simulateur de revenus, testable en direct.',
-    body:
-      'Avant de parler mandat, montrez au propriétaire ce que son bien peut rapporter. Le simulateur que nous avons conçu pour nos clients conciergeries est utilisable dès maintenant, en démonstration.',
-    points: ['Fourchette de revenus en quatre choix', 'Barèmes ajustables par zone', 'Collecte des coordonnées propriétaire'],
-    link: '/simulateur-revenus-locatifs',
-    linkLabel: 'Voir une estimation en direct',
-  },
-  faq: [
-    {
-      question: 'Avec quels types de conciergeries travaillez-vous ?',
-      answer:
-        'Principalement les conciergeries de location courte durée qui gèrent des biens pour le compte de propriétaires. La méthode s’adapte aussi aux conciergeries de services et d’accompagnement : le projet part de la réalité de votre offre, pas d’une catégorie imposée.',
-    },
-    {
-      question: 'Pouvez-vous intégrer un simulateur de revenus locatifs ?',
-      answer:
-        'Oui, c’est l’élément qui déclenche le plus de demandes dans ce métier. L’estimation est présentée sous forme de fourchette indicative, calibrée sur votre zone, et sert à ouvrir la conversation — pas à engager un chiffre précis.',
-    },
-    {
-      question: 'Le simulateur de revenus est-il vraiment fonctionnel ?',
-      answer:
-        'Oui. Il s’agit du même outil que nous proposons à nos clients conciergeries, présenté ici en démonstration avec des barèmes indicatifs plutôt qu’avec les vôtres.',
-    },
-    {
-      question: 'Peut-on gérer plusieurs types de demandes ?',
-      answer:
-        'Oui. Le parcours peut orienter le prospect selon son besoin et recueillir uniquement les informations pertinentes pour la demande concernée.',
-    },
-    {
-      question: 'Faut-il déjà gérer plusieurs logements ?',
-      answer:
-        'Non, mais le site produit son plein effet à partir de quelques biens en gestion, quand la question devient celle de la croissance. La clarification de l’offre fait partie du travail.',
-    },
-    {
-      question: 'Comment commence le projet ?',
-      answer:
-        'Nous examinons votre offre, les demandes que vous recevez aujourd’hui et la façon dont vous signez vos mandats. Le diagnostic sert à identifier où se perdent les propriétaires avant de parler de solution.',
-    },
-  ],
-  cta: {
-    eyebrow: 'Votre conciergerie',
-    title: 'Le prochain mandat se gagne avant le premier appel.',
-    body:
-      'Présentez-nous votre offre, votre zone et la façon dont les propriétaires vous trouvent aujourd’hui. Nous verrons où se perdent les demandes.',
   },
 };
 
