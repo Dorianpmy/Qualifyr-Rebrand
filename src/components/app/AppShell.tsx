@@ -21,6 +21,7 @@ export function AppShell({
         <div className={styles.sidebarBrand}>
           <strong>{detailerName}</strong>
           <span>{city ?? 'Espace detailer'}</span>
+          <span className={styles.brandTag}>Qualifyr</span>
         </div>
 
         <nav className={styles.sidebarNav}>
@@ -30,11 +31,14 @@ export function AppShell({
           >
             Demandes
           </Link>
-          <span className={styles.navItem} style={{ opacity: 0.35, cursor: 'default' }}>
-            Planning <small style={{ marginLeft: 'auto', fontSize: '0.65rem' }}>bientôt</small>
+          <span className={`${styles.navItem} ${styles.navSoon}`}>
+            Insights <small>bientôt</small>
           </span>
-          <span className={styles.navItem} style={{ opacity: 0.35, cursor: 'default' }}>
-            Tarifs <small style={{ marginLeft: 'auto', fontSize: '0.65rem' }}>bientôt</small>
+          <span className={`${styles.navItem} ${styles.navSoon}`}>
+            Planning <small>bientôt</small>
+          </span>
+          <span className={`${styles.navItem} ${styles.navSoon}`}>
+            Tarifs <small>bientôt</small>
           </span>
         </nav>
 
