@@ -8,9 +8,17 @@ import styles from './ConversionPrompt.module.css';
 
 const inactivityDelay = 60_000;
 
+function isSaaSPath(pathname: string) {
+  return (
+    pathname.startsWith('/app') ||
+    pathname.startsWith('/reservation') ||
+    pathname === '/diagnostic'
+  );
+}
+
 export function ConversionPrompt() {
   const pathname = usePathname();
-  const isDiagnostic = pathname === '/diagnostic';
+  const blocked = isSaaSPath(pathname);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const shownRef = useRef(false);
@@ -21,7 +29,7 @@ export function ConversionPrompt() {
   );
 
   useEffect(() => {
-    if (isDiagnostic) return;
+    if (blocked) return;
     const clearTimer = () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
@@ -43,22 +51,18 @@ export function ConversionPrompt() {
     events.forEach((eventName) => window.addEventListener(eventName, restartTimer, { passive: true }));
     restartTimer();
 
-    const preventContextMenu = (event: MouseEvent) => event.preventDefault();
-    document.addEventListener('contextmenu', preventContextMenu);
-
     return () => {
       clearTimer();
       events.forEach((eventName) => window.removeEventListener(eventName, restartTimer));
-      document.removeEventListener('contextmenu', preventContextMenu);
     };
-  }, [isDiagnostic]);
+  }, [blocked]);
 
   const close = () => {
     dialogRef.current?.close();
     setIsOpen(false);
   };
 
-  if (isDiagnostic) return null;
+  if (blocked) return null;
 
   return (
     <dialog
