@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 import styles from '@/app/app/app.module.css';
 
 export function LoginForm() {
@@ -19,14 +19,17 @@ export function LoginForm() {
       const res = await fetch('/api/app/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({
+          email,
+          redirectTo:
+            typeof window !== 'undefined'
+              ? `${window.location.origin}/app/auth/confirm`
+              : undefined,
+        }),
       });
       const data = (await res.json()) as { ok: boolean; message: string };
-      if (!data.ok) {
-        setError(data.message);
-      } else {
-        setMessage(data.message);
-      }
+      if (data.ok) setMessage(data.message);
+      else setError(data.message || 'Envoi impossible.');
     } catch {
       setError('Envoi impossible. Réessayez.');
     } finally {
@@ -37,16 +40,15 @@ export function LoginForm() {
   return (
     <form onSubmit={onSubmit}>
       <div className={styles.field}>
-        <label htmlFor="app-email">E-mail professionnel</label>
+        <label htmlFor="email">E-mail professionnel</label>
         <input
-          id="app-email"
+          id="email"
           type="email"
-          name="email"
           required
           autoComplete="email"
+          placeholder="vous@atelier.fr"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="vous@atelier.fr"
         />
       </div>
       <button className={styles.btn} type="submit" disabled={pending}>
