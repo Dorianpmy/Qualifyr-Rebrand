@@ -1,15 +1,16 @@
-/* Réservation — clair + accent orange-corail (pas Detailr) */
+/* Réservation — clair + vert SaaS (esprit TrendTrack, pas copie) */
 
 .flow {
-  --accent: #e85d04;
-  --accent-soft: rgba(232, 93, 4, 0.12);
-  --accent-mid: rgba(232, 93, 4, 0.22);
+  --accent: #12b76a;
+  --accent-hover: #0f9f5c;
+  --accent-soft: rgba(18, 183, 106, 0.12);
+  --accent-mid: rgba(18, 183, 106, 0.22);
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
   background: #f4f2ef;
   color: #141414;
-  font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body), ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
 .srOnly {
@@ -38,12 +39,14 @@
   text-transform: uppercase;
   color: var(--accent);
   font-weight: 700;
+  font-family: var(--font-body), system-ui, sans-serif;
 }
 
 .contextStep {
   margin: 0.2rem 0 0.65rem;
   font-size: 0.85rem;
   color: rgba(20, 20, 20, 0.55);
+  font-family: var(--font-body), system-ui, sans-serif;
 }
 
 .progress {
@@ -57,7 +60,7 @@
 .progress span {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, #f48c06, var(--accent));
+  background: linear-gradient(90deg, #32d583, var(--accent));
   border-radius: 999px;
   transition: width 0.25s ease;
 }
@@ -79,13 +82,15 @@
   box-sizing: border-box;
 }
 
+/* Titres d’étape — Manrope, moderne SaaS (plus de serif éditorial) */
 .stepTitle {
   margin: 0;
-  font-size: 1.85rem;
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  font-size: 1.7rem;
   font-weight: 700;
-  letter-spacing: -0.04em;
-  line-height: 1.1;
-  color: #141414;
+  letter-spacing: -0.045em;
+  line-height: 1.15;
+  color: #0f172a;
 }
 
 .stepTitle:focus {
@@ -96,6 +101,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
+  font-family: var(--font-body), system-ui, sans-serif;
 }
 
 .dayLabel {
@@ -110,6 +116,7 @@
   min-height: 3.2rem;
   padding: 0 1rem;
   font-size: 1rem;
+  font-family: var(--font-body), system-ui, sans-serif;
   color: #141414;
   background: #fff;
   border: 1.5px solid rgba(20, 20, 20, 0.12);
@@ -141,6 +148,7 @@
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  font-family: var(--font-body), system-ui, sans-serif;
 }
 
 .optionCard:hover {
@@ -184,7 +192,7 @@
 .optionPrice {
   font-size: 0.85rem;
   color: var(--accent);
-  font-weight: 600;
+  font-weight: 700;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
@@ -199,6 +207,7 @@
   min-height: 3rem;
   padding: 0.5rem;
   font-size: 0.95rem;
+  font-family: var(--font-body), system-ui, sans-serif;
   color: #141414;
   background: #fff;
   border: 1.5px solid rgba(20, 20, 20, 0.12);
@@ -291,6 +300,7 @@
   text-transform: uppercase;
   color: rgba(20, 20, 20, 0.45);
   font-weight: 600;
+  font-family: var(--font-body), system-ui, sans-serif;
 }
 
 .actionsPriceValue {
@@ -299,6 +309,7 @@
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
   color: var(--accent);
+  font-family: var(--font-body), system-ui, sans-serif;
 }
 
 .confirmation {
@@ -311,12 +322,15 @@
   min-height: 100dvh;
   background: #f4f2ef;
   box-sizing: border-box;
+  font-family: var(--font-body), system-ui, sans-serif;
 }
 
 .confirmation h1 {
   margin: 0;
-  font-size: 1.75rem;
-  letter-spacing: -0.03em;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 1.65rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
 }
 
 .confirmList {
@@ -360,12 +374,13 @@
   transform: none !important;
   grid-template-columns: unset !important;
   box-shadow: none !important;
+  font-family: var(--font-body), system-ui, sans-serif !important;
 }
 
 .flow :global(label[class*='choiceCard']:hover) {
   border-color: var(--accent-mid) !important;
   transform: translateY(-1px) !important;
-  box-shadow: 0 6px 18px rgba(232, 93, 4, 0.08) !important;
+  box-shadow: 0 6px 18px rgba(18, 183, 106, 0.1) !important;
 }
 
 .flow :global(label[class*='choiceCard']:has(input:checked)) {
@@ -379,6 +394,7 @@
   color: #141414 !important;
   font-size: 1rem !important;
   font-weight: 600 !important;
+  font-family: var(--font-body), system-ui, sans-serif !important;
 }
 
 .flow :global(label[class*='choiceCard'] small) {
@@ -419,6 +435,7 @@
   color: #141414 !important;
   border: 1.5px solid rgba(20, 20, 20, 0.12) !important;
   border-radius: 16px !important;
+  font-family: var(--font-body), system-ui, sans-serif !important;
 }
 
 .flow :global(input[class*='control']:focus),
@@ -431,19 +448,21 @@
 .flow :global(span[class*='optional']),
 .flow :global(p[class*='hint']) {
   color: rgba(20, 20, 20, 0.6) !important;
+  font-family: var(--font-body), system-ui, sans-serif !important;
 }
 
-/* Bouton principal = orange plein */
 .actions :global(button:not([class*='secondary'])) {
   background: var(--accent) !important;
   color: #fff !important;
   border-color: var(--accent) !important;
   border-radius: 14px !important;
   font-weight: 600 !important;
+  font-family: var(--font-body), system-ui, sans-serif !important;
 }
 
 .actions :global(button:not([class*='secondary']):hover) {
-  filter: brightness(1.05);
+  background: var(--accent-hover) !important;
+  border-color: var(--accent-hover) !important;
 }
 
 .actions :global(button[class*='secondary']) {
@@ -451,10 +470,12 @@
   border: 1.5px solid rgba(20, 20, 20, 0.15) !important;
   background: #fff !important;
   color: #141414 !important;
+  font-family: var(--font-body), system-ui, sans-serif !important;
 }
 
 .flow :global(button) {
   border-radius: 14px !important;
+  font-family: var(--font-body), system-ui, sans-serif !important;
 }
 
 @media (min-width: 64rem) {
