@@ -3,6 +3,7 @@
 import type { ReactNode } from 'react';
 import type { SelectOption } from '@/content/forms';
 import styles from './form.module.css';
+import dark from './form-dark.module.css';
 
 type Described = {
   readonly id: string;
@@ -120,22 +121,21 @@ export function ChoiceGroup({
   columns?: 1 | 2;
   tone?: 'light' | 'dark';
 }) {
-  const gridClass =
-    tone === 'dark'
-      ? `${styles.choiceGridDark} ${columns === 2 ? styles.choiceGridDarkTwo : ''}`
-      : `${styles.choiceGrid} ${columns === 2 ? styles.choiceGridTwo : ''}`;
-  const cardClass = tone === 'dark' ? styles.choiceCardDark : styles.choiceCard;
+  const isDark = tone === 'dark';
+  const gridClass = isDark
+    ? `${dark.choiceGridDark} ${columns === 2 ? dark.choiceGridDarkTwo : ''}`
+    : `${styles.choiceGrid} ${columns === 2 ? styles.choiceGridTwo : ''}`;
 
   return (
-    <div
-      id={id}
-      className={gridClass}
-      {...(error ? { 'aria-describedby': `${id}-error` } : {})}
-    >
+    <div id={id} className={gridClass} {...(error ? { 'aria-describedby': `${id}-error` } : {})}>
       {options.map((option, index) => {
         const checked = selected.includes(option.value);
         return (
-          <label key={option.value} className={cardClass} data-checked={checked}>
+          <label
+            key={option.value}
+            className={isDark ? dark.choiceCardDark : styles.choiceCard}
+            data-checked={checked}
+          >
             <input
               type={type}
               name={name}
@@ -144,17 +144,17 @@ export function ChoiceGroup({
               onChange={() => onToggle(option.value)}
               {...(error ? { 'aria-invalid': true as const } : {})}
             />
-            {tone === 'light' ? (
+            {!isDark ? (
               <span className={styles.choiceIndex} aria-hidden="true">
                 {String(index + 1).padStart(2, '0')}
               </span>
             ) : null}
-            <span className={tone === 'dark' ? styles.choiceCopyDark : styles.choiceCopy}>
+            <span className={isDark ? dark.choiceCopyDark : styles.choiceCopy}>
               <strong>{option.label}</strong>
               {option.description ? <small>{option.description}</small> : null}
             </span>
             <span
-              className={tone === 'dark' ? styles.choiceMarkDark : styles.choiceMark}
+              className={isDark ? dark.choiceMarkDark : styles.choiceMark}
               aria-hidden="true"
             />
           </label>
