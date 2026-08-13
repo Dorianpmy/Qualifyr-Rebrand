@@ -13,8 +13,7 @@ type Offer = {
   readonly from: number;
   readonly to?: number;
   readonly cadence: string;
-  /** Prestation d'agence : convertie en francs pour un visiteur suisse.
-   *  Le produit en abonnement, lui, est facturé en euros par Stripe. */
+  /** Prestation d'agence : convertie en francs pour un visiteur suisse. */
   readonly convertible: boolean;
   readonly audience: string;
   readonly items: readonly string[];
@@ -25,23 +24,6 @@ type Offer = {
 
 const offers: readonly Offer[] = [
   {
-    kicker: 'Produit',
-    title: 'Outil d’acquisition',
-    from: 79,
-    cadence: 'par mois',
-    convertible: false,
-    audience:
-      'Pour une conciergerie qui veut des demandes de propriétaires, sans projet ni accompagnement.',
-    items: [
-      'Page publique avec simulateur de revenus',
-      'Vos secteurs et vos barèmes',
-      'Tableau de bord et notifications',
-      'En ligne en dix minutes, essai gratuit',
-    ],
-    href: '/outil-conciergerie',
-    linkLabel: 'Découvrir l’outil',
-  },
-  {
     kicker: 'Le plus demandé',
     title: 'Site et parcours de demande',
     from: 2200,
@@ -49,7 +31,7 @@ const offers: readonly Offer[] = [
     cadence: 'une fois',
     convertible: true,
     audience:
-      'Pour une entreprise de services dont la crédibilité doit être établie avant le premier échange.',
+      'Pour un detailer ou une activité de nettoyage auto dont la crédibilité doit être établie avant le premier échange.',
     items: [
       'Clarification de l’offre et rédaction des contenus',
       'Identité visuelle appliquée au site',
@@ -87,10 +69,7 @@ function convert(amount: number, region: PricingRegion, convertible: boolean) {
 
 /**
  * Tarifs affichés, ajustés au pays du visiteur.
- *
- * La région est déterminée côté serveur à partir de l'en-tête pays fourni par
- * l'hébergeur, jamais par un choix manuel : l'euro reste la valeur par défaut,
- * et la conversion en francs n'intervient que pour une visite depuis la Suisse.
+ * Recentrés 100 % nettoyage automobile / detailing.
  */
 export function PricingTable() {
   const [region, setRegion] = useState<PricingRegion>('euro');
@@ -104,8 +83,7 @@ export function PricingTable() {
         if (active && data?.region) setRegion(data.region);
       })
       .catch(() => {
-        // Sans réponse, on reste en euros : l'affichage par défaut est correct
-        // pour l'immense majorité des visiteurs.
+        // Sans réponse, on reste en euros.
       });
 
     return () => {
@@ -150,7 +128,7 @@ export function PricingTable() {
         L’hébergement, le nom de domaine et les évolutions ultérieures sont facturés à part et
         annoncés avant le démarrage. Aucun abonnement caché sur les prestations ponctuelles.
         {region === 'switzerland'
-          ? ' Les prestations d’agence sont affichées en francs suisses ; l’abonnement à l’outil est facturé en euros.'
+          ? ' Les prestations d’agence sont affichées en francs suisses.'
           : null}
       </p>
     </>
