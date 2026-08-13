@@ -182,7 +182,6 @@ export function BookingFlow({
     return withOption.totalPrice - base.totalPrice;
   }
 
-  // Focus le titre d'étape sans faire scroller toute la page (effet de rechargement).
   useEffect(() => {
     const timer = window.setTimeout(() => {
       headingRef.current?.focus({ preventScroll: true });
@@ -388,7 +387,9 @@ export function BookingFlow({
                 : `Environ ${formatDuration(currentQuote.totalMinutes)}`}
             </span>
             {currentQuote.travelFee > 0 ? (
-              <span className={styles.priceLine}>dont {formatPrice(currentQuote.travelFee)} de déplacement</span>
+              <span className={styles.priceLine}>
+                dont {formatPrice(currentQuote.travelFee)} de déplacement
+              </span>
             ) : null}
           </div>
         ) : null}
@@ -618,7 +619,9 @@ export function BookingFlow({
                   />
                   {photoUploading[index] ? <p className={styles.photoStatus}>Envoi en cours…</p> : null}
                   {photos[index] ? <p className={styles.photoStatus}>Photo reçue</p> : null}
-                  {photoErrors[index] ? <FieldError id={`photo-${index}`}>{photoErrors[index]}</FieldError> : null}
+                  {photoErrors[index] ? (
+                    <FieldError id={`photo-${index}`}>{photoErrors[index]}</FieldError>
+                  ) : null}
                 </div>
               ))}
             </div>
@@ -651,44 +654,51 @@ export function BookingFlow({
                 <p>{revisionNotice(detailer.name)}</p>
                 {quoteConfig.depositEnabled ? (
                   <p>
-                    <strong>Acompte à régler à la confirmation : {formatPrice(currentQuote.depositAmount)}</strong>
+                    <strong>
+                      Acompte à régler à la confirmation : {formatPrice(currentQuote.depositAmount)}
+                    </strong>
                   </p>
                 ) : null}
               </div>
             ) : null}
 
-            {submitError ? <p role="alert" className={styles.submitError}>{submitError}</p> : null}
+            {submitError ? (
+              <p role="alert" className={styles.submitError}>
+                {submitError}
+              </p>
+            ) : null}
           </div>
         ) : null}
 
         <div className={styles.actions}>
-          {stepIndex > 0 ? (
-            <Button type="button" variant="secondary" onClick={goPrev}>
-              Précédent
-            </Button>
-          ) : (
-            <span />
-          )}
-          {activeStep.id === 'photos' ? (
-            <Button
-              type="button"
-              withArrow
-              loading={phase === 'submitting'}
-              disabled={!canProceed.photos || !selectedSlot}
-              onClick={handleSubmit}
-            >
-              Confirmer ma demande
-            </Button>
-          ) : (
-            <Button
-              type="button"
-              withArrow
-              disabled={!canProceed[activeStep.id]}
-              onClick={goNext}
-            >
-              Continuer
-            </Button>
-          )}
+          <div className={styles.actionsPrice}>
+            <span className={styles.actionsPriceLabel}>Estimation</span>
+            <span className={styles.actionsPriceValue}>
+              {currentQuote ? formatPrice(currentQuote.totalPrice) : '—'}
+            </span>
+          </div>
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            {stepIndex > 0 ? (
+              <Button type="button" variant="secondary" onClick={goPrev}>
+                Retour
+              </Button>
+            ) : null}
+            {activeStep.id === 'photos' ? (
+              <Button
+                type="button"
+                withArrow
+                loading={phase === 'submitting'}
+                disabled={!canProceed.photos || !selectedSlot}
+                onClick={handleSubmit}
+              >
+                Confirmer
+              </Button>
+            ) : (
+              <Button type="button" withArrow disabled={!canProceed[activeStep.id]} onClick={goNext}>
+                Continuer
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>
