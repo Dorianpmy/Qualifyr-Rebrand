@@ -8,8 +8,6 @@ export type Route =
   | '/'
   | '/creation-site-web'
   | '/nettoyage-automobile'
-  | '/conciergerie'
-  | '/outil-conciergerie'
   | '/tarifs'
   | '/methode'
   | '/realisations'
@@ -17,7 +15,6 @@ export type Route =
   | '/a-propos'
   | '/diagnostic'
   | '/estimation'
-  | '/simulateur-revenus-locatifs'
   | '/contact'
   | '/blog'
   | '/mentions-legales'
@@ -29,14 +26,11 @@ export type Anchor = `#${string}`;
 /** Ancre de la page d'accueil, utilisable depuis toutes les routes. */
 export type HomeAnchor = `/#${string}`;
 
-/** Ancre d'une route publique, par exemple la section Cookies de la politique. */
 /**
  * Page publique de réservation d'un professionnel du nettoyage automobile.
  *
  * Séparée de `Route` parce qu'elle est paramétrée : le slug vient de la base,
- * il ne peut pas être énuméré. Elle reste typée plutôt que laissée en `string`
- * pour qu'un lien mal formé — `/reservations/…`, au pluriel — échoue à la
- * compilation et non en production.
+ * il ne peut pas être énuméré.
  */
 export type ReservationRoute = `/reservation/${string}`;
 

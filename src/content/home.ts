@@ -1,24 +1,15 @@
 import { objectives, swCarCleaning } from './sw-car-cleaning';
 
 /**
- * Hero — pari de la spécialité (arbitrage du 11/08/2026, cf.
- * `docs/11-refonte-copywriting.md`, §2.1 option B).
+ * Hero — positionnement recentré nettoyage automobile / detailing.
  *
- * La restriction **est** l'argument : dire non à trente métiers est la preuve
- * la plus économique qu'on connaît les deux qu'on garde. Un titre de bénéfice
- * générique — « faites de votre savoir-faire une évidence » — pouvait coiffer
- * un cabinet de conseil ou un ébéniste ; il ne disqualifiait aucun concurrent
- * généraliste et ne justifiait aucune prime de spécialiste.
- *
- * **Contrepartie assumée** : ce titre engage publiquement sur deux métiers. Le
- * jour où l'offre élargie d'`AGENTS.md` §2 devient prioritaire, c'est le titre
- * qu'il faut changer — pas l'ajuster. L'option de repli est documentée.
+ * La restriction est l'argument : un seul métier, bien connu.
  */
 export const hero = {
-  eyebrow: 'Agence digitale · Deux métiers, pas trente',
-  title: 'Nous ne faisons des sites que pour deux métiers.',
+  eyebrow: 'Agence digitale · Nettoyage automobile & detailing',
+  title: 'Des sites qui transforment vos abonnés en réservations.',
   body:
-    'Le nettoyage automobile et les conciergeries de location courte durée. Assez peu pour connaître vos objections client par cœur. Assez longtemps pour savoir ce qui déclenche une demande.',
+    'Instagram vous fait connaître. Un site clair présente vos formules, affiche vos tarifs et transforme une visite en demande de créneau — sans passer par vingt messages privés.',
 } as const;
 
 /** Conservé pour la composition éditoriale réutilisée par le design system. */
@@ -32,12 +23,12 @@ export const offerBlocks = [
   {
     number: '01',
     title: 'Une offre plus claire',
-    body: 'Nous structurons vos services pour que vos prospects comprennent rapidement ce que vous proposez.',
+    body: 'Nous structurons vos formules et vos tarifs pour que vos prospects comprennent rapidement ce que vous proposez.',
   },
   {
     number: '02',
     title: 'Un site pensé pour agir',
-    body: 'Chaque page guide vers une demande, une réservation ou un échange utile.',
+    body: 'Chaque page guide vers une demande de créneau ou un échange utile.',
   },
   {
     number: '03',
@@ -50,10 +41,6 @@ export const sectors = [
   {
     title: 'Nettoyage automobile mobile et detailing',
     body: 'Présentez clairement vos formules, votre zone d’intervention et la façon de réserver.',
-  },
-  {
-    title: 'Conciergeries',
-    body: 'Expliquez votre accompagnement, qualifiez les demandes et rassurez avant le premier échange.',
   },
 ] as const;
 
@@ -79,12 +66,7 @@ export const serviceCompanies = [
   {
     title: 'Nettoyage automobile & detailing',
     body: 'Présenter les prestations, valoriser le niveau de travail et simplifier le passage vers la prise de contact.',
-    href: '/nettoyage-automobile',
-  },
-  {
-    title: 'Conciergeries',
-    body: 'Clarifier l’accompagnement, inspirer confiance et guider chaque demande vers la bonne action.',
-    href: '/conciergerie',
+    href: '/nettoyage-automobile' as const,
   },
 ] as const;
 
