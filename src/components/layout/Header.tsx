@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { primaryNav } from '@/content/navigation';
 import { BookingDialog } from '@/components/agency/BookingDialog';
+import { ConversionPrompt } from '@/components/agency/ConversionPrompt';
 import { WhatsAppDirectButton } from '@/components/agency/WhatsAppDirectButton';
 import { Logo } from '@/components/ui/Logo';
 import { Container } from './Container';
@@ -98,6 +99,7 @@ export function Header() {
         </div>
       ) : null}
       <BookingDialog />
+      <ConversionPrompt />
     </>
   );
 }
