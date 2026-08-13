@@ -66,14 +66,6 @@
   color: var(--color-sand) !important;
 }
 
-/**
- * Signature d'autorité du hero.
- *
- * Elle remplace une section produit entière : le poids typographique doit donc
- * rester délibérément faible — c'est une mention, pas une troisième offre. Le
- * lien souligné est le seul élément qui appelle le clic ; la phrase qui le
- * porte se lit comme une note de bas de page.
- */
 .heroSignature {
   max-inline-size: 54ch;
   color: var(--color-sand);
@@ -225,6 +217,17 @@
   font-size: var(--text-sm);
 }
 
+.companyNote a {
+  color: inherit;
+  font-weight: var(--weight-semibold);
+  text-decoration-color: var(--color-brass);
+  text-underline-offset: 0.25em;
+}
+
+.companyNote a:hover {
+  color: var(--color-copper-deep);
+}
+
 .methodGrid {
   display: grid;
   gap: var(--space-5);
@@ -236,8 +239,6 @@
 .finalSection {
   border-block-end: 1px solid var(--rule-hairline);
 }
-
-/* --- Tarifs, en amont de l'appel final ------------------------------------- */
 
 .pricing {
   display: flex;
@@ -263,13 +264,7 @@
 
 .pricingAction { display: flex; flex-wrap: wrap; gap: var(--space-3); }
 
-/* =========================================================================
-   Bloc 03 — Entreprises de services
-   Deux vraies cartes, identiques au repos. Auparavant les éléments étaient
-   séparés par de simples filets : au survol, l'un prenait un fond et l'autre
-   non, ce qui donnait l'impression d'un bloc à moitié construit.
-   ========================================================================= */
-
+/* Section freins — 3 cartes pleine largeur */
 .companyList {
   gap: var(--space-4);
   margin-block-start: var(--space-7);
@@ -301,50 +296,11 @@
 }
 
 .companyTitle {
-  font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.125rem) !important;
+  font-size: clamp(1.35rem, 1.1rem + 1vw, 1.75rem) !important;
   line-height: var(--leading-snug);
 }
 
 .companyLink:hover .companyArrow { transform: translate(0.2rem, -0.2rem); }
-
-@media (min-width: 48rem) {
-  .companyList li { border-inline-end: var(--border-width) solid var(--rule-hairline); }
-}
-
-/* =========================================================================
-   Mobile — garde-fous
-   Les compositions en `flex` avec base fixe débordent sous 26 rem : on les
-   ramène à une colonne pleine largeur plutôt que de laisser apparaître un
-   défilement horizontal, qui est le défaut le plus visible sur téléphone.
-   ========================================================================= */
-
-@media (max-width: 47.99rem) {
-  .product,
-  .pricing,
-  .finalCta {
-    gap: var(--space-6);
-  }
-
-  .productCopy,
-  .productCard,
-  .pricing > div:first-child {
-    flex: 1 1 100%;
-    min-inline-size: 0;
-  }
-
-  .productSteps {
-    gap: var(--space-4);
-  }
-
-  .companyLink {
-    padding: var(--space-5) !important;
-  }
-}
-
-/* --- Produit en abonnement -------------------------------------------------
-   Bande en encre, comme la réalisation sélectionnée : le produit est une
-   proposition distincte, il doit se détacher du flux éditorial clair.
-   --------------------------------------------------------------------------- */
 
 .product {
   display: flex;
@@ -359,9 +315,6 @@
   min-inline-size: 0;
 }
 
-/* Aucune surcharge de taille : le titre reprend `--text-3xl` du socle, comme
-   toutes les autres sections. Seule la couleur change, parce que le fond est
-   sombre. */
 .product h2 {
   max-inline-size: 16ch;
   margin-block-start: var(--space-3);
@@ -375,9 +328,6 @@
   font-size: var(--text-base);
 }
 
-/* Trois temps, alignés sur la lecture : ce qu'il fait, ce que vous recevez,
-   ce que vous faites. Un produit se comprend par sa séquence, pas par sa liste
-   de fonctionnalités. */
 .productSteps {
   display: grid;
   gap: var(--space-4);
@@ -396,8 +346,6 @@
   align-content: start;
 }
 
-/* Même traitement que les intitulés numérotés du reste du site : famille de
-   texte, graisse forte, taille `--text-lg`. */
 .productSteps strong {
   color: var(--text-inverse);
   font-family: var(--family-text);
@@ -427,8 +375,6 @@
   line-height: var(--leading-normal);
 }
 
-/* Le prix est un chiffre, pas un titre : chiffres alignés plutôt qu'elzéviriens,
-   sinon le « 79 » descend sous la ligne de base et paraît bancal. */
 .productPrice {
   color: var(--text-inverse);
   font-family: var(--family-display);
@@ -498,15 +444,16 @@
   .transformationIntro,
   .sectionIntro,
   .finalCta {
-    grid-template-columns: minmax(0, 7fr) minmax(16rem, 4fr);
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .transformations {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  /* 3 freins = 3 colonnes pleine largeur */
   .companyList {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .transformation,
@@ -524,12 +471,12 @@
 
   .transformation:first-child,
   .companyList li:first-child .companyLink {
-    padding-inline-start: 0;
+    padding-inline-start: var(--space-6);
   }
 
   .transformation:last-child,
   .companyList li:last-child .companyLink {
-    padding-inline-end: 0;
+    padding-inline-end: var(--space-6);
   }
 
   .companyList li:last-child,
@@ -615,6 +562,23 @@
     inline-size: 100%;
   }
 
+  .product,
+  .pricing,
+  .finalCta {
+    gap: var(--space-6);
+  }
+
+  .productCopy,
+  .productCard,
+  .pricing > div:first-child {
+    flex: 1 1 100%;
+    min-inline-size: 0;
+  }
+
+  .productSteps {
+    gap: var(--space-4);
+  }
+
   .transformationIntro,
   .caseGrid,
   .sectionIntro,
@@ -630,9 +594,7 @@
 
   .companyLink {
     grid-template-columns: minmax(0, 1fr);
-    justify-items: center;
-    padding: var(--space-6) var(--space-4);
-    text-align: center;
+    padding: var(--space-5) !important;
   }
 
   .companyNumber {
@@ -640,17 +602,13 @@
     padding-block-start: 0;
   }
 
-  .companyCopy {
-    justify-items: center;
-  }
-
   .companyTitle {
-    max-inline-size: 17ch;
+    max-inline-size: none;
     text-wrap: balance;
   }
 
   .companyBody {
-    max-inline-size: 32ch;
+    max-inline-size: none;
     text-wrap: pretty;
   }
 }
