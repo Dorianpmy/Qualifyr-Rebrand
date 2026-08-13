@@ -318,6 +318,25 @@
   line-height: var(--leading-tight);
 }
 
+.confirmList {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: var(--space-5);
+  list-style: none;
+  background: var(--surface-sunken);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+}
+
+.confirmList li strong {
+  display: inline-block;
+  min-inline-size: 7rem;
+  margin-inline-end: var(--space-2);
+  color: var(--text-secondary);
+  font-weight: var(--weight-medium);
+}
+
 .note {
   color: var(--text-secondary);
   font-size: var(--text-sm);
