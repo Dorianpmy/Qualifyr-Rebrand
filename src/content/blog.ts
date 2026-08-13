@@ -21,15 +21,11 @@ export type BlogArticle = {
 export const blogIntro = {
   eyebrow: 'Le journal',
   title: 'Des repères pour mieux présenter et développer votre activité.',
-  body: 'Offre, identité, site et prise de contact : des articles concrets pour prendre de meilleures décisions, sans ajouter de complexité.',
+  body: 'Offre, identité, site et prise de contact : des articles concrets pour les professionnels du nettoyage automobile et du detailing.',
 } as const;
 
 /**
- * File éditoriale Qualifyr.
- *
- * Chaque article est entièrement rédigé avant d'être planifié. La date sert
- * uniquement à rendre le contenu visible : elle ne déclenche aucune génération
- * et ne complète jamais un texte manquant.
+ * File éditoriale Qualifyr — recentrée detailing / nettoyage auto.
  */
 export const blogArticles = [
   {
@@ -50,7 +46,7 @@ export const blogArticles = [
         title: 'Commencer par la situation du client',
         paragraphs: [
           'Présenter immédiatement votre méthode, vos outils ou votre histoire oblige le visiteur à faire lui-même le lien avec son besoin. Commencez plutôt par les situations que vous prenez réellement en charge.',
-          'Un professionnel du nettoyage automobile peut distinguer l’entretien courant, la remise en état et la préparation avant une vente. Une conciergerie peut distinguer l’organisation d’un séjour, une demande ponctuelle et un accompagnement plus complet. Le client se reconnaît avant de comparer.',
+          'Un professionnel du nettoyage automobile peut distinguer l’entretien courant, la remise en état et la préparation avant une vente. Le client se reconnaît avant de comparer.',
         ],
       },
       {
@@ -279,7 +275,7 @@ export const blogArticles = [
       {
         title: 'Terminer par une action liée à la page',
         paragraphs: [
-          'Un bouton “Contact” générique perd le contexte que la page vient de construire. Préférez une action précise : décrire le véhicule, présenter le séjour, vérifier la zone ou réserver un échange.',
+          'Un bouton “Contact” générique perd le contexte que la page vient de construire. Préférez une action précise : décrire le véhicule, vérifier la zone ou réserver un créneau.',
           'Le formulaire ou le message peut reprendre automatiquement le service consulté afin d’éviter au client de tout répéter.',
         ],
       },
@@ -327,155 +323,8 @@ export const blogArticles = [
       'La bonne question n’est pas seulement “dois-je afficher mes prix ?”, mais “puis-je expliquer honnêtement ce que le client obtient à ce prix et ce qui peut le faire varier ?”.',
   },
   {
-    slug: 'trouver-des-proprietaires-pour-sa-conciergerie',
-    number: '08',
-    category: 'Conciergerie',
-    title: 'Comment trouver des propriétaires pour sa conciergerie',
-    excerpt:
-      'Le mandat ne se gagne pas au moment du rendez-vous. Il se gagne avant, quand le propriétaire cherche à savoir ce que son bien pourrait rapporter.',
-    seoTitle: 'Comment trouver des propriétaires pour sa conciergerie — Qualifyr',
-    seoDescription:
-      'Les canaux qui apportent réellement des mandats à une conciergerie de location courte durée, et la raison pour laquelle la plupart des demandes se perdent avant l’appel.',
-    publishedAt: '2026-08-10T09:00:00+02:00',
-    introduction:
-      'Une conciergerie ne manque presque jamais de logements à gérer par manque de compétence. Elle en manque parce que les propriétaires ne savent pas qu’elle existe, ou parce qu’ils n’ont pas assez d’éléments pour franchir le pas. La question n’est donc pas seulement “où les trouver”, mais “que doivent-ils comprendre avant d’accepter un rendez-vous”.',
-    sections: [
-      {
-        title: 'Le propriétaire n’achète pas un service, il accepte un risque',
-        paragraphs: [
-          'Confier un bien à une conciergerie, c’est remettre un appartement de plusieurs centaines de milliers d’euros à quelqu’un que l’on connaît peu, pour y loger des inconnus. La décision n’est pas commerciale, elle est prudentielle.',
-          'Cela change complètement l’ordre des arguments. Détailler ses prestations avant d’avoir traité la question du risque revient à répondre à une question que le propriétaire ne s’est pas encore posée.',
-        ],
-      },
-      {
-        title: 'Commencer par le chiffre, pas par l’offre',
-        paragraphs: [
-          'La première chose qu’un propriétaire cherche est un montant : combien mon logement pourrait-il rapporter ? Tant qu’il n’a pas cet ordre de grandeur, il n’a aucune raison d’aller plus loin.',
-          'C’est pourquoi une estimation de revenus, présentée sous forme de fourchette honnête et calibrée sur la zone, ouvre plus de conversations que n’importe quelle page de présentation. Elle donne une réponse utile avant de demander quoi que ce soit en retour.',
-        ],
-      },
-      {
-        title: 'Les canaux qui produisent vraiment des mandats',
-        paragraphs: [
-          'Les conciergeries qui se développent ne multiplient pas les canaux : elles en travaillent deux ou trois sérieusement.',
-        ],
-        points: [
-          'La recommandation par les propriétaires déjà gérés — le meilleur taux de transformation, de loin, mais lent à démarrer.',
-          'Les partenariats avec agences immobilières, notaires et comptables — un flux régulier et déjà qualifié.',
-          'La présence en ligne : site, fiche Google et référencement local — le seul canal qui travaille pendant que vous gérez vos logements.',
-          'Le démarchage direct — utile au lancement, difficile à tenir dans la durée.',
-        ],
-      },
-      {
-        title: 'Le point où la plupart des demandes se perdent',
-        paragraphs: [
-          'Beaucoup de conciergeries obtiennent des contacts, puis les perdent entre le premier message et le rendez-vous. Le propriétaire écrit, reçoit une réponse tardive ou générique, et poursuit ailleurs.',
-          'Deux corrections suffisent souvent. Recueillir dès la demande la ville, le type de logement, le nombre de biens et la disponibilité, afin de traiter en priorité ce qui est traitable. Et relancer automatiquement ceux qui ne répondent pas : c’est la tâche que personne n’a le temps de faire, et c’est là que se trouve la moitié des mandats perdus.',
-        ],
-      },
-    ],
-    conclusion:
-      'Trouver des propriétaires est moins une question de volume que d’ordre. Donner un chiffre, traiter le risque, qualifier la demande, relancer sans y penser. Un mandat rapporte plusieurs milliers d’euros par an : il justifie largement de soigner les quelques minutes qui précèdent le premier appel.',
-  },
-  {
-    slug: 'combien-facturer-conciergerie-airbnb',
-    number: '09',
-    category: 'Conciergerie',
-    title: 'Combien facturer quand on lance sa conciergerie ?',
-    excerpt:
-      'La commission n’est qu’une partie de la réponse. Ce qui décide de votre rentabilité, c’est ce qu’elle inclut et le temps que chaque logement vous coûte réellement.',
-    seoTitle: 'Combien facturer sa conciergerie Airbnb ? — Qualifyr',
-    seoDescription:
-      'Commission, frais de ménage, forfait de mise en service : comment construire une grille tarifaire de conciergerie qui tient sur la durée.',
-    publishedAt: '2026-08-10T11:00:00+02:00',
-    introduction:
-      'La question arrive toujours dans cet ordre : quel pourcentage prendre ? C’est pourtant la dernière à traiter. Une commission ne veut rien dire tant qu’on n’a pas défini ce qu’elle couvre, ni combien d’heures un logement consomme chaque mois.',
-    sections: [
-      {
-        title: 'Partir du temps réel, pas du marché',
-        paragraphs: [
-          'Un logement demande du temps de manière très inégale : la mise en ligne, les premières semaines et la haute saison concentrent l’essentiel de la charge. Comptez les heures sur un cycle complet plutôt que sur un mois calme.',
-          'Ce calcul donne un plancher. En dessous, chaque logement supplémentaire vous appauvrit — et c’est ce qui arrive aux conciergeries qui alignent leur commission sur celle du voisin sans avoir mesuré leur propre organisation.',
-        ],
-      },
-      {
-        title: 'Séparer ce qui est récurrent de ce qui est ponctuel',
-        paragraphs: [
-          'Trois lignes suffisent le plus souvent : une commission sur les revenus, un forfait de mise en service au démarrage, et le ménage refacturé au voyageur.',
-          'Le forfait de démarrage est celui qu’on oublie le plus souvent. Il couvre les photographies, la rédaction de l’annonce, l’installation des équipements manquants et la déclaration en mairie. Sans lui, vous financez l’installation d’un bien qui peut vous quitter au bout de six mois.',
-        ],
-        points: [
-          'Commission : votre rémunération récurrente.',
-          'Mise en service : le travail non répétable du démarrage.',
-          'Ménage : refacturé, jamais absorbé.',
-          'Interventions exceptionnelles : facturées à l’heure, annoncées d’avance.',
-        ],
-      },
-      {
-        title: 'Assumer une commission plus haute et la justifier',
-        paragraphs: [
-          'Baisser sa commission pour signer est le réflexe le plus coûteux du métier : vous attirez les propriétaires les plus exigeants sur le prix, qui sont aussi les plus difficiles à satisfaire.',
-          'Un point de commission se défend par ce qu’il produit. Une annonce mieux rédigée, une tarification ajustée au jour le jour et une meilleure réactivité augmentent le revenu du propriétaire bien au-delà de l’écart de commission. Montrez ce calcul plutôt que de négocier le pourcentage.',
-        ],
-      },
-    ],
-    conclusion:
-      'Une grille tarifaire tient quand vous pouvez expliquer chaque ligne en une phrase et qu’aucune ne vous fait perdre d’argent. Si vous hésitez à annoncer votre commission, c’est rarement qu’elle est trop élevée — c’est qu’elle n’est pas encore adossée à ce qu’elle finance.',
-  },
-  {
-    slug: 'convaincre-un-proprietaire-de-confier-son-bien',
-    number: '10',
-    category: 'Conciergerie',
-    title: 'Convaincre un propriétaire de vous confier son bien',
-    excerpt:
-      'Il ne compare pas des prestations, il évalue un risque. Tant que ce risque n’est pas traité, aucun argument de service ne porte.',
-    seoTitle: 'Convaincre un propriétaire — conciergerie | Qualifyr',
-    seoDescription:
-      'Pourquoi les propriétaires hésitent, dans quel ordre traiter leurs objections, et ce qui fait vraiment basculer une décision de mandat.',
-    publishedAt: '2026-08-10T12:00:00+02:00',
-    introduction:
-      'Un propriétaire qui hésite ne se demande pas si votre service est bon. Il se demande ce qu’il risque à confier un bien de plusieurs centaines de milliers d’euros à quelqu’un qu’il connaît peu, pour y loger des inconnus. Répondre à côté de cette question fait perdre la majorité des dossiers.',
-    sections: [
-      {
-        title: 'Donner le chiffre avant tout le reste',
-        paragraphs: [
-          'La première question est toujours la même : combien mon logement rapporterait-il ? Tant qu’il n’a pas d’ordre de grandeur, le propriétaire n’a aucune raison d’engager une conversation.',
-          'Une fourchette honnête vaut mieux qu’un montant précis. Elle montre que vous connaissez votre marché sans promettre ce que vous ne maîtrisez pas — et elle vous protège le jour où la saison est mauvaise.',
-        ],
-      },
-      {
-        title: 'Traiter les quatre objections dans l’ordre',
-        paragraphs: [
-          'Elles reviennent presque toujours, et presque toujours dans cet ordre. Les anticiper évite de les subir au milieu d’un rendez-vous.',
-        ],
-        points: [
-          'Puis-je encore utiliser mon logement ? Le calendrier reste sous son contrôle.',
-          'Qui gère les voyageurs ? Vous, entièrement, sans le solliciter.',
-          'Et les dégradations ? Garanties des plateformes et filtrage des réservations.',
-          'Suis-je engagé ? Précisez la durée et les conditions de sortie, sans détour.',
-        ],
-      },
-      {
-        title: 'Montrer l’écart, pas le montant',
-        paragraphs: [
-          'Un propriétaire qui loue déjà à l’année ne se lève pas pour gagner plus : il se lève pour arrêter de perdre. Comparez ce qu’il touche aujourd’hui et ce qu’il pourrait toucher, nettement, une fois votre commission déduite.',
-          'C’est cet écart qu’il répétera à son conjoint le soir même. Le revenu brut, lui, s’oublie en dix minutes.',
-        ],
-      },
-      {
-        title: 'Rappeler vite',
-        paragraphs: [
-          'Une demande traitée dans la journée n’a pas le même destin qu’une demande rappelée la semaine suivante. Entre-temps, le propriétaire a parlé à deux concurrents, ou a simplement laissé retomber son projet.',
-          'Si vous ne deviez suivre qu’une seule règle dans tout cet article, ce serait celle-là.',
-        ],
-      },
-    ],
-    conclusion:
-      'Convaincre un propriétaire tient moins à l’argumentaire qu’à l’ordre : un chiffre, puis le risque, puis l’écart, puis un rappel rapide. Les conciergeries qui signent le plus ne sont pas celles qui parlent le mieux de leur service — ce sont celles qui répondent aux questions qu’on ne leur pose pas à voix haute.',
-  },
-  {
     slug: 'trouver-des-clients-en-detailing',
-    number: '11',
+    number: '08',
     category: 'Nettoyage automobile',
     title: 'Trouver des clients en detailing sans dépendre d’Instagram',
     excerpt:
@@ -525,7 +374,7 @@ export const blogArticles = [
   },
   {
     slug: 'grille-tarifaire-detailing-par-vehicule',
-    number: '12',
+    number: '09',
     category: 'Nettoyage automobile',
     title: 'Construire une grille tarifaire de detailing lisible',
     excerpt:
