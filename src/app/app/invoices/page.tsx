@@ -29,7 +29,7 @@ export default async function InvoicesPage() {
       detailerName={detailer.name}
       detailerSlug={detailer.slug}
       city={detailer.city}
-      active="demandes"
+      active="factures"
     >
       <main className={styles.main}>
         <div className={styles.topbar}>
