@@ -9,7 +9,7 @@ import { Section } from '@/components/layout/Section';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { ButtonLink } from '@/components/ui/Button';
 import { Eyebrow } from '@/components/ui/Eyebrow';
-import { frictionPoints, hero } from '@/content/home';
+import { frictionPoints, hero, saasHome } from '@/content/home';
 import { swCarCleaning } from '@/content/sw-car-cleaning';
 import { buildMetadata } from '@/lib/metadata';
 import { webPage } from '@/lib/structured-data';
@@ -57,24 +57,60 @@ export default function HomePage() {
                   Voir l’approche detailing
                 </ButtonLink>
                 <ButtonLink
-                  href="/diagnostic"
-                  ctaId="hero_diagnostic"
+                  href={saasHome.primaryCta.href}
+                  ctaId="hero_saas_demo"
                   variant="inverseSecondary"
                   withArrow
                 >
-                  Faire le diagnostic
+                  Essayer l’outil réservation
                 </ButtonLink>
               </div>
               <p className={styles.heroSignature}>
-                Nous concevons aussi le parcours de réservation.{' '}
-                <Link href="/nettoyage-automobile#demonstration" data-cta-id="hero_tool_cleaning_demo">
-                  Voir la démonstration
+                Site vitrine + parcours de réservation pour detailers.{' '}
+                <Link href="#outil-detailers" data-cta-id="hero_saas_anchor">
+                  Découvrir l’outil →
                 </Link>
-                .
               </p>
             </div>
           </Container>
         </div>
+      </Section>
+
+      <Section id="outil-detailers" surface="inverse" spacing="tight" className={styles.saasSection}>
+        <Container>
+          <div className={styles.saasGrid}>
+            <div className={styles.saasCopy}>
+              <Eyebrow inverse>{saasHome.eyebrow}</Eyebrow>
+              <h2 className={styles.saasTitle}>{saasHome.title}</h2>
+              <p className={styles.saasLead}>{saasHome.lead}</p>
+              <div className={styles.saasActions}>
+                <ButtonLink
+                  href={saasHome.primaryCta.href}
+                  ctaId="home_saas_demo"
+                  variant="inverse"
+                  withArrow
+                >
+                  {saasHome.primaryCta.label}
+                </ButtonLink>
+                <ButtonLink
+                  href={saasHome.secondaryCta.href}
+                  ctaId="home_saas_login"
+                  variant="inverseSecondary"
+                >
+                  {saasHome.secondaryCta.label}
+                </ButtonLink>
+              </div>
+            </div>
+            <ul className={styles.saasPoints} aria-label="Points forts de l’outil">
+              {saasHome.points.map((point) => (
+                <li key={point.title}>
+                  <strong>{point.title}</strong>
+                  <span>{point.body}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Container>
       </Section>
 
       <Section id="pour-qui" surface="sunken" ruled spacing="tight">

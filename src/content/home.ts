@@ -16,6 +16,39 @@ export const heroMoments = [
   { number: '03', label: 'Passer à l’action' },
 ] as const;
 
+/**
+ * Bandeau produit SaaS sur la home (mis en avant).
+ * Lien vers app.qualifyragence.com — DA produit séparée de l’agence.
+ */
+export const saasHome = {
+  eyebrow: 'Outil detailers · France & Suisse',
+  title: 'Le parcours qui remplit ton planning.',
+  lead:
+    'Chaque detailer a sa page de réservation. Le client choisit la formule, envoie des photos et un créneau. Toi, tu confirmes — sans aller-retour WhatsApp.',
+  points: [
+    {
+      title: 'Page client dédiée',
+      body: 'Une URL simple à partager : estimation, photos, créneau.',
+    },
+    {
+      title: 'Demandes centralisées',
+      body: 'Tout arrive dans un espace pro clair, prêt à confirmer.',
+    },
+    {
+      title: 'Preuve avant / après',
+      body: 'Montre tes transformations pour convertir plus vite.',
+    },
+  ],
+  primaryCta: {
+    label: 'Voir l’outil detailers',
+    href: 'https://app.qualifyragence.com/reservation/demo',
+  },
+  secondaryCta: {
+    label: 'Espace pro',
+    href: 'https://app.qualifyragence.com/app/login',
+  },
+} as const;
+
 export const offerBlocks = [
   {
     number: '01',
