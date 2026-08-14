@@ -3,7 +3,6 @@ import type { ReactNode } from 'react';
 import { Header } from '@/components/layout/Header';
 import { FloatingWhatsApp } from '@/components/agency/FloatingWhatsApp';
 import { AttributionCapture } from '@/components/agency/AttributionCapture';
-import { ConversionPrompt } from '@/components/agency/ConversionPrompt';
 import { Footer } from '@/components/layout/Footer';
 import { SkipLink } from '@/components/layout/SkipLink';
 import { RevealObserver, revealBootstrap } from '@/components/motion/RevealObserver';
@@ -16,7 +15,6 @@ import { homeSeo, site } from '@/content/site';
 import '@/styles/globals.css';
 
 export const metadata: Metadata = {
-  // Base de toutes les URL relatives : canonical, Open Graph, images.
   metadataBase: new URL(site.url),
   title: {
     default: homeSeo.title,
@@ -61,11 +59,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  // Seule valeur de couleur hors tokens.css : les métadonnées du navigateur
-  // n'acceptent pas de variable CSS. À garder synchronisée avec --color-ivory.
   themeColor: '#f5f0e7',
   colorScheme: 'light',
-  // Nécessaire pour que env(safe-area-inset-*) renvoie autre chose que 0 sur iOS.
   viewportFit: 'cover',
 };
 
@@ -78,8 +73,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       suppressHydrationWarning
     >
       <head>
-        {/* Avant le premier rendu : autorise la révélation si, et seulement si,
-            le visiteur n'a pas demandé de réduire les animations. */}
         <script dangerouslySetInnerHTML={{ __html: revealBootstrap }} />
       </head>
       <body>
@@ -89,7 +82,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <SkipLink />
         <Header />
         <FloatingWhatsApp />
-        <ConversionPrompt />
         <main id="contenu">{children}</main>
         <Footer />
         <RevealObserver />
