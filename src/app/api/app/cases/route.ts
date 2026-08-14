@@ -34,14 +34,23 @@ export async function POST(request: Request) {
     );
   }
 
-  const created = await createCase({
+  const payload: {
+    detailerId: string;
+    title: string;
+    beforeUrl: string;
+    afterUrl: string;
+    vehicleLabel?: string;
+    serviceLabel?: string;
+  } = {
     detailerId: detailer.id,
     title: body.title.trim(),
-    vehicleLabel: body.vehicleLabel,
-    serviceLabel: body.serviceLabel,
     beforeUrl: body.beforeUrl.trim(),
     afterUrl: body.afterUrl.trim(),
-  });
+  };
+  if (body.vehicleLabel?.trim()) payload.vehicleLabel = body.vehicleLabel.trim();
+  if (body.serviceLabel?.trim()) payload.serviceLabel = body.serviceLabel.trim();
+
+  const created = await createCase(payload);
 
   if (!created) {
     return NextResponse.json({ ok: false, message: 'Création impossible.' }, { status: 500 });
