@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDetailerForOwner } from '@/lib/detailing/dashboard';
-import { createInvoice } from '@/lib/detailing/invoices';
+import { createInvoice, type CreateInvoiceInput } from '@/lib/detailing/invoices';
 import { getSessionUser } from '@/lib/detailing/session';
 
 export async function POST(request: Request) {
@@ -40,19 +40,21 @@ export async function POST(request: Request) {
     );
   }
 
-  const created = await createInvoice({
+  const input: CreateInvoiceInput = {
     detailerId: detailer.id,
-    bookingId: body.bookingId,
     clientName: body.clientName.trim(),
-    clientEmail: body.clientEmail,
-    clientSiren: body.clientSiren,
     description: body.description.trim(),
     unitPriceHt: Number(body.unitPriceHt),
     quantity: body.quantity ? Number(body.quantity) : 1,
     tvaRate: body.tvaRate != null ? Number(body.tvaRate) : 20,
     tvaFranchise: Boolean(body.tvaFranchise),
     issue: body.issue !== false,
-  });
+  };
+  if (body.bookingId) input.bookingId = body.bookingId;
+  if (body.clientEmail) input.clientEmail = body.clientEmail;
+  if (body.clientSiren) input.clientSiren = body.clientSiren;
+
+  const created = await createInvoice(input);
 
   if (!created) {
     return NextResponse.json({ ok: false, message: 'Création impossible.' }, { status: 500 });
