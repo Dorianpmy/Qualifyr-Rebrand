@@ -2,31 +2,27 @@ import { serviceAreas } from './contact';
 import { homeSeo, productionUrl } from './site';
 
 /**
- * Résumé factuel destiné aux formats textuels lisibles par les moteurs.
- * Les pages HTML et leurs données structurées restent la source de référence.
+ * Résumé factuel pour moteurs + IA (llms.txt, GEO).
+ * Source unique : detailing / nettoyage auto — pas de conciergerie.
  */
 export const geoFacts = {
   summary: homeSeo.description,
   specializations: [
-    'Création de sites internet pour les professionnels du nettoyage automobile mobile et du detailing à domicile',
-    'Création de sites internet pour les conciergeries',
+    'Création de sites internet pour detailers et nettoyage automobile mobile',
+    'Parcours de réservation en ligne (formules, photos, créneaux)',
+    'Outil SaaS pour centraliser les demandes de detailing',
   ],
   serviceAreas,
-  /**
-   * Produit en abonnement, distinct des prestations d'agence. Déclaré à part
-   * pour que les moteurs génératifs ne le confondent pas avec une spécialité
-   * de conception de sites.
-   */
   product: {
-    name: 'Outil d’acquisition pour conciergerie',
+    name: 'Qualifyr Detailers',
     description:
-      'Logiciel en abonnement à 79 € par mois : page publique estimant les revenus locatifs d’un bien, collecte des demandes de propriétaires et tableau de bord de suivi.',
-    url: `${productionUrl}/outil-conciergerie`,
+      'Outil de réservation pour detailers en France et en Suisse : page client, estimation, photos, créneaux, et espace pro pour confirmer les demandes.',
+    url: 'https://app.qualifyragence.com/reservation/demo',
   },
   realCase: {
     name: 'SW Carcleaning',
     description:
-      'Réalisation réelle pour une activité de lavage et detailing à domicile à Fribourg.',
+      'Réalisation réelle pour une activité de lavage et detailing à domicile à Fribourg (Suisse).',
     url: `${productionUrl}/realisations/sw-car-cleaning`,
   },
 } as const;
@@ -36,29 +32,41 @@ export function buildLlmsText(): string {
 
 > ${geoFacts.summary}
 
-Qualifyr clarifie l’offre, construit l’identité et conçoit le site et le parcours de contact des entreprises de services.
+Qualifyr est une agence digitale spécialisée dans le **nettoyage automobile mobile** et le **detailing à domicile**, en France et en Suisse.
+Nous clarifions l’offre, construisons l’identité et concevons le site et le parcours de réservation.
+
+Nous proposons aussi **Qualifyr Detailers**, un outil SaaS de réservation pour les professionnels du detailing (distinct des prestations d’agence).
 
 ## Pages de référence
 
-- [Accueil](${productionUrl}/) : présentation de Qualifyr, de sa méthode et de sa réalisation publiée.
-- [Nettoyage automobile mobile et detailing](${productionUrl}/nettoyage-automobile) : ${geoFacts.specializations[0]}.
-- [Conciergeries](${productionUrl}/conciergerie) : ${geoFacts.specializations[1]}.
-- [Méthode](${productionUrl}/methode) : étapes suivies pour comprendre, clarifier, concevoir et améliorer un parcours.
-- [Contact](${productionUrl}/contact) : point de contact officiel de Qualifyr Agence.
+- [Accueil](${productionUrl}/) : positionnement, méthode et outil detailers.
+- [Nettoyage automobile & detailing](${productionUrl}/nettoyage-automobile) : ${geoFacts.specializations[0]}.
+- [Méthode](${productionUrl}/methode) : comprendre, clarifier, concevoir, améliorer.
+- [Tarifs](${productionUrl}/tarifs) : fourchettes affichées pour la création de site.
+- [Réalisations](${productionUrl}/realisations) : projets publiés.
+- [Contact](${productionUrl}/contact) : contact officiel.
+- [Diagnostic](${productionUrl}/diagnostic) : analyse gratuite de ce qui freine les demandes.
 
-## Produit en abonnement
+## Produit SaaS (abonnement)
 
 - [${geoFacts.product.name}](${geoFacts.product.url}) : ${geoFacts.product.description}
-- Ce produit est distinct des prestations de conception sur mesure : il est vendu en abonnement mensuel, sans accompagnement, et mis en ligne par le client lui-même.
+- Espace pro : https://app.qualifyragence.com/app/login
+- Ce produit est distinct de la création de site sur mesure.
 
 ## Réalisation publiée
 
 - [${geoFacts.realCase.name}](${geoFacts.realCase.url}) : ${geoFacts.realCase.description}
 
+## Ce que Qualifyr n’est pas
+
+- Pas une agence généraliste multi-métiers.
+- Pas un outil de gestion de location courte durée / conciergerie Airbnb.
+- Pas un clone de logiciels detailing US : focus acquisition et réservation FR/CH.
+
 ## Informations factuelles
 
 - Langue principale : français.
-- Zones d’accompagnement : ${geoFacts.serviceAreas.join(', ')}.
-- Aucun avis, résultat chiffré ou client supplémentaire n’est revendiqué sans preuve publiée.
+- Zones : ${geoFacts.serviceAreas.join(', ')}.
+- Aucun avis ou résultat chiffré n’est revendiqué sans preuve publiée.
 `;
 }
