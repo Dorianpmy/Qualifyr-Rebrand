@@ -181,8 +181,8 @@ export default function HomePage() {
               <Eyebrow>03 — Tarifs</Eyebrow>
               <h2>Ce que ça coûte, sans devoir demander.</h2>
               <p>
-                Un site vitrine à partir de 990 €, un site avec parcours de demande entre 2 200 et 3 800 €.
-                Les fourchettes sont affichées, les facteurs qui les font varier aussi.
+                SaaS réservation dès 49 €/mois (Pro 89 €). Site vitrine à partir de 690 €,
+                site avec parcours de demande entre 1 490 et 2 490 €. Détail sur la page tarifs.
               </p>
             </div>
             <div className={styles.pricingAction}>
