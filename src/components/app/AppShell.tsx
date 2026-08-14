@@ -12,7 +12,7 @@ export function AppShell({
   detailerName: string;
   detailerSlug: string;
   city?: string | null;
-  active: 'demandes' | 'planning' | 'tarifs' | 'factures';
+  active: 'demandes' | 'planning' | 'tarifs' | 'factures' | 'cases';
   children: ReactNode;
 }) {
   return (
@@ -29,38 +29,27 @@ export function AppShell({
             href="/app"
             className={`${styles.navItem} ${active === 'demandes' ? styles.navItemActive : ''}`}
           >
-            <span className={styles.navIcon} aria-hidden="true">
-              ▦
-            </span>
             <span className={styles.navLabel}>Demandes</span>
+          </Link>
+          <Link
+            href="/app/cases"
+            className={`${styles.navItem} ${active === 'cases' ? styles.navItemActive : ''}`}
+          >
+            <span className={styles.navLabel}>Avant/Après</span>
           </Link>
           <Link
             href="/app/invoices"
             className={`${styles.navItem} ${active === 'factures' ? styles.navItemActive : ''}`}
           >
-            <span className={styles.navIcon} aria-hidden="true">
-              €
-            </span>
             <span className={styles.navLabel}>Factures</span>
           </Link>
           <Link
             href={`/reservation/${detailerSlug}`}
-            className={styles.navItem}
+            className={`${styles.navItem} ${styles.navItemDesktopOnly}`}
             target="_blank"
           >
-            <span className={styles.navIcon} aria-hidden="true">
-              ↗
-            </span>
-            <span className={styles.navLabel}>Page client</span>
+            <span className={styles.navLabel}>Page client ↗</span>
           </Link>
-          <form action="/api/app/logout" method="post" className={styles.navLogoutMobile}>
-            <button type="submit" className={styles.navItem}>
-              <span className={styles.navIcon} aria-hidden="true">
-                ⎋
-              </span>
-              <span className={styles.navLabel}>Sortir</span>
-            </button>
-          </form>
         </nav>
 
         <div className={styles.sidebarFooter}>
