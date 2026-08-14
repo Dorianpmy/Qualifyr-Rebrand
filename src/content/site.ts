@@ -3,20 +3,18 @@ import type { Route } from '@/types';
 export const productionUrl = 'https://qualifyragence.com';
 export const productionDomain = 'qualifyragence.com';
 
+/**
+ * Snippet Google principal.
+ * Titre ~55–60 car. Description ~150–160 car.
+ * Zéro mention conciergerie / Airbnb.
+ */
 export const homeSeo = {
-  title: 'Qualifyr — Sites web pour nettoyage automobile et detailing',
+  title: 'Qualifyr — Sites & réservation pour detailers',
   description:
-    'Agence spécialisée dans le nettoyage automobile et le detailing. Nous concevons les sites qui présentent vos formules, affichent vos tarifs et remplissent votre agenda.',
+    'Agence et outil pour le detailing auto en France et en Suisse. Sites clairs, formules visibles, parcours de réservation — moins de DM, plus de RDV.',
 } as const;
 
-/**
- * Configuration du site et métadonnées par page.
- *
- * `indexable` reste à `false` tant que la variable de production explicite
- * n'est pas activée : les aperçus de préproduction ne doivent pas être indexés.
- */
 export const site = {
-  /** Domaine canonique public. */
   url: productionUrl,
   locale: 'fr-FR',
   lang: 'fr',
@@ -24,19 +22,12 @@ export const site = {
 } as const;
 
 type PageMeta = {
-  /** Titre complet, utilisé tel quel — la marque y est déjà incluse. */
   readonly title: string;
   readonly description: string;
-  /** Hors sitemap et en `noindex` même après la mise en ligne. */
   readonly excludeFromSitemap?: boolean;
-  /** Priorité relative dans le sitemap. */
   readonly priority?: number;
 };
 
-/**
- * Métadonnées par route.
- * Recentrées 100 % sur le nettoyage automobile / detailing.
- */
 export const pageMeta: Readonly<Record<Route, PageMeta>> = {
   '/': {
     title: homeSeo.title,
@@ -44,86 +35,85 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
     priority: 1,
   },
   '/creation-site-web': {
-    title: 'Création de site internet pour entreprise de services — Qualifyr',
+    title: 'Création de site pour detailers et nettoyage auto — Qualifyr',
     description:
-      'Un site pensé pour convertir : offre lisible, preuves de sérieux et parcours de contact simple. Pour les entreprises de services qui veulent plus de demandes.',
+      'Site pensé pour convertir : formules lisibles, tarifs visibles, prise de contact simple. Pour les professionnels du detailing qui veulent plus de demandes.',
     priority: 0.9,
   },
   '/nettoyage-automobile': {
     title: 'Site pour detailing et nettoyage auto — plus de réservations',
     description:
-      'Vos prestations présentées clairement, vos tarifs par type de véhicule et une prise de rendez-vous simple. Pour les detailers qui veulent moins de DM et plus de RDV.',
+      'Prestations claires, tarifs par véhicule, réservation simple. Pour les detailers qui veulent moins de messages Instagram et plus de rendez-vous.',
     priority: 0.9,
   },
   '/tarifs': {
-    title: 'Tarifs — création de site pour detailing | Qualifyr',
+    title: 'Tarifs — site pour detailing | Qualifyr',
     description:
-      'Nos fourchettes de prix, affichées : site vitrine et site avec parcours de demande. Pas de devis à rallonge.',
+      'Fourchettes affichées : site vitrine et site avec parcours de demande. Transparence avant le premier appel.',
     priority: 0.9,
   },
   '/methode': {
-    title: 'Notre méthode — du premier contact à la demande qualifiée',
+    title: 'Méthode Qualifyr — de l’offre floue à la demande qualifiée',
     description:
-      'Comprendre, clarifier, concevoir, améliorer. La méthode Qualifyr pour transformer un savoir-faire en un parcours que vos prospects comprennent et suivent.',
+      'Comprendre, clarifier, concevoir, améliorer. Comment nous transformons un savoir-faire detailing en parcours de réservation.',
     priority: 0.9,
   },
   '/realisations': {
-    title: 'Réalisations — sites pour nettoyage auto et detailing',
+    title: 'Réalisations — sites detailing et nettoyage auto | Qualifyr',
     description:
-      'Les projets conçus par Qualifyr : structure de l’offre, identité et parcours de contact. Des exemples concrets de ce que change un site bien pensé.',
+      'Projets publiés : structure de l’offre, identité et parcours de contact pour le detailing mobile.',
     priority: 0.8,
   },
   '/realisations/sw-car-cleaning': {
-    title: 'SW Car Cleaning, detailing à Fribourg — étude de cas Qualifyr',
+    title: 'SW Car Cleaning (Fribourg) — étude de cas detailing | Qualifyr',
     description:
-      'Comment nous avons clarifié les formules, construit l’identité et simplifié la prise de contact d’un service de lavage et detailing à domicile à Fribourg.',
+      'Clarification des formules, identité et prise de contact pour un service de lavage et detailing à domicile à Fribourg.',
     priority: 0.7,
   },
   '/a-propos': {
-    title: 'À propos — l’agence du detailing et du nettoyage auto | Qualifyr',
+    title: 'À propos — agence detailing France & Suisse | Qualifyr',
     description:
-      'Une verticale, une méthode, et ce que nous refusons de faire. Pourquoi Qualifyr se concentre sur le nettoyage automobile et le detailing.',
+      'Pourquoi Qualifyr se concentre sur le nettoyage automobile et le detailing, et ce que nous refusons de faire.',
     priority: 0.6,
   },
   '/diagnostic': {
-    title: 'Diagnostic gratuit de votre présence en ligne — Qualifyr',
+    title: 'Diagnostic gratuit — ce qui freine vos réservations detailing',
     description:
-      'Décrivez votre activité et vos priorités. Nous identifions ce qui freine vos demandes entrantes, et ce qu’il faut corriger en premier.',
+      'Décrivez votre activité. Nous identifions ce qui bloque les demandes : offre, tarifs, parcours mobile.',
     priority: 0.9,
   },
   '/estimation': {
-    title: 'Estimation de votre projet de site — Qualifyr',
+    title: 'Estimation budget site detailing — Qualifyr',
     description:
-      'Obtenez une orientation claire et une fourchette de budget indicative en quelques minutes, avant même le premier échange.',
+      'Orientation claire et fourchette de budget indicative en quelques minutes, avant le premier échange.',
     priority: 0.8,
   },
   '/contact': {
-    title: 'Contact — Qualifyr',
+    title: 'Contact — Qualifyr Agence',
     description:
-      'Une question sur notre façon de travailler ou sur votre situation en particulier ? Écrivez-nous. Pour une analyse détaillée, passez par le diagnostic.',
+      'Une question sur le detailing, un site ou l’outil de réservation ? Écrivez-nous. Pour une analyse, passez par le diagnostic.',
     priority: 0.5,
   },
   '/blog': {
-    title: 'Le journal — conseils pour detailers et nettoyage auto | Qualifyr',
+    title: 'Journal detailing — conseils pour remplir l’agenda | Qualifyr',
     description:
-      'Remplir son agenda, clarifier son offre, être trouvé sur Google : des articles concrets pour développer une activité de detailing.',
+      'Offre, Google, parcours de réservation : articles concrets pour développer une activité de detailing.',
     priority: 0.7,
   },
   '/mentions-legales': {
     title: 'Mentions légales — Qualifyr',
     description:
-      'Consultez les informations relatives à l’éditeur, à la publication et à l’hébergement du site officiel de Qualifyr Agence.',
+      'Éditeur, publication et hébergement du site Qualifyr Agence.',
     priority: 0.2,
   },
   '/politique-de-confidentialite': {
     title: 'Politique de confidentialité — Qualifyr',
     description:
-      'Données collectées par les formulaires du site, finalité, conservation, destinataires et exercice de vos droits. Aucun cookie, aucune mesure d’audience.',
+      'Données des formulaires, finalité, conservation, droits. Transparence sur le traitement.',
     priority: 0.2,
   },
 };
 
-/** Routes publiques, dans l'ordre du sitemap. */
 export const sitemapRoutes = (Object.keys(pageMeta) as Route[]).filter(
   (route) => pageMeta[route].excludeFromSitemap !== true,
 );

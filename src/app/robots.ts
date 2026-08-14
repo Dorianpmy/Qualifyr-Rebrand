@@ -2,15 +2,8 @@ import type { MetadataRoute } from 'next';
 import { site } from '@/content/site';
 
 /**
- * `robots.txt`.
- *
- * Deux états, commandés par le seul interrupteur `site.indexable` :
- *
- * — **Avant la mise en ligne** (état actuel) : tout est interdit. Le site vit
- *   sur une URL d'aperçu, qui ne doit apparaître dans aucun index. Un aperçu
- *   indexé crée du contenu dupliqué et des liens morts après la bascule.
- * — **Après la mise en ligne** : les pages publiques sont autorisées, les
- *   routes techniques exclues, et le sitemap déclaré sur le domaine canonique.
+ * robots.txt — indexation uniquement si NEXT_PUBLIC_SITE_INDEXABLE=true.
+ * SaaS (/app, /reservation) exclu du crawl sur le domaine marketing.
  */
 export default function robots(): MetadataRoute.Robots {
   if (!site.indexable) {
@@ -19,30 +12,29 @@ export default function robots(): MetadataRoute.Robots {
     };
   }
 
+  const disallow = ['/api/', '/design-system', '/go/', '/app/', '/reservation/'];
+
   return {
     rules: [
       {
-        // Robot utilisé par la recherche ChatGPT pour découvrir et citer les pages.
         userAgent: 'OAI-SearchBot',
         allow: '/',
-        disallow: ['/api/', '/design-system', '/go/'],
+        disallow,
       },
       {
-        // Robot de découverte des réponses et liens Perplexity.
         userAgent: 'PerplexityBot',
         allow: '/',
-        disallow: ['/api/', '/design-system', '/go/'],
+        disallow,
       },
       {
-        // Contrôle distinct utilisé par les produits Gemini ; sans effet sur Google Search.
         userAgent: 'Google-Extended',
         allow: '/',
-        disallow: ['/api/', '/design-system', '/go/'],
+        disallow,
       },
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/design-system', '/go/'],
+        disallow,
       },
     ],
     sitemap: new URL('/sitemap.xml', site.url).toString(),
