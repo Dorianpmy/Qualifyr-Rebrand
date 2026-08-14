@@ -9,9 +9,7 @@ import type { Route } from '@/types';
 
 /**
  * Données structurées (JSON-LD).
- *
- * **Uniquement des faits vérifiables.**
- * Recentrées 100 % nettoyage automobile / detailing.
+ * Uniquement faits vérifiables — detailing / nettoyage auto.
  */
 
 function absolute(path: string): string {
@@ -38,14 +36,14 @@ export function organization() {
     image: absolute('/images/og/qualifyr-og-v3.png'),
     areaServed: servedCountries(),
     knowsAbout: [
-      'Entreprises de services',
-      'Clarification de l’offre',
-      'Identité de marque',
-      'Conception de sites web',
-      'Parcours de contact',
-      'Expérience utilisateur',
+      'Detailing automobile',
       'Nettoyage automobile mobile',
-      'Detailing à domicile',
+      'Création de sites web pour detailers',
+      'Parcours de réservation en ligne',
+      'Clarification de l’offre detailing',
+      'Identité de marque',
+      'Expérience utilisateur mobile',
+      'Logiciel de réservation pour detailers',
     ],
   };
 
@@ -74,7 +72,6 @@ export function website() {
   };
 }
 
-/** Page publique, décrite à partir des métadonnées centralisées. */
 export function webPage(route: Route) {
   const meta = pageMeta[route];
   const url = absolute(route);
@@ -101,22 +98,20 @@ export function webPage(route: Route) {
   };
 }
 
-/** Service réellement présenté sur `/creation-site-web`, sans prix ni promesse. */
 export function webDesignService() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Service',
     '@id': `${site.url}/creation-site-web#service`,
-    name: 'Création de site web sur mesure',
-    serviceType: 'Conception et création de sites web',
+    name: 'Création de site web pour detailers',
+    serviceType: 'Conception de sites web pour le detailing automobile',
     url: absolute('/creation-site-web'),
     description:
-      'Conception de sites web clairs, rapides et adaptés aux besoins réels des entreprises, de la structure des contenus jusqu’à la prise de contact.',
+      'Conception de sites clairs et orientés réservation pour les professionnels du nettoyage automobile et du detailing.',
     provider: { '@id': `${site.url}/#organization` },
   };
 }
 
-/** Expertise métier réellement présentée, sans prix, résultat ni implantation inventée. */
 export function verticalService(content: VerticalServiceContent) {
   const url = absolute(content.route);
 
@@ -140,7 +135,6 @@ export function verticalService(content: VerticalServiceContent) {
   };
 }
 
-/** Questions et réponses réellement affichées sur une page métier. */
 export function faqPage(route: Route, items: readonly FaqItem[]) {
   const url = absolute(route);
 
@@ -211,10 +205,6 @@ export type Crumb = {
   readonly path: Route;
 };
 
-/**
- * Fil d'Ariane structuré.
- * À n'ajouter que sur les pages qui affichent réellement un fil d'Ariane.
- */
 export function breadcrumbList(items: readonly Crumb[]) {
   return {
     '@context': 'https://schema.org',
