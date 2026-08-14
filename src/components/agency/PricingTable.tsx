@@ -20,62 +20,83 @@ type Offer = {
   readonly featured?: boolean;
 };
 
-/** Ordre : SaaS d’abord (récurrent), puis offres site. */
+/**
+ * SaaS inchangé / enrichi (couches) — sites baissés.
+ * Ordre : SaaS puis offres site one-shot.
+ */
 const offers: readonly Offer[] = [
   {
-    kicker: 'Abonnement',
-    title: 'Module de réservation',
+    kicker: 'SaaS · Essentiel',
+    title: 'Réservation',
     from: 49,
     cadence: 'par mois',
     convertible: false,
     audience:
-      'Pour recevoir des demandes de créneau structurées, sans gérer vingt messages Instagram.',
+      'Page client + demandes structurées. Pour démarrer sans refaire tout le site.',
     items: [
-      'Page de réservation publique (formules + véhicule + créneau)',
-      'Notification email et WhatsApp à chaque demande',
-      'Confirmation automatique au client',
+      'Page de réservation (formules, véhicule, créneau)',
+      'Photos envoyées par le client',
+      'Notifications email / WhatsApp',
       'Tableau de bord des demandes',
-      'Essai gratuit · sans engagement long',
+      'Essai · résiliable à tout moment',
     ],
     href: '/nettoyage-automobile',
-    linkLabel: 'Voir la démonstration',
+    linkLabel: 'Voir la démo',
   },
   {
-    kicker: 'Le plus demandé',
-    title: 'Site et parcours de demande',
-    from: 2200,
-    to: 3800,
-    cadence: 'une fois',
-    convertible: true,
+    kicker: 'SaaS · Pro',
+    title: 'Réservation + atelier',
+    from: 89,
+    cadence: 'par mois',
+    convertible: false,
     audience:
-      'Pour un detailer ou une activité de nettoyage auto dont la crédibilité doit être établie avant le premier échange.',
+      'Tout l’Essentiel, plus la preuve visuelle et la facturation pro (FR).',
     items: [
-      'Clarification de l’offre et rédaction des contenus',
-      'Identité visuelle appliquée au site',
-      'Parcours de demande qualifiant',
-      'Référencement local et données structurées',
+      'Tout le plan Essentiel',
+      'Galerie avant / après',
+      'Factures (mentions FR, numérotation)',
+      'Espace pro renforcé',
+      'Priorité évolutions produit',
     ],
-    href: '/diagnostic',
-    linkLabel: 'Faire le diagnostic',
+    href: '/nettoyage-automobile',
+    linkLabel: 'Voir la démo',
     featured: true,
   },
   {
-    kicker: 'Entrée de gamme',
+    kicker: 'Agence · Vitrine',
     title: 'Site vitrine',
-    from: 990,
-    to: 1800,
+    from: 690,
+    to: 1290,
     cadence: 'une fois',
     convertible: true,
     audience:
-      'Pour une activité qui a besoin d’exister en ligne proprement, sans parcours complexe.',
+      'Exister en ligne proprement, sans parcours complexe.',
     items: [
       'Trois à cinq pages',
       'Structure des contenus et mise en page',
-      'Formulaire de contact et fiche Google',
+      'Formulaire de contact',
       'Livraison en deux à trois semaines',
     ],
     href: '/estimation',
     linkLabel: 'Obtenir une estimation',
+  },
+  {
+    kicker: 'Agence · Complet',
+    title: 'Site + parcours de demande',
+    from: 1490,
+    to: 2490,
+    cadence: 'une fois',
+    convertible: true,
+    audience:
+      'Crédibilité + conversion : offre claire, identité, demande qualifiée.',
+    items: [
+      'Clarification de l’offre et contenus',
+      'Identité appliquée au site',
+      'Parcours de demande qualifiant',
+      'SEO local et données structurées',
+    ],
+    href: '/diagnostic',
+    linkLabel: 'Faire le diagnostic',
   },
 ];
 
@@ -107,7 +128,7 @@ export function PricingTable() {
       <div className={styles.offers}>
         {offers.map((offer) => (
           <article
-            key={offer.title}
+            key={`${offer.kicker}-${offer.title}`}
             className={offer.featured ? `${styles.offer} ${styles.featured}` : styles.offer}
           >
             <p className={styles.kicker}>{offer.kicker}</p>
@@ -137,8 +158,7 @@ export function PricingTable() {
 
       <p className={styles.note}>
         L’hébergement, le nom de domaine et les évolutions ultérieures des sites sont facturés à part
-        et annoncés avant le démarrage. Le module de réservation est un abonnement mensuel facturé
-        en euros, résiliable à tout moment.
+        et annoncés avant le démarrage. Les abonnements SaaS sont en euros, résiliables à tout moment.
         {region === 'switzerland'
           ? ' Les prestations d’agence sont affichées en francs suisses.'
           : null}
