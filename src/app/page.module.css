@@ -527,11 +527,18 @@
   }
 
   .heroVideo {
-    object-position: 64% center;
+    object-position: 50% 30%;
+    filter: brightness(0.55) contrast(1.05);
   }
 
   .heroOverlay {
-    background: color-mix(in srgb, var(--color-espresso) 87%, transparent);
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-espresso) 72%, transparent) 0%,
+        color-mix(in srgb, var(--color-espresso) 88%, transparent) 45%,
+        color-mix(in srgb, var(--color-espresso) 94%, transparent) 100%
+      );
   }
 
   .hero {
@@ -542,12 +549,14 @@
     max-inline-size: 15ch;
     font-size: clamp(2.75rem, 12vw, 3.5rem);
     line-height: 0.96;
+    text-shadow: 0 2px 24px color-mix(in srgb, var(--color-espresso) 55%, transparent);
   }
 
   .heroBody {
     max-inline-size: 35ch;
     font-size: 1.0625rem;
     line-height: 1.65;
+    text-shadow: 0 1px 12px color-mix(in srgb, var(--color-espresso) 50%, transparent);
   }
 
   .heroActions,
