@@ -92,13 +92,13 @@ export default function HomePage() {
                 >
                   {saasHome.primaryCta.label}
                 </ButtonAnchor>
-                <ButtonLink
+                <ButtonAnchor
                   href={saasHome.secondaryCta.href}
                   ctaId="home_saas_login"
                   variant="inverseSecondary"
                 >
                   {saasHome.secondaryCta.label}
-                </ButtonLink>
+                </ButtonAnchor>
               </div>
             </div>
             <ul className={styles.saasPoints} aria-label="Points forts de l’outil">
