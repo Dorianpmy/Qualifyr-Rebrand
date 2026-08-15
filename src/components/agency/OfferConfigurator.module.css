@@ -108,6 +108,54 @@
 .modify { min-block-size: 2.75rem; border: 0; background: transparent; color: var(--text-inverse); font: inherit; text-decoration: underline; text-underline-offset: .25em; cursor: pointer; }
 .priceCard > small { color: var(--text-inverse-secondary); line-height: 1.5; }
 
+.trialBadge {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  margin-block-start: var(--space-4);
+  border: 1px solid var(--color-copper-deep);
+  background: rgb(18 183 106 / 0.08);
+  border-radius: 12px;
+}
+
+.trialIcon {
+  flex: 0 0 auto;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-copper-deep);
+  color: var(--text-inverse);
+  font-weight: var(--weight-bold);
+  font-size: var(--text-sm);
+}
+
+.trialText {
+  display: grid;
+  gap: 0.15rem;
+  min-inline-size: 0;
+}
+
+.trialText strong {
+  font-size: var(--text-base);
+  color: var(--color-copper-deep);
+  font-weight: var(--weight-bold);
+}
+
+.trialText small {
+  font-size: var(--text-sm);
+  color: var(--text-inverse-secondary);
+  line-height: 1.45;
+}
+
+@media (min-width: 48rem) {
+  .trialBadge {
+    flex-direction: row;
+  }
+}
+
 @media (min-width: 42rem) { .choiceGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 48rem) {
   .options { grid-template-columns: repeat(2, minmax(0, 1fr)); }

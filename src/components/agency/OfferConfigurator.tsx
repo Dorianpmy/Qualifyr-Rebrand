@@ -8,6 +8,7 @@ import {
   getRecommendations, options, pricingByRegion, type ActivityId, type ObstacleId, type OptionId,
   type PricingRegion, type SituationId,
 } from '@/lib/offer-configurator';
+import { useSaleFunnel } from '@/lib/ui/useSaleFunnel';
 import styles from './OfferConfigurator.module.css';
 import { trackEvent } from '@/lib/analytics';
 
@@ -41,12 +42,29 @@ const assurances = [
   'Aucun engagement avant validation du devis',
   'Parcours adapté à votre fonctionnement',
   'Même coût total, quel que soit le rythme choisi',
+  '14 jours d’essai gratuit inclus par défaut',
+  'Support dédié pendant la phase de démarrage',
 ] as const;
 
 export function OfferConfigurator({ showIntro = true }: { showIntro?: boolean }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const stageTitleRef = useRef<HTMLElement>(null);
-  const [step, setStep] = useState(0);
+  const {
+    step,
+    setStep,
+    started: _funnelStarted,
+    completed: _funnelCompleted,
+    progress,
+  } = useSaleFunnel({
+    showIntro,
+    onEvent: (event, payload) => {
+      if (event === 'started') {
+        trackEvent('estimation_started', { pagePath: '/estimation', ctaId: 'estimation_start', vertical: payload?.step !== undefined ? undefined : undefined });
+      } else if (event === 'completed') {
+        trackEvent('estimation_completed', { pagePath: '/estimation', vertical: undefined });
+      }
+    },
+  });
   const [activity, setActivity] = useState<ActivityId | null>(null);
   const [situation, setSituation] = useState<SituationId | null>(null);
   const [obstacle, setObstacle] = useState<ObstacleId | null>(null);
@@ -54,8 +72,6 @@ export function OfferConfigurator({ showIntro = true }: { showIntro?: boolean })
   const [pricingRegion, setPricingRegion] = useState<PricingRegion>('euro');
   const [pricingReady, setPricingReady] = useState(false);
   const [paymentMode, setPaymentMode] = useState<PaymentMode>('spread');
-  const startedEventSent = useRef(false);
-  const completedEventSent = useRef(false);
 
   const recommendation = useMemo(
     () => activity && situation && obstacle ? getRecommendations(activity, situation, obstacle, selectedOptions) : [],
@@ -137,16 +153,7 @@ export function OfferConfigurator({ showIntro = true }: { showIntro?: boolean })
   );
   const canContinue = [Boolean(activity), Boolean(situation), Boolean(obstacle), true][step] ?? false;
   const goTo = (nextStep: number) => {
-    const boundedStep = Math.max(0, Math.min(4, nextStep));
-    if (boundedStep > 0 && !startedEventSent.current) {
-      trackEvent('estimation_started', { pagePath: '/estimation', ctaId: 'estimation_start', vertical: activity ?? undefined });
-      startedEventSent.current = true;
-    }
-    if (boundedStep === 4 && !completedEventSent.current) {
-      trackEvent('estimation_completed', { pagePath: '/estimation', vertical: activity ?? undefined });
-      completedEventSent.current = true;
-    }
-    setStep(boundedStep);
+    setStep(Math.max(0, Math.min(4, nextStep)));
   };
   const captureStageTitle = (node: HTMLElement | null) => { stageTitleRef.current = node; };
 
@@ -197,8 +204,8 @@ export function OfferConfigurator({ showIntro = true }: { showIntro?: boolean })
       ) : null}
       <div className={styles.shell}>
         <div className={styles.progressBlock} aria-label={`Étape ${step + 1} sur 5`}>
-          <div className={styles.progressText}><span>0{step + 1} / 05</span><span>{Math.round(((step + 1) / 5) * 100)} %</span></div>
-          <div className={styles.progress} aria-hidden="true"><span style={{ inlineSize: `${((step + 1) / 5) * 100}%` }} /></div>
+          <div className={styles.progressText}><span>0{step + 1} / 05</span><span>{progress} %</span></div>
+          <div className={styles.progress} aria-hidden="true"><span style={{ inlineSize: `${progress}%` }} /></div>
         </div>
         <div className={styles.stage} aria-live="polite">
           {step === 0 && <fieldset className={styles.step}>
@@ -282,6 +289,13 @@ export function OfferConfigurator({ showIntro = true }: { showIntro?: boolean })
               <div className={styles.total}><span>Coût total indicatif sur 12 mois</span><strong>{pricingReady ? formatMoney(price.firstYearTotal, pricingRegion) : '—'}</strong><small>Le rythme choisi ne change pas ce total.</small></div>
               <a className={styles.cta} href={whatsappHref} target={agencyChannels.whatsappNumber ? '_blank' : undefined} rel={agencyChannels.whatsappNumber ? 'noopener noreferrer' : undefined} data-analytics-event={agencyChannels.whatsappNumber ? 'whatsapp_direct_opened' : undefined} data-analytics-cta-id="estimation_whatsapp" data-analytics-destination={agencyChannels.whatsappNumber ? 'whatsapp' : 'contact'}>{agencyChannels.whatsappNumber ? 'Discuter de ce parcours sur WhatsApp' : 'Demander mon audit de parcours'}</a>
               <BookingButton ctaId="estimation_booking" variant="inverseSecondary">Réserver une analyse de parcours</BookingButton>
+              <div className={styles.trialBadge}>
+                <span className={styles.trialIcon} aria-hidden="true">✓</span>
+                <span className={styles.trialText}>
+                  <strong>14 jours d’essai gratuit</strong>
+                  <small>Inclut le support dédié et l’accès complet au tunnel.</small>
+                </span>
+              </div>
               <button type="button" className={styles.modify} onClick={() => goTo(0)}>Modifier mes réponses</button>
               <small>Cette estimation doit être confirmée après cadrage. Seuls le devis et le contrat fixent le périmètre, les taxes et les conditions.</small>
             </aside>
