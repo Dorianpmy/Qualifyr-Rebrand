@@ -7,7 +7,7 @@ import { SectionHeading } from '@/components/editorial/SectionHeading';
 import { Container } from '@/components/layout/Container';
 import { Section } from '@/components/layout/Section';
 import { JsonLd } from '@/components/seo/JsonLd';
-import { ButtonLink } from '@/components/ui/Button';
+import { ButtonAnchor, ButtonLink } from '@/components/ui/Button';
 import { Eyebrow } from '@/components/ui/Eyebrow';
 import { frictionPoints, hero, saasHome } from '@/content/home';
 import { swCarCleaning } from '@/content/sw-car-cleaning';
@@ -56,14 +56,14 @@ export default function HomePage() {
                 >
                   Voir l’approche detailing
                 </ButtonLink>
-                <ButtonLink
+                <ButtonAnchor
                   href={saasHome.primaryCta.href}
                   ctaId="hero_saas_demo"
                   variant="inverseSecondary"
                   withArrow
                 >
                   Essayer l’outil réservation
-                </ButtonLink>
+                </ButtonAnchor>
               </div>
               <p className={styles.heroSignature}>
                 Site vitrine + parcours de réservation pour detailers.{' '}
