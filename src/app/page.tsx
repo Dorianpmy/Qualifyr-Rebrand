@@ -84,14 +84,14 @@ export default function HomePage() {
               <h2 className={styles.saasTitle}>{saasHome.title}</h2>
               <p className={styles.saasLead}>{saasHome.lead}</p>
               <div className={styles.saasActions}>
-                <ButtonLink
+                <ButtonAnchor
                   href={saasHome.primaryCta.href}
                   ctaId="home_saas_demo"
                   variant="inverse"
                   withArrow
                 >
                   {saasHome.primaryCta.label}
-                </ButtonLink>
+                </ButtonAnchor>
                 <ButtonLink
                   href={saasHome.secondaryCta.href}
                   ctaId="home_saas_login"
