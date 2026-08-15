@@ -24,6 +24,10 @@ export type CreateBookingInput = {
   readonly locationMode: LocationMode;
   readonly postalCode?: string | undefined;
   readonly travelKm?: number | undefined;
+  readonly address?: string | undefined;
+  readonly latitude?: number | undefined;
+  readonly longitude?: number | undefined;
+  readonly accessNote?: string | undefined;
   readonly photos: readonly string[];
   readonly slotStart: string;
 };
@@ -64,13 +68,16 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
     };
   }
 
-  if (input.photos.length < 3) {
-    return {
-      ok: false,
-      reason: 'photos_required',
-      message: 'Trois photos sont nécessaires avant de continuer.',
-    };
-  }
+  /*
+   * Les photos ne sont plus exigées.
+   *
+   * Ce garde-fou renvoyait « Trois photos sont nécessaires » à toute
+   * réservation qui n'en portait pas trois — y compris celles que le
+   * formulaire, qui les a rendues facultatives, acceptait d'envoyer. Le
+   * risque couvert par les photos l'est autrement : le professionnel vérifie
+   * le véhicule à son arrivée et peut proposer un montant ajusté, que le
+   * client reste libre de refuser.
+   */
 
   const computed = quote(
     {
@@ -123,6 +130,10 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
       options: computed.optionLines,
       location_mode: input.locationMode,
       postal_code: input.postalCode ?? null,
+      address: input.address ?? null,
+      latitude: input.latitude ?? null,
+      longitude: input.longitude ?? null,
+      access_note: input.accessNote ?? null,
       travel_fee: computed.travelFee,
       quoted_price: computed.totalPrice,
       quoted_minutes: computed.totalMinutes,

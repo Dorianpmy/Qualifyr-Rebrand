@@ -132,7 +132,7 @@ export async function sendClientBookingEmail(payload: BookingEmailPayload): Prom
   const outro = 'Le professionnel va la traiter. Vous serez recontacté si besoin.';
 
   try {
-    const { data, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: fromAddress(),
       to: payload.clientEmail,
       subject: `Demande enregistrée — ${payload.detailerName}`,
@@ -143,7 +143,6 @@ export async function sendClientBookingEmail(payload: BookingEmailPayload): Prom
       console.error('[booking-email] client failed', error);
       return false;
     }
-    console.info('[booking-email] client sent', data?.id, '→', payload.clientEmail);
     return true;
   } catch (err) {
     console.error('[booking-email] client exception', err);
@@ -166,7 +165,7 @@ export async function sendDetailerBookingEmail(payload: BookingEmailPayload): Pr
   const outro = 'Connectez-vous à votre espace pour confirmer ou ajuster.';
 
   try {
-    const { data, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: fromAddress(),
       to,
       subject: `Nouvelle réservation — ${formatSlot(payload.slotStart)}`,
@@ -177,7 +176,6 @@ export async function sendDetailerBookingEmail(payload: BookingEmailPayload): Pr
       console.error('[booking-email] detailer failed', error);
       return false;
     }
-    console.info('[booking-email] detailer sent', data?.id, '→', to);
     return true;
   } catch (err) {
     console.error('[booking-email] detailer exception', err);

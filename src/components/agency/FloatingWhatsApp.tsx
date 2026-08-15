@@ -9,7 +9,13 @@ import styles from './FloatingWhatsApp.module.css';
 export function FloatingWhatsApp() {
   const pathname = usePathname();
   if (pathname === '/diagnostic') return null;
-  if (pathname.startsWith('/app') || pathname.startsWith('/reservation')) return null;
+  if (
+    pathname.startsWith('/app') ||
+    pathname.startsWith('/reservation') ||
+    pathname.startsWith('/embed')
+  ) {
+    return null;
+  }
   if (!agencyChannels.whatsappNumber) return null;
 
   const href = buildWhatsAppUrl(

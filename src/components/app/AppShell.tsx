@@ -32,6 +32,12 @@ export function AppShell({
             <span className={styles.navLabel}>Demandes</span>
           </Link>
           <Link
+            href="/app/prestations"
+            className={`${styles.navItem} ${active === 'tarifs' ? styles.navItemActive : ''}`}
+          >
+            <span className={styles.navLabel}>Prestations</span>
+          </Link>
+          <Link
             href="/app/cases"
             className={`${styles.navItem} ${active === 'cases' ? styles.navItemActive : ''}`}
           >

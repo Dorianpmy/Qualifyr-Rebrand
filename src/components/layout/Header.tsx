@@ -13,7 +13,11 @@ import { MobileNavigation } from './MobileNavigation';
 import styles from './Header.module.css';
 
 function isSaaSPath(pathname: string) {
-  return pathname.startsWith('/app') || pathname.startsWith('/reservation');
+  return (
+    pathname.startsWith('/app') ||
+    pathname.startsWith('/reservation') ||
+    pathname.startsWith('/embed')
+  );
 }
 
 export function Header() {

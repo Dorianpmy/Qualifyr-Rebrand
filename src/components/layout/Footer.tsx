@@ -20,7 +20,13 @@ export function Footer() {
   const year = new Date().getFullYear();
   const channels = availableChannels();
 
-  if (pathname.startsWith('/app') || pathname.startsWith('/reservation')) return null;
+  if (
+    pathname.startsWith('/app') ||
+    pathname.startsWith('/reservation') ||
+    pathname.startsWith('/embed')
+  ) {
+    return null;
+  }
   if (pathname === '/diagnostic') return null;
 
   const hasPageSpecificCta =

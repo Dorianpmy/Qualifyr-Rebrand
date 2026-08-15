@@ -1,0 +1,164 @@
+.picker {
+  display: grid;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.label {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.help {
+  margin: 0;
+  font-size: 0.83rem;
+  line-height: 1.5;
+  color: rgba(20, 20, 20, 0.55);
+}
+
+.inputWrap {
+  position: relative;
+}
+
+.input {
+  inline-size: 100%;
+  /* 16 px : en dessous, Safari agrandit la page au focus et n'en revient
+     jamais — voir la note iOS de BookingFlow.module.css. */
+  font-size: 16px;
+  padding: 0.85rem 1rem;
+  border: 1.5px solid rgba(20, 20, 20, 0.12);
+  border-radius: 0.75rem;
+  background: #fff;
+  color: #141414;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent, #12b76a);
+}
+
+.searching {
+  position: absolute;
+  inset-inline-end: 0.9rem;
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  font-size: 0.78rem;
+  color: rgba(20, 20, 20, 0.42);
+  pointer-events: none;
+}
+
+/* La liste se superpose au contenu au lieu de le pousser : sur un téléphone,
+   décaler la page pendant que le doigt vise une ligne fait manquer la cible. */
+.suggestions {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: calc(100% - 0.25rem);
+  z-index: 5;
+  margin: 0;
+  padding: 0.3rem;
+  list-style: none;
+  border: 1px solid rgba(20, 20, 20, 0.12);
+  border-radius: 0.75rem;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(20, 20, 20, 0.12);
+  max-block-size: 17rem;
+  overflow-y: auto;
+}
+
+.suggestions button {
+  inline-size: 100%;
+  min-block-size: 44px; /* cible tactile minimale */
+  text-align: left;
+  padding: 0.6rem 0.7rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: #141414;
+  font: inherit;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.suggestions button:hover,
+.suggestions button:focus-visible {
+  background: rgba(18, 183, 106, 0.1);
+  outline: none;
+}
+
+.noResult {
+  margin: 0;
+  font-size: 0.83rem;
+  color: #b45309;
+}
+
+.confirmed {
+  display: grid;
+  gap: 0.6rem;
+  margin-block-start: 0.35rem;
+}
+
+.mapFrame {
+  border: 1.5px solid rgba(20, 20, 20, 0.12);
+  border-radius: 0.85rem;
+  overflow: hidden;
+  background: #e8e6e1;
+}
+
+.map {
+  display: block;
+  inline-size: 100%;
+  /* Assez haut pour reconnaître un pâté de maisons, assez bas pour que le
+     bouton « Continuer » reste atteignable sans défilement sur un téléphone. */
+  block-size: 200px;
+  border: 0;
+}
+
+.confirmedMeta {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.confirmedAddress {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.confirmedDistance {
+  margin: 0;
+  font-size: 0.82rem;
+  color: rgba(20, 20, 20, 0.55);
+}
+
+.noteField {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.noteLabel {
+  font-size: 0.83rem;
+  font-weight: 600;
+}
+
+.noteField input {
+  inline-size: 100%;
+  font-size: 16px;
+  padding: 0.75rem 0.9rem;
+  border: 1.5px solid rgba(20, 20, 20, 0.12);
+  border-radius: 0.7rem;
+  background: #fff;
+  color: #141414;
+}
+
+.noteField input:focus {
+  outline: none;
+  border-color: var(--accent, #12b76a);
+}
+
+@media (min-width: 48rem) {
+  .map {
+    block-size: 260px;
+  }
+}

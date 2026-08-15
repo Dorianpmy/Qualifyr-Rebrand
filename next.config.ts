@@ -26,7 +26,12 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   // Aucune image distante autorisée : tous les visuels sont versionnés dans le dépôt.
   images: {
-    remotePatterns: [],
+    remotePatterns: [
+      // Photos avant/après des professionnels, servies depuis le Storage
+      // Supabase. Sans cette autorisation, `next/image` refuse l'URL et la
+      // preuve visuelle — l'argument le plus fort de la page — n'apparaît pas.
+      { protocol: 'https', hostname: '*.supabase.co', pathname: '/storage/v1/object/public/**' },
+    ],
     formats: ['image/avif', 'image/webp'],
   },
   typescript: {
@@ -49,9 +54,22 @@ const nextConfig: NextConfig = {
    * premier déploiement d'aperçu, pas à l'aveugle. Voir docs/10.
    */
   async headers() {
+    const transport = {
+      key: 'Strict-Transport-Security',
+      value: 'max-age=63072000; includeSubDomains; preload',
+    };
+
     return [
       {
-        source: '/:path*',
+        /**
+         * Tout le site sauf `/embed`.
+         *
+         * `X-Frame-Options: DENY` ne se surcharge pas : émis deux fois, il est
+         * traité comme un refus par tous les navigateurs. Le tunnel embarqué
+         * doit donc être exclu **ici**, à la source, plutôt que corrigé plus
+         * loin par une règle qui n'aurait aucun effet.
+         */
+        source: '/((?!embed/).*)',
         headers: [
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'X-Frame-Options', value: 'DENY' },
@@ -60,10 +78,34 @@ const nextConfig: NextConfig = {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
           },
+          transport,
+        ],
+      },
+      {
+        /**
+         * Tunnel embarqué sur le site d'un professionnel.
+         *
+         * `frame-ancestors *` est délibéré : le professionnel colle le script
+         * sur son propre domaine, que nous ne connaissons pas à l'avance, et
+         * qui change quand il refait son site. Une liste blanche à tenir à jour
+         * casserait l'intégration sans prévenir. Le risque résiduel est un
+         * tiers qui afficherait le tunnel sans autorisation — il ne verrait
+         * qu'une page publique et ne pourrait pas réserver au nom d'autrui,
+         * chaque réservation étant liée à l'e-mail saisi.
+         *
+         * `camera=(self)` reste nécessaire : la prise de photo du véhicule
+         * passe par l'appareil photo du téléphone.
+         */
+        source: '/embed/:path*',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Content-Security-Policy', value: 'frame-ancestors *' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           {
-            key: 'Strict-Transport-Security',
-            value: 'max-age=63072000; includeSubDomains; preload',
+            key: 'Permissions-Policy',
+            value: 'camera=(self), microphone=(), geolocation=(), payment=(self), usb=()',
           },
+          transport,
         ],
       },
     ];

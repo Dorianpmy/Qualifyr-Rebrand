@@ -512,3 +512,42 @@
     transition: none;
   }
 }
+
+/* Phrase d'aide sous le titre d'étape : elle porte le « pourquoi », que le
+   titre seul ne peut pas dire sans devenir une phrase. */
+.stepHelp {
+  margin: -0.35rem 0 1.35rem;
+  max-inline-size: 34rem;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: rgba(20, 20, 20, 0.58);
+}
+
+/* ---------------------------------------------------------------------------
+   iOS
+   ---------------------------------------------------------------------------
+
+   Safari agrandit la page dès qu'un champ de moins de 16 px reçoit le focus,
+   et ne revient jamais en arrière : le visiteur saisit son e-mail et se
+   retrouve avec un tunnel deux fois trop large, à faire défiler latéralement,
+   au moment précis où il allait valider. Le seuil est imposé par le
+   navigateur ; 16 px n'est pas un choix de mise en page.
+--------------------------------------------------------------------------- */
+@media (max-width: 63.99rem) {
+  .flow input,
+  .flow select,
+  .flow textarea,
+  .dateInput {
+    font-size: 16px;
+  }
+
+  /* Trois colonnes de créneaux tombent à 6 caractères de large sur un petit
+     téléphone : « 14:30 » y touche les bords. */
+  .slotGrid {
+    grid-template-columns: repeat(auto-fit, minmax(5.5rem, 1fr));
+  }
+
+  .stepHelp {
+    font-size: 0.88rem;
+  }
+}

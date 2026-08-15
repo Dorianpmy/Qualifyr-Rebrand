@@ -2,11 +2,18 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { AppShell } from '@/components/app/AppShell';
 import {
+  formatDuration,
   formatPrice,
   formatSlot,
+  formatSlotTime,
   getDetailerForOwner,
+  holdRemaining,
   listBookingsForDetailer,
+  locationLabel,
+  scopeLabel,
+  soilingLabel,
   statusLabel,
+  vehicleLabel,
 } from '@/lib/detailing/dashboard';
 import { getSessionUser } from '@/lib/detailing/session';
 import styles from './app.module.css';
@@ -165,70 +172,83 @@ export default async function AppHomePage({
                     className={styles.mobileCard}
                   >
                     <div className={styles.mobileCardTop}>
-                      <span className={styles.clientName}>{booking.email}</span>
+                      <span className={styles.clientName}>{vehicleLabel(booking)}</span>
                       <span className={badgeClass(booking.status)}>
                         {statusLabel(booking.status)}
                       </span>
                     </div>
                     <div className={styles.clientMeta}>
-                      {booking.vehicleSize}
-                      {booking.vehicleModel ? ` · ${booking.vehicleModel}` : ''} ·{' '}
+                      {scopeLabel(booking.scope)} · {soilingLabel(booking.soiling)} ·{' '}
+                      {formatDuration(booking.quotedMinutes)}
+                    </div>
+                    <div className={styles.clientMeta}>
+                      {formatSlot(booking.slotRaw)} ·{' '}
+                      {locationLabel(booking.locationMode, booking.postalCode)} ·{' '}
                       {formatPrice(booking.quotedPrice)}
                     </div>
-                    <div className={styles.clientMeta}>{formatSlot(booking.slotRaw)}</div>
+                    {holdRemaining(booking.holdExpiresAt) ? (
+                      <div className={styles.hold}>{holdRemaining(booking.holdExpiresAt)}</div>
+                    ) : null}
                   </Link>
                 ))}
               </div>
 
+              {/* Une seule zone cliquable par ligne.
+                  Chaque cellule enveloppait son propre lien vers la même
+                  destination : cinq liens identiques par réservation, que les
+                  lecteurs d'écran annoncent tous. La ligne entière est
+                  désormais cliquable via un seul lien, dans la première
+                  colonne, étendu par CSS. */}
               <table className={styles.table}>
                 <thead>
                   <tr>
-                    <th>Client</th>
-                    <th>Prestation</th>
                     <th>Créneau</th>
+                    <th>Véhicule</th>
+                    <th>Prestation</th>
+                    <th>Lieu</th>
                     <th>Montant</th>
                     <th>Statut</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {bookings.map((booking) => (
-                    <tr key={booking.id}>
-                      <td>
-                        <Link href={`/app/bookings/${booking.id}`} className={styles.rowLink}>
-                          <span className={styles.clientCell}>
-                            <span className={styles.clientName}>{booking.email}</span>
-                            <span className={styles.clientMeta}>
-                              {booking.phone ?? 'Pas de téléphone'}
+                  {bookings.map((booking) => {
+                    const hold = holdRemaining(booking.holdExpiresAt);
+
+                    return (
+                      <tr key={booking.id} className={styles.row}>
+                        <td>
+                          <Link href={`/app/bookings/${booking.id}`} className={styles.rowLink}>
+                            <span className={styles.slotTime}>
+                              {formatSlotTime(booking.slotRaw)}
                             </span>
+                            <span className={styles.clientMeta}>
+                              {formatDuration(booking.quotedMinutes)}
+                            </span>
+                          </Link>
+                        </td>
+                        <td>
+                          <span className={styles.clientName}>{vehicleLabel(booking)}</span>
+                          <span className={styles.clientMeta}>
+                            {booking.phone ?? booking.email}
                           </span>
-                        </Link>
-                      </td>
-                      <td>
-                        <Link href={`/app/bookings/${booking.id}`} className={styles.rowLink}>
-                          {booking.vehicleSize}
-                          {booking.vehicleModel ? ` · ${booking.vehicleModel}` : ''}
-                          <div className={styles.clientMeta}>{booking.scope}</div>
-                        </Link>
-                      </td>
-                      <td>
-                        <Link href={`/app/bookings/${booking.id}`} className={styles.rowLink}>
-                          {formatSlot(booking.slotRaw)}
-                        </Link>
-                      </td>
-                      <td>
-                        <Link href={`/app/bookings/${booking.id}`} className={styles.rowLink}>
-                          {formatPrice(booking.quotedPrice)}
-                        </Link>
-                      </td>
-                      <td>
-                        <Link href={`/app/bookings/${booking.id}`} className={styles.rowLink}>
+                        </td>
+                        <td>
+                          {scopeLabel(booking.scope)}
+                          <span className={styles.clientMeta}>
+                            {soilingLabel(booking.soiling)}
+                          </span>
+                        </td>
+                        <td>{locationLabel(booking.locationMode, booking.postalCode)}</td>
+                        <td className={styles.amount}>{formatPrice(booking.quotedPrice)}</td>
+                        <td>
                           <span className={badgeClass(booking.status)}>
                             {statusLabel(booking.status)}
                           </span>
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
+                          {hold ? <span className={styles.hold}>{hold}</span> : null}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </>

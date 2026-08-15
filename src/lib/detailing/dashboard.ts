@@ -21,6 +21,10 @@ export type DashboardBooking = {
   readonly slotRaw: string | null;
   readonly createdAt: string;
   readonly holdExpiresAt: string | null;
+  readonly address: string | null;
+  readonly latitude: number | null;
+  readonly longitude: number | null;
+  readonly accessNote: string | null;
 };
 
 export type DashboardDetailer = {
@@ -51,6 +55,10 @@ function mapBooking(row: Record<string, unknown>): DashboardBooking {
     slotRaw: (row.slot as string | null) ?? null,
     createdAt: String(row.created_at ?? ''),
     holdExpiresAt: (row.hold_expires_at as string | null) ?? null,
+    address: (row.address as string | null) ?? null,
+    latitude: row.latitude == null ? null : Number(row.latitude),
+    longitude: row.longitude == null ? null : Number(row.longitude),
+    accessNote: (row.access_note as string | null) ?? null,
   };
 }
 
@@ -184,4 +192,126 @@ export function statusLabel(status: string): string {
     expire: 'Expiré',
   };
   return map[status] ?? status;
+}
+
+/* =========================================================================
+   Vocabulaire de l'espace professionnel
+   -------------------------------------------------------------------------
+   Le tableau affichait `citadine` et `complet` — les valeurs brutes de
+   l'énumération SQL. C'est le détail qui fait dire « ce n'est pas fini »,
+   plus sûrement que n'importe quel choix de couleur.
+
+   Ces libellés sont volontairement courts : ils vivent dans une ligne de
+   tableau, pas dans une phrase.
+   ========================================================================= */
+
+export function vehicleSizeLabel(size: string): string {
+  const map: Record<string, string> = {
+    citadine: 'Citadine',
+    berline: 'Berline',
+    suv: 'SUV',
+    utilitaire: 'Utilitaire',
+    prestige: 'Prestige',
+  };
+  return map[size] ?? size;
+}
+
+export function scopeLabel(scope: string): string {
+  const map: Record<string, string> = {
+    interieur: 'Intérieur',
+    exterieur: 'Extérieur',
+    complet: 'Complet',
+  };
+  return map[scope] ?? scope;
+}
+
+/**
+ * État déclaré par le client.
+ *
+ * Formulé du point de vue du professionnel qui prépare son intervention,
+ * pas du client qui remplit un formulaire : « poils et taches » lui dit
+ * quel matériel sortir.
+ */
+export function soilingLabel(soiling: string): string {
+  const map: Record<string, string> = {
+    normal: 'Normal',
+    tres_sale: 'Très sale',
+    poils_taches: 'Poils et taches',
+  };
+  return map[soiling] ?? soiling;
+}
+
+export function locationLabel(mode: string, postalCode: string | null): string {
+  if (mode === 'atelier') return 'Atelier';
+  return postalCode ? `Domicile · ${postalCode}` : 'Domicile';
+}
+
+/**
+ * Durée d'intervention, lisible d'un coup d'œil.
+ *
+ * C'est la contrainte réelle du métier — un detailer est limité par ses
+ * créneaux, pas par la demande — et elle n'apparaissait nulle part alors
+ * que `quotedMinutes` est en base depuis le début.
+ */
+export function formatDuration(minutes: number): string {
+  if (minutes <= 0) return '—';
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  if (hours === 0) return `${rest} min`;
+  if (rest === 0) return `${hours} h`;
+  return `${hours} h ${String(rest).padStart(2, '0')}`;
+}
+
+/**
+ * Identité du véhicule, telle qu'un professionnel la nomme.
+ *
+ * Il ne pense pas « jean@gmail.com », il pense « le SUV noir de 14 h,
+ * plaque AB-123-CD ». La plaque était en base et n'apparaissait nulle part.
+ */
+export function vehicleLabel(booking: {
+  vehicleSize: string;
+  vehicleModel: string | null;
+  plate: string | null;
+}): string {
+  const parts = [vehicleSizeLabel(booking.vehicleSize)];
+  if (booking.vehicleModel) parts.push(booking.vehicleModel);
+  if (booking.plate) parts.push(booking.plate.toUpperCase());
+  return parts.join(' · ');
+}
+
+/** Heure seule : la date est portée par le groupe de jour qui précède. */
+export function formatSlotTime(slotRaw: string | null): string {
+  const start = slotStart(slotRaw);
+  if (!start) return '—';
+  return new Intl.DateTimeFormat('fr-FR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Europe/Paris',
+  }).format(start);
+}
+
+export function slotStart(slotRaw: string | null): Date | null {
+  if (!slotRaw) return null;
+  const match = slotRaw.match(/\["?([^,"\]]+)/);
+  if (!match?.[1]) return null;
+  const date = new Date(match[1].replace(' ', 'T'));
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+/**
+ * Compte à rebours d'une réservation en attente de paiement.
+ *
+ * L'information la plus urgente de l'écran, et la seule qui n'y figurait
+ * pas : ces réservations tiennent un créneau pendant quinze minutes puis
+ * le libèrent. Retourne `null` dès qu'il n'y a plus rien à surveiller.
+ */
+export function holdRemaining(holdExpiresAt: string | null, now: Date = new Date()): string | null {
+  if (!holdExpiresAt) return null;
+  const expiry = new Date(holdExpiresAt);
+  if (Number.isNaN(expiry.getTime())) return null;
+
+  const seconds = Math.round((expiry.getTime() - now.getTime()) / 1000);
+  if (seconds <= 0) return 'Expiré';
+  if (seconds < 60) return 'Expire dans moins d’une minute';
+  return `Expire dans ${Math.ceil(seconds / 60)} min`;
 }

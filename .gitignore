@@ -9,3 +9,10 @@ coverage
 *.log
 .vercel
 .turbo
+
+# Fichiers de prospection (non versionnés)
+candidats_*.json
+qualifyr_detailing_prospects_*.csv
+qualifyr_detailing_prospects_*.json
+.env.local.save
+supabase/supabase/.temp/

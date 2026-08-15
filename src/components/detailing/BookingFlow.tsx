@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/Button';
 import { Field } from '@/components/form/Field';
 import { ChoiceGroup, FieldError, TextInput } from '@/components/form/Controls';
 import { uploadDetailerPhoto } from '@/lib/detailing/photos';
+import { AddressPicker, type SelectedAddress } from './AddressPicker';
+import { formatMoney, profileFor } from '@/lib/detailing/locale';
 import { quote } from '@/lib/detailing/quote';
 import {
   optionKeys as allOptionKeys,
@@ -29,6 +31,16 @@ export type DetailerSummary = {
   readonly slug: string;
   readonly name: string;
   readonly city: string | null;
+  /** 'FR' ou 'CH' — pilote devise, code postal et indicatif téléphonique. */
+  readonly country: string;
+  /**
+   * Point de départ du professionnel. `null` tant qu'il ne l'a pas renseigné :
+   * la distance devient alors incalculable et le formulaire retombe sur une
+   * saisie manuelle plutôt que de facturer zéro kilomètre.
+   */
+  readonly base: { readonly lat: number; readonly lon: number } | null;
+  /** Noms commerciaux des formules, tels que le professionnel les vend. */
+  readonly scopeLabels: Readonly<Record<string, { label: string; description: string | null }>>;
   readonly mobileService: boolean;
   readonly workshopService: boolean;
   readonly workshopAddress: string | null;
@@ -36,14 +48,50 @@ export type DetailerSummary = {
 
 type StepId = 'vehicule' | 'formule' | 'etat' | 'options' | 'lieu' | 'creneau' | 'photos';
 
-const steps: readonly { id: StepId; title: string }[] = [
-  { id: 'vehicule', title: 'Le véhicule' },
-  { id: 'formule', title: 'La formule' },
-  { id: 'etat', title: "L'état" },
-  { id: 'options', title: 'Les options' },
-  { id: 'lieu', title: 'Le lieu' },
-  { id: 'creneau', title: 'Le créneau' },
-  { id: 'photos', title: 'Photos et coordonnées' },
+/**
+ * Chaque étape porte une phrase d'aide.
+ *
+ * « L'état » ne dit ni quoi faire, ni pourquoi la question est posée. Un
+ * visiteur qui ne comprend pas ce qu'on lui demande choisit au hasard, et un
+ * état déclaré au hasard produit un devis faux — donc un ajustement de prix
+ * sur place, c'est-à-dire exactement ce que le produit promet d'éviter.
+ */
+const steps: readonly { id: StepId; title: string; help: string }[] = [
+  {
+    id: 'vehicule',
+    title: 'Votre véhicule',
+    help: 'La taille détermine la surface à traiter, donc le temps passé. Prenez la catégorie la plus proche, un exemple est donné pour chacune.',
+  },
+  {
+    id: 'formule',
+    title: 'Ce que vous voulez faire nettoyer',
+    help: 'Intérieur, extérieur, ou les deux. Vous pourrez ajouter des prestations précises à l’étape suivante.',
+  },
+  {
+    id: 'etat',
+    title: 'L’état actuel du véhicule',
+    help: 'Soyez franc : c’est ce qui rend le prix fiable. Un intérieur annoncé propre mais couvert de poils demandera plus de temps, et le montant sera revu sur place.',
+  },
+  {
+    id: 'options',
+    title: 'Des prestations en plus ?',
+    help: 'Facultatif. Chaque option affiche ce qu’elle change et combien elle ajoute au total.',
+  },
+  {
+    id: 'lieu',
+    title: 'Où se passe l’intervention',
+    help: 'Chez vous ou à l’atelier. À domicile, un forfait de déplacement peut s’ajouter au-delà d’un certain rayon.',
+  },
+  {
+    id: 'creneau',
+    title: 'Quand vous arrange-t-il ?',
+    help: 'Seuls les créneaux réellement libres et assez longs pour votre prestation s’affichent.',
+  },
+  {
+    id: 'photos',
+    title: 'Vos coordonnées',
+    help: 'Pour vous envoyer la confirmation. Les photos sont facultatives mais fiabilisent le montant.',
+  },
 ];
 
 const photoLabels = [
@@ -52,8 +100,17 @@ const photoLabels = [
   'Extérieur — trois quarts',
 ] as const;
 
-function formatPrice(value: number): string {
-  return `${Math.round(value)} €`;
+/** Frais de déplacement : la devise suit le pays du professionnel. */
+
+/**
+ * Les montants ne sont plus formatés en dur.
+ *
+ * `${value} €` affichait des euros à un professionnel suisse. Le profil pays
+ * porte la devise et sa position — « 289 € » en France, « CHF 289 » en Suisse,
+ * ce qu'aucune concaténation ne produit correctement des deux côtés.
+ */
+function formatPriceIn(value: number, country: string): string {
+  return formatMoney(Math.round(value), profileFor(country));
 }
 
 function formatDuration(minutes: number): string {
@@ -110,8 +167,23 @@ export function BookingFlow({
   const [soiling, setSoiling] = useState<SoilingLevel>('normal');
   const [selectedOptions, setSelectedOptions] = useState<readonly OptionKey[]>([]);
   const [locationMode, setLocationMode] = useState<LocationMode | ''>('');
-  const [postalCode, setPostalCode] = useState('');
+  // Conservé en repli pour l'atelier et les fiches sans point de départ : le
+  // champ de saisie a disparu, l'adresse le fournit désormais.
+  const [postalCode] = useState('');
   const [travelKm, setTravelKm] = useState('');
+  const [address, setAddress] = useState<SelectedAddress | null>(null);
+  const [accessNote, setAccessNote] = useState('');
+
+  /**
+   * Distance et code postal viennent de l'adresse dès qu'elle est retenue.
+   *
+   * Deux sources pour une même valeur finissent toujours par diverger : le
+   * client corrige son adresse, la distance manuelle reste, et le devis
+   * facture un trajet qui n'existe plus. L'adresse prime, la saisie manuelle
+   * n'est qu'un repli quand le professionnel n'a pas de point de départ.
+   */
+  const effectiveTravelKm = address?.distanceKm ?? (travelKm ? Number(travelKm) : 0);
+  const effectivePostalCode = address?.postalCode ?? postalCode;
 
   const [selectedDay, setSelectedDay] = useState(tomorrowIso);
   const [slots, setSlots] = useState<readonly SlotOption[]>([]);
@@ -132,6 +204,21 @@ export function BookingFlow({
     holdExpiresAt: string;
   } | null>(null);
 
+  const profile = profileFor(detailer.country);
+
+  /**
+   * Nom d'une formule tel que le client doit le lire.
+   *
+   * Le professionnel vend une « Formule Éclat », pas un « Intérieur ». Un
+   * client venu d'une publication Instagram qui ne retrouve pas ce nom-là
+   * croit s'être trompé de page. Le périmètre technique reste `scope` — il
+   * pilote le calcul et n'est jamais remplacé, seulement habillé.
+   */
+  const scopeLabelFor = (value: Scope) => detailer.scopeLabels[value]?.label || scopeCopy[value].label;
+  const scopeHintFor = (value: Scope) =>
+    detailer.scopeLabels[value]?.description || scopeCopy[value].hint;
+  const formatPrice = (value: number) => formatPriceIn(value, detailer.country);
+
   const canQuote = vehicleSize !== '' && scope !== '';
 
   const currentQuote: Quote | null = useMemo(() => {
@@ -144,14 +231,23 @@ export function BookingFlow({
           soiling,
           optionKeys: selectedOptions,
           locationMode: locationMode || 'atelier',
-          travelKm: travelKm ? Number(travelKm) : 0,
+          travelKm: effectiveTravelKm,
         },
         quoteConfig,
       );
     } catch {
       return null;
     }
-  }, [canQuote, scope, vehicleSize, soiling, selectedOptions, locationMode, travelKm, quoteConfig]);
+  }, [
+    canQuote,
+    scope,
+    vehicleSize,
+    soiling,
+    selectedOptions,
+    locationMode,
+    effectiveTravelKm,
+    quoteConfig,
+  ]);
 
   function priceDeltaForOption(key: OptionKey): number {
     if (!canQuote || !currentQuote) return 0;
@@ -245,11 +341,23 @@ export function BookingFlow({
     }
   }
 
-  const allPhotosReady = photos.every((path) => path !== null);
+  /**
+   * Les photos ne conditionnent plus l'envoi.
+   *
+   * Exiger trois photos avant de pouvoir réserver, c'est demander à quelqu'un
+   * d'être devant sa voiture, de jour, avec du réseau. Un client qui prépare sa
+   * réservation le soir depuis son canapé n'a alors aucun moyen d'aller au bout
+   * — et le professionnel ne perd pas une photo, il perd la réservation.
+   *
+   * Le risque que les photos couvraient est déjà couvert autrement : le
+   * professionnel vérifie le véhicule à son arrivée et peut proposer un montant
+   * ajusté, que le client reste libre de refuser (`revisionNotice`).
+   */
+  const photoCount = photos.filter((path) => path !== null).length;
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   async function handleSubmit() {
-    if (!currentQuote || !selectedSlot || !allPhotosReady || !emailValid) return;
+    if (!currentQuote || !selectedSlot || !emailValid) return;
     setPhase('submitting');
     setSubmitError(null);
     try {
@@ -266,8 +374,12 @@ export function BookingFlow({
           soiling,
           optionKeys: selectedOptions,
           locationMode: locationMode || 'atelier',
-          postalCode: postalCode || undefined,
-          travelKm: travelKm ? Number(travelKm) : undefined,
+          postalCode: effectivePostalCode || undefined,
+          travelKm: effectiveTravelKm || undefined,
+          address: address?.label,
+          latitude: address?.lat,
+          longitude: address?.lon,
+          accessNote: accessNote || undefined,
           photos: photos.filter((path): path is string => path !== null),
           slotStart: selectedSlot.start,
         }),
@@ -291,14 +403,17 @@ export function BookingFlow({
     formule: scope !== '',
     etat: true,
     options: true,
+    // Une adresse retenue suffit : elle porte le code postal et la distance.
+    // Sans point de départ chez le professionnel, on exige encore la saisie
+    // manuelle, faute de quoi le déplacement serait facturé zéro.
     lieu:
       locationMode === 'atelier' ||
       (locationMode === 'domicile' &&
-        postalCode.trim().length > 0 &&
-        travelKm.trim().length > 0 &&
+        address !== null &&
+        (detailer.base !== null || travelKm.trim().length > 0) &&
         Boolean(currentQuote?.travelAllowed)),
     creneau: selectedSlot !== null,
-    photos: allPhotosReady && emailValid,
+    photos: emailValid,
   };
 
   const locationOptions = [
@@ -403,6 +518,7 @@ export function BookingFlow({
         <h1 ref={headingRef} tabIndex={-1} className={styles.stepTitle}>
           {activeStep.title}
         </h1>
+        <p className={styles.stepHelp}>{activeStep.help}</p>
 
         {activeStep.id === 'vehicule' ? (
           <div className={styles.stepBody}>
@@ -454,8 +570,8 @@ export function BookingFlow({
               type="radio"
               options={scopes.map((value) => ({
                 value,
-                label: scopeCopy[value].label,
-                description: scopeCopy[value].hint,
+                label: scopeLabelFor(value),
+                description: scopeHintFor(value),
               }))}
               selected={scope ? [scope] : []}
               onToggle={(value) => setScope(value as Scope)}
@@ -525,36 +641,47 @@ export function BookingFlow({
             />
             {locationMode === 'domicile' ? (
               <>
-                <Field id="postalCode" label="Code postal">
-                  <TextInput
-                    id="postalCode"
-                    name="postalCode"
-                    value={postalCode}
-                    onChange={setPostalCode}
-                    inputMode="text"
-                    placeholder="75011"
-                  />
-                </Field>
-                <Field
-                  id="travelKm"
-                  label="Distance approximative jusqu’à vous"
-                  hint={`${quoteConfig.travelFreeRadiusKm} km offerts, puis ${quoteConfig.travelFeePerKm} € par km.`}
-                >
-                  <input
+                <AddressPicker
+                  country={detailer.country}
+                  base={detailer.base}
+                  value={address}
+                  onChange={setAddress}
+                  accessNote={accessNote}
+                  onAccessNoteChange={setAccessNote}
+                />
+                {detailer.base === null ? (
+                  /* Le professionnel n'a pas renseigné son point de départ :
+                     la distance n'est pas calculable, on retombe sur la
+                     saisie manuelle plutôt que de facturer zéro kilomètre. */
+                  <Field
                     id="travelKm"
-                    name="travelKm"
-                    type="number"
-                    min={0}
-                    step={1}
-                    className={styles.numberInput}
-                    value={travelKm}
-                    onChange={(event) => setTravelKm(event.target.value)}
-                    aria-describedby="travelKm-hint"
-                  />
-                </Field>
+                    label="Distance approximative jusqu’à vous"
+                    hint={`${quoteConfig.travelFreeRadiusKm} km offerts, puis ${formatPrice(quoteConfig.travelFeePerKm)} par km.`}
+                  >
+                    <input
+                      id="travelKm"
+                      name="travelKm"
+                      type="number"
+                      min={0}
+                      step={1}
+                      className={styles.numberInput}
+                      value={travelKm}
+                      onChange={(event) => setTravelKm(event.target.value)}
+                      aria-describedby="travelKm-hint"
+                    />
+                  </Field>
+                ) : null}
+                {currentQuote && currentQuote.travelFee > 0 ? (
+                  <p className={styles.travelSummary}>
+                    Frais de déplacement : {formatPrice(currentQuote.travelFee)} —{' '}
+                    {quoteConfig.travelFreeRadiusKm} km offerts, puis{' '}
+                    {formatPrice(quoteConfig.travelFeePerKm)} par kilomètre.
+                  </p>
+                ) : null}
                 {currentQuote && !currentQuote.travelAllowed ? (
                   <FieldError id="travelKm">
-                    Nous ne nous déplaçons pas encore jusqu’à cette distance.
+                    Cette adresse est hors de la zone d’intervention. Vous pouvez déposer le
+                    véhicule à l’atelier.
                   </FieldError>
                 ) : null}
               </>
@@ -602,8 +729,10 @@ export function BookingFlow({
         {activeStep.id === 'photos' ? (
           <div className={styles.stepBody}>
             <p className={styles.photoIntro}>
-              Trois photos permettent à {detailer.name} de vérifier le véhicule avant de confirmer —
-              elles conditionnent la suite de la demande.
+              Vous pouvez réserver sans photo. En ajouter permet à {detailer.name} de préparer
+              son matériel et de confirmer le montant avant même de vous voir — c’est la
+              meilleure façon d’éviter un ajustement de prix sur place.
+              {photoCount > 0 ? ` ${photoCount} photo${photoCount > 1 ? 's' : ''} reçue${photoCount > 1 ? 's' : ''}.` : ''}
             </p>
             <div className={styles.photoGrid}>
               {photoLabels.map((label, index) => (
@@ -643,6 +772,7 @@ export function BookingFlow({
                 name="phone"
                 type="tel"
                 inputMode="tel"
+                placeholder={profile.phonePlaceholder}
                 value={phone}
                 onChange={setPhone}
                 autoComplete="tel"

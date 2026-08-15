@@ -37,16 +37,21 @@ export function InteractiveSitePreview({
   compact = false,
 }: InteractiveSitePreviewProps) {
   const viewportRef = useRef<HTMLDivElement>(null);
-  const [shouldLoad, setShouldLoad] = useState(false);
+  /**
+   * Un navigateur sans `IntersectionObserver` ne peut pas différer le
+   * chargement : il affiche donc l'aperçu immédiatement. Cette décision est
+   * prise à l'initialisation plutôt que dans un effet — appeler `setState`
+   * dans le corps d'un effet provoque une seconde passe de rendu, et React
+   * le signale désormais comme un défaut.
+   */
+  const [shouldLoad, setShouldLoad] = useState(
+    () => typeof IntersectionObserver === 'undefined',
+  );
 
   useEffect(() => {
     const node = viewportRef.current;
     if (!node) return;
-
-    if (typeof IntersectionObserver === 'undefined') {
-      setShouldLoad(true);
-      return;
-    }
+    if (typeof IntersectionObserver === 'undefined') return;
 
     const observer = new IntersectionObserver(
       (entries) => {

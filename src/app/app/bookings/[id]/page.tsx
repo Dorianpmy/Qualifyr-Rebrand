@@ -3,12 +3,18 @@ import { redirect, notFound } from 'next/navigation';
 import { AppShell } from '@/components/app/AppShell';
 import { StatusActions } from '@/components/app/StatusActions';
 import {
+  formatDuration,
   formatPrice,
   formatSlot,
   getBookingForDetailer,
   getDetailerForOwner,
+  locationLabel,
+  scopeLabel,
+  soilingLabel,
   statusLabel,
+  vehicleLabel,
 } from '@/lib/detailing/dashboard';
+import { directionsUrl, osmEmbedUrl } from '@/lib/detailing/geo';
 import { getSessionUser } from '@/lib/detailing/session';
 import styles from '../../app.module.css';
 
@@ -67,16 +73,15 @@ export default async function BookingDetailPage({
           <div className={styles.detailItem}>
             <dt>Prestation</dt>
             <dd>
-              {booking.scope} · salissure {booking.soiling}
+              {scopeLabel(booking.scope)} · {soilingLabel(booking.soiling)}
               <br />
-              {booking.locationMode}
-              {booking.postalCode ? ` · ${booking.postalCode}` : ''}
+              {locationLabel(booking.locationMode, booking.postalCode)}
             </dd>
           </div>
           <div className={styles.detailItem}>
             <dt>Tarif annoncé</dt>
             <dd>
-              {formatPrice(booking.quotedPrice)} · {booking.quotedMinutes} min
+              {formatPrice(booking.quotedPrice)} · {formatDuration(booking.quotedMinutes)}
               <br />
               Acompte {formatPrice(booking.depositAmount)}
             </dd>
@@ -84,11 +89,52 @@ export default async function BookingDetailPage({
           <div className={styles.detailItem}>
             <dt>Véhicule</dt>
             <dd>
-              {booking.vehicleSize}
-              {booking.plate ? ` · ${booking.plate}` : ''}
+              {vehicleLabel(booking)}
             </dd>
           </div>
         </dl>
+
+        {/* Emplacement exact du véhicule.
+            Un code postal ne suffit pas à un professionnel qui part avec son
+            matériel : il lui faut la rue, et savoir s'il descend dans un
+            parking souterrain avant de charger un nettoyeur sur roulettes. */}
+        {booking.latitude !== null && booking.longitude !== null ? (
+          <section className={styles.panel} style={{ padding: '1.1rem', marginBottom: '1.25rem' }}>
+            <h2 className={styles.blockTitle ?? ''} style={{ margin: '0 0 0.5rem', fontSize: '1rem' }}>
+              Où se trouve le véhicule
+            </h2>
+            <p style={{ margin: '0 0 0.75rem', fontSize: '0.9rem' }}>
+              {booking.address ?? 'Adresse non renseignée'}
+            </p>
+            {booking.accessNote ? (
+              <p className={styles.clientMeta} style={{ margin: '0 0 0.75rem' }}>
+                Accès : {booking.accessNote}
+              </p>
+            ) : null}
+            <iframe
+              title="Emplacement du véhicule"
+              src={osmEmbedUrl({ lat: booking.latitude, lon: booking.longitude })}
+              loading="lazy"
+              style={{
+                display: 'block',
+                inlineSize: '100%',
+                blockSize: '260px',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '0.7rem',
+              }}
+            />
+            <div style={{ marginTop: '0.75rem' }}>
+              <a
+                className={styles.btnGhost}
+                href={directionsUrl({ lat: booking.latitude, lon: booking.longitude })}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Itinéraire
+              </a>
+            </div>
+          </section>
+        ) : null}
 
         {booking.photos.length > 0 ? (
           <div className={styles.detailItem} style={{ marginBottom: '1.25rem' }}>

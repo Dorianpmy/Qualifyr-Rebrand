@@ -23,7 +23,21 @@ const bodySchema = z.object({
   locationMode: z.enum(['domicile', 'atelier'] as [LocationMode, ...LocationMode[]]),
   postalCode: z.string().trim().max(10).optional(),
   travelKm: z.number().min(0).max(500).optional(),
-  photos: z.array(z.string().trim().min(1)).min(3, 'Trois photos sont nécessaires.'),
+  address: z.string().trim().max(300).optional(),
+  // Bornes terrestres : une coordonnée hors de ces plages est une erreur de
+  // saisie ou une tentative d'injection, jamais une adresse.
+  latitude: z.number().min(-90).max(90).optional(),
+  longitude: z.number().min(-180).max(180).optional(),
+  accessNote: z.string().trim().max(300).optional(),
+  /**
+   * Photos facultatives.
+   *
+   * Le tunnel a cessé de les exiger — demander trois photos avant de pouvoir
+   * réserver suppose d'être devant son véhicule, de jour, avec du réseau. Le
+   * schéma imposait encore un minimum de trois : le serveur aurait rejeté
+   * chaque réservation que le formulaire acceptait d'envoyer.
+   */
+  photos: z.array(z.string().trim().min(1)).max(3),
   slotStart: z.string().trim().min(1),
 });
 
