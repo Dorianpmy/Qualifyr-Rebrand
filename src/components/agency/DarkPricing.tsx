@@ -50,10 +50,17 @@ const LIGHT_CARD_BORDER_STRONG = 'rgba(26, 23, 18, 0.16)';
 const lightVars = {
   '--color-primary': '#1a1712',
   '--color-muted': '#5c5346',
-  '--color-faint': '#8a8071',
+  /* #8a8071 d'origine ne tenait que 3,9:1 sur blanc — sous le seuil AA de
+     4,5:1 pour du texte normal. #79705f tient ~4,9:1. */
+  '--color-faint': '#79705f',
   '--color-hairline': 'rgba(26, 23, 18, 0.1)',
   '--color-hairline-strong': LIGHT_CARD_BORDER_STRONG,
 } as CSSProperties;
+
+/* `--accent-2` (céladon pastel) est réglé pour un texte clair sur fond
+   sombre : 1,5:1 sur blanc, illisible. Un vert plus soutenu, déjà utilisé
+   par `Mark` en `tone="light"` dans FeatureComparisonTable, tient ~6:1. */
+const LIGHT_ACCENT_TEXT = '#1f6f5c';
 
 /* Réinitialise les mêmes jetons à leurs valeurs sombres d'origine — posé sur
    la carte « Pack complet », qui reste noire au milieu des cartes claires. */
@@ -156,7 +163,7 @@ function Check({ tinted }: { readonly tinted: boolean }) {
       viewBox="0 0 16 16"
       aria-hidden="true"
       className="mt-[0.3rem] size-4 shrink-0 fill-none [stroke-linecap:round] [stroke-linejoin:round] [stroke-width:2]"
-      style={{ stroke: tinted ? 'var(--accent-2)' : 'rgba(26,23,18,0.32)' }}
+      style={{ stroke: tinted ? 'var(--accent-2)' : 'rgba(26,23,18,0.55)' }}
     >
       <path d="M3 8.5l3.2 3.2L13 4.8" />
     </svg>
@@ -175,7 +182,7 @@ function PlanCard({ plan, annual }: { plan: Plan; annual: boolean }) {
 
   return (
     <div
-      className={`flex flex-col rounded-[1.25rem] p-6 ${plan.featured ? 'border border-transparent' : ''}`}
+      className={`flex flex-col rounded-[1.25rem] p-5 ${plan.featured ? 'border border-transparent' : ''}`}
       style={
         plan.featured
           ? {
@@ -186,7 +193,7 @@ function PlanCard({ plan, annual }: { plan: Plan; annual: boolean }) {
           : { background: LIGHT_CARD_BG, border: `1px solid ${LIGHT_CARD_BORDER}` }
       }
     >
-      <div className="mb-5 flex items-center justify-between gap-3">
+      <div className="mb-3.5 flex items-center justify-between gap-3">
         <p className="text-[0.75rem] font-semibold uppercase tracking-[0.08em] text-faint">
           {plan.kicker}
         </p>
@@ -200,7 +207,7 @@ function PlanCard({ plan, annual }: { plan: Plan; annual: boolean }) {
         ) : null}
       </div>
 
-      <h3 className="mb-4 text-[1.1875rem] font-bold leading-[1.25] tracking-[-0.02em] text-primary">
+      <h3 className="mb-3 text-[1.1875rem] font-bold leading-[1.22] tracking-[-0.02em] text-primary">
         {plan.title}
       </h3>
 
@@ -225,35 +232,39 @@ function PlanCard({ plan, annual }: { plan: Plan; annual: boolean }) {
         ) : null}
       </div>
 
-      <p className="mb-2 flex items-baseline gap-1.5">
+      <p className="mb-1.5 flex items-baseline gap-1.5">
         <span className="text-[2.25rem] font-bold leading-none tracking-[-0.035em] tabular-nums text-primary">
           {price} €
         </span>
         <span className="text-[0.9375rem] font-medium text-faint">/ mois</span>
       </p>
 
-      <p className="mb-6 text-[0.8125rem] leading-[1.4] text-faint">
+      <p className="mb-4 text-[0.8125rem] leading-[1.4] text-faint">
         {annual ? (
           <>
             Facturé {yearly} € par an —{' '}
             {/* Le montant économisé, pas seulement le pourcentage. « −20 % »
                 demande un calcul ; « 41 € de moins » se comprend sans effort et
-                se compare à quelque chose de concret. */}
-            <span style={{ color: 'var(--accent-2)' }}>{saved} € de moins</span>
+                se compare à quelque chose de concret. Le céladon pastel de la
+                carte sombre ne tient pas 4,5:1 sur les cartes claires — un vert
+                plus soutenu prend le relais pour elles. */}
+            <span style={{ color: plan.featured ? 'var(--accent-2)' : LIGHT_ACCENT_TEXT }}>
+              {saved} € de moins
+            </span>
           </>
         ) : (
           'Facturé au mois, sans engagement'
         )}
       </p>
 
-      <p className="mb-6 text-[0.875rem] leading-[1.55] text-muted">{plan.pitch}</p>
+      <p className="mb-4 text-[0.875rem] leading-[1.5] text-muted">{plan.pitch}</p>
 
       {/* `flex-1` sur la liste : les trois cartes n'ont pas le même nombre de
           lignes, et sans cela les boutons finissent à des hauteurs
           différentes — ce qui donne l'impression d'une grille cassée. */}
-      <ul className="mb-7 grid flex-1 content-start gap-2.5 border-t border-hairline pt-6">
+      <ul className="mb-5 grid flex-1 content-start gap-2 border-t border-hairline pt-4">
         {plan.items.map((item) => (
-          <li key={item} className="flex gap-2.5 text-[0.875rem] leading-[1.5] text-muted">
+          <li key={item} className="flex gap-2.5 text-[0.875rem] leading-[1.4] text-muted">
             <Check tinted={plan.featured === true} />
             <span>{item}</span>
           </li>
