@@ -1,57 +1,126 @@
+'use client';
+
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 import { Section } from './Section';
 import { orbTints } from './agent-visuals';
 import { Orb } from './ServiceTabs';
 
 /**
- * Avant / après — la friction actuelle contre le résultat.
+ * Avant / après — la friction actuelle contre le résultat, en bascule.
  *
  * **Pourquoi ce bloc convertit.** Les sections de fonctionnalités décrivent le
  * produit ; celle-ci décrit la journée du lecteur. Un laveur qui se reconnaît
  * dans « le devis qu'on rédige le soir » a déjà admis le problème — et on ne
  * vend pas une solution à quelqu'un qui n'a pas admis le problème.
  *
- * **La colonne « avant » n'est pas rouge.** La palette n'a pas d'accent, et
- * peindre les frictions en rouge transformerait le bloc en avertissement
- * système. Le contraste se fait par le texte barré et l'opacité : le passé est
- * littéralement effacé.
+ * **Une carte qui bascule, pas deux côte à côte.** La version précédente
+ * posait les deux colonnes en permanence — lisible sur un écran large, mais
+ * deux colonnes de cinq lignes empilées sur téléphone faisaient défiler
+ * longtemps avant d'atteindre la suite de la page. Une bascule « Sans
+ * Qualifyr / Avec Qualifyr » ramène la comparaison à une seule carte, dans
+ * les deux formats — inspirée d'une référence envoyée (une page concurrente
+ * qui traite le même argument ainsi), reconstruite dans la charte du site :
+ * une seule icône par ligne, jamais cinq couleurs différentes — la charte
+ * n'autorise la couleur qu'à deux endroits sur la page (voir la note de
+ * `DarkHero`), et une pastille par ligne dans cinq teintes en ferait un
+ * troisième, puis un quatrième.
  *
- * **Deux cartes symétriques, deux visuels.** Cette section vivait à côté de
- * `ComboSection`, qui répétait presque mot pour mot les mêmes points sous une
- * autre forme. `ComboSection` a été retirée de la page ; le rôle qu'elle
- * jouait — présenter le système, pas seulement lister des points — est repris
- * par l'en-tête de chaque carte. À gauche, des bulles de messages clients
- * dispersées : le bruit désordonné d'aujourd'hui. À droite, l'agent central et
- * ses trois rôles déjà vus dans `AgentFlow` : le même bruit, trié et traité.
+ * **Les cinq lignes restent les mêmes concepts des deux côtés.** La ligne
+ * « téléphone » reste la ligne « téléphone » qu'on soit sur « avant » ou
+ * « après » — seul le texte et le repère (croix ou coche) changent. Ça
+ * évite au lecteur de rechercher où est passée « sa » ligne quand il bascule.
  */
 
-const before = [
-  'Le téléphone qui sonne pendant que vous êtes en cabine',
-  'Un devis rédigé le soir, pour un client qui ne répond plus',
-  'Le créneau bloqué pour quelqu’un qui ne viendra pas',
-  'Le trajet estimé à la louche, facturé à perte',
-  'La prospection remise à « quand j’aurai le temps »',
-] as const;
+type Row = {
+  readonly icon: () => ReactNode;
+  readonly beforeTitle: string;
+  readonly beforeBody: string;
+  readonly afterTitle: string;
+  readonly afterBody: string;
+};
 
-const after = [
-  'Le client réserve seul, prix et durée affichés',
-  'Un montant ferme accepté avant même le rendez-vous',
-  'Acompte encaissé — le créneau est tenu',
-  'Adresse géocodée, distance calculée, frais justes',
-  'Un agent travaille votre zone pendant que vous lavez',
-] as const;
+const rows: readonly Row[] = [
+  {
+    icon: () => (
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4.5 4.5c0 8.3 6.7 15 15 15l2-3.6-5.1-2.4-1.6 1.9a12 12 0 0 1-6.2-6.2l1.9-1.6L8.1 2.5Z" />
+      </svg>
+    ),
+    beforeTitle: 'Interruptions en pleine prestation',
+    beforeBody: 'Le téléphone qui sonne pendant que vous êtes en cabine, sur un véhicule.',
+    afterTitle: 'Réservation en autonomie',
+    afterBody: 'Le client réserve seul : prix et durée sont déjà affichés.',
+  },
+  {
+    icon: () => (
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M6.5 3h8l3.5 3.5V21h-11.5Z" />
+        <path d="M9 9.3h6M9 12.8h6M9 16.3h3.3" />
+      </svg>
+    ),
+    beforeTitle: 'Devis écrits pour rien',
+    beforeBody: 'Un devis rédigé le soir, pour un client qui ne répond déjà plus.',
+    afterTitle: 'Prix ferme accepté à l’avance',
+    afterBody: 'Un montant ferme est accepté avant même le rendez-vous.',
+  },
+  {
+    icon: () => (
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3.5" y="5" width="17" height="15" rx="2.3" />
+        <path d="M3.5 9.8h17M8 3v3.4M16 3v3.4" />
+      </svg>
+    ),
+    beforeTitle: 'Créneaux bloqués sans garantie',
+    beforeBody: 'Un créneau retenu par téléphone, pour quelqu’un qui ne viendra pas.',
+    afterTitle: 'Acompte encaissé au clic',
+    afterBody: 'Le créneau est tenu — l’acompte est déjà encaissé.',
+  },
+  {
+    icon: () => (
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 21.2s7-7.4 7-12.3a7 7 0 1 0-14 0c0 4.9 7 12.3 7 12.3Z" />
+        <circle cx="12" cy="8.9" r="2.4" />
+      </svg>
+    ),
+    beforeTitle: 'Déplacements estimés à la louche',
+    beforeBody: 'La distance et le trajet évalués au jugé, souvent facturés à perte.',
+    afterTitle: 'Trajet calculé, frais justes',
+    afterBody: 'Adresse géocodée, distance calculée, déplacement facturé juste.',
+  },
+  {
+    icon: () => (
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="10.5" cy="10.5" r="6.5" />
+        <path d="M19.5 19.5 15 15" />
+      </svg>
+    ),
+    beforeTitle: 'Prospection remise à plus tard',
+    beforeBody: 'Trouver de nouveaux clients attend « quand j’aurai le temps » — donc n’arrive jamais.',
+    afterTitle: 'Un agent qui prospecte pour vous',
+    afterBody: 'Il travaille votre zone pendant que vous lavez.',
+  },
+];
+
+function CrossIcon() {
+  return (
+    <svg viewBox="0 0 16 16" aria-hidden="true" className="size-3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <path d="M4 4l8 8M12 4l-8 8" />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg viewBox="0 0 16 16" aria-hidden="true" className="size-3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 8.5l3.2 3.2L13 4.8" />
+    </svg>
+  );
+}
 
 /**
- * Les trois rôles déjà présentés dans `AgentFlow`, repris ici en pastilles
- * flottantes autour de l'agent central. Le visiteur les a vus une fois plus
- * haut sur la page ; les retrouver ici confirme qu'il s'agit du même système,
- * pas d'un nouveau concept à apprendre.
- *
- * **Position en style en ligne, pas en classes Tailwind.** Un premier essai
- * avec des classes `left-0 top-0` etc. stockées dans ce tableau ne
- * produisait rien à l'écran — les quatre pastilles s'empilaient toutes au
- * même endroit, comme si `top`/`left`/`right`/`bottom` n'étaient jamais
- * appliqués. Le style en ligne contourne le problème sans avoir à en trouver
- * la cause exacte.
+ * Les trois rôles déjà présentés dans `AgentFlow`, repris en pastilles
+ * flottantes autour de l'agent central — l'en-tête visuel du côté « après ».
  */
 const workers = [
   { name: 'Agent Prospection', style: { left: 0, top: 0 } },
@@ -59,12 +128,7 @@ const workers = [
   { name: 'Agent Mémoire', style: { bottom: 0, left: '50%', transform: 'translateX(-50%)' } },
 ] as const;
 
-/**
- * Le bruit d'aujourd'hui : des demandes réelles, dispersées, sans qu'on les
- * ait triées. Le miroir de l'agent central en face — même volume de
- * messages, mais un côté les subit et l'autre les traite. Même remarque que
- * `workers` sur le style en ligne.
- */
+/** Le bruit d'aujourd'hui, en en-tête visuel du côté « avant ». */
 const clientNoise = [
   { text: 'C’est combien pour une Clio ?', style: { left: 0, top: 0 } },
   { text: 'Vous pouvez passer dans 20 min ?', style: { right: 0, top: '1.5rem' } },
@@ -73,9 +137,11 @@ const clientNoise = [
 ] as const;
 
 export function BeforeAfterSection() {
+  const [after, setAfter] = useState(false);
+
   return (
     <Section labelledBy="before-after-title" className="py-24">
-      <header className="mx-auto mb-12 max-w-[46rem] text-center">
+      <header className="mx-auto mb-10 max-w-[46rem] text-center">
         <p className="mb-2 text-[0.8125rem] font-medium uppercase tracking-[0.08em] text-faint">
           Ce qui change
         </p>
@@ -88,128 +154,114 @@ export function BeforeAfterSection() {
         </p>
       </header>
 
-      {/* `items-stretch` : sans lui les deux cartes prennent chacune la
-          hauteur de son contenu, et celle de droite (plus courte une fois le
-          visuel retiré de la gauche) flotte plus haut que celle de gauche. */}
-      <div className="grid items-stretch gap-4 lg:grid-cols-2">
-        {/* Colonne « avant » : les demandes réelles, en désordre, en miroir de
-            l'agent qui les trie en face. Un laveur qui reconnaît « c'est
-            combien pour une Clio ? » sait déjà de quoi parle la carte d'à
-            côté. */}
-        <div
-          className="flex flex-col rounded-[1.25rem] p-6 sm:p-8"
-          style={{
-            background: '#0f0f10',
-            border: '1px solid rgba(255,255,255,0.06)',
-          }}
-        >
-          {/* Même hauteur d'en-tête qu'en face, pour que les deux pilules
-              « Aujourd'hui » / « Avec Qualifyr » s'alignent. Repli sans les
-              bulles sous 640 px, comme le visuel de droite. */}
-          {/* `position` en style en ligne : la classe `relative` seule ne
-              tenait pas (les bulles se positionnaient contre un ancêtre bien
-              plus large que ce conteneur, probablement le wrapper de
-              `Section`). `overflow: hidden` en filet de sécurité, pour que le
-              débordement reste visible et contenu si ça se reproduit. */}
-          {/* Hauteur et largeur maximale en style en ligne aussi : si `h-28`
-              perd la même bataille de spécificité que `relative` plus haut,
-              un conteneur sans hauteur et sans enfant en flux normal (tout
-              est en `position: absolute`) s'effondre à 0 px — invisible même
-              avec du contenu dedans. */}
-          <div
-            className="mx-auto mb-8 hidden sm:block"
-            style={{
-              position: 'relative',
-              overflow: 'hidden',
-              height: '7rem',
-              width: '100%',
-              maxWidth: '22rem',
-            }}
+      {/* La bascule — mêmes classes que `.period-switch`/`.period-option`
+          dans `tailwind.css`, déjà éprouvées pour les tarifs : un vrai
+          `radiogroup` au clavier, pas des `div` cliquables muettes. */}
+      <div className="mb-8 flex justify-center">
+        <div role="radiogroup" aria-label="Avant ou après Qualifyr" className="period-switch">
+          <button
+            type="button"
+            role="radio"
+            aria-checked={!after}
+            onClick={() => setAfter(false)}
+            className="period-option"
           >
-            {clientNoise.map((message) => (
-              <span
-                key={message.text}
-                style={{ position: 'absolute', ...message.style }}
-                className="max-w-[11rem] rounded-2xl rounded-bl-md border border-white/[0.07] bg-white/[0.03] px-3 py-2 text-[0.75rem] leading-[1.4] text-faint"
-              >
-                {message.text}
-              </span>
-            ))}
-          </div>
-
-          <p
-            className="mb-7 inline-flex w-fit rounded-full px-3 py-1 text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-faint"
-            style={{ border: '1px solid rgba(255,255,255,0.08)' }}
+            <CrossIcon />
+            Sans Qualifyr
+          </button>
+          <button
+            type="button"
+            role="radio"
+            aria-checked={after}
+            onClick={() => setAfter(true)}
+            className="period-option"
           >
-            Aujourd’hui
-          </p>
-          <ul className="grid gap-4">
-            {before.map((item) => (
-              <li key={item} className="flex gap-3 text-[1.0625rem] leading-[1.5] text-faint">
-                <span aria-hidden="true" className="mt-2.5 h-px w-4 shrink-0 bg-white/20" />
-                <span className="line-through decoration-white/15">{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Colonne « après » : le contour tricolore de `.node-hero`, la même
-            signature que l'agent central d'`AgentFlow`. C'est la seule carte
-            qui porte le visuel — le contraste entre une carte nue et une
-            carte vivante dit « système » mieux qu'un texte ne le ferait. */}
-        <div className="node-hero flex flex-col rounded-[1.25rem] p-6 sm:p-8">
-          {/* En-tête : l'agent et ses trois rôles, déjà vus dans le schéma
-              plus haut. Repli sans les pastilles flottantes sous 640 px —
-              trois libellés autour d'un disque de 3,5 rem n'ont pas la place
-              de respirer sur un petit écran. */}
-          <div
-            className="mx-auto mb-8 hidden items-center justify-center sm:flex"
-            style={{
-              position: 'relative',
-              overflow: 'hidden',
-              height: '7rem',
-              width: '100%',
-              maxWidth: '22rem',
-            }}
-          >
-            <Orb tint={orbTints.qualifyr} size="3.5rem" />
-            {workers.map((worker) => (
-              <span
-                key={worker.name}
-                style={{ position: 'absolute', ...worker.style }}
-                className="surface-pill px-3 py-1 text-[0.75rem] font-medium text-muted"
-              >
-                {worker.name}
-              </span>
-            ))}
-          </div>
-
-          {/* La pilule est le seul aplat blanc de la section. Elle portait
-              `bg-white` en utilitaire, écrasé par le `!important` de
-              `.surface-pill` — d'où le fond sombre et le texte illisible. */}
-          <p
-            className="mb-7 inline-flex w-fit rounded-full px-3 py-1 text-[0.6875rem] font-semibold uppercase tracking-[0.08em]"
-            style={{ backgroundColor: '#ffffff', color: '#0e0e0f' }}
-          >
+            <CheckIcon />
             Avec Qualifyr
-          </p>
-          <ul className="grid gap-4">
-            {after.map((item) => (
-              <li key={item} className="flex gap-3 text-[1.0625rem] leading-[1.5] text-primary">
-                {/* La coche prend le céladon : c'est le seul endroit de la
-                    section où la couleur porte une information — ce qui est
-                    acquis, par opposition au texte barré d'en face. */}
-                <svg
-                  viewBox="0 0 16 16"
-                  aria-hidden="true"
-                  className="mt-1.5 size-4 shrink-0 fill-none [stroke-linecap:round] [stroke-linejoin:round] [stroke-width:2]"
-                  style={{ stroke: 'var(--accent-2)' }}
+          </button>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-[38rem]">
+        <div
+          className={
+            after
+              ? 'node-hero flex flex-col rounded-[1.5rem] p-6 sm:p-8'
+              : 'flex flex-col rounded-[1.5rem] p-6 sm:p-8'
+          }
+          style={after ? undefined : { background: '#0f0f10', border: '1px solid rgba(255,255,255,0.06)' }}
+        >
+          {/* En-tête visuel : le bruit du côté « avant », l'agent et ses
+              rôles côté « après ». Repli sans lui sous 640 px — l'un comme
+              l'autre perdent leur lisibilité en dessous de cette largeur. */}
+          <div
+            className="mx-auto mb-7 hidden items-center justify-center sm:flex"
+            style={{ position: 'relative', overflow: 'hidden', height: '6.5rem', width: '100%', maxWidth: '20rem' }}
+          >
+            {after ? (
+              <>
+                <Orb tint={orbTints.qualifyr} size="3.25rem" />
+                {workers.map((worker) => (
+                  <span
+                    key={worker.name}
+                    style={{ position: 'absolute', ...worker.style }}
+                    className="surface-pill px-3 py-1 text-[0.75rem] font-medium text-muted"
+                  >
+                    {worker.name}
+                  </span>
+                ))}
+              </>
+            ) : (
+              clientNoise.map((message) => (
+                <span
+                  key={message.text}
+                  style={{ position: 'absolute', ...message.style }}
+                  className="max-w-[11rem] rounded-2xl rounded-bl-md border border-white/[0.07] bg-white/[0.03] px-3 py-2 text-[0.75rem] leading-[1.4] text-faint"
                 >
-                  <path d="M3 8.5l3.2 3.2L13 4.8" />
-                </svg>
-                <span>{item}</span>
-              </li>
-            ))}
+                  {message.text}
+                </span>
+              ))
+            )}
+          </div>
+
+          {/* La pastille d'état — repère de ce qui est affiché, comme sur la
+              référence. Croix et sable pour « avant », coche et blanc plein
+              pour « après » : le seul aplat blanc de la section marque ce qui
+              est acquis. */}
+          <p
+            className="mb-6 inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-[0.6875rem] font-semibold uppercase tracking-[0.08em]"
+            style={
+              after
+                ? { backgroundColor: '#ffffff', color: '#0e0e0f' }
+                : { border: '1px solid rgba(255,255,255,0.08)', color: 'var(--color-faint)' }
+            }
+          >
+            {after ? <CheckIcon /> : <CrossIcon />}
+            {after ? 'Avec Qualifyr' : 'Sans Qualifyr'}
+          </p>
+
+          <ul className="grid gap-4">
+            {rows.map((row) => {
+              const Icon = row.icon;
+              return (
+                <li key={row.beforeTitle} className="flex gap-3.5">
+                  <span
+                    aria-hidden="true"
+                    className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-faint [&_svg]:size-[1rem]"
+                  >
+                    <Icon />
+                  </span>
+                  <div>
+                    <p className={`text-[0.9375rem] font-semibold leading-[1.35] ${after ? 'text-primary' : 'text-muted line-through decoration-white/20'}`}>
+                      {after ? row.afterTitle : row.beforeTitle}
+                    </p>
+                    <p className="mt-0.5 text-[0.8125rem] leading-[1.5] text-faint">
+                      {after ? row.afterBody : row.beforeBody}
+                    </p>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>
