@@ -251,14 +251,25 @@ export function BeforeAfterSection() {
                       teintes différentes. Ça reste dans l'esprit « la couleur
                       n'apparaît qu'à deux endroits » : c'est la même
                       signature qui se prolonge sur les icônes, pas une
-                      troisième zone colorée. */}
+                      troisième zone colorée.
+
+                      La couleur du glyphe est posée en `style`, pas via
+                      `text-faint` + `currentColor` : combinée au double fond
+                      (`padding-box`/`border-box`) de la bordure dégradée, la
+                      classe utilitaire cessait de s'appliquer en production —
+                      icônes invisibles alors que le contour restait visible.
+                      Même symptôme, même remède que la carte tarifaire
+                      sombre plus haut dans le projet : une couleur écrite en
+                      dur gagne toujours, quelle que soit la cause exacte de
+                      l'échec de la cascade. */}
                   <span
                     aria-hidden="true"
-                    className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg text-faint [&_svg]:size-[1rem]"
+                    className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg [&_svg]:size-[1rem]"
                     style={{
                       border: '1px solid transparent',
                       background:
                         'linear-gradient(#141416, #141416) padding-box, linear-gradient(135deg, var(--accent-1), var(--accent-3) 50%, var(--accent-2)) border-box',
+                      color: '#9a9a9c',
                     }}
                   >
                     <Icon />

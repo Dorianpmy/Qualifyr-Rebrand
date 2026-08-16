@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { optionCopy, scopeCopy, soilingCopy, vehicleSizeCopy } from '@/components/detailing/content';
+import { isQrBillEligibleIban } from '@/lib/detailing/iban';
 import { formatMoney, profileFor } from '@/lib/detailing/locale';
 import type {
   DetailerSettings,
@@ -493,6 +494,44 @@ export function PricingEditor({ catalogue }: { catalogue: PricingCatalogue }) {
           )}
           {baseError ? <p className={editor.blockHint}>{baseError}</p> : null}
         </div>
+
+        {/* IBAN — uniquement utile en Suisse, où la facture porte une
+            QR-facture scannable par n'importe quelle app bancaire. En
+            France, la facturation électronique passe par un XML structuré
+            (bouton « Télécharger le XML » sur chaque facture), pas par un
+            IBAN sur le document lui-même. */}
+        {settings.country === 'CH' ? (
+          <div className={editor.settingFull}>
+            <span>IBAN — pour la QR-facture</span>
+            <input
+              type="text"
+              value={settings.iban ?? ''}
+              placeholder="CH93 0076 2011 6238 5295 7"
+              onChange={(event) => {
+                setSettings({ ...settings, iban: event.target.value || null });
+                setState('idle');
+              }}
+            />
+            {settings.iban && settings.iban.trim().length > 0 ? (
+              isQrBillEligibleIban(settings.iban) ? (
+                <p className={editor.blockHint}>
+                  IBAN valide. Tes factures porteront une QR-facture scannable.
+                </p>
+              ) : (
+                <p className={editor.blockHint}>
+                  <strong className={editor.warn}>
+                    Cet IBAN n’est pas exploitable pour une QR-facture.
+                  </strong>{' '}
+                  Il doit commencer par CH ou LI et être un IBAN valide.
+                </p>
+              )
+            ) : (
+              <p className={editor.blockHint}>
+                Sans IBAN, tes factures suisses restent au format actuel — sans QR-facture.
+              </p>
+            )}
+          </div>
+        ) : null}
 
         <label className={editor.settingFull}>
           <span>Phrase d’accueil sur ta page client</span>

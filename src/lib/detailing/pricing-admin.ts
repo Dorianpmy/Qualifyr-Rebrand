@@ -67,6 +67,12 @@ export type DetailerSettings = {
   readonly baseAddress: string | null;
   readonly baseLatitude: number | null;
   readonly baseLongitude: number | null;
+  /**
+   * IBAN du professionnel — sert uniquement à générer la QR-facture suisse
+   * (`swiss-qr-bill.ts`). Distinct du compte Stripe Connect, qui encaisse les
+   * acomptes mais ne restitue jamais l'IBAN en clair.
+   */
+  readonly iban: string | null;
 };
 
 export type PricingCatalogue = {
@@ -190,6 +196,7 @@ export async function loadCatalogue(detailerId: string): Promise<PricingCatalogu
       baseAddress: (detailer.base_address as string | null) ?? null,
       baseLatitude: detailer.base_latitude == null ? null : Number(detailer.base_latitude),
       baseLongitude: detailer.base_longitude == null ? null : Number(detailer.base_longitude),
+      iban: (detailer.iban as string | null) ?? null,
     },
   };
 }
@@ -330,6 +337,7 @@ export async function saveCatalogue(
     if (s.baseAddress !== undefined) row.base_address = s.baseAddress;
     if (s.baseLatitude !== undefined) row.base_latitude = s.baseLatitude;
     if (s.baseLongitude !== undefined) row.base_longitude = s.baseLongitude;
+    if (s.iban !== undefined) row.iban = s.iban;
 
     if (Object.keys(row).length > 0) {
       const { error } = await client.from('detailers').update(row).eq('id', detailerId);

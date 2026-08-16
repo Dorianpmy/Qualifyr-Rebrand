@@ -34,12 +34,15 @@ export default async function InvoiceDetailPage({
     const { data } = await client
       .from('detailers')
       .select(
-        'legal_name, siret, siren, tva_intra, legal_address, legal_city, legal_postal, rcs, capital, tva_franchise',
+        'legal_name, siret, siren, tva_intra, legal_address, legal_city, legal_postal, rcs, capital, tva_franchise, country, iban',
       )
       .eq('id', detailer.id)
       .maybeSingle();
     if (data) legal = data as Record<string, string | null>;
   }
+
+  const isSwiss = legal.country === 'CH';
+  const hasQrBillIban = isSwiss && Boolean(legal.iban);
 
   const sellerName = legal.legal_name || detailer.name;
   const issued =
@@ -78,14 +81,31 @@ export default async function InvoiceDetailPage({
           <Link href={`/app/invoices/${invoice.id}/print`} className={`app-primary ${styles.btnPrimary}`} target="_blank">
             Ouvrir PDF / Imprimer
           </Link>
-          <Link
-            href={`/api/app/invoices/${invoice.id}/xml`}
-            className={`app-ghost ${styles.btnGhost}`}
-            title="Facture électronique — format structuré CII (norme EN 16931), pour la réforme de facturation électronique"
-          >
-            Télécharger le XML (facture électronique)
-          </Link>
+          {!isSwiss ? (
+            <Link
+              href={`/api/app/invoices/${invoice.id}/xml`}
+              className={`app-ghost ${styles.btnGhost}`}
+              title="Facture électronique — format structuré CII (norme EN 16931), pour la réforme de facturation électronique"
+            >
+              Télécharger le XML (facture électronique)
+            </Link>
+          ) : null}
         </div>
+
+        {/* Le CII (norme EN 16931) est un format français/européen : il ne
+            sert à rien à un client suisse. Le PDF porte à la place une
+            QR-facture (voir `swiss-qr-bill.ts`), le format que les banques
+            suisses savent lire. */}
+        {isSwiss && !hasQrBillIban ? (
+          <div className={styles.panel} style={{ padding: '1rem 1.25rem', marginBottom: '1rem' }}>
+            <strong>IBAN manquant</strong>
+            <p className={styles.clientMeta} style={{ marginTop: '0.35rem' }}>
+              Renseigne ton IBAN dans Prestations → Réglages pour que cette facture porte une
+              QR-facture scannable. En attendant, le PDF reste un document classique, sans QR
+              Code.
+            </p>
+          </div>
+        ) : null}
 
         <div className={styles.panel} style={{ padding: '1.5rem' }}>
           <div style={{ display: 'grid', gap: '1rem', gridTemplateColumns: '1fr 1fr' }}>

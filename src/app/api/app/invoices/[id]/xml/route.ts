@@ -47,6 +47,17 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     if (data) legal = data as Record<string, string | null>;
   }
 
+  // Le CII (EN 16931) est un format français/européen — un detailer suisse
+  // n'en a pas l'usage, sa facture porte une QR-facture à la place (voir
+  // `/app/invoices/[id]/print`). Accessible en direct malgré le bouton
+  // masqué côté page : défense en profondeur, pas seulement du CSS.
+  if (legal.country === 'CH') {
+    return NextResponse.json(
+      { error: 'Le format CII ne s’applique pas en Suisse. Voir la QR-facture sur le PDF.' },
+      { status: 422 },
+    );
+  }
+
   const xml = buildCiiInvoiceXml({
     invoice: packed.invoice,
     lines: packed.lines,
