@@ -28,12 +28,15 @@ const links = [
  * FAQ), pas une section de la page d'accueil. Séparé du tableau `links`
  * ci-dessus parce qu'il se rend avec `next/link`, pas un `<a>` d'ancre.
  *
- * « Réservation en ligne » plutôt que « Espace SaaS » : le visiteur qui lit
- * le menu est un laveur, pas un acheteur de logiciel B2B — « SaaS » ne veut
- * rien dire pour lui, alors que « réservation en ligne » dit exactement ce
- * qu'il va trouver derrière le lien.
+ * Le libellé a changé deux fois. « Espace SaaS » d'abord : le visiteur qui
+ * lit le menu est un laveur, pas un acheteur de logiciel B2B — « SaaS » ne
+ * veut rien dire pour lui. Puis « Réservation en ligne », plus parlant mais
+ * qui se lisait comme une page du site vitrine plutôt que comme l'entrée
+ * vers le produit. « App Qualifyr » tranche : c'est un nom propre, il ne
+ * décrit rien qu'il faille deviner, et il annonce clairement qu'on quitte le
+ * site vitrine pour l'outil.
  */
-const saasLink = { href: '/nettoyage-automobile', label: 'Réservation en ligne' } as const;
+const saasLink = { href: '/nettoyage-automobile', label: 'App Qualifyr' } as const;
 
 const proLink = { href: '/app', label: 'Espace pro' } as const;
 

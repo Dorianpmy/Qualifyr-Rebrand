@@ -214,13 +214,13 @@ export function FeatureComparisonTable() {
                   ) : null}
                 </td>
                 <td className="px-3 py-3.5 text-center">
-                  <Mark value={row.agent} tone="dark" />
+                  <Mark value={row.agent} tone="light" />
                 </td>
                 <td className="px-3 py-3.5 text-center">
-                  <Mark value={row.complet} tone="dark" />
+                  <Mark value={row.complet} tone="light" />
                 </td>
                 <td className="px-3 py-3.5 text-center">
-                  <Mark value={row.saas} tone="dark" />
+                  <Mark value={row.saas} tone="light" />
                 </td>
               </tr>
             ))}
