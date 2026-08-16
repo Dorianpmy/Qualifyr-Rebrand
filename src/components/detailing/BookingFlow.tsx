@@ -4,7 +4,9 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Field } from '@/components/form/Field';
 import { ChoiceGroup, FieldError, TextInput } from '@/components/form/Controls';
+import { demoSlotsForDay } from '@/lib/detailing/demo';
 import { uploadDetailerPhoto } from '@/lib/detailing/photos';
+import { WarningBanner } from '@/components/ui/WarningBanner';
 import { AddressPicker, type SelectedAddress } from './AddressPicker';
 import { formatMoney, profileFor } from '@/lib/detailing/locale';
 import { quote } from '@/lib/detailing/quote';
@@ -150,9 +152,21 @@ type SlotOption = { readonly start: string; readonly end: string };
 export function BookingFlow({
   detailer,
   quoteConfig,
+  demo = false,
 }: {
   detailer: DetailerSummary;
   quoteConfig: DetailerConfig;
+  /**
+   * Démonstration : aucun appel réseau n'engage quoi que ce soit de réel.
+   *
+   * Les créneaux sont générés localement (`demoSlotsForDay`) plutôt
+   * qu'interrogés en base, et la confirmation finale fabrique son résumé à
+   * partir du devis déjà calculé côté client au lieu d'appeler la route de
+   * réservation. Un visiteur qui essaie la démo voit le parcours complet —
+   * devis qui se met à jour, créneaux qui se proposent, confirmation — sans
+   * qu'aucune ligne n'atterrisse jamais dans une vraie base de données.
+   */
+  demo?: boolean;
 }) {
   const [stepIndex, setStepIndex] = useState(0);
   const [phase, setPhase] = useState<'flow' | 'submitting' | 'done'>('flow');
@@ -297,6 +311,19 @@ export function BookingFlow({
       setSlotsState('loading');
       setSelectedSlot(null);
     });
+
+    if (demo) {
+      // Générés localement : rien à interroger, jamais indisponible.
+      queueMicrotask(() => {
+        if (cancelled) return;
+        setSlots(demoSlotsForDay(selectedDay));
+        setSlotsState('idle');
+      });
+      return () => {
+        cancelled = true;
+      };
+    }
+
     fetch(`/api/detailing/${detailer.slug}/slots?day=${selectedDay}&minutes=${durationMinutes}`)
       .then((response) => response.json())
       .then((data: { slots?: SlotOption[] }) => {
@@ -312,7 +339,7 @@ export function BookingFlow({
     return () => {
       cancelled = true;
     };
-  }, [activeStep.id, selectedDay, durationMinutes, detailer.slug]);
+  }, [activeStep.id, selectedDay, durationMinutes, detailer.slug, demo]);
 
   function toggleOption(key: OptionKey) {
     setSelectedOptions((current) =>
@@ -360,6 +387,21 @@ export function BookingFlow({
     if (!currentQuote || !selectedSlot || !emailValid) return;
     setPhase('submitting');
     setSubmitError(null);
+
+    if (demo) {
+      // Pas de route de réservation : le résumé vient du devis déjà calculé.
+      window.setTimeout(() => {
+        setBookingSummary({
+          quotedPrice: currentQuote.totalPrice,
+          quotedMinutes: currentQuote.totalMinutes,
+          depositAmount: currentQuote.depositAmount,
+          holdExpiresAt: new Date(Date.now() + 15 * 60_000).toISOString(),
+        });
+        setPhase('done');
+      }, 500);
+      return;
+    }
+
     try {
       const response = await fetch(`/api/detailing/${detailer.slug}/bookings`, {
         method: 'POST',
@@ -434,9 +476,11 @@ export function BookingFlow({
   if (phase === 'done' && bookingSummary) {
     return (
       <section className={styles.confirmation} data-app="booking" aria-labelledby="booking-confirmation-title">
-        <p className={styles.eyebrow}>Demande envoyée</p>
+        <p className={styles.eyebrow}>{demo ? 'Démonstration terminée' : 'Demande envoyée'}</p>
         <h1 ref={headingRef} tabIndex={-1} id="booking-confirmation-title">
-          C’est noté. {detailer.name} a bien reçu votre demande.
+          {demo
+            ? 'Voilà ce que voit votre client une fois sa demande envoyée.'
+            : <>C’est noté. {detailer.name} a bien reçu votre demande.</>}
         </h1>
         <ul className={styles.confirmList}>
           {selectedSlot ? (
@@ -450,11 +494,18 @@ export function BookingFlow({
           <li>
             <strong>Estimation</strong> {formatPrice(bookingSummary.quotedPrice)}
           </li>
-          <li>
-            <strong>Confirmation</strong> un e-mail a été envoyé à {email}
-          </li>
+          {!demo ? (
+            <li>
+              <strong>Confirmation</strong> un e-mail a été envoyé à {email}
+            </li>
+          ) : null}
         </ul>
-        {quoteConfig.depositEnabled && bookingSummary.depositAmount > 0 ? (
+        {demo ? (
+          <p>
+            Dans le vrai parcours, {email ? `un e-mail part à ${email}` : 'un e-mail part au client'} et
+            vous recevez la demande dans votre espace pro, prête à confirmer.
+          </p>
+        ) : quoteConfig.depositEnabled && bookingSummary.depositAmount > 0 ? (
           <p>
             {detailer.name} vous recontacte pour l’acompte de{' '}
             {formatPrice(bookingSummary.depositAmount)} avant{' '}
@@ -463,10 +514,14 @@ export function BookingFlow({
         ) : (
           <p>{detailer.name} vous recontacte pour confirmer définitivement ce créneau.</p>
         )}
-        <p className={styles.note}>{revisionNotice(detailer.name)}</p>
-        <p className={styles.note}>
-          Pensez à vérifier vos spams si le message n’apparaît pas dans la boîte de réception.
-        </p>
+        {!demo ? (
+          <>
+            <p className={styles.note}>{revisionNotice(detailer.name)}</p>
+            <p className={styles.note}>
+              Pensez à vérifier vos spams si le message n’apparaît pas dans la boîte de réception.
+            </p>
+          </>
+        ) : null}
       </section>
     );
   }
@@ -686,10 +741,10 @@ export function BookingFlow({
                   </p>
                 ) : null}
                 {currentQuote && !currentQuote.travelAllowed ? (
-                  <FieldError id="travelKm">
+                  <WarningBanner>
                     Cette adresse est hors de la zone d’intervention. Vous pouvez déposer le
                     véhicule à l’atelier.
-                  </FieldError>
+                  </WarningBanner>
                 ) : null}
               </>
             ) : null}
@@ -712,7 +767,9 @@ export function BookingFlow({
             <p className={styles.dayLabel}>{formatDayLabel(selectedDay)}</p>
 
             {slotsState === 'loading' ? <p>Recherche des créneaux…</p> : null}
-            {slotsState === 'error' ? <p role="alert">Les créneaux n’ont pas pu être chargés.</p> : null}
+            {slotsState === 'error' ? (
+              <WarningBanner>Les créneaux n’ont pas pu être chargés.</WarningBanner>
+            ) : null}
             {slotsState === 'idle' && slots.length === 0 ? (
               <p>Aucun créneau disponible ce jour. Essayez un autre jour.</p>
             ) : null}
@@ -735,32 +792,44 @@ export function BookingFlow({
 
         {activeStep.id === 'photos' ? (
           <div className={styles.stepBody}>
-            <p className={styles.photoIntro}>
-              Vous pouvez réserver sans photo. En ajouter permet à {detailer.name} de préparer
-              son matériel et de confirmer le montant avant même de vous voir — c’est la
-              meilleure façon d’éviter un ajustement de prix sur place.
-              {photoCount > 0 ? ` ${photoCount} photo${photoCount > 1 ? 's' : ''} reçue${photoCount > 1 ? 's' : ''}.` : ''}
-            </p>
-            <div className={styles.photoGrid}>
-              {photoLabels.map((label, index) => (
-                <div key={label} className={styles.photoSlot}>
-                  <label htmlFor={`photo-${index}`}>{label}</label>
-                  <input
-                    id={`photo-${index}`}
-                    type="file"
-                    accept="image/*"
-                    capture="environment"
-                    disabled={photoUploading[index]}
-                    onChange={(event) => handlePhotoChange(index, event.target.files?.[0])}
-                  />
-                  {photoUploading[index] ? <p className={styles.photoStatus}>Envoi en cours…</p> : null}
-                  {photos[index] ? <p className={styles.photoStatus}>Photo reçue</p> : null}
-                  {photoErrors[index] ? (
-                    <FieldError id={`photo-${index}`}>{photoErrors[index]}</FieldError>
-                  ) : null}
+            {demo ? (
+              // Pas d'envoi de photo en démonstration : `uploadDetailerPhoto`
+              // enverrait vers un dossier de stockage lié à un vrai
+              // detailer, qui n'existe pas ici.
+              <p className={styles.photoIntro}>
+                Dans le vrai parcours, votre client peut joindre jusqu’à trois photos ici pour
+                fiabiliser le montant. Cette étape est désactivée en démonstration.
+              </p>
+            ) : (
+              <>
+                <p className={styles.photoIntro}>
+                  Vous pouvez réserver sans photo. En ajouter permet à {detailer.name} de préparer
+                  son matériel et de confirmer le montant avant même de vous voir — c’est la
+                  meilleure façon d’éviter un ajustement de prix sur place.
+                  {photoCount > 0 ? ` ${photoCount} photo${photoCount > 1 ? 's' : ''} reçue${photoCount > 1 ? 's' : ''}.` : ''}
+                </p>
+                <div className={styles.photoGrid}>
+                  {photoLabels.map((label, index) => (
+                    <div key={label} className={styles.photoSlot}>
+                      <label htmlFor={`photo-${index}`}>{label}</label>
+                      <input
+                        id={`photo-${index}`}
+                        type="file"
+                        accept="image/*"
+                        capture="environment"
+                        disabled={photoUploading[index]}
+                        onChange={(event) => handlePhotoChange(index, event.target.files?.[0])}
+                      />
+                      {photoUploading[index] ? <p className={styles.photoStatus}>Envoi en cours…</p> : null}
+                      {photos[index] ? <p className={styles.photoStatus}>Photo reçue</p> : null}
+                      {photoErrors[index] ? (
+                        <FieldError id={`photo-${index}`}>{photoErrors[index]}</FieldError>
+                      ) : null}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </>
+            )}
 
             <Field id="email" label="E-mail">
               <TextInput
@@ -799,11 +868,7 @@ export function BookingFlow({
               </div>
             ) : null}
 
-            {submitError ? (
-              <p role="alert" className={styles.submitError}>
-                {submitError}
-              </p>
-            ) : null}
+            {submitError ? <WarningBanner>{submitError}</WarningBanner> : null}
           </div>
         ) : null}
 

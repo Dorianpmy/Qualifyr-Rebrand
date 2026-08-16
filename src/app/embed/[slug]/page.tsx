@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { BookingFlow } from '@/components/detailing/BookingFlow';
 import { EmbedAutoHeight } from '@/components/detailing/EmbedAutoHeight';
 import { loadDetailerBySlug } from '@/lib/detailing/config';
+import { DEMO_DETAILER, DEMO_QUOTE_CONFIG } from '@/lib/detailing/demo';
 
 /**
  * Tunnel de réservation embarqué sur le site du professionnel.
@@ -29,51 +30,32 @@ export const metadata: Metadata = {
 
 export default async function EmbedPage({ params }: EmbedPageProps) {
   const { slug } = await params;
-  const detailer = await loadDetailerBySlug(slug);
 
   /*
    * Cas particulier : `slug === 'demo'`.
    *
-   * Cette route sert deux publics différents. Un vrai client d'un detailer
-   * avec un slug erroné doit voir un vrai 404 — sa page n'existe pas, point.
-   * Mais `demo` n'est pas le slug d'un client : c'est celui que `DemoSection`
-   * charge dans l'iframe du tunnel, sur la page d'accueil elle-même. Si la
-   * fiche « demo » manque (jamais seedée sur cet environnement, ou dépubliée),
-   * `notFound()` fait remonter la 404 globale du site — habillage clair et
-   * bouton vert de l'ancienne charte — à l'intérieur du cadre de téléphone
-   * sombre de la page d'accueil. Ça ne ressemble pas à une page qui manque,
-   * ça ressemble au site qui casse pendant la démonstration : le pire moment
-   * possible pour ça. On affiche donc ici un message qui reste dans le
-   * registre sombre de la page qui l'héberge, plutôt que de laisser
-   * apparaître l'accident visuel.
+   * `demo` n'est pas le slug d'un client : c'est celui que `DemoSection`
+   * charge dans l'iframe du tunnel, sur la page d'accueil elle-même. Une
+   * version antérieure cherchait ici une fiche `detailers` publiée avec ce
+   * slug, et affichait un message d'excuse quand elle manquait — ce qui
+   * s'est reproduit plusieurs fois en production (projet Supabase mal
+   * configuré, ligne dépubliée). On ne dépend plus de la base du tout pour
+   * ce cas précis : `DEMO_DETAILER` et `DEMO_QUOTE_CONFIG` sont codés en dur
+   * dans `lib/detailing/demo.ts`, et `BookingFlow` en mode `demo` ne fait
+   * plus aucun appel réseau pour les créneaux ni pour la réservation finale.
+   * Cette page ne peut plus casser pour une raison qui vient de Supabase.
    */
-  if (!detailer) {
-    if (slug === 'demo') {
-      return (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '0.75rem',
-            minHeight: '38rem',
-            padding: '2rem',
-            textAlign: 'center',
-            background: '#0e0e0f',
-            color: '#f5f4f2',
-          }}
-        >
-          <p style={{ fontSize: '0.9375rem', fontWeight: 600 }}>Démo momentanément indisponible.</p>
-          <p style={{ fontSize: '0.875rem', lineHeight: 1.5, color: 'rgba(245,244,242,0.65)', maxWidth: '22rem' }}>
-            Le tunnel de réservation fonctionne bien chez nos clients — cette démonstration en
-            particulier est en maintenance. Écrivez-nous et nous vous montrons le vrai parcours.
-          </p>
-        </div>
-      );
-    }
-    notFound();
+  if (slug === 'demo') {
+    return (
+      <>
+        <EmbedAutoHeight />
+        <BookingFlow detailer={DEMO_DETAILER} quoteConfig={DEMO_QUOTE_CONFIG} demo />
+      </>
+    );
   }
+
+  const detailer = await loadDetailerBySlug(slug);
+  if (!detailer) notFound();
 
   return (
     <>

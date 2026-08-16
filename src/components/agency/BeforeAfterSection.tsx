@@ -245,9 +245,21 @@ export function BeforeAfterSection() {
               const Icon = row.icon;
               return (
                 <li key={row.beforeTitle} className="flex gap-3.5">
+                  {/* Le contour reprend le dégradé tricolore déjà porté par la
+                      carte elle-même (voir `.node-hero` dans `tailwind.css`) —
+                      un seul motif de couleur répété cinq fois, pas cinq
+                      teintes différentes. Ça reste dans l'esprit « la couleur
+                      n'apparaît qu'à deux endroits » : c'est la même
+                      signature qui se prolonge sur les icônes, pas une
+                      troisième zone colorée. */}
                   <span
                     aria-hidden="true"
-                    className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-faint [&_svg]:size-[1rem]"
+                    className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg text-faint [&_svg]:size-[1rem]"
+                    style={{
+                      border: '1px solid transparent',
+                      background:
+                        'linear-gradient(#141416, #141416) padding-box, linear-gradient(135deg, var(--accent-1), var(--accent-3) 50%, var(--accent-2)) border-box',
+                    }}
                   >
                     <Icon />
                   </span>

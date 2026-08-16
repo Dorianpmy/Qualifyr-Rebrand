@@ -247,13 +247,17 @@ export function CompareSection() {
                 <span className="sr-only">Fonctionnalité</span>
               </th>
               {/* La colonne Qualifyr porte le seul contour dégradé du tableau —
-                  elle doit se lire comme la réponse, pas comme une option. */}
+                  elle doit se lire comme la réponse, pas comme une option.
+                  Céladon seul, sans le sable (`--accent-1`) : cette teinte se
+                  lit orange sur un écran réel (déjà constaté sur le halo du
+                  hero), et un tableau comparatif n'est pas l'endroit pour
+                  cette couleur-là. */}
               <th
                 scope="col"
                 className="rounded-t-xl border border-b-0 border-transparent px-3 py-3 text-[0.875rem] font-bold text-primary"
                 style={{
                   background:
-                    'linear-gradient(#121213, #121213) padding-box, linear-gradient(140deg, var(--accent-1), transparent 60%, var(--accent-2)) border-box',
+                    'linear-gradient(#121213, #121213) padding-box, linear-gradient(140deg, var(--accent-2), transparent 60%, var(--accent-2)) border-box',
                 }}
               >
                 Qualifyr
@@ -295,7 +299,7 @@ export function CompareSection() {
                     }`}
                     style={{
                       background:
-                        'linear-gradient(#121213, #121213) padding-box, linear-gradient(140deg, var(--accent-1), transparent 60%, var(--accent-2)) border-box',
+                        'linear-gradient(#121213, #121213) padding-box, linear-gradient(140deg, var(--accent-2), transparent 60%, var(--accent-2)) border-box',
                     }}
                   >
                     <Mark value={row.qualifyr} strong />

@@ -1,4 +1,5 @@
 import 'server-only';
+import { formatSlot } from './dashboard';
 import { formatMoney, profileFor } from './locale';
 import { getServiceSupabaseClient } from './supabase-server';
 
@@ -22,6 +23,17 @@ export type PublicBookingSummary = {
   readonly detailerName: string;
   readonly detailerSlug: string;
   readonly paymentAvailable: boolean;
+  /**
+   * De quoi composer les consignes après paiement : où et quand le
+   * professionnel intervient, et la consigne d'accès que le client a
+   * lui-même renseignée — la lui répéter ici confirme qu'elle a bien été
+   * prise en compte, plutôt que de le laisser se demander si elle s'est
+   * perdue entre le formulaire et la réservation.
+   */
+  readonly locationMode: string;
+  readonly slotLabel: string | null;
+  readonly accessNote: string | null;
+  readonly freeCancellationHours: number;
 };
 
 export async function getPublicBookingSummary(
@@ -33,7 +45,7 @@ export async function getPublicBookingSummary(
 
   const { data: booking } = await client
     .from('detailer_bookings')
-    .select('id, status, quoted_price, deposit_amount, detailer_id')
+    .select('id, status, quoted_price, deposit_amount, detailer_id, location_mode, slot, access_note')
     .eq('id', bookingId)
     .maybeSingle();
 
@@ -41,7 +53,7 @@ export async function getPublicBookingSummary(
 
   const { data: detailer } = await client
     .from('detailers')
-    .select('id, name, slug, country, stripe_charges_enabled')
+    .select('id, name, slug, country, stripe_charges_enabled, free_cancellation_hours')
     .eq('id', booking.detailer_id)
     .maybeSingle();
 
@@ -63,5 +75,9 @@ export async function getPublicBookingSummary(
     detailerName: detailer.name as string,
     detailerSlug: detailer.slug as string,
     paymentAvailable: Boolean(detailer.stripe_charges_enabled),
+    locationMode: String(booking.location_mode ?? 'atelier'),
+    slotLabel: booking.slot ? formatSlot(booking.slot as string) : null,
+    accessNote: (booking.access_note as string | null) ?? null,
+    freeCancellationHours: Number(detailer.free_cancellation_hours ?? 24),
   };
 }
