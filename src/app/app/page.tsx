@@ -18,6 +18,27 @@ import {
 import { getSessionUser } from '@/lib/detailing/session';
 import styles from './app.module.css';
 
+/** Consigne d'accès — digicode, chien, place réservée. */
+function AccessNoteIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      width="12"
+      height="12"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={{ display: 'inline', verticalAlign: '-1px' }}
+    >
+      <circle cx="8" cy="15" r="3.2" />
+      <path d="M10.3 12.7 18 5l2 2-1.6 1.6L20 10.2l-2 2-1.6-1.6L14 13" />
+    </svg>
+  );
+}
+
 const FILTERS = [
   { key: 'all', label: 'Toutes' },
   { key: 'en_attente_paiement', label: 'En attente' },
@@ -186,6 +207,16 @@ export default async function AppHomePage({
                       {locationLabel(booking.locationMode, booking.postalCode)} ·{' '}
                       {formatPrice(booking.quotedPrice)}
                     </div>
+                    {/* Consigne d'accès : digicode, chien, place de parking —
+                        saisie par le client à la réservation (AddressPicker),
+                        déjà en base, jamais montrée nulle part avant la fiche
+                        détail. Visible ici sans avoir à ouvrir chaque
+                        réservation une à une. */}
+                    {booking.accessNote ? (
+                      <div className={styles.clientMeta}>
+                        <AccessNoteIcon /> {booking.accessNote}
+                      </div>
+                    ) : null}
                     {holdRemaining(booking.holdExpiresAt) ? (
                       <div className={styles.hold}>{holdRemaining(booking.holdExpiresAt)}</div>
                     ) : null}
@@ -238,7 +269,14 @@ export default async function AppHomePage({
                             {soilingLabel(booking.soiling)}
                           </span>
                         </td>
-                        <td>{locationLabel(booking.locationMode, booking.postalCode)}</td>
+                        <td>
+                          {locationLabel(booking.locationMode, booking.postalCode)}
+                          {booking.accessNote ? (
+                            <span className={styles.clientMeta} title={booking.accessNote}>
+                              <AccessNoteIcon /> Consigne d’accès
+                            </span>
+                          ) : null}
+                        </td>
                         <td className={styles.amount}>{formatPrice(booking.quotedPrice)}</td>
                         <td>
                           <span className={badgeClass(booking.status)}>

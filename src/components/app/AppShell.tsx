@@ -39,6 +39,12 @@ const icons = {
       <path d="M4 6h16M4 12h16M4 18h10" />
     </svg>
   ),
+  planning: (
+    <svg {...iconProps}>
+      <path d="M12 21.2s7-7.4 7-12.3a7 7 0 1 0-14 0c0 4.9 7 12.3 7 12.3Z" />
+      <circle cx="12" cy="8.9" r="2.4" />
+    </svg>
+  ),
   tarifs: (
     <svg {...iconProps}>
       <path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0l-7.2-7.2A2 2 0 0 1 2.8 12V4.8A2 2 0 0 1 4.8 2.8H12a2 2 0 0 1 1.4.6l7.2 7.2a2 2 0 0 1 0 2.8Z" />
@@ -82,6 +88,7 @@ export function AppShell({
 }) {
   const tabs = [
     { key: 'demandes', href: '/app', label: 'Demandes', icon: icons.demandes },
+    { key: 'planning', href: '/app/planning', label: 'Planning', icon: icons.planning },
     { key: 'prospection', href: '/app/prospection', label: 'Prospection', icon: icons.prospection },
     { key: 'tarifs', href: '/app/prestations', label: 'Prestations', icon: icons.tarifs },
     { key: 'cases', href: '/app/cases', label: 'Avant/Après', icon: icons.cases },

@@ -33,6 +33,9 @@ export type DashboardDetailer = {
   readonly name: string;
   readonly email: string | null;
   readonly city: string | null;
+  readonly baseAddress: string | null;
+  readonly baseLatitude: number | null;
+  readonly baseLongitude: number | null;
 };
 
 function mapBooking(row: Record<string, unknown>): DashboardBooking {
@@ -69,7 +72,7 @@ export async function getDetailerForOwner(ownerId: string): Promise<DashboardDet
 
   const { data, error } = await client
     .from('detailers')
-    .select('id, slug, name, email, city')
+    .select('id, slug, name, email, city, base_address, base_latitude, base_longitude')
     .eq('owner_id', ownerId)
     .maybeSingle();
 
@@ -81,6 +84,9 @@ export async function getDetailerForOwner(ownerId: string): Promise<DashboardDet
     name: data.name as string,
     email: (data.email as string | null) ?? null,
     city: (data.city as string | null) ?? null,
+    baseAddress: (data.base_address as string | null) ?? null,
+    baseLatitude: data.base_latitude == null ? null : Number(data.base_latitude),
+    baseLongitude: data.base_longitude == null ? null : Number(data.base_longitude),
   };
 }
 
@@ -106,6 +112,29 @@ export async function listBookingsForDetailer(
   const { data, error } = await query;
   if (error || !data) return [];
   return data.map((row) => mapBooking(row as Record<string, unknown>));
+}
+
+/**
+ * Réservations confirmées d'un jour donné, pour la tournée.
+ *
+ * `listBookingsForDetailer` ordonne par date de création et coupe à 100 —
+ * pensé pour un pipeline de demandes, pas pour isoler « aujourd'hui ». Ici on
+ * repart des créneaux confirmés et on filtre côté application sur le jour du
+ * créneau, en heure de Paris — la même zone que `formatSlot`.
+ */
+export async function listBookingsForDay(
+  detailerId: string,
+  day: Date = new Date(),
+): Promise<readonly DashboardBooking[]> {
+  const confirmed = await listBookingsForDetailer(detailerId, 'confirme');
+  const targetKey = new Intl.DateTimeFormat('fr-CA', { timeZone: 'Europe/Paris' }).format(day);
+
+  return confirmed.filter((booking) => {
+    const start = slotStart(booking.slotRaw);
+    if (!start) return false;
+    const key = new Intl.DateTimeFormat('fr-CA', { timeZone: 'Europe/Paris' }).format(start);
+    return key === targetKey;
+  });
 }
 
 export async function getBookingForDetailer(
