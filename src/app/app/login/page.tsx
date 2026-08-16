@@ -35,11 +35,12 @@ export default function AppLoginPage() {
   return (
     <div className={styles.loginShell} data-app="login">
       <div className={styles.loginBox}>
-        <p className={styles.loginEyebrow}>Espace professionnel</p>
-        <h1>Votre agenda vous attend.</h1>
+        <p className={styles.loginEyebrow}>Espace professionnel — nettoyage automobile</p>
+        <h1>Le tableau de bord de votre activité.</h1>
         <p>
-          Entrez votre adresse e-mail : vous recevez un lien de connexion. Aucun mot de passe à
-          retenir, aucun à perdre.
+          Vos demandes, votre agenda et vos factures — pas l’espace de réservation de vos clients.
+          Connectez-vous avec votre mot de passe, ou par lien e-mail si vous préférez ne pas en
+          retenir un.
         </p>
 
         <LoginForm />
