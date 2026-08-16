@@ -62,12 +62,19 @@ const lightVars = {
    par `Mark` en `tone="light"` dans FeatureComparisonTable, tient ~6:1. */
 const LIGHT_ACCENT_TEXT = '#1f6f5c';
 
+const DARK_TEXT_PRIMARY = '#e0e0e0';
+const DARK_TEXT_MUTED = '#9a9a9c';
+const DARK_TEXT_FAINT = '#6e6e70';
+
 /* Réinitialise les mêmes jetons à leurs valeurs sombres d'origine — posé sur
-   la carte « Pack complet », qui reste noire au milieu des cartes claires. */
+   la carte « Pack complet », qui reste noire au milieu des cartes claires.
+   Gardé en complément des couleurs en dur posées plus bas sur chaque texte
+   de cette carte (voir `dark()` dans `PlanCard`) : les deux méthodes disent
+   la même chose, mais seule la seconde s'est révélée fiable en production. */
 const darkVarsReset = {
-  '--color-primary': '#e0e0e0',
-  '--color-muted': '#9a9a9c',
-  '--color-faint': '#6e6e70',
+  '--color-primary': DARK_TEXT_PRIMARY,
+  '--color-muted': DARK_TEXT_MUTED,
+  '--color-faint': DARK_TEXT_FAINT,
   '--color-hairline': 'rgba(255, 255, 255, 0.06)',
 } as CSSProperties;
 
@@ -180,6 +187,23 @@ function PlanCard({ plan, annual }: { plan: Plan; annual: boolean }) {
   const yearly = annualMonthly(plan.monthly) * 12;
   const saved = plan.monthly * 12 - yearly;
 
+  /*
+   * Couleur en dur plutôt que jetons hérités, pour cette seule carte.
+   *
+   * `darkVarsReset` (redéclarer `--color-primary` etc. sur cette carte pour
+   * annuler `lightVars` posé plus haut) a laissé le titre, le prix, le
+   * message et les lignes de la carte sombre invisibles en production —
+   * texte clair sur fond clair alors que la carte reste noire, malgré un
+   * rendu correct en local. La cause exacte (ordre de calques Tailwind,
+   * cache de build, autre) n'a pas pu être vérifiée depuis cet
+   * environnement sans accès au navigateur réel. Plutôt que de continuer à
+   * deviner, chaque texte de cette carte porte maintenant sa couleur
+   * directement : un style en ligne gagne toujours contre une classe,
+   * indépendamment de ce qui a fait échouer la première méthode.
+   */
+  const dark = (hex: string): CSSProperties | undefined =>
+    plan.featured ? { color: hex } : undefined;
+
   return (
     <div
       className={`flex flex-col rounded-[1.25rem] p-5 ${plan.featured ? 'border border-transparent' : ''}`}
@@ -194,7 +218,7 @@ function PlanCard({ plan, annual }: { plan: Plan; annual: boolean }) {
       }
     >
       <div className="mb-3.5 flex items-center justify-between gap-3">
-        <p className="text-[0.75rem] font-semibold uppercase tracking-[0.08em] text-faint">
+        <p className="text-[0.75rem] font-semibold uppercase tracking-[0.08em] text-faint" style={dark(DARK_TEXT_FAINT)}>
           {plan.kicker}
         </p>
         {plan.featured ? (
@@ -207,7 +231,10 @@ function PlanCard({ plan, annual }: { plan: Plan; annual: boolean }) {
         ) : null}
       </div>
 
-      <h3 className="mb-3 text-[1.1875rem] font-bold leading-[1.22] tracking-[-0.02em] text-primary">
+      <h3
+        className="mb-3 text-[1.1875rem] font-bold leading-[1.22] tracking-[-0.02em] text-primary"
+        style={dark(DARK_TEXT_PRIMARY)}
+      >
         {plan.title}
       </h3>
 
@@ -218,11 +245,12 @@ function PlanCard({ plan, annual }: { plan: Plan; annual: boolean }) {
         {annual ? (
           <p
             className={`text-[0.8125rem] leading-[1.25rem] text-faint line-through ${plan.featured ? 'decoration-white/25' : 'decoration-black/20'}`}
+            style={dark(DARK_TEXT_FAINT)}
           >
             {plan.monthly} € / mois
           </p>
         ) : plan.compareTo ? (
-          <p className="text-[0.8125rem] leading-[1.25rem] text-faint">
+          <p className="text-[0.8125rem] leading-[1.25rem] text-faint" style={dark(DARK_TEXT_FAINT)}>
             au lieu de{' '}
             <span className={`line-through ${plan.featured ? 'decoration-white/25' : 'decoration-black/20'}`}>
               {plan.compareTo} €
@@ -233,13 +261,18 @@ function PlanCard({ plan, annual }: { plan: Plan; annual: boolean }) {
       </div>
 
       <p className="mb-1.5 flex items-baseline gap-1.5">
-        <span className="text-[2.25rem] font-bold leading-none tracking-[-0.035em] tabular-nums text-primary">
+        <span
+          className="text-[2.25rem] font-bold leading-none tracking-[-0.035em] tabular-nums text-primary"
+          style={dark(DARK_TEXT_PRIMARY)}
+        >
           {price} €
         </span>
-        <span className="text-[0.9375rem] font-medium text-faint">/ mois</span>
+        <span className="text-[0.9375rem] font-medium text-faint" style={dark(DARK_TEXT_FAINT)}>
+          / mois
+        </span>
       </p>
 
-      <p className="mb-4 text-[0.8125rem] leading-[1.4] text-faint">
+      <p className="mb-4 text-[0.8125rem] leading-[1.4] text-faint" style={dark(DARK_TEXT_FAINT)}>
         {annual ? (
           <>
             Facturé {yearly} € par an —{' '}
@@ -257,14 +290,23 @@ function PlanCard({ plan, annual }: { plan: Plan; annual: boolean }) {
         )}
       </p>
 
-      <p className="mb-4 text-[0.875rem] leading-[1.5] text-muted">{plan.pitch}</p>
+      <p className="mb-4 text-[0.875rem] leading-[1.5] text-muted" style={dark(DARK_TEXT_MUTED)}>
+        {plan.pitch}
+      </p>
 
       {/* `flex-1` sur la liste : les trois cartes n'ont pas le même nombre de
           lignes, et sans cela les boutons finissent à des hauteurs
           différentes — ce qui donne l'impression d'une grille cassée. */}
-      <ul className="mb-5 grid flex-1 content-start gap-2 border-t border-hairline pt-4">
+      <ul
+        className="mb-5 grid flex-1 content-start gap-2 border-t border-hairline pt-4"
+        style={plan.featured ? { borderColor: 'rgba(255,255,255,0.08)' } : undefined}
+      >
         {plan.items.map((item) => (
-          <li key={item} className="flex gap-2.5 text-[0.875rem] leading-[1.4] text-muted">
+          <li
+            key={item}
+            className="flex gap-2.5 text-[0.875rem] leading-[1.4] text-muted"
+            style={dark(DARK_TEXT_MUTED)}
+          >
             <Check tinted={plan.featured === true} />
             <span>{item}</span>
           </li>
@@ -283,7 +325,9 @@ function PlanCard({ plan, annual }: { plan: Plan; annual: boolean }) {
         {plan.ctaLabel}
       </Link>
 
-      <p className="mt-3 text-center text-[0.75rem] leading-[1.4] text-faint">{plan.note}</p>
+      <p className="mt-3 text-center text-[0.75rem] leading-[1.4] text-faint" style={dark(DARK_TEXT_FAINT)}>
+        {plan.note}
+      </p>
     </div>
   );
 }
