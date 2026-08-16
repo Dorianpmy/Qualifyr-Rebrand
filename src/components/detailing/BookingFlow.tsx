@@ -433,7 +433,7 @@ export function BookingFlow({
 
   if (phase === 'done' && bookingSummary) {
     return (
-      <section className={styles.confirmation} aria-labelledby="booking-confirmation-title">
+      <section className={styles.confirmation} data-app="booking" aria-labelledby="booking-confirmation-title">
         <p className={styles.eyebrow}>Demande envoyée</p>
         <h1 ref={headingRef} tabIndex={-1} id="booking-confirmation-title">
           C’est noté. {detailer.name} a bien reçu votre demande.
@@ -472,7 +472,7 @@ export function BookingFlow({
   }
 
   return (
-    <div className={styles.flow}>
+    <div className={styles.flow} data-app="booking">
       <aside className={styles.context} data-surface="inverse">
         <p className={styles.eyebrow}>{detailer.name}</p>
         <p className={styles.contextStep}>
@@ -650,13 +650,20 @@ export function BookingFlow({
                   onAccessNoteChange={setAccessNote}
                 />
                 {detailer.base === null ? (
-                  /* Le professionnel n'a pas renseigné son point de départ :
-                     la distance n'est pas calculable, on retombe sur la
-                     saisie manuelle plutôt que de facturer zéro kilomètre. */
+                  /*
+                   * Repli : le professionnel n'a pas renseigné son point de
+                   * départ dans son espace, la distance n'est donc pas
+                   * calculable. On la demande plutôt que de facturer zéro
+                   * kilomètre — mais c'est une mauvaise étape, et l'intitulé le
+                   * dit maintenant clairement au lieu de faire croire au client
+                   * qu'on attend de lui une estimation qu'il ne peut pas faire.
+                   *
+                   * Ce champ disparaît dès que l'adresse de base est saisie.
+                   */
                   <Field
                     id="travelKm"
-                    label="Distance approximative jusqu’à vous"
-                    hint={`${quoteConfig.travelFreeRadiusKm} km offerts, puis ${formatPrice(quoteConfig.travelFeePerKm)} par km.`}
+                    label="Distance jusqu’au professionnel"
+                    hint={`Le calcul automatique n’est pas encore actif chez ce professionnel. Indiquez une distance approximative si vous la connaissez, sinon laissez vide — il ajustera. ${quoteConfig.travelFreeRadiusKm} km offerts, puis ${formatPrice(quoteConfig.travelFeePerKm)} par km.`}
                   >
                     <input
                       id="travelKm"

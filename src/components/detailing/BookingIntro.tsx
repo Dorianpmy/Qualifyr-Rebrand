@@ -86,7 +86,7 @@ export function BookingIntro({
   const proof = cases.slice(0, 3);
 
   return (
-    <header className={styles.intro}>
+    <header className={styles.intro} data-app="booking">
       <div className={styles.head}>
         <p className={styles.eyebrow}>
           {name}

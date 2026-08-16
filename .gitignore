@@ -16,3 +16,7 @@ qualifyr_detailing_prospects_*.csv
 qualifyr_detailing_prospects_*.json
 .env.local.save
 supabase/supabase/.temp/
+
+# Fichiers de test ponctuels, jamais destinés à être commités.
+scratch-*
+dummy_test_file_qualifyr.txt

@@ -40,7 +40,7 @@ export default async function InvoicesPage() {
             </p>
           </div>
           <div className={styles.topActions}>
-            <Link href="/app" className={styles.btnGhost}>
+            <Link href="/app" className={`app-ghost ${styles.btnGhost}`}>
               ← Demandes
             </Link>
           </div>
@@ -90,7 +90,7 @@ export default async function InvoicesPage() {
                       <span className={styles.badge}>{STATUS[inv.status] ?? inv.status}</span>
                     </td>
                     <td>
-                      <Link href={`/app/invoices/${inv.id}`} className={styles.btnGhost}>
+                      <Link href={`/app/invoices/${inv.id}`} className={`app-ghost ${styles.btnGhost}`}>
                         Voir / PDF
                       </Link>
                     </td>

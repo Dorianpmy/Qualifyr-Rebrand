@@ -88,7 +88,7 @@ export function CreateInvoiceForm() {
         <input type="checkbox" name="tvaFranchise" style={{ marginRight: '0.4rem' }} />
         Franchise en base de TVA (art. 293 B du CGI)
       </label>
-      <button className={styles.btnPrimary} type="submit" disabled={pending} style={{ width: 'fit-content' }}>
+      <button className={`app-primary ${styles.btnPrimary}`} type="submit" disabled={pending} style={{ width: 'fit-content' }}>
         {pending ? 'Création…' : 'Émettre la facture'}
       </button>
       {error ? <p className={styles.error}>{error}</p> : null}

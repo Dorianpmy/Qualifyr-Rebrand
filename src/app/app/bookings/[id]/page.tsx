@@ -125,7 +125,7 @@ export default async function BookingDetailPage({
             />
             <div style={{ marginTop: '0.75rem' }}>
               <a
-                className={styles.btnGhost}
+                className={`app-ghost ${styles.btnGhost}`}
                 href={directionsUrl({ lat: booking.latitude, lon: booking.longitude })}
                 target="_blank"
                 rel="noreferrer"

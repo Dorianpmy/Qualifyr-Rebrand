@@ -65,18 +65,25 @@ export default async function InvoiceDetailPage({
             <p className={styles.subtitle}>Document prêt à imprimer / PDF</p>
           </div>
           <div className={styles.topActions}>
-            <Link href="/app/invoices" className={styles.btnGhost}>
+            <Link href="/app/invoices" className={`app-ghost ${styles.btnGhost}`}>
               ← Liste
             </Link>
-            <button type="button" className={styles.btnPrimary} onClick={undefined}>
+            <button type="button" className={`app-primary ${styles.btnPrimary}`} onClick={undefined}>
               {/* print via client note below */}
             </button>
           </div>
         </div>
 
-        <div className={styles.topActions} style={{ display: 'flex', marginBottom: '1rem' }}>
-          <Link href={`/app/invoices/${invoice.id}/print`} className={styles.btnPrimary} target="_blank">
+        <div className={styles.topActions} style={{ display: 'flex', gap: '0.65rem', marginBottom: '1rem' }}>
+          <Link href={`/app/invoices/${invoice.id}/print`} className={`app-primary ${styles.btnPrimary}`} target="_blank">
             Ouvrir PDF / Imprimer
+          </Link>
+          <Link
+            href={`/api/app/invoices/${invoice.id}/xml`}
+            className={`app-ghost ${styles.btnGhost}`}
+            title="Facture électronique — format structuré CII (norme EN 16931), pour la réforme de facturation électronique"
+          >
+            Télécharger le XML (facture électronique)
           </Link>
         </div>
 

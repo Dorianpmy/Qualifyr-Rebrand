@@ -8,6 +8,27 @@ import type { LocationMode, OptionKey, Scope, SoilingLevel, VehicleSize } from '
  * mais log serveur pour le debug.
  */
 
+/*
+ * Échappement HTML des valeurs injectées dans les gabarits d'e-mail.
+ *
+ * `vehicleModel`, `plate`, `detailerName`, `clientEmail`... viennent de
+ * champs remplis par un visiteur du formulaire public ou par un professionnel
+ * dans ses réglages — jamais validés pour être du texte inerte. Sans
+ * échappement, un modèle de véhicule du genre `<img src=x onerror=...>`
+ * s'exécuterait dans le client mail du destinataire, qui croirait lire un
+ * message de confiance signé « Qualifyr ». Appliqué systématiquement, même
+ * aux valeurs déjà sûres (labels fixes, montants formatés) : l'échappement
+ * en trop est invisible, l'échappement manquant est une faille.
+ */
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function readEnv(name: string): string | null {
   const value = process.env[name];
   if (typeof value !== 'string') return null;
@@ -111,14 +132,21 @@ function htmlBody(title: string, intro: string, payload: BookingEmailPayload, ou
   const list = rows(payload)
     .map(
       (r) =>
-        `<tr><td style="padding:6px 12px 6px 0;color:#666;vertical-align:top">${r.label}</td><td style="padding:6px 0;font-weight:500">${r.value}</td></tr>`,
+        `<tr><td style="padding:6px 12px 6px 0;color:#666;vertical-align:top">${escapeHtml(r.label)}</td><td style="padding:6px 0;font-weight:500">${escapeHtml(r.value)}</td></tr>`,
     )
     .join('');
+  /*
+   * `title`/`intro`/`outro` arrivent en clair (ce sont les mêmes chaînes que
+   * `textBody` reçoit, qui elle ne doit rien échapper). Elles mélangent texte
+   * statique et données utilisateur (`payload.detailerName`, `clientEmail`...)
+   * — échapper la chaîne composée entière est plus sûr que de traquer quelle
+   * portion vient de l'utilisateur à chaque appel.
+   */
   return `<!DOCTYPE html><html><body style="font-family:system-ui,-apple-system,sans-serif;line-height:1.5;color:#111;max-width:560px;margin:0 auto;padding:24px">
-  <h1 style="font-size:20px;margin:0 0 12px">${title}</h1>
-  <p style="margin:0 0 20px;color:#333">${intro}</p>
+  <h1 style="font-size:20px;margin:0 0 12px">${escapeHtml(title)}</h1>
+  <p style="margin:0 0 20px;color:#333">${escapeHtml(intro)}</p>
   <table style="border-collapse:collapse;width:100%;font-size:14px">${list}</table>
-  <p style="margin:24px 0 0;color:#333">${outro}</p>
+  <p style="margin:24px 0 0;color:#333">${escapeHtml(outro)}</p>
   <p style="margin:16px 0 0;color:#888;font-size:13px">— Qualifyr</p>
 </body></html>`;
 }
@@ -185,4 +213,84 @@ export async function sendDetailerBookingEmail(payload: BookingEmailPayload): Pr
 
 export async function notifyBookingEmails(payload: BookingEmailPayload): Promise<void> {
   await Promise.allSettled([sendClientBookingEmail(payload), sendDetailerBookingEmail(payload)]);
+}
+
+/*
+ * Relance d'un devis abandonné.
+ *
+ * Plus courte que les autres gabarits : elle ne reprend pas le détail du
+ * véhicule ou de la formule (le client les a déjà vus une fois), seulement ce
+ * qui pousse à finir — le montant, et un lien direct vers le paiement. Les
+ * deux montants sont déjà formatés en amont (`formatMoney` de `locale.ts`) :
+ * ce module ne connaît pas le pays de la réservation, seulement le texte à
+ * afficher.
+ */
+
+export type AbandonedBookingEmailPayload = {
+  readonly clientEmail: string;
+  readonly detailerName: string;
+  readonly quotedPriceLabel: string;
+  readonly depositLabel: string;
+  readonly recoveryUrl: string;
+};
+
+export async function sendAbandonedBookingEmail(
+  payload: AbandonedBookingEmailPayload,
+): Promise<boolean> {
+  const resend = getResend();
+  if (!resend) return false;
+
+  const subject = `Votre créneau avec ${payload.detailerName} est encore disponible`;
+  const text = [
+    subject,
+    '',
+    `Vous avez commencé une demande auprès de ${payload.detailerName} (${payload.quotedPriceLabel}), mais le créneau n’a pas été confirmé.`,
+    '',
+    `Réglez l’acompte de ${payload.depositLabel} pour le garder : ${payload.recoveryUrl}`,
+    '',
+    'Si vous n’êtes plus intéressé, ignorez simplement ce message — rien ne sera débité.',
+    '',
+    '— Qualifyr',
+  ].join('\n');
+
+  // `detailerName` vient d'une fiche modifiable par le professionnel,
+  // `recoveryUrl` est reconstruite ici mais reste une donnée externe au
+  // module — les deux sont échappées avant d'entrer dans le HTML.
+  const safeDetailerName = escapeHtml(payload.detailerName);
+  const safeRecoveryUrl = escapeHtml(payload.recoveryUrl);
+
+  const html = `<!DOCTYPE html><html><body style="font-family:system-ui,-apple-system,sans-serif;line-height:1.5;color:#111;max-width:560px;margin:0 auto;padding:24px">
+  <h1 style="font-size:20px;margin:0 0 12px">Votre créneau est encore disponible</h1>
+  <p style="margin:0 0 20px;color:#333">
+    Vous avez commencé une demande auprès de <strong>${safeDetailerName}</strong>
+    (${escapeHtml(payload.quotedPriceLabel)}), mais le créneau n’a pas été confirmé.
+  </p>
+  <p style="margin:0 0 24px">
+    <a href="${safeRecoveryUrl}" style="display:inline-block;padding:12px 24px;border-radius:999px;background:#0e0e0f;color:#fff;text-decoration:none;font-weight:600">
+      Payer l’acompte de ${escapeHtml(payload.depositLabel)}
+    </a>
+  </p>
+  <p style="margin:0;color:#888;font-size:13px">
+    Si vous n’êtes plus intéressé, ignorez simplement ce message — rien ne sera débité.
+  </p>
+  <p style="margin:16px 0 0;color:#888;font-size:13px">— Qualifyr</p>
+</body></html>`;
+
+  try {
+    const { error } = await resend.emails.send({
+      from: fromAddress(),
+      to: payload.clientEmail,
+      subject,
+      text,
+      html,
+    });
+    if (error) {
+      console.error('[booking-email] abandon failed', error);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error('[booking-email] abandon exception', err);
+    return false;
+  }
 }

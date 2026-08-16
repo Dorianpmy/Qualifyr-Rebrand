@@ -1,0 +1,114 @@
+/* ===========================================================================
+   Direction artistique « Dark Minimalist » — site vitrine Qualifyr
+   ===========================================================================
+
+   **Pourquoi un fichier séparé et pas une modification de `tokens.css`.**
+   Le tunnel de réservation et le dashboard consomment déjà les tokens
+   existants. Les réécrire ferait basculer d'un coup des écrans en production
+   vers une palette qu'ils n'ont pas été dessinés pour porter — et le premier
+   symptôme serait du texte illisible chez un professionnel en clientèle.
+   Cette DA s'applique donc par portée : `data-theme="dark"` sur la section ou
+   la page concernée. La migration du reste se fera écran par écran, en le
+   regardant.
+
+   **Aucune couleur d'accent.** L'accent est le blanc pur, et il est rare :
+   un seul élément blanc plein par écran, le bouton d'action. Tout le reste
+   est en gris. C'est ce qui fait qu'on ne peut pas rater le bouton, et ça
+   tombe précisément parce qu'il n'y a rien d'autre à regarder — un second
+   élément blanc plein détruirait entièrement l'effet.
+   =========================================================================== */
+
+[data-theme='dark'] {
+  /* --- Surfaces --- */
+  --d-bg: #0a0a0c;
+  --d-surface: #141417;
+  /* Une carte posée sur une carte a besoin d'un cran de plus, sinon elle
+     disparaît. */
+  --d-surface-raised: #1c1c20;
+  --d-border: rgba(255, 255, 255, 0.08);
+  --d-border-strong: rgba(255, 255, 255, 0.16);
+
+  /* --- Texte ---
+     Trois niveaux, pas cinq : au-delà, plus personne ne sait lequel choisir
+     et la hiérarchie se dissout. */
+  --d-text: #ffffff;
+  --d-text-muted: rgba(255, 255, 255, 0.62);
+  /* Plancher de lisibilité : en dessous de 0.38, le contraste passe sous le
+     seuil AA sur #0a0a0c et le texte devient un motif décoratif. */
+  --d-text-faint: rgba(255, 255, 255, 0.38);
+
+  /* --- Action ---
+     Le blanc plein est réservé au bouton principal. */
+  --d-action-bg: #ffffff;
+  --d-action-text: #0a0a0c;
+  --d-action-bg-hover: rgba(255, 255, 255, 0.88);
+
+  /* --- Typographie ---
+     100 % sans-serif. Inter en premier, puis la police système : sur macOS
+     et iOS, SF Pro est déjà installée et évite un téléchargement. */
+  --d-font: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Interlignage et interlettrage descendent quand le corps monte : un titre
+     de 64 px composé avec l'interligne d'un paragraphe paraît disloqué. */
+  --d-text-xs: 0.8125rem;
+  --d-text-sm: 0.9375rem;
+  --d-text-base: 1.0625rem;
+  --d-text-lg: 1.25rem;
+  --d-text-xl: clamp(1.5rem, 2.5vw, 2rem);
+  --d-text-2xl: clamp(2rem, 4vw, 3rem);
+  --d-text-3xl: clamp(2.5rem, 6vw, 4.5rem);
+
+  --d-tracking-tight: -0.03em;
+  --d-tracking-normal: -0.011em;
+  --d-leading-tight: 1.04;
+  --d-leading-body: 1.6;
+
+  /* --- Formes --- */
+  --d-radius: 16px;
+  --d-radius-sm: 10px;
+  --d-radius-pill: 999px;
+
+  /* --- Rythme vertical ---
+     Une échelle unique évite les 22 px et 27 px arbitraires qui apparaissent
+     dès qu'on compose à l'œil. */
+  --d-space-1: 0.5rem;
+  --d-space-2: 0.875rem;
+  --d-space-3: 1.5rem;
+  --d-space-4: 2.5rem;
+  --d-space-5: 4rem;
+  --d-space-6: 6.5rem;
+
+  --d-container: 72rem;
+
+  background-color: var(--d-bg);
+  color: var(--d-text);
+  font-family: var(--d-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* La DA est sombre par nature : on le déclare au navigateur pour que les
+   barres de défilement et les champs natifs suivent, plutôt que d'afficher
+   des rectangles blancs au milieu de la page. */
+[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+/* Aucune serif ne doit remonter du thème agence par héritage. */
+[data-theme='dark'] :is(h1, h2, h3, h4, p, li, button, input, textarea, select, label) {
+  font-family: var(--d-font);
+}
+
+[data-theme='dark'] :is(h1, h2, h3) {
+  letter-spacing: var(--d-tracking-tight);
+  line-height: var(--d-leading-tight);
+  font-weight: 700;
+  text-wrap: balance;
+}
+
+/* Un contour visible au clavier uniquement : `outline: none` sans
+   remplacement rend le site inutilisable sans souris. */
+[data-theme='dark'] :focus-visible {
+  outline: 2px solid var(--d-text);
+  outline-offset: 3px;
+  border-radius: var(--d-radius-sm);
+}

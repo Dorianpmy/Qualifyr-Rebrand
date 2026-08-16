@@ -65,7 +65,7 @@ export function CreateCaseForm() {
         <label htmlFor="afterUrl">URL photo après</label>
         <input id="afterUrl" name="afterUrl" type="url" required placeholder="https://…" />
       </div>
-      <button className={styles.btnPrimary} type="submit" disabled={pending} style={{ width: 'fit-content' }}>
+      <button className={`app-primary ${styles.btnPrimary}`} type="submit" disabled={pending} style={{ width: 'fit-content' }}>
         {pending ? 'Ajout…' : 'Ajouter le case'}
       </button>
       {error ? <p className={styles.error}>{error}</p> : null}

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { AppShell } from '@/components/app/AppShell';
 import { EmbedSnippet } from '@/components/app/EmbedSnippet';
+import { PaymentSetup } from '@/components/app/PaymentSetup';
 import { PricingEditor } from '@/components/app/PricingEditor';
 import { getDetailerForOwner } from '@/lib/detailing/dashboard';
 import { loadCatalogue } from '@/lib/detailing/pricing-admin';
@@ -43,7 +44,7 @@ export default async function PrestationsPage() {
             </p>
           </div>
           <div className={styles.topActions}>
-            <Link href={publicPath} className={styles.btnGhost} target="_blank">
+            <Link href={publicPath} className={`app-ghost ${styles.btnGhost}`} target="_blank">
               Voir la page client
             </Link>
           </div>
@@ -52,6 +53,11 @@ export default async function PrestationsPage() {
         <div style={{ marginBlockEnd: '1.25rem' }}>
           <EmbedSnippet slug={detailer.slug} />
         </div>
+
+        {/* L'activation du paiement passe avant les tarifs : régler ses prix
+            sans pouvoir encaisser l'acompte laisse le professionnel avec la
+            moitié du produit, sans qu'il s'en aperçoive. */}
+        <PaymentSetup />
 
         <PricingEditor catalogue={catalogue} />
       </main>

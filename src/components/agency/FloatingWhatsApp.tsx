@@ -12,7 +12,9 @@ export function FloatingWhatsApp() {
   if (
     pathname.startsWith('/app') ||
     pathname.startsWith('/reservation') ||
-    pathname.startsWith('/embed')
+    pathname.startsWith('/embed') ||
+    pathname.startsWith('/vitrine') ||
+    pathname.startsWith('/plan')
   ) {
     return null;
   }

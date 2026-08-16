@@ -6,11 +6,10 @@ import { usePathname } from 'next/navigation';
 /**
  * Révélation au défilement — un seul observateur pour toute la page.
  *
- * Principe : le serveur rend le contenu **visible**. Un script d'amorçage
- * placé dans `<head>` pose `data-motion="on"` sur `<html>` avant le premier
- * rendu, uniquement si le visiteur n'a pas demandé de réduire les animations.
- * C'est ce seul attribut qui met les blocs concernés à l'état initial — sans
- * lui, rien n'est masqué, jamais.
+ * Principe : le serveur rend le contenu **visible**. Le masquage initial est
+ * posé par CSS, à l'intérieur d'une requête `prefers-reduced-motion:
+ * no-preference` — donc jamais pour qui a demandé de réduire les animations,
+ * et sans le script d'amorçage qui provoquait une erreur de rendu.
  *
  * Conséquences voulues :
  * — sans JavaScript, la page est intégralement lisible ;
@@ -26,8 +25,10 @@ export function RevealObserver() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const root = document.documentElement;
-    if (root.dataset.motion !== 'on') return;
+    // Le masquage initial est piloté par `prefers-reduced-motion` en CSS.
+    // L'observateur s'aligne : si le visiteur a réduit les animations, rien
+    // n'est masqué et il n'y a rien à révéler.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const targets = Array.from(
       document.querySelectorAll<HTMLElement>('[data-reveal-target]'),
@@ -64,13 +65,3 @@ export function RevealObserver() {
 
   return null;
 }
-
-/**
- * Script d'amorçage, exécuté avant le premier rendu.
- *
- * Il ne fait qu'une chose : signaler que les animations sont autorisées.
- * Le masquage initial dépend entièrement de cet attribut, ce qui évite le
- * clignotement d'un contenu affiché puis caché après hydratation.
- */
-export const revealBootstrap =
-  "try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.dataset.motion='on'}catch(e){}";

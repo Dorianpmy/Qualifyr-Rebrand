@@ -1,3 +1,15 @@
+/* ---------------------------------------------------------------------------
+   Charte sombre — alignée sur le site.
+
+   Le tunnel était conçu sur fond clair. Or `globals.css` impose un fond
+   sombre à `html` et `body` en `!important`, sans garde : le résultat était un
+   texte noir sur fond noir, illisible pour le client final.
+
+   Les valeurs sont inversées et pointent vers les jetons partagés. L'accent de
+   marque a disparu : la charte n'en a plus, et le blanc plein est réservé au
+   bouton d'action — le seul élément plein de chaque écran.
+--------------------------------------------------------------------------- */
+
 .picker {
   display: grid;
   gap: 0.5rem;
@@ -13,7 +25,7 @@
   margin: 0;
   font-size: 0.83rem;
   line-height: 1.5;
-  color: rgba(20, 20, 20, 0.55);
+  color: var(--color-muted);
 }
 
 .inputWrap {
@@ -26,15 +38,15 @@
      jamais — voir la note iOS de BookingFlow.module.css. */
   font-size: 16px;
   padding: 0.85rem 1rem;
-  border: 1.5px solid rgba(20, 20, 20, 0.12);
+  border: 1.5px solid var(--color-hairline-strong);
   border-radius: 0.75rem;
-  background: #fff;
-  color: #141414;
+  background: #131314;
+  color: var(--color-primary);
 }
 
 .input:focus {
   outline: none;
-  border-color: var(--accent, #12b76a);
+  border-color: var(--accent, #ffffff);
 }
 
 .searching {
@@ -43,7 +55,7 @@
   inset-block-start: 50%;
   transform: translateY(-50%);
   font-size: 0.78rem;
-  color: rgba(20, 20, 20, 0.42);
+  color: var(--color-faint);
   pointer-events: none;
 }
 
@@ -57,10 +69,10 @@
   margin: 0;
   padding: 0.3rem;
   list-style: none;
-  border: 1px solid rgba(20, 20, 20, 0.12);
+  border: 1px solid var(--color-hairline-strong);
   border-radius: 0.75rem;
-  background: #fff;
-  box-shadow: 0 12px 32px rgba(20, 20, 20, 0.12);
+  background: #131314;
+  box-shadow: 0 12px 32px var(--color-hairline-strong);
   max-block-size: 17rem;
   overflow-y: auto;
 }
@@ -73,7 +85,7 @@
   border: 0;
   border-radius: 0.5rem;
   background: transparent;
-  color: #141414;
+  color: var(--color-primary);
   font: inherit;
   font-size: 0.88rem;
   line-height: 1.4;
@@ -82,7 +94,7 @@
 
 .suggestions button:hover,
 .suggestions button:focus-visible {
-  background: rgba(18, 183, 106, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   outline: none;
 }
 
@@ -99,10 +111,10 @@
 }
 
 .mapFrame {
-  border: 1.5px solid rgba(20, 20, 20, 0.12);
+  border: 1.5px solid var(--color-hairline-strong);
   border-radius: 0.85rem;
   overflow: hidden;
-  background: #e8e6e1;
+  background: #1b1b1d;
 }
 
 .map {
@@ -129,7 +141,7 @@
 .confirmedDistance {
   margin: 0;
   font-size: 0.82rem;
-  color: rgba(20, 20, 20, 0.55);
+  color: var(--color-muted);
 }
 
 .noteField {
@@ -146,19 +158,117 @@
   inline-size: 100%;
   font-size: 16px;
   padding: 0.75rem 0.9rem;
-  border: 1.5px solid rgba(20, 20, 20, 0.12);
+  border: 1.5px solid var(--color-hairline-strong);
   border-radius: 0.7rem;
-  background: #fff;
-  color: #141414;
+  background: #131314;
+  color: var(--color-primary);
 }
 
 .noteField input:focus {
   outline: none;
-  border-color: var(--accent, #12b76a);
+  border-color: var(--accent, #ffffff);
 }
 
 @media (min-width: 48rem) {
   .map {
     block-size: 260px;
   }
+}
+
+/* Lien vers l'application Maps du téléphone. Discret : c'est une vérification
+   facultative, pas l'action attendue de l'étape. */
+.mapLink {
+  justify-self: start;
+  margin-block-start: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent-2);
+  text-decoration: none;
+}
+
+.mapLink:hover {
+  text-decoration: underline;
+}
+
+/* La carte prend le contour dégradé de la charte : c'est l'élément que le
+   client vient de faire apparaître, donc le point actif de l'écran. */
+.mapFrame {
+  border: 1.5px solid transparent !important;
+  background:
+    linear-gradient(#1b1b1d, #1b1b1d) padding-box,
+    linear-gradient(140deg, var(--accent-1), var(--accent-2)) border-box !important;
+}
+
+/* La carte de Google est claire : sans ce filtre, elle éclaire tout l'écran au
+   milieu d'un tunnel sombre. L'inversion partielle la ramène au niveau du
+   reste sans la rendre illisible. */
+.map {
+  filter: invert(0.9) hue-rotate(180deg) brightness(0.95) contrast(0.9);
+}
+
+/* Emplacement de la carte avant sélection. Il occupe la même place que la
+   carte réelle : sans cela, le bloc grandit d'un coup au moment du choix et
+   pousse le bouton « Continuer » hors de portée du pouce. */
+.mapPlaceholder {
+  display: grid;
+  place-items: center;
+  gap: 0.5rem;
+  min-block-size: 200px;
+  padding: 1.25rem;
+  text-align: center;
+  border: 1.5px dashed var(--color-hairline-strong);
+  border-radius: 0.85rem;
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.mapPlaceholder p {
+  margin: 0;
+  max-inline-size: 22rem;
+  font-size: 0.83rem;
+  line-height: 1.5;
+  color: var(--color-faint);
+}
+
+.mapPlaceholderIcon {
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  color: var(--color-faint);
+  opacity: 0.6;
+}
+
+/* Sortie de secours quand le service d'adresses ne trouve rien. */
+.fallback {
+  display: grid;
+  gap: 0.6rem;
+  justify-items: start;
+}
+
+.fallbackButton {
+  min-block-size: 44px;
+  padding: 0 1rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(#131314, #131314) padding-box,
+    linear-gradient(140deg, var(--accent-1), var(--accent-2)) border-box;
+  color: var(--color-primary);
+  font: inherit;
+  font-size: 0.83rem;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (min-width: 48rem) {
+  .mapPlaceholder {
+    min-block-size: 260px;
+  }
+}
+
+/* Le cadre de la carte reprend le contour tricolore : c'est l'élément que le
+   client vient de faire apparaître, donc le point actif de l'écran. */
+.mapFrame {
+  background:
+    linear-gradient(#1b1b1d, #1b1b1d) padding-box,
+    linear-gradient(115deg, var(--accent-1), var(--accent-3) 50%, var(--accent-2)) border-box !important;
 }

@@ -525,7 +525,7 @@ export function PricingEditor({ catalogue }: { catalogue: PricingCatalogue }) {
         </div>
         <button
           type="button"
-          className={styles.btnPrimary}
+          className={`app-primary ${styles.btnPrimary}`}
           disabled={state === 'saving'}
           onClick={save}
         >

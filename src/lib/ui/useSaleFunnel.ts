@@ -50,11 +50,24 @@ export function useSaleFunnel({
     onEventRef.current = onEvent;
   }, [started, completed, onEvent]);
 
-  useEffect(() => {
-    if (showIntro) {
-      setStep(0);
-    }
-  }, [showIntro]);
+  /*
+   * Remise à l'étape zéro quand l'introduction réapparaît.
+   *
+   * C'était un effet appelant `setStep` en synchrone, ce que React signale
+   * comme un rendu en cascade : le composant s'affichait une fois à l'ancienne
+   * étape, puis une seconde fois à zéro. Sur le tunnel, cela produisait un
+   * bref clignotement de la mauvaise étape.
+   *
+   * Le motif recommandé consiste à ajuster l'état pendant le rendu, en le
+   * gardant par rapport à la valeur précédente. React abandonne alors le rendu
+   * en cours et recommence avec la bonne valeur, sans jamais peindre l'écran
+   * intermédiaire.
+   */
+  const [lastShowIntro, setLastShowIntro] = useState(showIntro);
+  if (showIntro !== lastShowIntro) {
+    setLastShowIntro(showIntro);
+    if (showIntro) setStep(0);
+  }
 
   const fireEvent = useCallback(
     (event: FunnelEvent, payload?: Record<string, unknown>) => {

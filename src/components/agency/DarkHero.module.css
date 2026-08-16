@@ -1,0 +1,183 @@
+.hero {
+  background: var(--d-bg);
+  color: var(--d-text);
+  padding-block: clamp(4rem, 12vh, 8.5rem) var(--d-space-5);
+  padding-inline: clamp(1.25rem, 5vw, 3rem);
+  /* Le fond n'est pas uniformément noir : une lueur très faible en haut à
+     gauche donne une direction de lumière et évite l'effet « rectangle
+     éteint ». Assez discrète pour ne jamais devenir un dégradé décoratif. */
+  background-image: radial-gradient(
+    60rem 40rem at 12% -10%,
+    rgba(255, 255, 255, 0.055),
+    transparent 65%
+  );
+}
+
+.inner {
+  max-inline-size: var(--d-container);
+  margin-inline: auto;
+  /* Asymétrique : aligné à gauche, jamais centré. Un titre centré de cette
+     taille impose à l'œil de chercher le début de chaque ligne. */
+  text-align: start;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0 0 var(--d-space-3);
+  padding: 0.4rem 0.85rem 0.4rem 0.7rem;
+  border: 1px solid var(--d-border);
+  border-radius: var(--d-radius-pill);
+  background: var(--d-surface);
+  font-size: var(--d-text-xs);
+  font-weight: 500;
+  letter-spacing: var(--d-tracking-normal);
+  color: var(--d-text-muted);
+}
+
+.dot {
+  inline-size: 6px;
+  block-size: 6px;
+  border-radius: 50%;
+  background: var(--d-text);
+  /* Un halo à la place d'un clignotement : une animation permanente dans le
+     champ de vision pendant la lecture du titre est une nuisance, et elle
+     s'anime encore quand l'utilisateur a demandé moins de mouvement. */
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+}
+
+.title {
+  margin: 0 0 var(--d-space-3);
+  font-size: var(--d-text-3xl);
+  font-weight: 700;
+  /* 18 caractères par ligne environ à la taille maximale : c'est ce qui donne
+     les trois lignes courtes et empilées de la référence. */
+  max-inline-size: 20ch;
+}
+
+/* Pas de couleur : le contraste seul porte l'emphase. */
+.highlight {
+  color: var(--d-text-muted);
+}
+
+.subtitle {
+  margin: 0 0 var(--d-space-4);
+  /* 62 caractères : au-delà, l'œil perd le début de la ligne suivante. */
+  max-inline-size: 62ch;
+  font-size: var(--d-text-lg);
+  line-height: var(--d-leading-body);
+  color: var(--d-text-muted);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--d-space-2);
+}
+
+/* Le seul élément blanc plein de la page. */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  /* 52 px de haut : au-dessus des 44 px de cible tactile minimale, avec de la
+     marge pour un doigt pressé. */
+  min-block-size: 52px;
+  padding-inline: 1.6rem;
+  border-radius: var(--d-radius-pill);
+  background: var(--d-action-bg);
+  color: var(--d-action-text);
+  font-size: var(--d-text-base);
+  font-weight: 600;
+  letter-spacing: var(--d-tracking-normal);
+  text-decoration: none;
+  transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.cta:hover {
+  background: var(--d-action-bg-hover);
+  transform: translateY(-1px);
+}
+
+.cta:active {
+  transform: translateY(0);
+}
+
+.arrow {
+  inline-size: 1.15rem;
+  block-size: 1.15rem;
+  transition: transform 160ms ease;
+}
+
+.cta:hover .arrow {
+  transform: translateX(3px);
+}
+
+/* Une sortie, pas une seconde proposition : ni fond, ni bordure. */
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 52px;
+  padding-inline: 1rem;
+  color: var(--d-text-muted);
+  font-size: var(--d-text-base);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.secondary:hover {
+  color: var(--d-text);
+}
+
+.ctaNote {
+  margin: var(--d-space-2) 0 0;
+  font-size: var(--d-text-sm);
+  color: var(--d-text-faint);
+}
+
+.proof {
+  margin-block-start: var(--d-space-4);
+  padding-block-start: var(--d-space-4);
+  border-block-start: 1px solid var(--d-border);
+  /* La preuve accompagne le texte, elle ne s'étale pas sur toute la largeur :
+     alignée sur la colonne de lecture, elle se lit dans le même mouvement. */
+  max-inline-size: 34rem;
+}
+
+@media (max-width: 40rem) {
+  .actions {
+    /* Empilés, les deux liens deviennent deux blocs de même largeur et le
+       secondaire cesse d'être secondaire. Le bouton prend donc la largeur,
+       le lien reste au fil du texte. */
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cta {
+    justify-content: center;
+  }
+
+  .secondary {
+    justify-content: flex-start;
+    padding-inline: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta,
+  .arrow,
+  .secondary {
+    transition: none;
+  }
+
+  .cta:hover {
+    transform: none;
+  }
+
+  .cta:hover .arrow {
+    transform: none;
+  }
+}

@@ -1,3 +1,22 @@
+/* ---------------------------------------------------------------------------
+   Couleurs alignées sur la charte du site.
+
+   Le dashboard vivait sur sa propre palette — un vert de marque, un fond
+   presque noir légèrement différent, des gris à des opacités qui ne
+   correspondaient à rien d'autre. Un professionnel qui passe du site au
+   dashboard voyait deux produits.
+
+   Les valeurs pointent désormais vers les jetons déclarés dans
+   `tailwind.css` : `--color-primary`, `--color-muted`, `--color-faint`,
+   `--color-hairline`. Changer la charte à un seul endroit change les deux.
+
+   **Le dashboard ne porte pas `data-theme="dark"`, délibérément.** Cet
+   attribut déclenche un reset qui neutralise le fond et les bordures des
+   `div` dont la classe contient « card » — ce qui casserait les cartes de
+   réservation et l'éditeur de prestations. Ici on aligne les couleurs, pas
+   le mécanisme.
+--------------------------------------------------------------------------- */
+
 /* Éditeur de catalogue — même surface sombre que le reste du dashboard. */
 
 .editor {
@@ -7,7 +26,7 @@
 }
 
 .block {
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--color-hairline-strong);
   border-radius: 0.9rem;
   background: rgba(255, 255, 255, 0.018);
   padding: 1.25rem;
@@ -27,7 +46,7 @@
   margin: 0;
   font-size: 0.82rem;
   line-height: 1.55;
-  color: rgba(250, 250, 250, 0.45);
+  color: var(--color-muted);
   max-inline-size: 54rem;
 }
 
@@ -40,7 +59,7 @@
 .scopeBlock + .scopeBlock {
   margin-block-start: 1.5rem;
   padding-block-start: 1.25rem;
-  border-block-start: 1px solid rgba(255, 255, 255, 0.06);
+  border-block-start: 1px solid var(--color-hairline);
 }
 
 /* En-tête d'une formule : le périmètre technique en pastille, le nom
@@ -58,7 +77,7 @@
   align-self: center;
   padding: 0.3rem 0.6rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--color-hairline-strong);
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.03em;
@@ -75,7 +94,7 @@
   font-size: 0.7rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: rgba(250, 250, 250, 0.38);
+  color: var(--color-faint);
 }
 
 .nameField input {
@@ -85,7 +104,7 @@
   border-radius: 0.5rem;
   padding: 0.5rem 0.6rem;
   background: rgba(0, 0, 0, 0.3);
-  color: #fafafa;
+  color: #e0e0e0;
   font: inherit;
   font-size: 1rem; /* voir la note iOS en bas de fichier */
 }
@@ -109,7 +128,7 @@
   display: block;
   font-size: 0.75rem;
   font-weight: 400;
-  color: rgba(250, 250, 250, 0.38);
+  color: var(--color-faint);
 }
 
 .grid {
@@ -119,7 +138,7 @@
 }
 
 .cell {
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-hairline-strong);
   border-radius: 0.6rem;
   padding: 0.65rem;
   background: rgba(0, 0, 0, 0.2);
@@ -188,7 +207,7 @@
 }
 
 .option {
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-hairline-strong);
   border-radius: 0.6rem;
   padding: 0.8rem;
   background: rgba(0, 0, 0, 0.2);
@@ -214,7 +233,7 @@
   margin: 0.5rem 0 0.7rem;
   font-size: 0.76rem;
   line-height: 1.5;
-  color: rgba(250, 250, 250, 0.42);
+  color: var(--color-muted);
 }
 
 .optionFields {
@@ -236,7 +255,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-hairline-strong);
   border-radius: 0.55rem;
   padding: 0.6rem 0.8rem;
   background: rgba(0, 0, 0, 0.2);
@@ -289,7 +308,7 @@
   border-radius: 0.5rem;
   padding: 0.5rem 0.6rem;
   background: rgba(0, 0, 0, 0.3);
-  color: #fafafa;
+  color: #e0e0e0;
   font: inherit;
 }
 
@@ -302,7 +321,7 @@
   display: flex;
   align-items: center;
   gap: 0.55rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-hairline-strong);
   border-radius: 0.5rem;
   padding: 0.6rem 0.7rem;
   background: rgba(0, 0, 0, 0.2);
@@ -330,7 +349,7 @@
 
 .saveStatus {
   font-size: 0.82rem;
-  color: rgba(250, 250, 250, 0.55);
+  color: var(--color-muted);
 }
 
 
@@ -429,7 +448,7 @@
   border-radius: 0.5rem;
   padding: 0.5rem 0.6rem;
   background: rgba(0, 0, 0, 0.3);
-  color: #fafafa;
+  color: #e0e0e0;
   font: inherit;
 }
 
@@ -458,5 +477,84 @@
 @media (max-width: 780px) {
   .baseSearch input {
     font-size: 16px;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   Cases à cocher — dessinées, pas natives.
+
+   **Pourquoi les redessiner.** La case native prend la couleur système via
+   `accent-color`, ici un rouge vif hérité du navigateur. Sur un tableau de
+   bord où le rouge ne veut rien dire, quatre cases rouges donnent
+   l'impression que quelque chose ne va pas — alors qu'elles indiquent
+   simplement des réglages actifs.
+
+   **`appearance: none` puis reconstruction complète.** Il n'existe aucun
+   moyen fiable de recolorer la coche d'une case native : `accent-color` ne
+   change que la teinte de fond, pas le tracé, et son rendu diffère entre
+   Safari, Chrome et Firefox. On repart de zéro.
+
+   **La coche est un SVG en fond, pas un pseudo-élément.** Un `::after`
+   portant un caractère « ✓ » dépend de la police installée et se décale
+   verticalement d'un système à l'autre ; le tracé vectoriel est identique
+   partout.
+--------------------------------------------------------------------------- */
+
+.settingCheck input[type='checkbox'],
+.optionToggle input[type='checkbox'] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex-shrink: 0;
+  inline-size: 1.15rem;
+  block-size: 1.15rem;
+  margin: 0;
+  border: 1.5px solid var(--color-hairline-strong);
+  border-radius: 0.375rem;
+  background-color: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.settingCheck input[type='checkbox']:checked,
+.optionToggle input[type='checkbox']:checked {
+  border-color: transparent;
+  /* Le dégradé de la charte, et la coche tracée par-dessus en noir : sur un
+     fond clair, une coche blanche disparaîtrait. */
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%230e0e0f' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.2 8.4l3.1 3.1L12.8 4.9'/%3E%3C/svg%3E"),
+    linear-gradient(120deg, var(--accent-1), var(--accent-3) 55%, var(--accent-2));
+  background-size: 100% 100%, 100% 100%;
+  background-position: center, center;
+  background-repeat: no-repeat;
+}
+
+.settingCheck input[type='checkbox']:focus-visible,
+.optionToggle input[type='checkbox']:focus-visible {
+  outline: 2px solid var(--accent-3);
+  outline-offset: 2px;
+}
+
+/* La ligne entière réagit à l'état : cochée, elle prend un filet dégradé.
+   Le professionnel balaie la colonne des yeux et voit ce qui est actif sans
+   avoir à viser les petites cases. */
+.settingCheck:has(input[type='checkbox']:checked) {
+  border-color: transparent;
+  background:
+    linear-gradient(#141416, #141416) padding-box,
+    linear-gradient(120deg, var(--accent-1), var(--accent-3) 55%, var(--accent-2)) border-box;
+  color: var(--color-primary);
+}
+
+@media (hover: hover) {
+  .settingCheck:hover input[type='checkbox']:not(:checked) {
+    border-color: var(--accent-3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .settingCheck input[type='checkbox'],
+  .optionToggle input[type='checkbox'] {
+    transition: none;
   }
 }

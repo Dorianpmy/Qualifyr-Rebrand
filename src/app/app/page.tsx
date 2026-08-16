@@ -59,7 +59,7 @@ export default async function AppHomePage({
             Renseigne <code>detailers.owner_id</code> dans Supabase.
           </p>
           <form action="/api/app/logout" method="post" style={{ marginTop: '1.25rem' }}>
-            <button type="submit" className={styles.btnGhost}>
+            <button type="submit" className={`app-ghost ${styles.btnGhost}`}>
               Déconnexion
             </button>
           </form>
@@ -101,10 +101,10 @@ export default async function AppHomePage({
             </p>
           </div>
           <div className={styles.topActions}>
-            <Link href={publicPath} className={styles.btnGhost} target="_blank">
+            <Link href={publicPath} className={`app-ghost ${styles.btnGhost}`} target="_blank">
               Page publique
             </Link>
-            <Link href={publicPath} className={styles.btnPrimary} target="_blank">
+            <Link href={publicPath} className={`app-primary ${styles.btnPrimary}`} target="_blank">
               Partager le lien
             </Link>
           </div>
@@ -154,10 +154,10 @@ export default async function AppHomePage({
                 créneau et photos — prêt à confirmer.
               </p>
               <div className={styles.emptyActions}>
-                <Link href={publicPath} className={styles.btnPrimary} target="_blank">
+                <Link href={publicPath} className={`app-primary ${styles.btnPrimary}`} target="_blank">
                   Ouvrir la page client
                 </Link>
-                <Link href={publicPath} className={styles.btnGhost} target="_blank">
+                <Link href={publicPath} className={`app-ghost ${styles.btnGhost}`} target="_blank">
                   Copier le parcours
                 </Link>
               </div>

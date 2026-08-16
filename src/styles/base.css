@@ -182,24 +182,46 @@ hr {
 /* ---------------------------------------------------------------------
    Révélation au défilement.
 
-   L'état initial n'existe QUE si `data-motion="on"` a été posé sur <html>
-   par le script d'amorçage — c'est-à-dire uniquement quand JavaScript est
-   disponible ET que le visiteur n'a pas demandé de réduire les animations.
-   Sans cet attribut, aucun bloc n'est masqué : la page reste entière.
+   **Piloté par CSS seul, sans script d'amorçage.** Un `<script>` posait
+   auparavant `data-motion="on"` sur <html> après avoir testé
+   `prefers-reduced-motion`. Ce script provoquait une erreur de rendu dans
+   l'App Router, quelle que soit la façon de l'écrire — et il testait une
+   condition que CSS évalue nativement.
+
+   `@media (prefers-reduced-motion: no-preference)` fait le même travail,
+   avant le premier octet de JavaScript et sans risque d'échec.
+
+   Le masquage initial n'est appliqué qu'à l'intérieur de cette requête : si
+   le visiteur a réduit les animations, aucun bloc n'est masqué et la page
+   reste entière. Sans JavaScript, `data-revealed` n'arrive jamais — d'où la
+   sécurité `:not(:has())` plus bas, qui révèle tout au bout de l'animation
+   même si l'observateur ne démarre pas.
    --------------------------------------------------------------------- */
 
-html[data-motion='on'] [data-reveal-target] > :first-child {
-  opacity: 0;
-  transform: translateY(12px);
-  transition:
-    opacity var(--duration-slow) var(--ease-out),
-    transform var(--duration-slow) var(--ease-out);
-}
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal-target] > :first-child {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity var(--duration-slow) var(--ease-out),
+      transform var(--duration-slow) var(--ease-out);
+  }
 
-html[data-motion='on'] [data-reveal-target][data-revealed='true'] > :first-child,
-html[data-motion='on'] main > [data-reveal-target]:first-child > :first-child {
-  opacity: 1;
-  transform: none;
+  [data-reveal-target][data-revealed='true'] > :first-child,
+  main > [data-reveal-target]:first-child > :first-child {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Filet de sécurité : si JavaScript ne s'exécute pas, rien ne poserait
+     jamais `data-revealed` et la page resterait vide. Cette animation rend le
+     contenu visible au bout d'une seconde, quoi qu'il arrive. */
+  @media (scripting: none) {
+    [data-reveal-target] > :first-child {
+      opacity: 1;
+      transform: none;
+    }
+  }
 }
 
 /* Ceinture et bretelles : même si l'attribut était posé à tort, le mouvement

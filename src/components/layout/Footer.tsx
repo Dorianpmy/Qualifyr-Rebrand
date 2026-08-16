@@ -23,19 +23,17 @@ export function Footer() {
   if (
     pathname.startsWith('/app') ||
     pathname.startsWith('/reservation') ||
-    pathname.startsWith('/embed')
+    pathname.startsWith('/embed') ||
+    pathname.startsWith('/vitrine') ||
+    pathname.startsWith('/plan')
   ) {
     return null;
   }
   if (pathname === '/diagnostic') return null;
 
-  const hasPageSpecificCta =
-    pathname === '/nettoyage-automobile' ||
-    pathname === '/conciergerie' ||
-    pathname === '/outil-conciergerie' ||
-    pathname === '/tarifs' ||
-    pathname === '/simulateur-revenus-locatifs' ||
-    pathname.startsWith('/conciergerie/');
+  // La verticale conciergerie et son simulateur ont été retirés du site
+  // (commit `7b89646`) : ces routes ne correspondent plus à rien.
+  const hasPageSpecificCta = pathname === '/nettoyage-automobile' || pathname === '/tarifs';
 
   return (
     <footer className={styles.footer}>
@@ -69,8 +67,8 @@ export function Footer() {
               <Logo />
             </Link>
             <p className={styles.positioning}>
-              Nous concevons les sites et les outils d’acquisition des entreprises de services —
-              nettoyage automobile et conciergeries de location courte durée.
+              Nous concevons les sites et les outils d’acquisition des professionnels du nettoyage
+              automobile mobile et du detailing à domicile.
             </p>
             {contact.social.length > 0 ? (
               <ul className={styles.socials} aria-label="Réseaux sociaux">

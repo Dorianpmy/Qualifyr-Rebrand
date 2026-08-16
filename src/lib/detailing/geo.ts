@@ -45,6 +45,40 @@ export function distanceKm(from: Point, to: Point): number {
  * rapidité — pour un gain limité à faire glisser un repère. L'adresse
  * géocodée place déjà le point au bon numéro de rue.
  */
+/**
+ * Carte Google, en iframe, **sans clé d'API**.
+ *
+ * `maps.google.com/maps?q=…&output=embed` est le point d'entrée historique :
+ * il ne demande ni clé, ni facturation, ni domaine autorisé. L'API Embed
+ * officielle exige une clé, un projet Google Cloud et une carte bancaire — pour
+ * afficher un point sur une carte, c'est disproportionné, et ça bloquerait le
+ * jour où le quota gratuit change.
+ *
+ * **Pourquoi Google plutôt qu'OpenStreetMap.** Le client reconnaît la carte
+ * qu'il utilise tous les jours. Sur un écran de réservation où il vérifie que
+ * le professionnel viendra au bon endroit, la familiarité de la carte fait
+ * partie de la réassurance — une carte inhabituelle donne l'impression d'un
+ * outil approximatif.
+ *
+ * `z=16` cadre un pâté de maisons : assez près pour reconnaître sa rue, assez
+ * loin pour situer le quartier.
+ */
+export function googleMapEmbedUrl(point: Point, zoom = 16): string {
+  const params = new URLSearchParams({
+    q: `${point.lat},${point.lon}`,
+    z: String(zoom),
+    output: 'embed',
+    hl: 'fr',
+  });
+
+  return `https://maps.google.com/maps?${params.toString()}`;
+}
+
+/** Ouvre l'adresse dans l'application Maps du téléphone. */
+export function googleMapsLink(point: Point): string {
+  return `https://www.google.com/maps/search/?api=1&query=${point.lat},${point.lon}`;
+}
+
 export function osmEmbedUrl(point: Point, zoomSpanDegrees = 0.006): string {
   const west = point.lon - zoomSpanDegrees;
   const south = point.lat - zoomSpanDegrees / 2;

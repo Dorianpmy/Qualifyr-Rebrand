@@ -1,11 +1,23 @@
+/* ---------------------------------------------------------------------------
+   Charte sombre — alignée sur le site.
+
+   Le tunnel était conçu sur fond clair. Or `globals.css` impose un fond
+   sombre à `html` et `body` en `!important`, sans garde : le résultat était un
+   texte noir sur fond noir, illisible pour le client final.
+
+   Les valeurs sont inversées et pointent vers les jetons partagés. L'accent de
+   marque a disparu : la charte n'en a plus, et le blanc plein est réservé au
+   bouton d'action — le seul élément plein de chaque écran.
+--------------------------------------------------------------------------- */
+
 /* En-tête de la page publique — même direction artistique que le tunnel :
    fond clair, sans-serif, aucun héritage serif de l'agence. */
 
 .intro {
-  --accent: #12b76a;
+  --accent: #ffffff;
   --saas-font: var(--font-body), 'Manrope', ui-sans-serif, system-ui, sans-serif;
-  background: #f4f2ef;
-  color: #141414;
+  background: #0e0e0f;
+  color: var(--color-primary);
   font-family: var(--saas-font);
   padding: clamp(2.5rem, 6vw, 5rem) clamp(1.25rem, 5vw, 4rem) clamp(2rem, 4vw, 3rem);
 }
@@ -32,7 +44,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(20, 20, 20, 0.5);
+  color: var(--color-faint);
 }
 
 .title {
@@ -50,7 +62,7 @@
   max-inline-size: 34rem;
   font-size: clamp(1rem, 1.6vw, 1.12rem);
   line-height: 1.6;
-  color: rgba(20, 20, 20, 0.68);
+  color: var(--color-muted);
 }
 
 /* Les trois faits décisifs, en ligne sur desktop, empilés sur mobile. */
@@ -61,9 +73,9 @@
   gap: clamp(1rem, 4vw, 3rem);
   margin: 2.25rem 0 0;
   padding: 1.25rem 1.5rem;
-  border: 1px solid rgba(20, 20, 20, 0.1);
+  border: 1px solid var(--color-hairline-strong);
   border-radius: 1rem;
-  background: #fff;
+  background: #131314;
 }
 
 .fact {
@@ -78,7 +90,7 @@
   font-weight: 600;
   letter-spacing: 0.07em;
   text-transform: uppercase;
-  color: rgba(20, 20, 20, 0.45);
+  color: var(--color-faint);
 }
 
 .fact dd {
@@ -117,7 +129,7 @@
   max-inline-size: 32rem;
   font-size: 0.95rem;
   line-height: 1.55;
-  color: rgba(20, 20, 20, 0.6);
+  color: var(--color-muted);
 }
 
 .proofGrid {
@@ -130,9 +142,9 @@
 }
 
 .proofCard {
-  border: 1px solid rgba(20, 20, 20, 0.1);
+  border: 1px solid var(--color-hairline-strong);
   border-radius: 1rem;
-  background: #fff;
+  background: #131314;
   padding: 0.6rem;
   text-align: left;
 }
@@ -168,13 +180,13 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
   background: rgba(0, 0, 0, 0.6);
-  color: #fff;
+  color: #131314;
 }
 
 .proofCaption {
   margin: 0.6rem 0.2rem 0.2rem;
   font-size: 0.85rem;
-  color: rgba(20, 20, 20, 0.62);
+  color: var(--color-muted);
 }
 
 /* --- Réassurance --- */
@@ -203,14 +215,14 @@
   margin: 0;
   font-size: 0.88rem;
   line-height: 1.6;
-  color: rgba(20, 20, 20, 0.62);
+  color: var(--color-muted);
 }
 
 .insurance {
   max-inline-size: 68rem;
   margin: 1.75rem auto 0;
   font-size: 0.8rem;
-  color: rgba(20, 20, 20, 0.5);
+  color: var(--color-faint);
   text-align: center;
 }
 
@@ -244,5 +256,113 @@
      l'argument disparaît au moment où il compte le plus. */
   .proofGrid {
     grid-template-columns: 1fr;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   Cartes de réassurance — alignées sur celles du site.
+
+   **Ce qui n'allait pas.** Les trois arguments étaient posés sous un simple
+   filet blanc horizontal, sans cadre. Sur fond noir, trois colonnes de texte
+   séparées par des traits ne se lisent pas comme trois cartes mais comme un
+   tableau, et l'œil ne sait pas où s'arrête l'une et où commence l'autre.
+
+   Elles deviennent de vraies cartes, avec le contour dégradé de la charte —
+   les mêmes que sur le site, pour qu'un client qui a vu la page d'accueil
+   retrouve le même objet.
+--------------------------------------------------------------------------- */
+
+.reassurance {
+  gap: 0.9rem;
+}
+
+.reassuranceItem {
+  /* Le filet horizontal disparaît : c'est le cadre entier qui porte
+     maintenant la couleur. */
+  border-block-start: 0;
+  padding: 1.15rem 1.2rem;
+  border: 1px solid transparent;
+  border-radius: 1rem;
+  background:
+    linear-gradient(#111112, #111112) padding-box,
+    linear-gradient(120deg, var(--accent-1), transparent 55%, var(--accent-2)) border-box;
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+
+/* Le survol sature le contour et soulève très légèrement la carte. Deux
+   pixels suffisent : au-delà, la page se met à bouger sous le curseur. */
+@media (hover: hover) and (pointer: fine) {
+  .reassuranceItem:hover {
+    transform: translateY(-2px);
+    background:
+      linear-gradient(#131315, #131315) padding-box,
+      linear-gradient(120deg, var(--accent-1), var(--accent-3) 55%, var(--accent-2)) border-box;
+  }
+}
+
+.reassuranceTitle {
+  margin-block-end: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.reassuranceBody {
+  font-size: 0.85rem;
+}
+
+/* --- Les trois faits décisifs --- */
+
+.facts {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(#111112, #111112) padding-box,
+    linear-gradient(120deg, var(--accent-1), var(--accent-3) 50%, var(--accent-2)) border-box;
+  box-shadow:
+    0 0 30px -10px rgba(242, 213, 179, 0.18),
+    0 0 32px -8px rgba(201, 196, 238, 0.14);
+}
+
+/* Le prix d'appel prend le dégradé : c'est le premier chiffre que le client
+   cherche, et le seul de ce bandeau qui décide d'un clic. */
+.facts .fact:first-child dd {
+  background-image: linear-gradient(100deg, var(--accent-1), var(--accent-3), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* --- Preuve avant/après --- */
+
+.proofCard {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(120deg, #131314, #131314) padding-box,
+    linear-gradient(120deg, var(--accent-1), transparent 60%, var(--accent-2)) border-box;
+  transition: transform 0.18s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .proofCard:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* Les étiquettes « Avant » et « Après » étaient en texte sombre sur fond
+   sombre — illisibles. */
+.proofFigure figcaption {
+  background: rgba(14, 14, 15, 0.78);
+  color: var(--color-primary);
+  backdrop-filter: blur(6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reassuranceItem,
+  .proofCard {
+    transition: none;
+  }
+
+  .reassuranceItem:hover,
+  .proofCard:hover {
+    transform: none;
   }
 }

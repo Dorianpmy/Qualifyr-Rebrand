@@ -1,0 +1,55 @@
+import { NextResponse } from 'next/server';
+import { z } from 'zod';
+import { requestZone } from '@/lib/agent/zones';
+
+/**
+ * Capture d'une zone à analyser.
+ *
+ * **Elle n'analyse rien.** Elle enregistre la demande et rend la main. Une
+ * analyse de secteur interroge un service externe plusieurs dizaines de fois,
+ * avec des pauses pour tenir le quota : entre trente secondes et deux minutes.
+ * Une requête HTTP qui attend ça expire — chez l'hébergeur, chez le
+ * navigateur, ou dans le tunnel 4G du visiteur.
+ *
+ * Le traitement réel vit dans `/api/agent/process`, déclenché par le
+ * planificateur.
+ *
+ * **La réponse ne promet pas de délai précis.** « Sous quelques heures » est
+ * tenable ; « dans 2 minutes » ne l'est pas si le quota est saturé, et une
+ * promesse ratée à la première interaction coûte plus cher que l'attente.
+ */
+
+export const dynamic = 'force-dynamic';
+
+const bodySchema = z.object({
+  // Cinq chiffres en France, quatre en Suisse.
+  zone: z.string().regex(/^\d{4,5}$/, 'Code postal invalide.'),
+  email: z.string().email('Adresse e-mail invalide.'),
+  radiusKm: z.number().int().min(5).max(50).optional(),
+});
+
+export async function POST(request: Request) {
+  const parsed = bodySchema.safeParse(await request.json().catch(() => null));
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues[0]?.message ?? 'Requête invalide.' },
+      { status: 400 },
+    );
+  }
+
+  const result = await requestZone({
+    email: parsed.data.email,
+    postalCode: parsed.data.zone,
+    radiusKm: parsed.data.radiusKm,
+  });
+
+  if (!result.ok) {
+    return NextResponse.json(
+      { error: result.error, message: result.message },
+      { status: result.status },
+    );
+  }
+
+  return NextResponse.json(result);
+}

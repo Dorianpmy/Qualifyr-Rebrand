@@ -1,3 +1,22 @@
+/* ---------------------------------------------------------------------------
+   Couleurs alignées sur la charte du site.
+
+   Le dashboard vivait sur sa propre palette — un vert de marque, un fond
+   presque noir légèrement différent, des gris à des opacités qui ne
+   correspondaient à rien d'autre. Un professionnel qui passe du site au
+   dashboard voyait deux produits.
+
+   Les valeurs pointent désormais vers les jetons déclarés dans
+   `tailwind.css` : `--color-primary`, `--color-muted`, `--color-faint`,
+   `--color-hairline`. Changer la charte à un seul endroit change les deux.
+
+   **Le dashboard ne porte pas `data-theme="dark"`, délibérément.** Cet
+   attribut déclenche un reset qui neutralise le fond et les bordures des
+   `div` dont la classe contient « card » — ce qui casserait les cartes de
+   réservation et l'éditeur de prestations. Ici on aligne les couleurs, pas
+   le mécanisme.
+--------------------------------------------------------------------------- */
+
 /* Dashboard pro — DA SaaS mobile-first */
 
 .shell,
@@ -10,7 +29,7 @@
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
-  background: #0a0b0d;
+  background: #0e0e0f;
   color: #f4f4f5;
 }
 
@@ -68,7 +87,7 @@
     padding: 1.5rem 1rem;
     border-radius: 0;
     border: none;
-    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    border-right: 1px solid var(--color-hairline);
     background: #0e0f12;
     backdrop-filter: none;
     box-shadow: none;
@@ -86,7 +105,7 @@
     gap: 0.35rem;
     padding: 0.25rem 0.75rem 1.5rem;
     margin-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid var(--color-hairline);
   }
 }
 
@@ -94,12 +113,12 @@
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #fafafa;
+  color: #e0e0e0;
 }
 
 .sidebarBrand span {
   font-size: 0.75rem;
-  color: rgba(250, 250, 250, 0.45);
+  color: var(--color-muted);
   font-weight: 500;
 }
 
@@ -113,8 +132,11 @@
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  background: rgba(18, 183, 106, 0.15);
-  color: #32d583;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(#141416, #141416) padding-box,
+    linear-gradient(140deg, var(--accent-1), var(--accent-2)) border-box;
+  color: var(--color-primary);
 }
 
 .sidebarNav {
@@ -134,32 +156,62 @@
   }
 }
 
+/* Onglet : icône au-dessus, libellé en dessous — la disposition d'une barre
+   d'onglets native. 56 px de haut et 4rem de large minimum : en dessous de
+   44 px la cible devient difficile à viser en marchant, ce qui est la
+   situation réelle d'usage. */
 .navItem {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 2.5rem;
-  padding: 0.45rem 0.85rem;
+  gap: 0.2rem;
+  min-height: 3.25rem;
+  min-width: 4rem;
+  padding: 0.4rem 0.6rem;
   border-radius: 999px;
-  color: rgba(250, 250, 250, 0.55);
+  color: var(--color-faint);
   text-decoration: none;
-  font-size: 0.72rem;
+  font-size: 0.625rem;
   font-weight: 600;
-  border: none;
+  letter-spacing: -0.005em;
+  border: 1px solid transparent;
   background: transparent;
   cursor: pointer;
   white-space: nowrap;
+  /* Le rectangle bleu de surbrillance au tap trahit immédiatement une page
+     web. `touch-action: manipulation` supprime en plus le délai de 300 ms
+     que le navigateur garde au cas où le geste serait un double-tap. */
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: color 0.15s ease;
+}
+
+/* Le retour au doigt : l'onglet s'enfonce légèrement. Sur mobile il n'y a pas
+   de survol, donc pas de retour possible avant le relâchement — sans cet
+   état, l'appui semble n'avoir rien déclenché pendant le chargement. */
+.navItem:active {
+  transform: scale(0.94);
 }
 
 @media (min-width: 900px) {
   .navItem {
+    flex-direction: row;
     justify-content: flex-start;
+    gap: 0.6rem;
     min-height: 0;
+    min-width: 0;
     padding: 0.65rem 0.85rem;
     border-radius: 10px;
     font-size: 0.875rem;
+    letter-spacing: normal;
     width: 100%;
+  }
+
+  .navItem:active {
+    transform: none;
   }
 }
 
@@ -168,7 +220,16 @@
 }
 
 .navIcon {
-  display: none;
+  inline-size: 1.35rem;
+  block-size: 1.35rem;
+  flex-shrink: 0;
+}
+
+@media (min-width: 900px) {
+  .navIcon {
+    inline-size: 1.05rem;
+    block-size: 1.05rem;
+  }
 }
 
 .navItemDesktopOnly {
@@ -185,22 +246,26 @@
   display: none;
 }
 
-.navItem:hover {
-  color: #fafafa;
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.navItemActive {
-  background: #12b76a;
-  color: #fff;
-  font-weight: 700;
-}
-
-@media (min-width: 900px) {
-  .navItemActive {
-    background: rgba(18, 183, 106, 0.14);
-    color: #32d583;
+/* Le survol n'existe que sur les appareils qui en ont un. Sur un écran
+   tactile, `:hover` reste collé après le tap : l'onglet quitté garde son
+   fond, et deux onglets paraissent actifs en même temps. */
+@media (hover: hover) and (pointer: fine) {
+  .navItem:hover {
+    color: #e0e0e0;
+    background: var(--color-hairline);
   }
+}
+
+/* Onglet actif : le contour dégradé, la même signature que partout ailleurs.
+   Sur mobile, le libellé passe en blanc — c'est le contraste qui porte
+   l'information à distance de bras, pas la teinte du filet. */
+.navItemActive {
+  color: var(--color-primary);
+  font-weight: 700;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(#1b1b1d, #1b1b1d) padding-box,
+    linear-gradient(140deg, var(--accent-1), var(--accent-2)) border-box;
 }
 
 .navSoon {
@@ -219,7 +284,7 @@
     gap: 0.15rem;
     padding: 1rem 0 0;
     margin-top: auto;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 1px solid var(--color-hairline);
   }
 
   .sidebarFooter form {
@@ -251,7 +316,7 @@
   font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: -0.035em;
-  color: #fafafa;
+  color: #e0e0e0;
   line-height: 1.15;
 }
 
@@ -264,13 +329,13 @@
 .subtitle {
   margin: 0.2rem 0 0;
   font-size: 0.72rem;
-  color: rgba(250, 250, 250, 0.45);
+  color: var(--color-muted);
   font-weight: 500;
   word-break: break-word;
 }
 
 .subtitle a {
-  color: #32d583;
+  color: var(--color-primary);
   text-decoration: none;
   font-weight: 600;
 }
@@ -291,7 +356,7 @@
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: transparent;
-  color: rgba(250, 250, 250, 0.85);
+  color: #e0e0e0;
   font-size: 0.8rem;
   font-weight: 600;
   text-decoration: none;
@@ -302,7 +367,7 @@
   padding: 0.5rem 1rem;
   border-radius: 10px;
   border: none;
-  background: #12b76a;
+  background: var(--color-primary);
   color: #fff;
   font-size: 0.8rem;
   font-weight: 600;
@@ -331,7 +396,7 @@
   position: relative;
   padding: 0.9rem 0.95rem;
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--color-hairline-strong);
   background: linear-gradient(165deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015));
   overflow: hidden;
 }
@@ -343,18 +408,32 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--color-hairline);
+}
+
+/* La carte prioritaire porte le contour dégradé complet — la même signature
+   que les boutons. Son filet supérieur disparaît : deux traits colorés sur le
+   même objet se concurrencent. */
+.kpiAccent {
+  border: 1px solid transparent !important;
+  background:
+    linear-gradient(#141416, #141416) padding-box,
+    linear-gradient(140deg, var(--accent-1), transparent 45%, var(--accent-2)) border-box !important;
 }
 
 .kpiAccent::before {
-  background: linear-gradient(90deg, #32d583, #12b76a);
+  display: none !important;
+}
+
+.kpiAccentUnused::before {
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary));
 }
 
 .kpiLabel {
   font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: rgba(250, 250, 250, 0.42);
+  color: var(--color-muted);
   margin-bottom: 0.35rem;
   font-weight: 600;
 }
@@ -369,7 +448,7 @@
 .kpiHint {
   margin-top: 0.2rem;
   font-size: 0.7rem;
-  color: rgba(250, 250, 250, 0.38);
+  color: var(--color-faint);
 }
 
 .filters {
@@ -389,7 +468,7 @@
   padding: 0.45rem 0.9rem;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.09);
-  color: rgba(250, 250, 250, 0.55);
+  color: var(--color-muted);
   text-decoration: none;
   font-size: 0.78rem;
   font-weight: 500;
@@ -401,15 +480,15 @@
 }
 
 .filterActive {
-  background: #12b76a;
+  background: var(--color-primary);
   color: #fff;
-  border-color: #12b76a;
+  border-color: var(--color-primary);
   font-weight: 600;
 }
 
 .panel {
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--color-hairline-strong);
   background: rgba(255, 255, 255, 0.02);
   overflow: hidden;
 }
@@ -433,8 +512,8 @@
   font-size: 0.68rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: rgba(250, 250, 250, 0.38);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--color-faint);
+  border-bottom: 1px solid var(--color-hairline);
   font-weight: 600;
 }
 
@@ -492,7 +571,7 @@
 
 .clientMeta {
   font-size: 0.78rem;
-  color: rgba(250, 250, 250, 0.42);
+  color: var(--color-muted);
 }
 
 .badge {
@@ -508,7 +587,7 @@
 
 .badgeConfirme {
   background: rgba(18, 183, 106, 0.16);
-  color: #32d583;
+  color: var(--color-primary);
 }
 
 .badgeAttente {
@@ -524,7 +603,7 @@
 .empty {
   padding: 2.5rem 1.25rem;
   text-align: center;
-  color: rgba(250, 250, 250, 0.42);
+  color: var(--color-muted);
   font-size: 0.9rem;
 }
 
@@ -562,7 +641,7 @@
 
 .caseCard {
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-hairline-strong);
   overflow: hidden;
   background: rgba(255, 255, 255, 0.02);
 }
@@ -595,8 +674,8 @@
   min-height: 100dvh;
   display: grid;
   place-items: center;
-  background: #0a0b0d;
-  color: #fafafa;
+  background: #0e0e0f;
+  color: #e0e0e0;
   padding: 1.5rem;
 }
 
@@ -615,7 +694,7 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #12b76a;
+  color: var(--color-primary);
 }
 
 .loginBox h1 {
@@ -627,7 +706,7 @@
 
 .loginBox > p {
   margin: 0 0 1.5rem;
-  color: rgba(250, 250, 250, 0.55);
+  color: var(--color-muted);
   font-size: 0.9rem;
   line-height: 1.45;
 }
@@ -650,7 +729,7 @@
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(0, 0, 0, 0.35);
-  color: #fafafa;
+  color: #e0e0e0;
   font-size: 1rem;
   min-height: 2.85rem;
 }
@@ -660,7 +739,7 @@
   padding: 0.8rem 1rem;
   border: none;
   border-radius: 10px;
-  background: #12b76a;
+  background: var(--color-primary);
   color: #fff;
   font-weight: 600;
   cursor: pointer;
@@ -685,7 +764,7 @@
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   background: transparent;
-  color: rgba(250, 250, 250, 0.85);
+  color: #e0e0e0;
   font-size: 0.9rem;
   cursor: pointer;
   min-height: 2.75rem;
@@ -694,7 +773,7 @@
 .message {
   margin-top: 1rem;
   font-size: 0.85rem;
-  color: #32d583;
+  color: var(--color-primary);
 }
 
 .error {
@@ -714,7 +793,7 @@
 
 .unlinked code {
   font-size: 0.8rem;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-hairline-strong);
   padding: 0.15rem 0.4rem;
   border-radius: 4px;
 }
@@ -734,7 +813,7 @@
 .detailItem {
   padding: 0.95rem 1rem;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-hairline-strong);
   background: rgba(255, 255, 255, 0.02);
 }
 
@@ -763,16 +842,16 @@
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(255, 255, 255, 0.05);
-  color: #fafafa;
+  color: #e0e0e0;
   cursor: pointer;
   font-size: 0.85rem;
   min-height: 2.75rem;
 }
 
 .actions button[data-primary='true'] {
-  background: #12b76a;
+  background: var(--color-primary);
   color: #fff;
-  border-color: #12b76a;
+  border-color: var(--color-primary);
   font-weight: 600;
 }
 
@@ -794,4 +873,505 @@
   color: rgba(250, 250, 250, 0.5);
   text-decoration: none;
   font-size: 0.85rem;
+}
+
+
+/* ---------------------------------------------------------------------------
+   La charte dans le tableau de bord : le contour dégradé, rien d'autre.
+
+   La couleur ne remplit jamais une surface et ne teinte jamais un texte. Elle
+   n'existe que sous forme d'un filet d'un pixel, sable vers céladon, autour
+   de ce qui compte. Le reste — textes, fonds, badges neutres — est en noir et
+   blanc, et c'est ce qui rend le filet visible.
+--------------------------------------------------------------------------- */
+
+/* Confirmé et réalisé : le contour, parce que c'est l'état acquis. */
+.badgeConfirme {
+  border: 1px solid transparent !important;
+  color: var(--color-primary) !important;
+  background:
+    linear-gradient(#141416, #141416) padding-box,
+    linear-gradient(140deg, var(--accent-1), transparent 45%, var(--accent-2)) border-box !important;
+}
+
+/* En attente : le même contour, plus dense — c'est la ligne qui demande une
+   action, elle doit se voir en premier dans une colonne de statuts. */
+.badgeAttente {
+  border: 1px solid transparent !important;
+  color: var(--color-primary) !important;
+  background:
+    linear-gradient(#141416, #141416) padding-box,
+    linear-gradient(140deg, var(--accent-1), var(--accent-2)) border-box !important;
+}
+
+/* Annulé et expiré restent gris, sans contour : ce n'est pas une alerte,
+   c'est un classement sans suite. Leur donner le filet reviendrait à attirer
+   l'œil sur ce qui n'appelle aucune action. */
+.badgeAnnule {
+  background: rgba(255, 255, 255, 0.04) !important;
+  color: var(--color-faint) !important;
+  border: 1px solid var(--color-hairline-strong) !important;
+}
+
+/* Boutons d'action : contour dégradé sur fond noir, texte blanc. Le blanc
+   plein reste réservé au seul bouton principal de chaque écran — deux
+   surfaces pleines et on ne sait plus laquelle cliquer. */
+.btnGhost,
+.actions button:not([data-primary='true']),
+.btnGhostLogin {
+  border: 1px solid transparent !important;
+  color: var(--color-primary) !important;
+  background:
+    linear-gradient(#141416, #141416) padding-box,
+    linear-gradient(140deg, var(--accent-1), transparent 45%, var(--accent-2)) border-box !important;
+}
+
+.btnGhost:hover,
+.actions button:not([data-primary='true']):hover,
+.btnGhostLogin:hover {
+  background:
+    linear-gradient(#1b1b1d, #1b1b1d) padding-box,
+    linear-gradient(140deg, var(--accent-1), var(--accent-2)) border-box !important;
+}
+
+/* La page courante est marquée par le contour dégradé, déclaré plus haut avec
+   le reste de la navigation. Pas de filet vertical en plus : deux repères
+   colorés sur le même élément se concurrencent. */
+
+
+/* ---------------------------------------------------------------------------
+   Comportement tactile — l'espace pro se consulte sur un téléphone.
+
+   Ce bloc ne change presque rien à l'apparence. Il corrige les détails qui
+   font qu'une interface web « sent » le web sur un téléphone : le
+   rebond de fin de page, le double-tap qui zoome, la surbrillance bleue au
+   tap, les cibles trop petites pour un pouce, et l'agrandissement irréversible
+   déclenché par Safari au focus d'un champ.
+--------------------------------------------------------------------------- */
+
+.shell {
+  /* Le rebond élastique en fin de liste laisse apparaître le fond du
+     navigateur sous l'interface. Sur une application installée à l'écran
+     d'accueil, cette bande blanche est le seul élément qui trahit une page
+     web. */
+  overscroll-behavior-y: none;
+  /* Safari ajuste la taille des textes de son propre chef en paysage. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Sous la barre d'état translucide de l'application installée : sans cette
+   marge, le titre de page passe derrière l'heure et la batterie. */
+.main {
+  padding-top: calc(1.15rem + env(safe-area-inset-top));
+  padding-left: calc(1rem + env(safe-area-inset-left));
+  padding-right: calc(1rem + env(safe-area-inset-right));
+}
+
+/* La barre d'onglets flottante doit dégager la barre de geste de l'iPhone et
+   la barre de navigation d'Android, sinon le dernier onglet devient
+   inatteignable. */
+.shellMain {
+  padding-bottom: calc(6rem + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 900px) {
+  .main {
+    padding-top: 2rem;
+    padding-left: 2.25rem;
+    padding-right: 2.25rem;
+  }
+
+  .shellMain {
+    padding-bottom: 0;
+  }
+}
+
+/* Toute cible tactile fait au moins 44 px — la mesure retenue aussi bien par
+   les recommandations d'Apple que par celles de Material. En dessous, le taux
+   d'erreur monte nettement chez quelqu'un qui vise d'une seule main. */
+.shell :is(a, button, [role='button'], summary) {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+@media (max-width: 899px) {
+  .btn,
+  .btnGhost,
+  .btnPrimary,
+  .btnGhostLogin,
+  .actions button,
+  .baseButton {
+    min-height: 2.75rem;
+  }
+
+  /* Les lignes de la liste de demandes sont la cible la plus fréquente de
+     l'application : elles doivent être confortables, pas denses. */
+  .mobileCard {
+    min-height: 4rem;
+    padding-block: 1.15rem;
+  }
+
+  .mobileCard:active {
+    background: rgba(255, 255, 255, 0.045);
+  }
+}
+
+/* 16 px sur tout champ de saisie. En dessous, Safari agrandit la page au
+   focus et ne revient jamais à l'échelle initiale : le professionnel se
+   retrouve avec un formulaire coupé sur les bords, sans comprendre pourquoi.
+   C'est le défaut le plus courant des formulaires web sur iPhone. */
+.shell :is(input, select, textarea) {
+  font-size: max(16px, 1em);
+}
+
+/* Les listes défilantes gardent l'inertie iOS et ne propagent pas leur fin de
+   course à la page — sinon un tableau arrivé en bout de course entraîne toute
+   la vue. */
+.panel,
+.mobileList {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Un professionnel qui a activé la réduction d'animations dans les réglages
+   du système ne doit pas subir les mises à l'échelle au tap. */
+@media (prefers-reduced-motion: reduce) {
+  .navItem,
+  .navItem:active,
+  .mobileCard {
+    transition: none;
+    transform: none;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   Activation du paiement en ligne.
+
+   Le bloc porte le contour dégradé tant qu'il appelle une action, et le perd
+   une fois le compte actif : c'est le seul repère du tableau de bord qui doit
+   attirer l'œil d'un professionnel qui n'a pas encore terminé son dossier.
+--------------------------------------------------------------------------- */
+
+.paymentPanel {
+  padding: 1.35rem;
+  margin-bottom: 1.15rem;
+  border: 1px solid transparent !important;
+  background:
+    linear-gradient(#121213, #121213) padding-box,
+    linear-gradient(140deg, var(--accent-1), transparent 55%, var(--accent-2)) border-box !important;
+}
+
+.paymentHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.paymentTitle {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-primary);
+}
+
+.paymentLede {
+  margin: 0;
+  max-inline-size: 42rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--color-muted);
+}
+
+/* Trois pièces à préparer. La liste garde ses puces — c'est une énumération
+   de documents, pas une liste de fonctionnalités. */
+.paymentList {
+  margin: 0 0 1rem;
+  padding-inline-start: 1.1rem;
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.875rem;
+  color: var(--color-muted);
+  list-style: disc;
+}
+
+.paymentNote {
+  margin: 0 0 1.15rem;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--color-muted);
+}
+
+.paymentCta {
+  min-height: 2.75rem;
+  padding-inline: 1.25rem;
+}
+
+.paymentError {
+  margin: 0.85rem 0 0;
+  font-size: 0.85rem;
+  color: var(--accent-1);
+}
+
+.paymentFootnote {
+  margin: 1.15rem 0 0;
+  padding-block-start: 0.9rem;
+  border-block-start: 1px solid var(--color-hairline);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--color-faint);
+}
+
+
+/* ---------------------------------------------------------------------------
+   La charte tricolore dans l'espace pro.
+
+   **Le lilas entre, mais reste rare.** Il n'apparaît que sur les objets qui
+   demandent une action ou marquent une position : l'onglet courant, la carte
+   d'activation du paiement, l'écran de connexion. Nulle part ailleurs. Étendu
+   aux badges de statut ou aux boutons ordinaires, il ferait basculer le
+   tableau de bord du sobre au bariolé — et un professionnel qui consulte ses
+   demandes entre deux véhicules a besoin de repères, pas de décoration.
+
+   **Le halo est réservé à un seul objet par écran.** Deux cartes lumineuses se
+   concurrencent : l'œil ne sait plus laquelle est prioritaire, ce qui annule
+   exactement le bénéfice recherché.
+--------------------------------------------------------------------------- */
+
+/* Onglet courant : le contour passe en tricolore. Sur la barre basse, c'est
+   le seul repère de position — il doit se lire d'un coup d'œil à bout de
+   bras, en plein soleil. */
+.navItemActive {
+  background:
+    linear-gradient(#1b1b1d, #1b1b1d) padding-box,
+    linear-gradient(115deg, var(--accent-1), var(--accent-3) 50%, var(--accent-2)) border-box !important;
+}
+
+/* La carte d'activation du paiement porte le halo : c'est l'action qui
+   débloque tout le reste du produit, et tant qu'elle n'est pas faite, elle
+   doit rester impossible à ignorer. */
+.paymentPanel {
+  background:
+    radial-gradient(120% 140% at 12% 0%, rgba(201, 196, 238, 0.07), transparent 55%),
+    linear-gradient(#121213, #121213) padding-box,
+    linear-gradient(115deg, var(--accent-1), var(--accent-3) 50%, var(--accent-2)) border-box !important;
+  box-shadow:
+    0 0 28px -8px rgba(242, 213, 179, 0.22),
+    0 0 32px -6px rgba(201, 196, 238, 0.18),
+    0 0 28px -10px rgba(184, 220, 208, 0.16) !important;
+}
+
+/* La carte prioritaire des indicateurs reprend le contour tricolore, sans
+   halo — deux objets lumineux sur le même écran se neutralisent. */
+.kpiAccent {
+  background:
+    linear-gradient(#141416, #141416) padding-box,
+    linear-gradient(115deg, var(--accent-1), var(--accent-3) 55%, var(--accent-2)) border-box !important;
+}
+
+/* --- Écran de connexion ---------------------------------------------------
+
+   C'est le premier écran du produit, et souvent le seul que voit un
+   professionnel avant de décider s'il continue. Il était gris sur gris ; il
+   porte maintenant la même signature que le site d'où il arrive.
+--------------------------------------------------------------------------- */
+
+.loginShell {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+/* Halos d'ambiance, comme sur le hero du site. `pointer-events: none` est
+   indispensable : une tache floue plein écran intercepterait le clic sur le
+   champ e-mail. */
+.loginShell::before,
+.loginShell::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inline-size: 30rem;
+  block-size: 30rem;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+}
+
+.loginShell::before {
+  inset-block-start: -14%;
+  inset-inline-start: -12%;
+  background: var(--accent-1);
+  opacity: 0.14;
+}
+
+.loginShell::after {
+  inset-block-end: -18%;
+  inset-inline-end: -12%;
+  background: var(--accent-3);
+  opacity: 0.12;
+}
+
+.loginBox {
+  border: 1px solid transparent !important;
+  background:
+    linear-gradient(#111112, #111112) padding-box,
+    linear-gradient(115deg, var(--accent-1), var(--accent-3) 50%, var(--accent-2)) border-box !important;
+  box-shadow:
+    0 0 30px -8px rgba(242, 213, 179, 0.2),
+    0 0 34px -6px rgba(201, 196, 238, 0.16) !important;
+}
+
+/* Le sur-titre passait en blanc plein, ce qui le mettait au même niveau que
+   le titre. En dégradé, il redevient une étiquette. */
+.loginEyebrow {
+  background-image: linear-gradient(100deg, var(--accent-1), var(--accent-3), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+}
+
+/* Les trois rappels, sous le formulaire. Sous et non au-dessus : le champ
+   e-mail doit rester le premier élément atteignable, y compris sur un petit
+   téléphone. */
+.loginPoints {
+  display: grid;
+  gap: 0.55rem;
+  margin: 1.5rem 0 0;
+  padding: 1.25rem 0 0;
+  border-block-start: 1px solid var(--color-hairline);
+  list-style: none;
+}
+
+.loginPoints li {
+  display: flex;
+  gap: 0.6rem;
+  font-size: 0.83rem;
+  line-height: 1.45;
+  color: var(--color-muted);
+}
+
+.loginCheck {
+  inline-size: 0.95rem;
+  block-size: 0.95rem;
+  flex-shrink: 0;
+  margin-block-start: 0.2rem;
+  stroke: var(--accent-2);
+}
+
+.loginFootnote {
+  margin: 1.25rem 0 0 !important;
+  font-size: 0.8rem !important;
+  color: var(--color-faint) !important;
+}
+
+.loginFootnote a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--color-hairline-strong);
+  text-underline-offset: 3px;
+}
+
+.loginFootnote a:hover {
+  text-decoration-color: var(--accent-3);
+}
+
+
+/* ---------------------------------------------------------------------------
+   Densité de l'espace pro — mobile d'abord.
+
+   L'écran des prestations empile trois grands panneaux avant le premier
+   réglage utile. Sur un téléphone, cela fait deux écrans de défilement pour
+   atteindre un champ de prix — et le professionnel qui règle ses tarifs le
+   fait rarement assis à un bureau.
+
+   On resserre ce qui n'a aucune valeur informative : marges intérieures,
+   interlignes des paragraphes explicatifs, hauteur des blocs de code. Rien
+   n'est supprimé, tout devient plus court.
+--------------------------------------------------------------------------- */
+
+.panel {
+  padding: 1.1rem;
+}
+
+@media (min-width: 900px) {
+  .panel {
+    padding: 1.35rem;
+  }
+}
+
+.paymentPanel {
+  padding: 1.15rem;
+}
+
+.paymentLede,
+.paymentNote {
+  font-size: 0.83rem;
+  line-height: 1.5;
+}
+
+.paymentNote {
+  margin-block-end: 1rem;
+}
+
+.paymentList {
+  gap: 0.25rem;
+  margin-block-end: 0.9rem;
+  font-size: 0.83rem;
+}
+
+.paymentFootnote {
+  margin-block-start: 0.9rem;
+  padding-block-start: 0.75rem;
+  font-size: 0.72rem;
+}
+
+/* Le sous-titre de page tenait sur deux lignes pleines : il redevient une
+   ligne de contexte, pas un paragraphe. */
+.subtitle {
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+/* Sur téléphone, l'en-tête de page et son bouton s'empilent au lieu de se
+   partager la largeur : « Voir la page client » compressé à côté d'un titre
+   donne deux colonnes illisibles. */
+@media (max-width: 640px) {
+  .topbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .topActions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .topActions a,
+  .topActions button {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .paymentHead {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  /* Le badge d'état passe au-dessus du titre : à droite d'un titre sur deux
+     lignes, il flottait dans le vide. */
+  .paymentHead > span {
+    order: -1;
+    align-self: flex-start;
+  }
+
+  .paymentCta {
+    width: 100%;
+  }
 }

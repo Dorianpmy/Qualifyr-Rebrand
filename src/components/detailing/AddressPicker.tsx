@@ -1,7 +1,12 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { distanceKm, osmEmbedUrl, type Point } from '@/lib/detailing/geo';
+import {
+  distanceKm,
+  googleMapEmbedUrl,
+  googleMapsLink,
+  type Point,
+} from '@/lib/detailing/geo';
 import styles from './AddressPicker.module.css';
 
 /**
@@ -147,20 +152,85 @@ export function AddressPicker({
       ) : null}
 
       {touched && !value && query.trim().length >= 3 && !searching && suggestions.length === 0 ? (
-        <p className={styles.noResult}>
-          Aucune adresse trouvée. Essayez avec le numéro et le nom de rue, puis la ville.
-        </p>
+        <div className={styles.fallback}>
+          <p className={styles.noResult}>
+            Aucune adresse trouvée pour « {query.trim()} ». Essayez avec le numéro, le nom de rue,
+            puis la ville.
+          </p>
+          {/*
+           * Sortie de secours. Le service d'adresses est un tiers : il tombe,
+           * il ignore les lieux-dits, il ne connaît pas les rues neuves. Sans
+           * cette porte, un client dont l'adresse n'est pas reconnue ne peut
+           * pas réserver du tout — on perd la vente pour une base de données
+           * incomplète.
+           *
+           * La contrepartie est annoncée : sans point sur la carte, la
+           * distance n'est pas calculable et le professionnel rappellera.
+           */}
+          <button
+            type="button"
+            className={styles.fallbackButton}
+            onClick={() =>
+              onChange({
+                label: query.trim(),
+                lat: 0,
+                lon: 0,
+                postalCode: null,
+                distanceKm: null,
+              })
+            }
+          >
+            Utiliser cette adresse quand même
+          </button>
+        </div>
+      ) : null}
+
+      {/* Emplacement de la carte, visible **avant** toute sélection.
+          Auparavant le bloc n'existait pas tant qu'aucune adresse n'était
+          retenue : le client ne pouvait pas deviner qu'une carte apparaîtrait,
+          et croyait la fonction absente. Un cadre vide qui annonce ce qui va
+          venir vaut mieux qu'une surprise. */}
+      {!value ? (
+        <div className={styles.mapPlaceholder}>
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            className={styles.mapPlaceholderIcon}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" />
+            <circle cx="12" cy="10" r="2.5" />
+          </svg>
+          <p>Choisissez une adresse dans la liste : la carte s’affichera ici pour vérification.</p>
+        </div>
       ) : null}
 
       {value ? (
         <div className={styles.confirmed}>
-          <div className={styles.mapFrame}>
-            <iframe
-              title="Emplacement du véhicule"
-              src={osmEmbedUrl({ lat: value.lat, lon: value.lon })}
-              loading="lazy"
-              className={styles.map}
-            />
+          {/* La carte confirme visuellement ce que le texte affirme. Un client
+              qui a mal orthographié sa rue ne relira pas le libellé — il verra
+              en revanche tout de suite qu'on lui montre un autre quartier. */}
+          {/* Une adresse saisie à la main n'a pas de coordonnées : afficher une
+              carte centrée sur 0,0 montrerait le golfe de Guinée. */}
+          <div className={value.lat === 0 && value.lon === 0 ? styles.mapPlaceholder : styles.mapFrame}>
+            {value.lat === 0 && value.lon === 0 ? (
+              <p>
+                Adresse saisie à la main : elle n’a pas pu être placée sur la carte. Le
+                professionnel vérifiera le trajet et vous confirmera les frais de déplacement.
+              </p>
+            ) : (
+              <iframe
+                title="Emplacement du véhicule sur la carte"
+                src={googleMapEmbedUrl({ lat: value.lat, lon: value.lon })}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className={styles.map}
+              />
+            )}
           </div>
 
           <div className={styles.confirmedMeta}>
@@ -169,6 +239,18 @@ export function AddressPicker({
               <p className={styles.confirmedDistance}>
                 À {value.distanceKm.toLocaleString('fr-FR')} km à vol d’oiseau du professionnel.
               </p>
+            ) : null}
+            {/* Sortie vers l'application Maps du téléphone : c'est là que le
+                client vérifie vraiment, en zoomant sur son immeuble. */}
+            {value.lat !== 0 || value.lon !== 0 ? (
+              <a
+                className={styles.mapLink}
+                href={googleMapsLink({ lat: value.lat, lon: value.lon })}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Vérifier dans Google Maps
+              </a>
             ) : null}
           </div>
 

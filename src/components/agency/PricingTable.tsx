@@ -26,33 +26,17 @@ type Offer = {
  */
 const offers: readonly Offer[] = [
   {
-    kicker: 'SaaS · Essentiel',
-    title: 'Réservation',
+    kicker: 'SaaS',
+    title: 'Réservation + atelier',
     from: 49,
     cadence: 'par mois',
     convertible: false,
     audience:
-      'Page client + demandes structurées. Pour démarrer sans refaire tout le site.',
+      'Tout le système de réservation, la preuve visuelle et la facturation.',
     items: [
       'Page de réservation (formules, véhicule, créneau)',
-      'Photos envoyées par le client',
-      'Notifications email / WhatsApp',
+      'Acompte encaissé à la réservation',
       'Tableau de bord des demandes',
-      'Essai · résiliable à tout moment',
-    ],
-    href: '/nettoyage-automobile',
-    linkLabel: 'Voir la démo',
-  },
-  {
-    kicker: 'SaaS · Pro',
-    title: 'Réservation + atelier',
-    from: 89,
-    cadence: 'par mois',
-    convertible: false,
-    audience:
-      'Tout l’Essentiel, plus la preuve visuelle et la facturation pro (FR).',
-    items: [
-      'Tout le plan Essentiel',
       'Galerie avant / après',
       'Factures (mentions FR, numérotation)',
       'Espace pro renforcé',

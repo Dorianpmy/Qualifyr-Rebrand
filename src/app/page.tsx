@@ -1,221 +1,130 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
-import { BookingButton } from '@/components/agency/BookingButton';
-import { DiagnosticLink } from '@/components/agency/DiagnosticLink';
-import { InteractiveSitePreview } from '@/components/editorial/InteractiveSitePreview';
-import { SectionHeading } from '@/components/editorial/SectionHeading';
-import { Container } from '@/components/layout/Container';
-import { Section } from '@/components/layout/Section';
+import { AgentFlow } from '@/components/agency/AgentFlow';
+import { AgentGrid } from '@/components/agency/AgentGrid';
+import { CompareSection } from '@/components/agency/CompareSection';
+import { FaqSection } from '@/components/agency/DarkVerticalPage';
+import { homeFaq } from '@/components/agency/home-faq';
+import { BeforeAfterSection } from '@/components/agency/BeforeAfterSection';
+import { DarkFooter } from '@/components/agency/DarkFooter';
+import { DarkHeader } from '@/components/agency/DarkHeader';
+import { DarkHero } from '@/components/agency/DarkHero';
+import { DarkPricing } from '@/components/agency/DarkPricing';
+import { DemoSection } from '@/components/agency/DemoSection';
+import { FinalCtaSection } from '@/components/agency/FinalCtaSection';
+import { HowItWorks } from '@/components/agency/HowItWorks';
+import { ServiceTabs } from '@/components/agency/ServiceTabs';
+import { services } from '@/components/agency/services-content';
 import { JsonLd } from '@/components/seo/JsonLd';
-import { ButtonAnchor, ButtonLink } from '@/components/ui/Button';
-import { Eyebrow } from '@/components/ui/Eyebrow';
-import { frictionPoints, hero, saasHome } from '@/content/home';
-import { swCarCleaning } from '@/content/sw-car-cleaning';
 import { buildMetadata } from '@/lib/metadata';
 import { webPage } from '@/lib/structured-data';
-import styles from './page.module.css';
+
+/**
+ * Page d'accueil — charte « Dark Minimalist ».
+ *
+ * **Elle remplace l'ancienne page.** Celle-ci vivait sur la charte agence :
+ * vidéo de fond, en-tête vert, serif éditoriale. Sa version précédente est
+ * conservée telle quelle dans `page.legacy.tsx.bak`, à côté de ce fichier — il
+ * suffit de renommer les deux pour revenir en arrière si quelque chose manque.
+ *
+ * **Ordre des sections : promesse → action → explication → détail.** Le
+ * formulaire d'analyse arrive tôt parce qu'un visiteur convaincu par le titre
+ * doit pouvoir agir immédiatement ; l'enterrer sous deux écrans de pédagogie,
+ * c'est le perdre en route. Ceux qui ont besoin de comprendre défilent, et les
+ * sections suivantes répondent dans l'ordre des objections.
+ *
+ * **La démonstration précède les tarifs.** On ne demande pas à quelqu'un de
+ * choisir un abonnement avant de lui avoir laissé toucher le produit.
+ *
+ * **L'habillage de l'ancienne charte est masqué automatiquement** par la règle
+ * `body:has(main [data-theme='dark'])` de `tailwind.css` : la racine rend
+ * encore un en-tête et un pied de page clairs pour les pages non refondues.
+ */
 
 export const metadata: Metadata = buildMetadata('/');
 
 export default function HomePage() {
   return (
-    <>
+    <div data-theme="dark" className="bg-ink">
       <JsonLd data={webPage('/')} />
 
-      <Section spacing="flush" className={styles.heroSection}>
-        <video
-          className={styles.heroVideo}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          poster="/images/qualifyr-hero-poster.webp"
-          aria-hidden="true"
-          tabIndex={-1}
-        >
-          <source
-            src="/videos/qualifyr-hero-background.mp4"
-            type="video/mp4"
-            media="(prefers-reduced-motion: no-preference)"
-          />
-        </video>
-        <div className={styles.heroOverlay} aria-hidden="true" />
-        <div className={styles.heroContent}>
-          <Container>
-            <div className={styles.hero}>
-              <Eyebrow inverse>{hero.eyebrow}</Eyebrow>
-              <h1 className={styles.heroTitle}>{hero.title}</h1>
-              <p className={styles.heroBody}>{hero.body}</p>
-              <div className={styles.heroActions}>
-                <ButtonLink
-                  href="/nettoyage-automobile"
-                  ctaId="hero_cleaning"
-                  variant="inverse"
-                  withArrow
-                >
-                  Voir l’approche detailing
-                </ButtonLink>
-                <ButtonAnchor
-                  href={saasHome.primaryCta.href}
-                  ctaId="hero_saas_demo"
-                  variant="inverseSecondary"
-                  withArrow
-                >
-                  Essayer l’outil réservation
-                </ButtonAnchor>
-              </div>
-              <p className={styles.heroSignature}>
-                Site vitrine + parcours de réservation pour detailers.{' '}
-                <Link href="#outil-detailers" data-cta-id="hero_saas_anchor">
-                  Découvrir l’outil →
-                </Link>
-              </p>
-            </div>
-          </Container>
-        </div>
-      </Section>
+      <DarkHeader />
 
-      <Section id="outil-detailers" surface="inverse" spacing="tight" className={styles.saasSection}>
-        <Container>
-          <div className={styles.saasGrid}>
-            <div className={styles.saasCopy}>
-              <Eyebrow inverse>{saasHome.eyebrow}</Eyebrow>
-              <h2 className={styles.saasTitle}>{saasHome.title}</h2>
-              <p className={styles.saasLead}>{saasHome.lead}</p>
-              <div className={styles.saasActions}>
-                <ButtonAnchor
-                  href={saasHome.primaryCta.href}
-                  ctaId="home_saas_demo"
-                  variant="inverse"
-                  withArrow
-                >
-                  {saasHome.primaryCta.label}
-                </ButtonAnchor>
-                <ButtonAnchor
-                  href={saasHome.secondaryCta.href}
-                  ctaId="home_saas_login"
-                  variant="inverseSecondary"
-                >
-                  {saasHome.secondaryCta.label}
-                </ButtonAnchor>
-              </div>
-            </div>
-            <ul className={styles.saasPoints} aria-label="Points forts de l’outil">
-              {saasHome.points.map((point) => (
-                <li key={point.title}>
-                  <strong>{point.title}</strong>
-                  <span>{point.body}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Container>
-      </Section>
+      <DarkHero
+        eyebrow="SaaS de réservation + Agent IA"
+        title="Ne répondez plus aux"
+        highlight="« C’est combien pour une Clio ? »"
+        subtitle="Gardez les mains sur la polisseuse. Votre système filtre les curieux, encaisse les acomptes, et votre agent d’acquisition démarche de nouveaux clients sur votre secteur pendant que vous travaillez."
+        ctaLabel="Tester l’agent sur ma ville"
+        ctaHref="#agent-title"
+        secondaryLabel="Voir le SaaS de réservation"
+        secondaryHref="/nettoyage-automobile"
+        ctaNote="Sans carte bancaire. France et Suisse."
+        proof={{
+          /*
+           * CHIFFRE ET PORTRAITS À VÉRIFIER AVANT MISE EN LIGNE PUBLIQUE.
+           *
+           * Deux affirmations sont posées ici, à l'endroit exact où le visiteur
+           * cherche une raison de croire le reste de la page.
+           *
+           * 1. Le décompte. Tu m'as indiqué que « +100 » n'était pas encore
+           *    vrai. Le premier prospect qui demande une référence, ou un
+           *    concurrent qui compte tes clients, le découvrira.
+           *
+           * 2. Les portraits. Ce sont des visages qui n'appartiennent à aucun
+           *    de tes clients. Un professionnel qui reconnaît un portrait
+           *    d'illustration cesse de croire le reste — y compris les choses
+           *    vraies, comme le prix ferme ou l'acompte encaissé.
+           *
+           * Le bandeau `<TrustStrip />` reste disponible : remplace tout ce
+           * bloc par `trust` pour revenir à une réassurance sans chiffre.
+           */
+          count: '+100 utilisateurs',
+          rating: 5,
+          ratingLabel: 'Note moyenne — à vérifier avant publication',
+          avatars: [
+            { src: '/images/proof/proof-1.webp', alt: 'Professionnel équipé avec Qualifyr' },
+            { src: '/images/proof/proof-2.webp', alt: 'Professionnelle équipée avec Qualifyr' },
+            { src: '/images/proof/proof-3.webp', alt: 'Professionnel équipé avec Qualifyr' },
+            { src: '/images/proof/proof-4.webp', alt: 'Professionnelle équipée avec Qualifyr' },
+          ],
+        }}
+      />
 
-      <Section id="pour-qui" surface="sunken" ruled spacing="tight">
-        <Container>
-          <div className={styles.sectionIntro}>
-            <SectionHeading
-              eyebrow="01 — Le problème"
-              title="Trois freins qui font partir un client prêt à réserver."
-              lead="Dans le nettoyage automobile, le prospect décide souvent avant de vous parler. S’il ne comprend pas l’offre, ne voit pas les tarifs ou ne trouve pas comment réserver, il passe au suivant."
-            />
-          </div>
-          <ol className={styles.companyList}>
-            {frictionPoints.map((point) => (
-              <li key={point.number}>
-                <div className={styles.companyLink}>
-                  <span className={styles.companyNumber}>{point.number}</span>
-                  <span className={styles.companyCopy}>
-                    <span className={styles.companyTitle}>{point.title}</span>
-                    <span className={styles.companyBody}>{point.body}</span>
-                  </span>
-                </div>
-              </li>
-            ))}
-          </ol>
-          <p className={styles.companyNote}>
-            <Link href="/nettoyage-automobile" data-cta-id="home_cleaning_from_friction">
-              Voir comment on résout ça →
-            </Link>
-          </p>
-        </Container>
-      </Section>
+      <ServiceTabs
+        eyebrow="Ce que fait le système"
+        heading="Trois choses qui tournent sans vous."
+        services={services}
+      />
 
-      <Section id="sw-car-cleaning" surface="inverse" spacing="tight">
-        <Container>
-          <div className={styles.caseGrid}>
-            <div className={styles.caseContent}>
-              <Eyebrow inverse>02 — Réalisation réelle</Eyebrow>
-              <h2>SW Car Cleaning</h2>
-              <p className={styles.caseLead}>
-                Une identité et une expérience digitale conçues pour rendre l’offre plus
-                claire, renforcer la crédibilité et simplifier la prise de contact.
-              </p>
-              <ul className={styles.factList} aria-label="Éléments réalisés">
-                <li>Clarification des prestations</li>
-                <li>Identité cohérente</li>
-                <li>Expérience mobile optimisée</li>
-              </ul>
-              <ButtonLink href="/realisations/sw-car-cleaning" ctaId="home_sw_case" variant="inverse" withArrow>
-                Voir comment nous l’avons construit
-              </ButtonLink>
-            </div>
-            {swCarCleaning.externalUrl ? (
-              <InteractiveSitePreview
-                url={swCarCleaning.externalUrl}
-                title="Site SW Carcleaning interactif"
-                domain="swcarcleaning.ch"
-                caption="Site réel · Fribourg"
-              />
-            ) : null}
-          </div>
-        </Container>
-      </Section>
+      <HowItWorks />
 
-      <Section id="tarifs" surface="sunken" spacing="tight" ruled>
-        <Container>
-          <div className={styles.pricing}>
-            <div>
-              <Eyebrow>03 — Tarifs</Eyebrow>
-              <h2>Ce que ça coûte, sans devoir demander.</h2>
-              <p>
-                SaaS réservation dès 49 €/mois (Pro 89 €). Site vitrine à partir de 690 €,
-                site avec parcours de demande entre 1 490 et 2 490 €. Détail sur la page tarifs.
-              </p>
-            </div>
-            <div className={styles.pricingAction}>
-              <ButtonLink href="/tarifs" ctaId="home_pricing" withArrow>
-                Voir les tarifs
-              </ButtonLink>
-            </div>
-          </div>
-        </Container>
-      </Section>
+      <AgentFlow />
 
-      <Section spacing="tight" ruled className={styles.finalSection}>
-        <Container>
-          <div className={styles.finalCta}>
-            <div>
-              <Eyebrow>04 — Votre prochaine étape</Eyebrow>
-              <h2>Votre activité est déjà solide. Sa présentation doit l’être aussi.</h2>
-              <p>
-                Parlez-nous de votre entreprise et découvrons comment mieux traduire votre
-                savoir-faire en une expérience que vos prospects comprennent et choisissent.
-              </p>
-            </div>
-            <div className={styles.finalActions}>
-              <DiagnosticLink ctaId="final_diagnostic" variant="primary">
-                Voir ce qui bloque mes demandes
-              </DiagnosticLink>
-              <BookingButton ctaId="final_booking" variant="secondary">
-                Réserver une analyse de parcours
-              </BookingButton>
-            </div>
-          </div>
-        </Container>
-      </Section>
-    </>
+      {/* Juste après le formulaire d'analyse : le visiteur vient d'obtenir sa
+          zone gratuite et se demande ce que donneraient les communes voisines.
+          Le prix répond à une question qu'il se pose déjà. */}
+      <AgentGrid />
+
+      <BeforeAfterSection />
+
+      <DemoSection />
+
+      {/* Le comparatif juste avant les tarifs : le visiteur doit avoir en tête
+          ce que les solutions qu'il utilise déjà ne savent pas faire au moment
+          où il lit un prix. Sinon il compare Qualifyr à zéro, et zéro gagne
+          toujours. */}
+      <CompareSection />
+
+      <DarkPricing />
+
+      {/* La FAQ après le prix, jamais avant : ce sont les objections de
+          quelqu'un qui a vu le montant et cherche une raison de ne pas y
+          aller. */}
+      <FaqSection items={homeFaq} />
+
+      <FinalCtaSection />
+
+      <DarkFooter />
+    </div>
   );
 }

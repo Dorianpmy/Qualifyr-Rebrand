@@ -1,5 +1,24 @@
+/* ---------------------------------------------------------------------------
+   Couleurs alignées sur la charte du site.
+
+   Le dashboard vivait sur sa propre palette — un vert de marque, un fond
+   presque noir légèrement différent, des gris à des opacités qui ne
+   correspondaient à rien d'autre. Un professionnel qui passe du site au
+   dashboard voyait deux produits.
+
+   Les valeurs pointent désormais vers les jetons déclarés dans
+   `tailwind.css` : `--color-primary`, `--color-muted`, `--color-faint`,
+   `--color-hairline`. Changer la charte à un seul endroit change les deux.
+
+   **Le dashboard ne porte pas `data-theme="dark"`, délibérément.** Cet
+   attribut déclenche un reset qui neutralise le fond et les bordures des
+   `div` dont la classe contient « card » — ce qui casserait les cartes de
+   réservation et l'éditeur de prestations. Ici on aligne les couleurs, pas
+   le mécanisme.
+--------------------------------------------------------------------------- */
+
 .snippet {
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--color-hairline-strong);
   border-radius: 0.9rem;
   background: rgba(255, 255, 255, 0.018);
   padding: 1.25rem;
@@ -23,7 +42,7 @@
   margin: 0;
   font-size: 0.82rem;
   line-height: 1.55;
-  color: rgba(250, 250, 250, 0.45);
+  color: var(--color-muted);
   max-inline-size: 46rem;
 }
 
@@ -46,7 +65,7 @@
 .code {
   margin: 0 0 0.9rem;
   padding: 0.85rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-hairline-strong);
   border-radius: 0.6rem;
   background: rgba(0, 0, 0, 0.35);
   /* Le code se lit et se copie à la main : il doit rester intégralement

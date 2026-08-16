@@ -1,0 +1,202 @@
+.scan {
+  background: var(--d-bg);
+  color: var(--d-text);
+  padding-block: var(--d-space-6);
+  padding-inline: clamp(1.25rem, 5vw, 3rem);
+  /* Lueur centrée basse : elle attire l'œil vers le champ de saisie, qui est
+     la seule chose à faire sur cet écran. */
+  background-image: radial-gradient(
+    50rem 28rem at 50% 115%,
+    rgba(255, 255, 255, 0.06),
+    transparent 70%
+  );
+  border-block: 1px solid var(--d-border);
+}
+
+.inner {
+  max-inline-size: 46rem;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0 0 var(--d-space-3);
+  padding: 0.4rem 0.85rem 0.4rem 0.7rem;
+  border: 1px solid var(--d-border);
+  border-radius: var(--d-radius-pill);
+  background: var(--d-surface);
+  font-size: var(--d-text-xs);
+  font-weight: 500;
+  color: var(--d-text-muted);
+}
+
+.dot {
+  inline-size: 6px;
+  block-size: 6px;
+  border-radius: 50%;
+  background: var(--d-text);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+}
+
+.title {
+  margin: 0 0 var(--d-space-2);
+  font-size: var(--d-text-2xl);
+  font-weight: 700;
+}
+
+.subtitle {
+  margin: 0 auto var(--d-space-4);
+  max-inline-size: 40ch;
+  font-size: var(--d-text-lg);
+  line-height: var(--d-leading-body);
+  color: var(--d-text-muted);
+}
+
+.form {
+  display: grid;
+  gap: var(--d-space-2);
+  justify-items: center;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: 10rem 1fr;
+  gap: var(--d-space-2);
+  inline-size: 100%;
+  max-inline-size: 34rem;
+  text-align: start;
+}
+
+.field {
+  display: grid;
+  gap: 0.4rem;
+  min-inline-size: 0;
+}
+
+.fieldLabel {
+  font-size: var(--d-text-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--d-text-faint);
+}
+
+/* Champ minimaliste : pas de boîte, une ligne du bas qui s'allume au focus.
+   Le fond reste plus sombre que la section pour que la zone cliquable reste
+   perceptible avant même d'être touchée. */
+.input {
+  inline-size: 100%;
+  min-inline-size: 0;
+  min-block-size: 52px;
+  padding: 0 0.9rem;
+  border: 0;
+  border-block-end: 1px solid var(--d-border-strong);
+  border-radius: var(--d-radius-sm) var(--d-radius-sm) 0 0;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--d-text);
+  /* 16 px : en dessous, Safari agrandit la page au focus et n'en revient
+     jamais. Sur un formulaire de capture, c'est la conversion qui part. */
+  font-size: 16px;
+  font-family: var(--d-font);
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+.input::placeholder {
+  color: var(--d-text-faint);
+}
+
+.input:focus {
+  outline: none;
+  border-block-end-color: var(--d-text);
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.cta {
+  min-block-size: 52px;
+  margin-block-start: var(--d-space-1);
+  padding-inline: 2rem;
+  border: 0;
+  border-radius: var(--d-radius-pill);
+  background: var(--d-action-bg);
+  color: var(--d-action-text);
+  font-family: var(--d-font);
+  font-size: var(--d-text-base);
+  font-weight: 600;
+  cursor: pointer;
+  /* Halo blanc plutôt que coloré : la palette n'a pas d'accent, et un halo
+     teinté réintroduirait une couleur par la porte de derrière. */
+  box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.25);
+  transition: box-shadow 200ms ease, background-color 160ms ease, transform 160ms ease;
+}
+
+.cta:hover:not(:disabled) {
+  background: var(--d-action-bg-hover);
+  box-shadow: 0 0 32px 0 rgba(255, 255, 255, 0.22);
+  transform: translateY(-1px);
+}
+
+/* Désactivé sans être invisible : un bouton qu'on ne voit plus donne
+   l'impression que le formulaire est cassé. */
+.cta:disabled {
+  background: rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+}
+
+.note {
+  margin: var(--d-space-1) 0 0;
+  font-size: var(--d-text-sm);
+  color: var(--d-text-faint);
+}
+
+.error {
+  margin: 0;
+  font-size: var(--d-text-sm);
+  color: #fca5a5;
+}
+
+.done {
+  max-inline-size: 34rem;
+  margin-inline: auto;
+  padding: var(--d-space-3);
+  border: 1px solid var(--d-border);
+  border-radius: var(--d-radius);
+  background: var(--d-surface);
+  text-align: start;
+}
+
+.doneTitle {
+  margin: 0 0 0.4rem;
+  font-size: var(--d-text-lg);
+  font-weight: 600;
+}
+
+.doneBody {
+  margin: 0;
+  font-size: var(--d-text-base);
+  line-height: var(--d-leading-body);
+  color: var(--d-text-muted);
+}
+
+@media (max-width: 34rem) {
+  .fields {
+    grid-template-columns: 1fr;
+  }
+
+  .cta {
+    inline-size: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta,
+  .input {
+    transition: none;
+  }
+
+  .cta:hover:not(:disabled) {
+    transform: none;
+  }
+}

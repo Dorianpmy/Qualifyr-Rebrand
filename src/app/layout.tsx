@@ -5,7 +5,7 @@ import { FloatingWhatsApp } from '@/components/agency/FloatingWhatsApp';
 import { AttributionCapture } from '@/components/agency/AttributionCapture';
 import { Footer } from '@/components/layout/Footer';
 import { SkipLink } from '@/components/layout/SkipLink';
-import { RevealObserver, revealBootstrap } from '@/components/motion/RevealObserver';
+import { RevealObserver } from '@/components/motion/RevealObserver';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { fontClassName } from '@/lib/fonts';
 import { openGraphImage } from '@/lib/metadata';
@@ -72,18 +72,51 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: revealBootstrap }} />
-      </head>
+      {/*
+       * Il n'y a plus de script d'amorçage ici, et c'est volontaire.
+       *
+       * Un `<script>` de trois lignes posait `data-motion="on"` sur `<html>`
+       * avant le premier rendu, pour autoriser les animations de révélation.
+       * Écrit en `dangerouslySetInnerHTML` il déclenchait une erreur de rendu
+       * client ; passé par `next/script`, une autre. Les deux disaient la même
+       * chose : ce script n'a pas de place propre dans l'App Router.
+       *
+       * Il n'en a pas besoin. Sa seule fonction était de tester
+       * `prefers-reduced-motion` — ce que CSS fait nativement, sans script,
+       * sans erreur, et avant même le premier octet de JavaScript. La règle
+       * vit désormais dans `base.css`.
+       */}
       <body>
         <AttributionCapture />
         <JsonLd data={organization()} />
         <JsonLd data={website()} />
         <SkipLink />
-        <Header />
-        <FloatingWhatsApp />
+
+        {/*
+         * L'habillage de l'ancienne charte — en-tête vert, pied de page clair,
+         * bulle WhatsApp — est rendu pour toutes les pages depuis la racine.
+         * Les pages passées à la charte sombre portent leur propre en-tête et
+         * leur propre pied de page ; sans garde, elles en afficheraient deux.
+         *
+         * Le masquage se fait en CSS, sur `body:has([data-theme='dark'])` —
+         * voir `tailwind.css`. Une condition en JavaScript sur le chemin
+         * obligerait ce composant serveur à devenir client, et donc à charger
+         * tout l'habillage dans le navigateur pour finir par ne pas l'afficher.
+         *
+         * Ces marqueurs disparaîtront avec les dernières pages claires.
+         */}
+        <div data-legacy-chrome="header">
+          <Header />
+        </div>
+        <div data-legacy-chrome="whatsapp">
+          <FloatingWhatsApp />
+        </div>
+
         <main id="contenu">{children}</main>
-        <Footer />
+
+        <div data-legacy-chrome="footer">
+          <Footer />
+        </div>
         <RevealObserver />
       </body>
     </html>

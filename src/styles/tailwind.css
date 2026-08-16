@@ -1,0 +1,1001 @@
+/* ===========================================================================
+   Tailwind v4 — site vitrine uniquement
+   ===========================================================================
+
+   **Preflight est délibérément absent.**
+
+   `@import "tailwindcss"` charge trois choses : le thème, preflight, et les
+   utilitaires. Preflight est une remise à zéro globale — il met tous les
+   titres au corps du texte, supprime les puces des listes, réinitialise les
+   marges. Or le dashboard, le tunnel de réservation et les quarante composants
+   en CSS Modules de ce dépôt s'appuient sur les styles par défaut du
+   navigateur pour tout ce qu'ils ne déclarent pas explicitement.
+
+   L'importer casserait ces écrans — et pas visiblement : des listes qui
+   perdent leurs puces et des titres qui rétrécissent ne provoquent aucune
+   erreur, ils se contentent d'être moins bons, chez un professionnel en
+   clientèle.
+
+   On importe donc le thème et les utilitaires, sans la remise à zéro. Les
+   classes Tailwind fonctionnent normalement ; rien d'existant ne bouge.
+   =========================================================================== */
+
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+/*
+ * Le drapeau `important` sur les utilitaires.
+ *
+ * `globals.css` impose, hors de toute couche, des tailles et des interlignes
+ * en `!important` à tous les `h1`, `h2` et `p` du site. Une classe Tailwind
+ * ordinaire ne peut pas gagner contre ça, quelle que soit sa spécificité : une
+ * déclaration importante l'emporte toujours sur une déclaration normale.
+ *
+ * Avec ce drapeau, chaque utilitaire devient importante. Or pour les
+ * déclarations importantes, l'ordre des couches est **inversé** : une règle
+ * importante dans une couche l'emporte sur une règle importante hors couche.
+ * Les classes posées sur chaque titre reprennent donc la main, sans qu'on
+ * touche à `globals.css` — y toucher a déjà cassé la page une fois.
+ *
+ * Vérifié avant de l'activer : aucun composant du dépôt ne mélange modules CSS
+ * et classes Tailwind. Le drapeau ne peut donc pas écraser les feuilles du
+ * tableau de bord ou du tunnel.
+ */
+@import 'tailwindcss/utilities.css' layer(utilities) important;
+
+/* ---------------------------------------------------------------------------
+   Jetons de la DA « Dark Minimalist ».
+
+   Déclarés dans `@theme`, ils deviennent des classes utilitaires : `bg-ink`,
+   `text-muted`, `rounded-card`. Ils restent aussi des variables CSS, donc les
+   composants encore en CSS Modules peuvent les consommer pendant la
+   transition — les deux systèmes lisent la même source.
+--------------------------------------------------------------------------- */
+@theme {
+  /* --- Surfaces ---
+     Le fond n'est pas un noir pur : #0e0e0f porte une pointe de chaud. Un
+     #000000 franc écrase les cartes posées dessus — il ne reste plus de marge
+     pour créer de la profondeur en dessous. */
+  --color-ink: #0e0e0f;
+  --color-panel: #131314;
+  --color-panel-raised: #1b1b1d;
+  --color-panel-sunken: #101011;
+
+  /* Bordures : jamais pleines, jamais colorées. */
+  --color-hairline: rgba(255, 255, 255, 0.06);
+  --color-hairline-strong: rgba(255, 255, 255, 0.1);
+
+  /* --- Texte ---
+     Trois niveaux, et **jamais de blanc pur**. Sur un fond sombre, le blanc
+     pur produit un halo qui fatigue à la lecture ; #e0e0e0 donne le même
+     contraste perçu sans l'éblouissement. */
+  --color-primary: #e0e0e0;
+  --color-muted: #9a9a9c;
+  --color-faint: #6e6e70;
+
+  /* --- Accents ---
+     Réservés à de petits points de couleur dans les grilles, jamais à des
+     masses. Une couleur qui occupe une surface cesse d'être un accent et
+     devient un fond. */
+  --color-accent-emerald: #7bff7d;
+  --color-accent-blue: #4d79fc;
+  --color-accent-rose: #ffd0c9;
+  --color-accent-orange: #ff5d46;
+  --color-accent-violet: #c671ff;
+
+  /*
+   * Les deux familles réellement chargées par `next/font` — voir
+   * `src/lib/fonts.ts`. Elles étaient déclarées ici en « Inter », qui n'est
+   * chargée nulle part : tout le site tombait donc sur la police système, ce
+   * qui explique les titres sans caractère.
+   *
+   * Instrument Sans porte les titres : une grotesque étroite se resserre en
+   * gros corps, là où Manrope s'étale. Manrope garde le texte courant, où ses
+   * contreformes ouvertes tiennent mieux la lecture en petit corps.
+   */
+  --font-sans: var(--font-body), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-heading: var(--font-display), var(--font-body), system-ui, sans-serif;
+
+  /* Interlignage et interlettrage descendent quand le corps monte : un grand
+     titre composé avec l'interligne d'un paragraphe paraît disloqué. */
+  --text-display: clamp(2.1rem, 5vw, 3.4rem);
+  --text-display--line-height: 1.08;
+  --text-display--letter-spacing: -0.03em;
+  --text-display--font-weight: 700;
+
+  --text-section: clamp(1.75rem, 3.6vw, 2.6rem);
+  --text-section--line-height: 1.12;
+  --text-section--letter-spacing: -0.025em;
+  --text-section--font-weight: 700;
+
+  --text-card: clamp(1.25rem, 2vw, 1.55rem);
+  --text-card--line-height: 1.2;
+  --text-card--letter-spacing: -0.015em;
+
+  /* Corps de lecture : 16 px et 1,65 d'interligne. */
+  --text-body: 1rem;
+  --text-body--line-height: 1.65;
+
+  /* Labels : petits, capitales espacées. */
+  --text-label: 0.6875rem;
+  --text-label--letter-spacing: 0.08em;
+
+  --radius-card: 14px;
+  --radius-cta: 10px;
+
+  /* 1120 px : la fourchette 1100–1200 du cahier des charges. */
+  --container-page: 70rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Le strict minimum de mise à zéro, appliqué **uniquement** sous
+   `data-theme="dark"`.
+
+   C'est ce que preflight aurait fait — mais circonscrit aux sections de la
+   nouvelle DA, donc sans toucher au reste du site.
+--------------------------------------------------------------------------- */
+@layer base {
+  /* Les jetons de la charte sont exposés sur `:root` afin que le dashboard —
+     qui ne porte pas `data-theme="dark"` pour éviter le reset des cartes —
+     puisse les consommer depuis ses modules CSS. Déclarer les valeurs deux
+     fois les ferait diverger au premier changement. */
+  :root {
+    /* Sable et céladon — mêmes valeurs que la charte du site. */
+    --accent-1: #f2d5b3;
+    --accent-2: #b8dcd0;
+
+    /*
+     * Lilas poudré — la troisième couleur.
+     *
+     * **Elle n'est pas arrivée par goût.** Elle existe déjà dans les visuels
+     * d'agents que tu as fournis : le disque « Agent Prospection » mêle du vert
+     * d'eau et ce lilas. La charte ne l'avait simplement jamais nommée.
+     *
+     * **Deux couleurs font un dégradé, trois font une identité.** Un dégradé à
+     * deux teintes se lit comme une transition ; à trois, il devient une
+     * signature reconnaissable — c'est exactement ce que fait la référence avec
+     * son rouge, son violet et son bleu.
+     *
+     * **Elle reste la moins employée des trois.** Réservée au nœud central du
+     * schéma et au halo qui l'entoure : l'endroit où l'on veut que l'œil
+     * s'arrête. Étendue aux cartes ordinaires, elle ferait basculer la charte
+     * du sobre au bariolé.
+     */
+    --accent-3: #c9c4ee;
+
+    --color-primary: #e0e0e0;
+    --color-muted: #9a9a9c;
+    --color-faint: #6e6e70;
+    --color-hairline: rgba(255, 255, 255, 0.06);
+    --color-hairline-strong: rgba(255, 255, 255, 0.1);
+  }
+
+  [data-theme='dark'] {
+    color-scheme: dark;
+    background-color: var(--color-ink);
+    color: var(--color-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Aucune serif ne doit remonter du thème agence par héritage. */
+  [data-theme='dark'] :is(p, li, button, input, textarea, select, label) {
+    font-family: var(--font-sans);
+  }
+
+  /* Les titres passent sur la grotesque étroite, et resserrent leur crénage.
+     Le crénage négatif est indissociable du choix de police : Instrument Sans
+     est dessinée pour être composée serrée en grand corps, et l'espacement par
+     défaut d'un navigateur la fait paraître relâchée. */
+  [data-theme='dark'] :is(h1, h2, h3, h4) {
+    font-family: var(--font-heading);
+    font-feature-settings: 'ss01';
+  }
+
+  [data-theme='dark'] :is(h1, h2, h3, h4, p) {
+    margin: 0;
+  }
+
+  [data-theme='dark'] :is(h1, h2, h3) {
+    text-wrap: balance;
+  }
+
+  [data-theme='dark'] ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Un contour visible au clavier uniquement : `outline: none` sans
+     remplacement rend le site inutilisable sans souris. */
+  [data-theme='dark'] :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+    border-radius: 10px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Reprise en main des boutons de la nouvelle charte.
+
+   `globals.css` impose la couleur de marque à tout ce qui ressemble à un
+   bouton, en `!important`, sur des sélecteurs très larges. Ces règles datent
+   de l'époque où le site n'avait qu'une seule direction artistique.
+
+   **Pourquoi on les contourne au lieu de les corriger.** Les borner à la
+   source — en préfixant chaque règle par une garde `:not(:has(...))` — a été
+   tenté et a cassé la page d'accueil : ces sélecteurs se recouvrent, certains
+   posent le fond sombre du site entier, et une seule garde mal placée fait
+   tomber la mise en page complète. Le fichier n'est pas assez isolé pour
+   supporter une réécriture mécanique.
+
+   On intervient donc uniquement sur les boutons de la nouvelle charte, par
+   une classe explicite. La portée est étroite et vérifiable, et rien de ce qui
+   fonctionne aujourd'hui ne bouge.
+
+   **`.cta-solid` porte la classe, pas l'élément.** Une règle sur `a` ou
+   `button` aurait une spécificité supérieure aux utilitaires Tailwind et
+   écraserait silencieusement `px-8` ou `rounded-full`.
+--------------------------------------------------------------------------- */
+@layer utilities {
+  [data-theme='dark'] .cta-solid {
+    background: #ffffff !important;
+    color: #0a0a0c !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    box-shadow: none !important;
+    font-weight: 600 !important;
+  }
+
+  [data-theme='dark'] .cta-solid:disabled {
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+  }
+
+  /* Le contour de focus hérité est vert : la nouvelle charte n'a pas d'accent. */
+  [data-theme='dark'] :focus-visible {
+    outline-color: var(--color-primary) !important;
+  }
+
+  /* La charte historique impose un laiton doré aux titres et aux liens, via
+     des sélecteurs `!important` très larges (`h1`, `h2`, `a`). Sans cette
+     reprise, chaque titre de la nouvelle charte ressort doré et chaque lien
+     secondaire aussi — ce qui introduit une couleur d'accent dans une palette
+     qui n'en a aucune. On rétablit le blanc et ses déclinaisons, sans toucher
+     au reste du site. */
+  [data-theme='dark'] :is(h1, h2, h3, h4) {
+    color: var(--color-primary) !important;
+  }
+
+  [data-theme='dark'] a:not(.cta-solid) {
+    color: inherit !important;
+  }
+
+  /* ---------------------------------------------------------------------
+     Le point qui bloquait tout : `globals.css` n'appartient à aucune couche
+     CSS.
+
+     Les règles hors couche l'emportent sur toutes les règles en couche, quelle
+     que soit leur spécificité. Or les utilitaires Tailwind sont en couche
+     `utilities`. Résultat : `section { background; border; border-radius }`
+     de l'ancienne charte gagnait contre `bg-ink`, et le centrage était
+     contredit par les marges héritées.
+
+     On remet donc à zéro, sous `data-theme="dark"` uniquement, ce que
+     l'ancienne charte impose aux conteneurs. Sans ça, chaque section de la
+     nouvelle DA apparaît comme une carte grise à coins arrondis, décalée.
+     --------------------------------------------------------------------- */
+  /* Reset calqué **exactement** sur les sélecteurs de `globals.css`, et pas
+     plus large.
+
+     Une première version visait tous les `div` : elle annulait donc aussi le
+     fond, la bordure et les coins que mes propres composants déclarent — le
+     grand panneau des services ressortait sans fond ni arrondi. On ne
+     neutralise que ce que l'ancienne charte peint réellement. */
+  [data-theme='dark'] :is(section, header, footer, aside),
+  [data-theme='dark'] div[class*='Section'],
+  [data-theme='dark'] div[class*='Card'],
+  [data-theme='dark'] div[class*='card'] {
+    background-color: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* `globals.css` peint **tous** les `button` en couleur de marque : le
+     sélecteur commence par `button` seul, sans classe. Les onglets et toute
+     commande de la nouvelle charte ressortaient donc en vert. */
+  /*
+   * Remise à zéro des boutons — désormais limitée aux boutons **sans classe**.
+   *
+   * Elle visait auparavant tout bouton hors `.cta-solid`, avec dix
+   * déclarations importantes. Comme sa spécificité (0,2,1) dépasse celle d'un
+   * utilitaire Tailwind (0,1,0) et qu'ils vivent dans la même couche, elle
+   * écrasait les classes posées sur chaque bouton : plus de fond, plus de
+   * marge intérieure, plus de hauteur. C'est ce qui collait « Mensuel » à
+   * « Annuel » dans la bascule des tarifs et lui retirait son état actif.
+   *
+   * Elle n'a plus lieu d'être aussi large : depuis que les utilitaires portent
+   * le drapeau `important`, ils battent déjà les règles non calquées de
+   * `globals.css`. Ne restent à neutraliser que les boutons qui ne déclarent
+   * rien du tout — eux seuls ressortiraient encore en vert.
+   */
+  /*
+   * Deux règles, parce que le problème est double.
+   *
+   * 1. Les boutons **sans aucune classe** reçoivent la remise à zéro complète :
+   *    ils ne déclarent rien, donc tout ce que `globals.css` leur impose est à
+   *    annuler.
+   *
+   * 2. Les boutons **avec des classes** ne reçoivent que la neutralisation des
+   *    couleurs. C'est le correctif d'une erreur : j'avais d'abord tout
+   *    neutralisé, ce qui écrasait aussi la marge et la hauteur déclarées par
+   *    chaque composant — la bascule des tarifs y a perdu son espacement.
+   *    Puis j'ai restreint aux boutons sans classe, et le vert est revenu sur
+   *    les onglets, qui en ont une mais ne déclarent pas de fond.
+   *
+   *    La bonne portée est donc : neutraliser la couleur partout, la géométrie
+   *    nulle part.
+   *
+   * `:not([class*='bg-'])` laisse passer les boutons qui portent un utilitaire
+   * de fond — ceux-là ont fait un choix explicite qu'on ne doit pas contredire.
+   */
+  [data-theme='dark'] button:not([class]) {
+    background-color: transparent !important;
+    background-image: none !important;
+    color: inherit !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    min-height: 0 !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
+  }
+
+  [data-theme='dark'] button:not(.cta-solid):not([class*='bg-']),
+  [data-theme='dark'] a:not(.cta-solid):not([class*='bg-']) {
+    background-color: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Les surfaces de la nouvelle charte reprennent la main après la remise à
+     zéro : elles sont désignées explicitement, jamais par leur balise. */
+  [data-theme='dark'] .surface-card {
+    background-color: var(--color-panel) !important;
+    border: 1px solid var(--color-hairline) !important;
+    border-radius: var(--radius-card) !important;
+    transition: border-color 200ms ease, background-color 200ms ease;
+  }
+
+  [data-theme='dark'] .surface-card:hover {
+    border-color: var(--color-hairline-strong) !important;
+  }
+
+  [data-theme='dark'] .surface-raised {
+    background-color: var(--color-panel-raised) !important;
+    border: 1px solid var(--color-hairline-strong) !important;
+    border-radius: var(--radius-card) !important;
+  }
+
+  [data-theme='dark'] .surface-pill {
+    background-color: var(--color-panel) !important;
+    border: 1px solid var(--color-hairline) !important;
+    border-radius: 999px !important;
+  }
+
+  /* Le bouton principal : coins à 10 px, pas une pilule. Une pilule sur un
+     libellé long s'étire en ovale et perd sa lisibilité de bouton. */
+  [data-theme='dark'] .cta-solid {
+    border-radius: var(--radius-cta) !important;
+  }
+
+  /* Onglets : ils reprennent la main après le reset ci-dessus. */
+  [data-theme='dark'] .tab-pill {
+    border-radius: 999px !important;
+    padding: 0.5rem 1rem !important;
+    font-size: 0.875rem !important;
+    min-height: 38px !important;
+  }
+
+  /* L'onglet retenu déclare son fond après la neutralisation générale : sa
+     spécificité est plus haute, donc il reprend la main. */
+  [data-theme='dark'] .tab-pill[aria-selected='true'] {
+    background-color: rgba(255, 255, 255, 0.07) !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12) !important;
+    color: var(--color-primary) !important;
+    font-weight: 500 !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-theme='dark'] .surface-card {
+      transition: none;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Connecteurs animés du schéma d'agent.
+
+   Le trait pointillé défile lentement : c'est ce qui donne l'impression d'un
+   flux en cours plutôt que d'un organigramme figé. L'animation porte sur
+   `stroke-dashoffset` et non sur une position — le navigateur la traite sur le
+   compositeur, sans recalcul de mise en page à chaque image.
+
+   Vitesse volontairement lente (3 s par cycle). Un défilement rapide attire
+   l'œil en permanence et empêche de lire les cartes, ce qui est exactement
+   l'inverse du but.
+--------------------------------------------------------------------------- */
+@keyframes qualifyr-flow {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+[data-theme='dark'] .flow-line {
+  stroke: rgba(255, 255, 255, 0.28);
+  stroke-width: 1.25;
+  stroke-dasharray: 4 6;
+  fill: none;
+  animation: qualifyr-flow 3s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme='dark'] .flow-line {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Largeur pleine des pages de la nouvelle charte.
+
+   Le contenu restait calé à gauche dans une colonne d'environ 1000 px, sans
+   qu'aucune règle identifiable ne l'explique : le coupable est quelque part
+   dans les styles hérités, sur `main` ou sur un conteneur intermédiaire, et le
+   chercher à la lecture a échoué trois fois.
+
+   On ne le cherche donc plus : on neutralise. La garde `:has()` limite la
+   portée aux pages qui contiennent une section `data-theme="dark"` — les pages
+   de l'ancienne charte gardent exactement leur mise en page.
+
+   `mx-auto` peut alors faire son travail dans les composants.
+--------------------------------------------------------------------------- */
+@layer utilities {
+  body:has([data-theme='dark']) main {
+    inline-size: 100% !important;
+    max-inline-size: none !important;
+    margin-inline: 0 !important;
+    padding-inline: 0 !important;
+  }
+
+  [data-theme='dark'] {
+    inline-size: 100%;
+    max-inline-size: none;
+    margin-inline: 0;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Accent dégradé — badge, halo du bouton.
+
+   Trois panels au choix. Change les trois variables ci-dessous pour basculer
+   de l'un à l'autre ; tout le reste suit.
+
+   Deux teintes seulement. Un dégradé à trois arrêts introduit une couleur
+   intermédiaire que l'œil lit comme une troisième information ; à deux, la
+   transition se lit comme une matière unique.
+
+   I · Sable et céladon (actif)
+   G · Pêche et lavande
+   H · Bleu poudre et rose
+   J · Lilas et menthe
+
+   **Pourquoi un dégradé et pas une couleur pleine.** Une couleur pleine sur un
+   badge en fait une étiquette de statut — le lecteur y cherche un sens
+   (succès, alerte). Un dégradé traversant se lit comme une matière, pas comme
+   un code : il attire l'œil sans rien affirmer.
+--------------------------------------------------------------------------- */
+[data-theme='dark'] {
+  /* I · Sable et céladon (actif) — carrosserie et eau propre */
+  --accent-1: #f2d5b3;
+  --accent-2: #b8dcd0;
+
+  /* G · Pêche et lavande
+  --accent-1: #ffb59e;
+  --accent-2: #c9b8ff;
+  */
+
+  /* H · Bleu poudre et rose
+  --accent-1: #a8c5ff;
+  --accent-2: #ffc9d9;
+  */
+
+  /* J · Lilas et menthe
+  --accent-1: #d4b8ff;
+  --accent-2: #a8e6cf;
+  */
+}
+
+/* Texte en dégradé.
+   `background-clip: text` exige une couleur de texte transparente ; sans le
+   repli `color`, un navigateur sans support afficherait un texte invisible. */
+[data-theme='dark'] .accent-text {
+  color: var(--accent-1);
+  background-image: linear-gradient(100deg, var(--accent-1) 0%, var(--accent-2) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  [data-theme='dark'] .accent-text {
+    -webkit-text-fill-color: currentcolor;
+  }
+}
+
+/* Halo du bouton : deux taches floues de part et d'autre, derrière l'élément.
+   Le flou est porté par un pseudo-élément et non par `box-shadow` — une ombre
+   colorée sur un bouton blanc le teinte, alors qu'ici la couleur reste
+   strictement à l'extérieur. */
+[data-theme='dark'] .accent-glow {
+  position: relative;
+  isolation: isolate;
+}
+
+/*
+ * Le halo derrière le bouton principal.
+ *
+ * **Il dessinait un carré.** Deux causes cumulées. D'abord `border-radius:
+ * inherit` : le bouton reçoit `border-radius: 10px` de `.cta-solid`, donc le
+ * halo héritait d'un rectangle à peine arrondi et non d'une pilule. Ensuite et
+ * surtout, les dégradés s'arrêtaient à 70 % : le reste du rectangle restait
+ * peint d'une couleur unie, et le flou ne faisait qu'adoucir ses arêtes au
+ * lieu de les supprimer. On voyait donc la boîte.
+ *
+ * La correction tient dans `closest-side` : chaque dégradé atteint la
+ * transparence complète avant d'atteindre le bord de la boîte, il n'y a plus
+ * aucune arête à flouter. Le rayon passe en pilule, ce qui achève de faire
+ * disparaître les angles.
+ */
+[data-theme='dark'] .accent-glow::before {
+  content: '';
+  position: absolute;
+  inset: -55%;
+  z-index: -1;
+  border-radius: 999px;
+  background:
+    radial-gradient(closest-side ellipse at 28% 50%, var(--accent-1), transparent 100%),
+    radial-gradient(closest-side ellipse at 72% 50%, var(--accent-2), transparent 100%);
+  filter: blur(26px);
+  /* Un pastel est déjà proche du blanc : au-delà de 0,35 le halo bave sur le
+     bouton et le fait paraître sale. */
+  opacity: 0.32;
+  transition: opacity 220ms ease;
+}
+
+[data-theme='dark'] .accent-glow:hover::before {
+  opacity: 0.5;
+}
+
+/* Bordure en dégradé pour les pastilles : deux fonds superposés, l'un peint
+   la zone de contenu, l'autre la bordure. Un simple `border-image` ne suit pas
+   les coins arrondis. */
+[data-theme='dark'] .accent-ring {
+  background:
+    linear-gradient(var(--color-panel), var(--color-panel)) padding-box,
+    linear-gradient(100deg, var(--accent-1), var(--accent-2)) border-box !important;
+  border: 1px solid transparent !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme='dark'] .accent-glow::before {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Dashboard professionnel.
+
+   Le dashboard ne porte pas `data-theme="dark"` : cet attribut déclenche un
+   reset qui neutralise fond et bordures des conteneurs, ce qui aplatirait ses
+   cartes de réservation et son éditeur de prestations, tous stylés en CSS
+   Modules sans `!important`.
+
+   Il subit en revanche `globals.css` de plein fouet — d'où les liens, les
+   pastilles de filtre et le bouton de déconnexion en vert de marque. On
+   neutralise donc précisément ce que l'ancienne charte impose aux liens et aux
+   boutons, sous `[data-app]`, et les modules CSS du dashboard reprennent la
+   main derrière.
+--------------------------------------------------------------------------- */
+@layer utilities {
+  [data-app='dashboard'] a,
+  [data-app='dashboard'] button {
+    background: none !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    color: inherit !important;
+    border-color: var(--color-hairline-strong) !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: revert-layer !important;
+    min-height: 0 !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
+  }
+
+  /* Le bouton d'action du dashboard reprend la main : blanc plein, comme sur
+     le site. C'est le seul élément plein de chaque écran. */
+  [data-app='dashboard'] .app-primary {
+    background-color: #ffffff !important;
+    color: #0e0e0f !important;
+    border: 0 !important;
+    border-radius: 10px !important;
+    padding: 0.55rem 1rem !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    min-height: 40px !important;
+  }
+
+  [data-app='dashboard'] .app-ghost {
+    border: 1px solid var(--color-hairline-strong) !important;
+    border-radius: 10px !important;
+    padding: 0.55rem 1rem !important;
+    font-size: 0.875rem !important;
+    color: var(--color-muted) !important;
+    min-height: 40px !important;
+  }
+
+  [data-app='dashboard'] .app-ghost:hover {
+    color: var(--color-primary) !important;
+  }
+
+  [data-app] :focus-visible {
+    outline-color: var(--color-primary) !important;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   Tunnel de réservation.
+
+   Ses boutons et ses champs sont stylés par son propre module CSS, avec des
+   `!important` qui l'emportent déjà sur l'ancienne charte. Il ne reste qu'à
+   neutraliser ce que `globals.css` impose aux liens et aux titres, et à
+   corriger le contour de focus, encore vert.
+--------------------------------------------------------------------------- */
+@layer utilities {
+  [data-app='booking'] a:not([class]) {
+    color: inherit !important;
+  }
+
+  [data-app='booking'] :is(h1, h2, h3) {
+    color: var(--color-primary) !important;
+    font-size: revert-layer !important;
+  }
+
+  [data-app='booking'] :focus-visible {
+    outline-color: var(--color-primary) !important;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   Le contour dégradé — la signature de la charte.
+
+   C'est le seul endroit où la couleur apparaît. Pas de fond coloré, pas de
+   texte coloré : un filet d'un pixel qui passe du sable au céladon en
+   diagonale, sur un fond quasi noir. Tout le reste de l'interface reste en
+   noir et blanc, et c'est précisément ce qui rend ce filet visible.
+
+   **Deux fonds superposés, pas `border-image`.** `border-image` ignore les
+   coins arrondis : le dégradé déborderait aux angles. Ici le premier fond
+   peint l'intérieur jusqu'au bord du padding, le second peint la zone de
+   bordure — les deux suivent le `border-radius`.
+
+   `--glow-fill` permet à chaque contexte de donner sa propre couleur de
+   remplissage : une carte du tableau de bord n'est pas sur le même noir
+   qu'un panneau du site.
+--------------------------------------------------------------------------- */
+@layer utilities {
+  .glow-border {
+    border: 1px solid transparent !important;
+    background:
+      linear-gradient(var(--glow-fill, #101011), var(--glow-fill, #101011)) padding-box,
+      linear-gradient(140deg, var(--accent-1), transparent 45%, var(--accent-2)) border-box !important;
+  }
+
+  /* Variante pour les boutons : le dégradé fait le tour complet au survol,
+     ce qui donne le retour d'état sans changer la couleur du texte. */
+  .glow-border-hover:hover {
+    background:
+      linear-gradient(var(--glow-fill, #101011), var(--glow-fill, #101011)) padding-box,
+      linear-gradient(140deg, var(--accent-1), var(--accent-2)) border-box !important;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   Métriques des titres — la cause de l'écrasement.
+
+   `globals.css` impose, hors de toute couche :
+
+       h1 { font-size: clamp(2.5rem, 8vw, 5rem) !important; line-height: 1.05 }
+       h2 { font-size: clamp(1.8rem, 4vw, 2.8rem) !important; line-height: 1.1 }
+
+   Deux conséquences. D'abord la taille : quelle que soit la classe posée sur
+   un titre, il ressort à la taille de l'ancienne charte, d'où des `h1` de
+   80 px sur des colonnes prévues pour 54. Ensuite l'interligne : 1,05 sur un
+   titre de deux lignes fait se toucher les jambages de la première ligne et
+   les accents de la seconde — c'est l'écrasement visible à l'écran.
+
+   **Pourquoi ce bloc l'emporte alors que l'autre porte `!important`.** Pour
+   les déclarations importantes, l'ordre des couches est inversé : une règle
+   importante placée dans une couche l'emporte sur une règle importante hors
+   couche. C'est le seul mécanisme qui permette de reprendre la main sans
+   toucher à `globals.css` — et y toucher a déjà cassé la page une fois.
+
+   `revert-layer` rend la valeur à la couche précédente, c'est-à-dire aux
+   utilitaires Tailwind posés sur chaque titre. Chaque composant garde donc la
+   maîtrise de sa propre taille.
+--------------------------------------------------------------------------- */
+@layer utilities {
+  /* Filet de sécurité : un titre qui ne déclare rien reçoit des métriques
+     correctes plutôt que celles de l'ancienne charte. L'interligne descend
+     quand le corps monte — un grand titre composé avec l'interligne d'un
+     paragraphe paraît disloqué, et l'inverse se touche. */
+  [data-theme='dark'] h1:not([class*='text-']) {
+    font-size: var(--text-display);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+  }
+
+  [data-theme='dark'] h2:not([class*='text-']) {
+    font-size: var(--text-section);
+    line-height: 1.14;
+    letter-spacing: -0.025em;
+  }
+
+  /* Un paragraphe qui ne déclare ni corps ni interligne. La charte historique
+     lui impose 1 rem serré ; 1,6 d'interligne est le minimum lisible sur fond
+     sombre, où le texte paraît toujours plus dense qu'il ne l'est. */
+  [data-theme='dark'] p:not([class*='text-']) {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   Masquage de l'habillage de l'ancienne charte.
+
+   La racine rend un en-tête, un pied de page et une bulle WhatsApp pour toutes
+   les pages du site. Les pages refondues portent les leurs : sans cette règle,
+   elles afficheraient deux en-têtes et deux pieds de page superposés.
+
+   `:has()` regarde si la page rendue contient une section sombre. C'est la
+   seule condition disponible en CSS, et elle suffit : `data-theme="dark"` est
+   posé par les pages refondues, par personne d'autre.
+
+   À supprimer le jour où la dernière page claire sera passée à la charte — en
+   même temps que les marqueurs `data-legacy-chrome` de `layout.tsx`.
+--------------------------------------------------------------------------- */
+@layer utilities {
+  body:has(main [data-theme='dark']) [data-legacy-chrome] {
+    display: none !important;
+  }
+
+  /* La racine impose une largeur et des marges au `main` pour les pages
+     claires ; les sections sombres gèrent elles-mêmes leur largeur et doivent
+     pouvoir toucher les bords de la fenêtre. */
+  body:has(main [data-theme='dark']) main {
+    inline-size: 100% !important;
+    max-inline-size: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   Bascule mensuel / annuel.
+
+   **Pourquoi des règles dédiées plutôt que des utilitaires.** Trois tentatives
+   par utilitaires Tailwind et par styles en ligne ont échoué : les deux
+   « Mensuel » et « Annuel » restaient collés, sans état actif. C'est le même
+   motif que les onglets des services, dont le style tient précisément parce
+   qu'il est déclaré ici. Une classe explicite est vérifiable ; une chaîne
+   d'utilitaires soumise à trois couches de charte ne l'est pas.
+
+   **La distinction entre les deux états doit être franche.** Sur fond noir, un
+   simple changement de gris se perd. L'option retenue prend un fond blanc
+   plein et un texte sombre — l'inversion complète, le seul contraste qui se
+   lise du premier coup d'œil.
+--------------------------------------------------------------------------- */
+@layer utilities {
+  [data-theme='dark'] .period-switch {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.25rem !important;
+    padding: 0.3rem !important;
+    border-radius: 999px !important;
+    border: 1px solid var(--color-hairline-strong) !important;
+    background-color: rgba(255, 255, 255, 0.03) !important;
+  }
+
+  [data-theme='dark'] .period-option {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.4rem !important;
+    min-height: 40px !important;
+    padding: 0 1.15rem !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background-color: transparent !important;
+    color: var(--color-muted) !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    transition: background-color 160ms ease, color 160ms ease !important;
+  }
+
+  [data-theme='dark'] .period-option:hover {
+    color: var(--color-primary) !important;
+  }
+
+  /* Classe doublée à dessein : `button:not(.cta-solid):not([class*='bg-'])`
+     plus haut dans ce fichier remet tous les boutons à plat avec une
+     spécificité de (0,3,1) — `.period-option[aria-checked='true']` seul ne
+     pèse que (0,2,0) et perdait silencieusement (fond transparent, aucune
+     option visiblement sélectionnée). Répéter la classe porte ce sélecteur à
+     (0,3,0)+... au-delà du reset sans dépendre de l'ordre des règles dans le
+     fichier. */
+  [data-theme='dark'] .period-option.period-option[aria-checked='true'] {
+    background-color: #ffffff !important;
+    color: #0e0e0f !important;
+  }
+
+  /* La remise reste céladon dans les deux états : c'est une information, pas
+     une décoration, et elle doit rester lisible même quand l'option annuelle
+     n'est pas retenue. */
+  [data-theme='dark'] .period-badge {
+    padding: 0.15rem 0.45rem !important;
+    border-radius: 999px !important;
+    font-size: 0.6875rem !important;
+    font-weight: 700 !important;
+    background-color: rgba(184, 220, 208, 0.16) !important;
+    color: #7fae9d !important;
+  }
+
+  [data-theme='dark'] .period-option[aria-checked='true'] .period-badge {
+    background-color: #0e0e0f !important;
+    color: var(--accent-2) !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-theme='dark'] .period-option {
+      transition: none !important;
+    }
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   Le nœud principal du schéma — contour tricolore et halo.
+
+   **Ce qui manquait.** Le contour à deux teintes suffit pour distinguer une
+   carte active d'une carte ordinaire, mais pas pour désigner **le** point
+   central d'un schéma qui en compte six. La référence résout ça par un halo
+   coloré débordant du cadre : la carte ne se contente pas d'être encadrée,
+   elle éclaire ce qui l'entoure.
+
+   **Trois couches empilées, chacune avec un rôle.**
+   1. Le contour tricolore, sable → lilas → céladon.
+   2. Un halo externe en `box-shadow`, qui donne l'impression de lumière.
+   3. Un voile interne très faible, pour que le fond de la carte ne soit pas
+      exactement le même noir que la page.
+
+   `box-shadow` plutôt qu'un pseudo-élément flouté : l'ombre ne participe pas
+   à la mise en page, ne peut pas intercepter de clic, et ne demande aucun
+   contexte d'empilement.
+--------------------------------------------------------------------------- */
+@layer utilities {
+  [data-theme='dark'] .node-hero {
+    border: 1px solid transparent !important;
+    background:
+      radial-gradient(120% 140% at 15% 0%, rgba(201, 196, 238, 0.08), transparent 55%),
+      linear-gradient(#0f0f11, #0f0f11) padding-box,
+      linear-gradient(
+          115deg,
+          var(--accent-1) 0%,
+          var(--accent-3) 48%,
+          var(--accent-2) 100%
+        )
+        border-box !important;
+    box-shadow:
+      0 0 28px -6px rgba(242, 213, 179, 0.28),
+      0 0 34px -4px rgba(201, 196, 238, 0.22),
+      0 0 30px -8px rgba(184, 220, 208, 0.2) !important;
+  }
+
+  /* Le résultat final reprend le même contour, sans le halo : deux objets
+     lumineux dans le même schéma se concurrencent, et c'est l'agent qu'on
+     veut voir en premier. */
+  [data-theme='dark'] .node-result {
+    border: 1px solid transparent !important;
+    background:
+      linear-gradient(#0f0f11, #0f0f11) padding-box,
+      linear-gradient(115deg, var(--accent-1), var(--accent-3) 50%, var(--accent-2)) border-box !important;
+  }
+
+  /* Les connecteurs prennent la teinte centrale : le trait qui relie l'agent
+     à ses sous-agents appartient à l'agent. */
+  [data-theme='dark'] .flow-line {
+    stroke: rgba(201, 196, 238, 0.32) !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-theme='dark'] .node-hero {
+      transition: none !important;
+    }
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   Métriques des titres dans l'espace pro et le tunnel.
+
+   `globals.css` impose `h1 { font-size: clamp(2.5rem, 8vw, 5rem) !important }`
+   hors de toute couche. Le site est protégé parce que ses titres portent des
+   utilitaires Tailwind, eux-mêmes importants. Le tableau de bord et le tunnel
+   sont en modules CSS : leurs déclarations sont normales, donc perdantes face
+   à une règle importante. D'où des titres de 80 px sur un écran de gestion,
+   là où 20 px suffisent.
+
+   La correction rétablit une échelle d'application : un titre de page n'est
+   pas un titre de page de vente. Un professionnel qui ouvre son espace veut
+   voir ses demandes, pas un mot en gros.
+--------------------------------------------------------------------------- */
+@layer utilities {
+  [data-app='dashboard'] h1,
+  [data-app='booking'] h1 {
+    font-size: 1.35rem !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.03em !important;
+    font-weight: 700 !important;
+  }
+
+  [data-app='dashboard'] h2,
+  [data-app='booking'] h2 {
+    font-size: 1.05rem !important;
+    line-height: 1.3 !important;
+    letter-spacing: -0.02em !important;
+    font-weight: 700 !important;
+  }
+
+  [data-app='dashboard'] h3,
+  [data-app='booking'] h3 {
+    font-size: 0.95rem !important;
+    line-height: 1.35 !important;
+    letter-spacing: -0.01em !important;
+    font-weight: 600 !important;
+  }
+
+  /* L'écran de connexion ne porte pas `data-app` — il vit hors de la coque. */
+  [data-app='login'] h1 {
+    font-size: 1.5rem !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.03em !important;
+  }
+
+  @media (min-width: 900px) {
+    [data-app='dashboard'] h1 {
+      font-size: 1.5rem !important;
+    }
+
+    [data-app='dashboard'] h2 {
+      font-size: 1.15rem !important;
+    }
+  }
+}

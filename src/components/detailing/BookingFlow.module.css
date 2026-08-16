@@ -1,16 +1,28 @@
+/* ---------------------------------------------------------------------------
+   Charte sombre — alignée sur le site.
+
+   Le tunnel était conçu sur fond clair. Or `globals.css` impose un fond
+   sombre à `html` et `body` en `!important`, sans garde : le résultat était un
+   texte noir sur fond noir, illisible pour le client final.
+
+   Les valeurs sont inversées et pointent vers les jetons partagés. L'accent de
+   marque a disparu : la charte n'en a plus, et le blanc plein est réservé au
+   bouton d'action — le seul élément plein de chaque écran.
+--------------------------------------------------------------------------- */
+
 /* SaaS réservation — DA indépendante de l’agence (pas de serif éditorial) */
 
 .flow {
-  --accent: #12b76a;
-  --accent-hover: #0f9f5c;
-  --accent-soft: rgba(18, 183, 106, 0.12);
-  --accent-mid: rgba(18, 183, 106, 0.22);
+  --accent: #ffffff;
+  --accent-hover: rgba(255, 255, 255, 0.88);
+  --accent-soft: rgba(255, 255, 255, 0.10);
+  --accent-mid: rgba(255, 255, 255, 0.18);
   --saas-font: var(--font-body), 'Manrope', ui-sans-serif, system-ui, sans-serif;
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
-  background: #f4f2ef;
-  color: #141414;
+  background: #0e0e0f;
+  color: var(--color-primary);
   font-family: var(--saas-font);
 }
 
@@ -42,9 +54,9 @@
   top: 0;
   z-index: 20;
   padding: 0.9rem 1.15rem 0.85rem;
-  background: rgba(244, 242, 239, 0.92);
+  background: rgba(14, 14, 15, 0.92);
   backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(20, 20, 20, 0.08);
+  border-bottom: 1px solid var(--color-hairline);
 }
 
 .eyebrow {
@@ -59,13 +71,13 @@
 .contextStep {
   margin: 0.2rem 0 0.65rem;
   font-size: 0.85rem;
-  color: rgba(20, 20, 20, 0.55);
+  color: var(--color-muted);
 }
 
 .progress {
   width: 100%;
   height: 4px;
-  background: rgba(20, 20, 20, 0.08);
+  background: var(--color-hairline);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -102,7 +114,9 @@
   font-weight: 700 !important;
   letter-spacing: -0.04em !important;
   line-height: 1.2 !important;
-  color: #0f172a !important;
+  /* Bleu nuit à l'origine, hérité de la version sur fond clair : sur le fond
+     noir actuel, le titre de chaque étape était quasiment invisible. */
+  color: var(--color-primary) !important;
   font-style: normal !important;
 }
 
@@ -119,7 +133,7 @@
 .dayLabel {
   margin: -0.25rem 0 0;
   font-size: 0.85rem;
-  color: rgba(20, 20, 20, 0.5);
+  color: var(--color-faint);
   text-transform: capitalize;
 }
 
@@ -128,9 +142,9 @@
   min-height: 3.2rem;
   padding: 0 1rem;
   font-size: 1rem;
-  color: #141414;
-  background: #fff;
-  border: 1.5px solid rgba(20, 20, 20, 0.12);
+  color: var(--color-primary);
+  background: #131314;
+  border: 1.5px solid var(--color-hairline-strong);
   border-radius: 16px;
   width: 100%;
   box-sizing: border-box;
@@ -153,8 +167,8 @@
   display: grid;
   gap: 0.3rem;
   padding: 1.05rem 1.15rem;
-  background: #fff;
-  border: 1.5px solid rgba(20, 20, 20, 0.1);
+  background: #131314;
+  border: 1.5px solid var(--color-hairline-strong);
   border-radius: 18px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -184,7 +198,7 @@
 .optionCard p {
   margin: 0;
   font-size: 0.85rem;
-  color: rgba(20, 20, 20, 0.55);
+  color: var(--color-muted);
   line-height: 1.4;
   padding-right: 1.5rem;
 }
@@ -196,7 +210,7 @@
   gap: 0.75rem;
   padding-right: 1.5rem;
   font-weight: 600;
-  color: #141414;
+  color: var(--color-primary);
 }
 
 .optionPrice {
@@ -217,9 +231,9 @@
   min-height: 3rem;
   padding: 0.5rem;
   font-size: 0.95rem;
-  color: #141414;
-  background: #fff;
-  border: 1.5px solid rgba(20, 20, 20, 0.12);
+  color: var(--color-primary);
+  background: #131314;
+  border: 1.5px solid var(--color-hairline-strong);
   border-radius: 999px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -228,14 +242,14 @@
 
 .slotButton[data-selected='true'] {
   background: var(--accent);
-  color: #fff;
+  color: #131314;
   border-color: var(--accent);
   font-weight: 600;
 }
 
 .photoIntro {
   margin: 0;
-  color: rgba(20, 20, 20, 0.55);
+  color: var(--color-muted);
   font-size: 0.9rem;
 }
 
@@ -265,10 +279,10 @@
   display: grid;
   gap: 0.5rem;
   padding: 1rem;
-  background: #fff;
+  background: #131314;
   border-radius: 16px;
   font-size: 0.9rem;
-  border: 1px solid rgba(20, 20, 20, 0.08);
+  border: 1px solid var(--color-hairline);
 }
 
 .summary p {
@@ -290,10 +304,10 @@
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0.9rem 1.15rem calc(0.9rem + env(safe-area-inset-bottom));
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(14, 14, 15, 0.94);
   backdrop-filter: blur(16px);
-  border-top: 1px solid rgba(20, 20, 20, 0.08);
-  box-shadow: 0 -8px 24px rgba(20, 20, 20, 0.04);
+  border-top: 1px solid var(--color-hairline);
+  box-shadow: 0 -8px 24px var(--color-hairline);
 }
 
 .actionsPrice {
@@ -307,7 +321,7 @@
   font-size: 0.65rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(20, 20, 20, 0.45);
+  color: var(--color-faint);
   font-weight: 600;
 }
 
@@ -325,9 +339,9 @@
   max-width: 28rem;
   margin: 0 auto;
   padding: 2.5rem 1.15rem 3rem;
-  color: #141414;
+  color: var(--color-primary);
   min-height: 100dvh;
-  background: #f4f2ef;
+  background: #0e0e0f;
   box-sizing: border-box;
 }
 
@@ -345,22 +359,22 @@
   margin: 0;
   padding: 1rem;
   list-style: none;
-  background: #fff;
+  background: #131314;
   border-radius: 16px;
   font-size: 0.9rem;
-  border: 1px solid rgba(20, 20, 20, 0.08);
+  border: 1px solid var(--color-hairline);
 }
 
 .confirmList li strong {
   display: inline-block;
   min-width: 6.5rem;
   margin-right: 0.5rem;
-  color: rgba(20, 20, 20, 0.5);
+  color: var(--color-faint);
   font-weight: 500;
 }
 
 .note {
-  color: rgba(20, 20, 20, 0.5);
+  color: var(--color-faint);
   font-size: 0.85rem;
 }
 
@@ -373,10 +387,10 @@
   min-height: 4.6rem !important;
   padding: 1rem 1.15rem !important;
   padding-right: 2.75rem !important;
-  background: #fff !important;
-  border: 1.5px solid rgba(20, 20, 20, 0.1) !important;
+  background: #131314 !important;
+  border: 1.5px solid var(--color-hairline-strong) !important;
   border-radius: 18px !important;
-  color: #141414 !important;
+  color: var(--color-primary) !important;
   transform: none !important;
   grid-template-columns: unset !important;
   box-shadow: none !important;
@@ -385,24 +399,24 @@
 .flow :global(label[class*='choiceCard']:hover) {
   border-color: var(--accent-mid) !important;
   transform: translateY(-1px) !important;
-  box-shadow: 0 6px 18px rgba(18, 183, 106, 0.1) !important;
+  box-shadow: 0 6px 18px rgba(255, 255, 255, 0.08) !important;
 }
 
 .flow :global(label[class*='choiceCard']:has(input:checked)) {
   background: var(--accent-soft) !important;
   border-color: var(--accent) !important;
   box-shadow: 0 0 0 1px var(--accent) !important;
-  color: #141414 !important;
+  color: var(--color-primary) !important;
 }
 
 .flow :global(label[class*='choiceCard'] strong) {
-  color: #141414 !important;
+  color: var(--color-primary) !important;
   font-size: 1rem !important;
   font-weight: 600 !important;
 }
 
 .flow :global(label[class*='choiceCard'] small) {
-  color: rgba(20, 20, 20, 0.55) !important;
+  color: var(--color-muted) !important;
   font-size: 0.8rem !important;
 }
 
@@ -418,7 +432,7 @@
   width: 1.15rem !important;
   height: 1.15rem !important;
   border-radius: 999px !important;
-  border: 2px solid rgba(20, 20, 20, 0.2) !important;
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
   opacity: 1 !important;
   background: transparent !important;
 }
@@ -426,7 +440,7 @@
 .flow :global(label[class*='choiceCard']:has(input:checked) span[class*='choiceMark']) {
   background: var(--accent) !important;
   border-color: var(--accent) !important;
-  box-shadow: inset 0 0 0 3px #fff !important;
+  box-shadow: inset 0 0 0 3px #131314 !important;
 }
 
 .flow :global(div[class*='choiceGrid']) {
@@ -435,9 +449,9 @@
 
 .flow :global(input[class*='control']),
 .flow :global(textarea[class*='control']) {
-  background: #fff !important;
-  color: #141414 !important;
-  border: 1.5px solid rgba(20, 20, 20, 0.12) !important;
+  background: #131314 !important;
+  color: var(--color-primary) !important;
+  border: 1.5px solid var(--color-hairline-strong) !important;
   border-radius: 16px !important;
 }
 
@@ -450,12 +464,12 @@
 .flow :global(label[class*='label']),
 .flow :global(span[class*='optional']),
 .flow :global(p[class*='hint']) {
-  color: rgba(20, 20, 20, 0.6) !important;
+  color: var(--color-muted) !important;
 }
 
 .actions :global(button:not([class*='secondary'])) {
   background: var(--accent) !important;
-  color: #fff !important;
+  color: #131314 !important;
   border-color: var(--accent) !important;
   border-radius: 14px !important;
   font-weight: 600 !important;
@@ -468,9 +482,9 @@
 
 .actions :global(button[class*='secondary']) {
   border-radius: 14px !important;
-  border: 1.5px solid rgba(20, 20, 20, 0.15) !important;
-  background: #fff !important;
-  color: #141414 !important;
+  border: 1.5px solid var(--color-hairline-strong) !important;
+  background: #131314 !important;
+  color: var(--color-primary) !important;
 }
 
 .flow :global(button) {
@@ -487,7 +501,7 @@
     max-width: 26rem;
     width: 100%;
     margin: 0 auto;
-    border-bottom: 1px solid rgba(20, 20, 20, 0.08);
+    border-bottom: 1px solid var(--color-hairline);
     border-right: none;
     height: auto;
   }
@@ -520,7 +534,7 @@
   max-inline-size: 34rem;
   font-size: 0.92rem;
   line-height: 1.55;
-  color: rgba(20, 20, 20, 0.58);
+  color: var(--color-muted);
 }
 
 /* ---------------------------------------------------------------------------
@@ -549,5 +563,248 @@
 
   .stepHelp {
     font-size: 0.88rem;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   Touches de couleur — sable et céladon.
+
+   Le client final ne voit qu'un écran à la fois : la couleur lui sert à
+   repérer où il en est et ce qu'il vient de choisir. Deux emplacements, pas
+   plus, sinon le prix cesse d'être l'élément le plus visible.
+--------------------------------------------------------------------------- */
+
+/* Avancement : la barre se remplit du sable vers le céladon, du début vers
+   la fin du parcours. */
+.progress span {
+  background: linear-gradient(100deg, var(--accent-1), var(--accent-2)) !important;
+}
+
+/* Créneau retenu : contour dégradé, fond noir, texte blanc — la même
+   signature que partout ailleurs. Un fond plein en ferait le seul objet
+   coloré de l'écran, ce qui n'est pas la charte. */
+.slotButton[data-selected='true'] {
+  border: 1.5px solid transparent !important;
+  color: var(--color-primary) !important;
+  font-weight: 600 !important;
+  background:
+    linear-gradient(#131314, #131314) padding-box,
+    linear-gradient(140deg, var(--accent-1), var(--accent-2)) border-box !important;
+}
+
+/* Créneau libre au survol : le contour apparaît en dégradé partiel, ce qui
+   annonce l'état sélectionné sans le simuler. */
+.slotButton:not([data-selected='true']):hover {
+  border: 1.5px solid transparent !important;
+  background:
+    linear-gradient(#131314, #131314) padding-box,
+    linear-gradient(140deg, var(--accent-1), transparent 45%, var(--accent-2)) border-box !important;
+}
+
+/* Carte de choix cochée : bordure dégradée seulement. Un fond plein sur cinq
+   cartes empilées transformerait la page en damier. */
+.flow :global(label[class*='choiceCard']:has(input:checked)) {
+  border-color: transparent !important;
+  background:
+    linear-gradient(#131314, #131314) padding-box,
+    linear-gradient(120deg, var(--accent-1), var(--accent-2)) border-box !important;
+}
+
+/* La pastille de coche est le seul objet plein autorisé : elle fait 18 px,
+   un contour d'un pixel y serait invisible. */
+.flow :global(label[class*='choiceCard']:has(input:checked) span[class*='choiceMark']) {
+  background: linear-gradient(100deg, var(--accent-1), var(--accent-2)) !important;
+  border-color: transparent !important;
+}
+
+/* Champs de saisie au focus : contour dégradé plutôt que blanc. C'est le
+   retour d'état le plus fréquent du tunnel, il porte donc la signature. */
+.flow :global(input:focus),
+.flow :global(select:focus),
+.flow :global(textarea:focus) {
+  border: 1.5px solid transparent !important;
+  outline: none !important;
+  background:
+    linear-gradient(#131314, #131314) padding-box,
+    linear-gradient(140deg, var(--accent-1), var(--accent-2)) border-box !important;
+}
+
+
+/* ---------------------------------------------------------------------------
+   Comportement tactile — le tunnel se remplit sur un téléphone.
+
+   Le client arrive par un lien Instagram ou un QR code sur une camionnette.
+   L'ordinateur est l'exception ici, pas l'alternative : ces règles corrigent
+   ce qui, sur un téléphone, fait qu'un formulaire ressemble à une page web
+   plutôt qu'à une application.
+--------------------------------------------------------------------------- */
+
+.flow {
+  /* Le rebond élastique découvre le fond du navigateur sous la barre de prix
+     collée en bas — l'élément que le client regarde au moment de décider. */
+  overscroll-behavior-y: none;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* L'en-tête collant passe sous la barre d'état quand la page est ouverte en
+   plein écran. La marge de sécurité le remet sous l'heure et la batterie. */
+.context {
+  padding-top: calc(0.9rem + env(safe-area-inset-top));
+  padding-inline: calc(1.15rem + env(safe-area-inset-left)) calc(1.15rem + env(safe-area-inset-right));
+}
+
+.actions {
+  padding-inline: calc(1.15rem + env(safe-area-inset-left)) calc(1.15rem + env(safe-area-inset-right));
+}
+
+/* Toute cible tactile : pas de surbrillance bleue, pas de délai de 300 ms
+   hérité du double-tap, pas de sélection de texte accidentelle quand le doigt
+   glisse légèrement sur un bouton. */
+.flow :is(button, label, a, [role='button']) {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.flow :is(button, label) {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* 44 px minimum sur les cibles, la mesure retenue par Apple comme par
+   Material. Les cartes de choix sont plus généreuses encore : le client les
+   vise souvent d'une main, dans une allée ou dans un bus. */
+.flow :is(button, [type='submit']) {
+  min-block-size: 2.75rem;
+}
+
+.flow :global(label[class*='choiceCard']) {
+  min-block-size: 3.5rem;
+}
+
+.flow :global(label[class*='choiceCard']):active {
+  transform: scale(0.985);
+}
+
+/* 16 px sur tout champ. En dessous, Safari agrandit la page au focus et ne
+   revient jamais à l'échelle initiale : le client se retrouve avec un
+   formulaire coupé sur les bords, en plein milieu d'un paiement. */
+.flow :is(input, select, textarea) {
+  font-size: max(16px, 1em);
+}
+
+/* Le clavier numérique plutôt que le clavier complet là où c'est un nombre
+   qui est attendu — un geste de moins par champ. Le style ne fait qu'appuyer
+   ce que déclare l'attribut `inputmode` côté composant. */
+.flow :is(input[inputmode='numeric'], input[type='tel']) {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Sur un écran tactile, `:hover` reste collé après le tap : la carte quittée
+   garde son fond et deux options paraissent choisies. */
+@media (hover: none) {
+  .flow :global(label[class*='choiceCard']:hover) {
+    background: inherit;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow :global(label[class*='choiceCard']):active {
+    transform: none;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   La troisième couleur dans le tunnel.
+
+   Le client ne voit qu'un écran à la fois : le lilas marque **l'avancement**
+   et **le choix retenu**, jamais autre chose. Deux emplacements, comme avant —
+   on change les teintes, pas la quantité de couleur.
+--------------------------------------------------------------------------- */
+
+/* La barre parcourt les trois couleurs, du sable au céladon en passant par le
+   lilas : elle raconte le trajet, pas un état. */
+.progress span {
+  background: linear-gradient(
+    100deg,
+    var(--accent-1),
+    var(--accent-3) 55%,
+    var(--accent-2)
+  ) !important;
+}
+
+.slotButton[data-selected='true'] {
+  background:
+    linear-gradient(#131314, #131314) padding-box,
+    linear-gradient(115deg, var(--accent-1), var(--accent-3) 50%, var(--accent-2)) border-box !important;
+}
+
+.flow :global(label[class*='choiceCard']:has(input:checked)) {
+  background:
+    linear-gradient(#131314, #131314) padding-box,
+    linear-gradient(115deg, var(--accent-1), var(--accent-3) 50%, var(--accent-2)) border-box !important;
+}
+
+
+/* ---------------------------------------------------------------------------
+   Cartes de choix — interactives, comme sur le site.
+
+   Le client passe l'essentiel du tunnel à choisir entre des cartes. Elles
+   n'avaient aucun état de survol ni de pression : rien ne distinguait une
+   carte cliquable d'un bloc de texte.
+--------------------------------------------------------------------------- */
+
+.flow :global(label[class*='choiceCard']),
+.optionCard {
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .flow :global(label[class*='choiceCard']:not(:has(input:checked)):hover),
+  .optionCard:hover {
+    border-color: var(--accent-3) !important;
+    transform: translateY(-1px);
+  }
+}
+
+/* Retour au doigt : la carte s'enfonce. Sur mobile il n'y a pas de survol,
+   donc aucun retour avant le relâchement — sans cet état, le client appuie
+   deux fois. */
+.flow :global(label[class*='choiceCard']):active,
+.optionCard:active {
+  transform: scale(0.99);
+}
+
+/* Le prix d'une option retenue passe au dégradé plutôt qu'au blanc : c'est le
+   chiffre qui vient de changer, il doit se voir bouger. */
+.optionCard[data-checked='true'] .optionPrice {
+  background-image: linear-gradient(100deg, var(--accent-1), var(--accent-3), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Le total, en bas d'écran : le seul chiffre que le client surveille en
+   permanence pendant tout le parcours. */
+.actionsPriceValue {
+  background-image: linear-gradient(100deg, var(--accent-1), var(--accent-3), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow :global(label[class*='choiceCard']),
+  .optionCard {
+    transition: none;
+  }
+
+  .flow :global(label[class*='choiceCard']):active,
+  .optionCard:active,
+  .optionCard:hover {
+    transform: none;
   }
 }

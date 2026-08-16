@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git status *)",
+      "Bash(npm run *)",
+      "Bash(git stash *)",
+      "Bash(npx vitest *)",
+      "mcp__claude_ai_Supabase__list_projects",
+      "mcp__claude_ai_Supabase__list_tables",
+      "mcp__claude_ai_Supabase__list_migrations",
+      "mcp__claude_ai_Supabase__execute_sql",
+      "mcp__claude_ai_Supabase__get_publishable_keys",
+      "mcp__claude_ai_Supabase__get_project_url",
+      "mcp__claude_ai_Supabase__apply_migration",
+      "mcp__claude_ai_Supabase__get_advisors",
+      "Bash(npm install *)",
+      "Bash(jobs)",
+      "Bash(curl -s -o /tmp/reservation.html -w \"%{http_code}\\\\n\" http://localhost:3001/reservation/clean-auto-test)",
+      "Read(//tmp/**)",
+      "Bash(date -v+1d +%F)",
+      "Bash(curl -s 'http://localhost:3001/api/detailing/clean-auto-test/slots?day=__CMDSUB_OUTPUT__&minutes=120')",
+      "Bash(npx eslint *)",
+      "Bash(curl -s 'http://localhost:3001/api/detailing/clean-auto-test/slots?day=__TRACKED_VAR__&minutes=120')",
+      "Bash(python3 -c \"import sys,json; data=json.load\\(sys.stdin\\); print\\([s['start'][11:16] for s in data['slots']]\\)\")",
+      "Bash(curl -s http://localhost:3001/)"
+    ]
+  }
+}
