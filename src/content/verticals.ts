@@ -243,7 +243,7 @@ export const automotiveVertical: VerticalServiceContent = {
     {
       question: 'Comment commence le projet ?',
       answer:
-        'Nous partons de vos prestations, de votre zone d’intervention et de la façon dont les demandes arrivent aujourd’hui. Le diagnostic sert à identifier ce qui doit être clarifié en premier.',
+        'Nous partons de vos prestations, de votre zone d’intervention et de la façon dont les demandes arrivent aujourd’hui, pour identifier ce qui doit être clarifié en premier.',
     },
   ],
   cta: {

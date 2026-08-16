@@ -1,15 +1,4 @@
 import { z } from 'zod';
-import {
-  activityOptions,
-  budgetStatusOptions,
-  conciergeTypeOptions,
-  demandSourceOptions,
-  practiceModeOptions,
-  preferredContactOptions,
-  priorityOptions,
-  siteSituationOptions,
-  timingOptions,
-} from '@/content/forms';
 
 /**
  * Schémas de validation partagés entre le client et le serveur.
@@ -109,27 +98,9 @@ export const optionalWebsiteUrl = z
       }, 'Indiquez une adresse valide, par exemple exemple.fr'),
   );
 
-const optionalPhone = z
-  .string()
-  .transform((value) => clean(value, 30))
-  .pipe(
-    z
-      .string()
-      .max(30)
-      .refine(
-        (value) => value === '' || /^[+()\d\s.-]{6,30}$/.test(value),
-        'Ce numéro ne semble pas valide.',
-      ),
-  );
-
 const consent = z.literal(true, {
   error: 'Votre accord est nécessaire pour que nous puissions vous répondre.',
 });
-
-const enumFrom = (options: readonly { readonly value: string }[], message: string) =>
-  z
-    .string({ error: message })
-    .refine((value) => options.some((option) => option.value === value), message);
 
 /**
  * Temps minimal entre l'affichage du formulaire et son envoi.
@@ -158,118 +129,6 @@ const antiSpam = {
   attribution: attributionSchema.optional(),
 };
 
-const diagnosticFields = {
-  activity: enumFrom(activityOptions, 'Choisissez votre activité.'),
-  activityDetails: optionalText(300).optional().default(''),
-  practiceMode: optionalText(40).optional().default(''),
-  conciergeType: optionalText(60).optional().default(''),
-  company: text(2, 120, 'Indiquez le nom de votre entreprise.'),
-  website: optionalWebsiteUrl.optional().default(''),
-  siteSituation: enumFrom(siteSituationOptions, 'Choisissez votre situation actuelle.'),
-  demandSources: z
-    .array(enumFrom(demandSourceOptions, 'Origine de demande inconnue.'))
-    .min(1, 'Choisissez au moins une origine de demandes.')
-    .max(3, 'Choisissez trois réponses maximum.'),
-  situationNote: optionalText(400).optional().default(''),
-  priorities: z
-    .array(enumFrom(priorityOptions, 'Priorité inconnue.'))
-    .min(1, 'Choisissez au moins une priorité.')
-    .max(2, 'Choisissez deux priorités maximum.'),
-  desiredResult: optionalText(400).optional().default(''),
-  timing: enumFrom(timingOptions, 'Choisissez un horizon de démarrage.'),
-  budgetStatus: enumFrom(budgetStatusOptions, 'Indiquez où en est votre réflexion sur le budget.'),
-  budgetAmount: optionalText(120).optional().default(''),
-  constraints: optionalText(700).optional().default(''),
-  firstName: text(2, 80, 'Indiquez votre prénom.'),
-  lastName: optionalText(80).optional().default(''),
-  email,
-  phone: optionalPhone.optional().default(''),
-  preferredContact: enumFrom(preferredContactOptions, 'Choisissez votre moyen de contact préféré.'),
-  consent,
-} as const;
-
-function requireOtherActivity(
-  data: {
-    activity: string;
-    activityDetails?: string;
-    practiceMode?: string;
-    conciergeType?: string;
-  },
-  context: z.RefinementCtx,
-) {
-  if (data.activity === 'autre-service' && clean(data.activityDetails, 300).length < 3) {
-    context.addIssue({
-      code: 'custom',
-      path: ['activityDetails'],
-      message: 'Précisez votre activité en quelques mots.',
-    });
-  }
-
-  if (
-    data.activity === 'nettoyage-detailing' &&
-    clean(data.practiceMode, 40).length > 0 &&
-    !practiceModeOptions.some((option) => option.value === data.practiceMode)
-  ) {
-    context.addIssue({
-      code: 'custom',
-      path: ['practiceMode'],
-      message: 'Indiquez comment vous réalisez principalement vos prestations.',
-    });
-  }
-
-  if (
-    data.activity === 'conciergerie' &&
-    clean(data.conciergeType, 60).length > 0 &&
-    !conciergeTypeOptions.some((option) => option.value === data.conciergeType)
-  ) {
-    context.addIssue({
-      code: 'custom',
-      path: ['conciergeType'],
-      message: 'Choisissez le type de conciergerie le plus proche de votre activité.',
-    });
-  }
-}
-
-export const diagnosticStepSchemas = [
-  z
-    .object({
-      activity: diagnosticFields.activity,
-      activityDetails: diagnosticFields.activityDetails,
-      practiceMode: diagnosticFields.practiceMode,
-      conciergeType: diagnosticFields.conciergeType,
-      company: diagnosticFields.company,
-      website: diagnosticFields.website,
-    })
-    .superRefine(requireOtherActivity),
-  z.object({
-    siteSituation: diagnosticFields.siteSituation,
-    demandSources: diagnosticFields.demandSources,
-    situationNote: diagnosticFields.situationNote,
-  }),
-  z.object({
-    priorities: diagnosticFields.priorities,
-    desiredResult: diagnosticFields.desiredResult,
-  }),
-  z.object({
-    timing: diagnosticFields.timing,
-    budgetStatus: diagnosticFields.budgetStatus,
-    budgetAmount: diagnosticFields.budgetAmount,
-    constraints: diagnosticFields.constraints,
-  }),
-  z.object({
-    firstName: diagnosticFields.firstName,
-    lastName: diagnosticFields.lastName,
-    email: diagnosticFields.email,
-    phone: diagnosticFields.phone,
-    preferredContact: diagnosticFields.preferredContact,
-    consent: diagnosticFields.consent,
-  }),
-] as const;
-
-export const diagnosticSchema = z
-  .object({ ...diagnosticFields, ...antiSpam })
-  .superRefine(requireOtherActivity);
-
 export const contactSchema = z.object({
   fullName: text(2, 120, 'Indiquez votre prénom et votre nom.'),
   email,
@@ -279,7 +138,6 @@ export const contactSchema = z.object({
   ...antiSpam,
 });
 
-export type DiagnosticData = z.output<typeof diagnosticSchema>;
 export type ContactData = z.output<typeof contactSchema>;
 
 /** Erreurs par champ, forme consommée telle quelle par les formulaires. */

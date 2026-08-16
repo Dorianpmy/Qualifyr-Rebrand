@@ -4,7 +4,6 @@ import { contactSchema } from '@/lib/validation';
 
 /**
  * Réception d'un message de contact.
- * Même traitement que le diagnostic, formulaire plus court.
  */
 export async function POST(request: Request) {
   const outcome = await handleSubmission(request, {

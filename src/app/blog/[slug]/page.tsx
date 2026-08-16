@@ -94,7 +94,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           <CallToAction
             eyebrow="Passer au concret"
             title="Clarifions ce qui freine votre parcours aujourd’hui."
-            actionLabel="Faire le diagnostic"
+            actionLabel="Parler de mon activité"
             light
             secondaryAction={(
               <ButtonLink href="/blog" variant="secondary" withArrow>

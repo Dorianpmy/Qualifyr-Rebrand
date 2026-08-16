@@ -94,8 +94,8 @@ export const retention = {
  * Mesure d'audience et cookies.
  *
  * **Aucun fournisseur de mesure n'est installé.** Aucun cookie n'est déposé.
- * Le stockage de session sert uniquement à reprendre le diagnostic et à garder
- * l'origine non personnelle d'une campagne pendant l'onglet courant.
+ * Le stockage de session sert uniquement à garder l'origine non personnelle
+ * d'une campagne pendant l'onglet courant.
  */
 export const tracking = {
   analytics: null as string | null,

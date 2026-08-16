@@ -102,7 +102,7 @@ export default function DesignSystemPage() {
             <div className={styles.row}>
               <Button disabled>Désactivé</Button>
               <Button loading>Envoyer</Button>
-              <ButtonLink href="/diagnostic" withArrow>
+              <ButtonLink href="/contact" withArrow>
                 Lien d’action
               </ButtonLink>
             </div>

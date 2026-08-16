@@ -79,8 +79,8 @@ const offers: readonly Offer[] = [
       'Parcours de demande qualifiant',
       'SEO local et données structurées',
     ],
-    href: '/diagnostic',
-    linkLabel: 'Faire le diagnostic',
+    href: '/contact',
+    linkLabel: 'Nous contacter',
   },
 ];
 

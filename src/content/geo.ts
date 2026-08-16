@@ -45,7 +45,6 @@ Nous proposons aussi **Qualifyr Detailers**, un outil SaaS de réservation pour 
 - [Tarifs](${productionUrl}/tarifs) : fourchettes affichées pour la création de site.
 - [Réalisations](${productionUrl}/realisations) : projets publiés.
 - [Contact](${productionUrl}/contact) : contact officiel.
-- [Diagnostic](${productionUrl}/diagnostic) : analyse gratuite de ce qui freine les demandes.
 
 ## Produit SaaS (abonnement)
 

@@ -97,7 +97,6 @@ export const consent = {
 } as const;
 
 export const formLabels = {
-  diagnosticSubmit: 'Envoyer ma demande',
   contactSubmit: 'Envoyer le message',
   sending: 'Envoi en cours',
   errorSummaryTitle: 'Le formulaire n’a pas pu être envoyé',
@@ -105,10 +104,6 @@ export const formLabels = {
 } as const;
 
 export const successMessages = {
-  diagnostic: {
-    title: 'Demande reçue.',
-    body: 'Nous avons bien reçu vos réponses. Nous les lisons, puis nous vous écrivons à l’adresse indiquée.',
-  },
   contact: {
     title: 'Message reçu.',
     body: 'Nous avons bien reçu votre message et nous vous répondons à l’adresse indiquée.',

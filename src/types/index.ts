@@ -13,7 +13,6 @@ export type Route =
   | '/realisations'
   | '/realisations/sw-car-cleaning'
   | '/a-propos'
-  | '/diagnostic'
   | '/estimation'
   | '/contact'
   | '/blog'

@@ -192,7 +192,7 @@ export default function SwCarCleaningPage() {
             eyebrow="Votre activité"
             title="Construisons un parcours aussi clair que votre savoir-faire."
             actionLabel="Présenter mon projet"
-            actionHref="/diagnostic?activity=nettoyage-automobile&utm_source=case_study&utm_medium=internal&utm_campaign=sw_car_cleaning"
+            actionHref="/contact?utm_source=case_study&utm_medium=internal&utm_campaign=sw_car_cleaning"
             ctaId="case_study_diagnostic"
             secondaryAction={(
               <ButtonLink href="/estimation" ctaId="case_study_estimation" variant="inverseSecondary">

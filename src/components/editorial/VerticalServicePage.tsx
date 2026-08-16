@@ -6,7 +6,6 @@ import { CallToAction } from '@/components/editorial/CallToAction';
 import { Container } from '@/components/layout/Container';
 import { Section } from '@/components/layout/Section';
 import { ButtonLink } from '@/components/ui/Button';
-import { DiagnosticLink } from '@/components/agency/DiagnosticLink';
 import { Eyebrow } from '@/components/ui/Eyebrow';
 import type { VerticalServiceContent } from '@/content/verticals';
 import { verticalMethod } from '@/content/verticals';
@@ -29,13 +28,14 @@ export function VerticalServicePage({ content }: VerticalServicePageProps) {
               <h1 className={styles.heroTitle}>{content.hero.title}</h1>
               <p className={styles.heroLead}>{content.hero.lead}</p>
               <div className={styles.heroActions}>
-                <DiagnosticLink
+                <ButtonLink
+                  href="/contact"
                   ctaId="cleaning_diagnostic"
                   analyticsVertical={content.route.slice(1)}
                   withArrow
                 >
                   Présenter mon activité
-                </DiagnosticLink>
+                </ButtonLink>
                 <ButtonLink href={content.hero.secondaryHref} variant="secondary">
                   {content.hero.secondaryLabel}
                 </ButtonLink>
@@ -266,7 +266,7 @@ export function VerticalServicePage({ content }: VerticalServicePageProps) {
             eyebrow={content.cta.eyebrow}
             title={content.cta.title}
             actionLabel="Présenter mon activité"
-            actionHref={`/diagnostic?activity=${content.route.slice(1)}`}
+            actionHref="/contact"
             ctaId="cleaning_diagnostic"
           >
             <p>{content.cta.body}</p>

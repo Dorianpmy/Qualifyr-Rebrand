@@ -134,7 +134,7 @@ export default function AutomotiveCleaningPage() {
         eyebrow={cta.eyebrow}
         title={cta.title}
         body={cta.body}
-        primary={{ href: '/diagnostic', label: 'Faire le diagnostic' }}
+        primary={{ href: '#demo-title', label: 'Tester le tunnel client' }}
         secondary={{ href: '/contact', label: 'Nous écrire' }}
       />
 

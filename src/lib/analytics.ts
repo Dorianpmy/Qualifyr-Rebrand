@@ -1,11 +1,6 @@
 export type AnalyticsEventName =
   | 'page_specialisee_viewed'
   | 'case_study_viewed'
-  | 'diagnostic_started'
-  | 'diagnostic_step_completed'
-  | 'diagnostic_reviewed'
-  | 'diagnostic_submitted'
-  | 'diagnostic_whatsapp_opened'
   | 'estimation_started'
   | 'estimation_completed'
   | 'booking_opened'

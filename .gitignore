@@ -20,3 +20,4 @@ supabase/supabase/.temp/
 # Fichiers de test ponctuels, jamais destinés à être commités.
 scratch-*
 dummy_test_file_qualifyr.txt
+src/app/diagnostic/testwrite.txt

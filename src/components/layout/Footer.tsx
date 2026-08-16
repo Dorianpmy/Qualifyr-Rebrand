@@ -9,11 +9,17 @@ import {
   footerServiceNav,
   legalNav,
 } from '@/content/navigation';
-import { ButtonLink } from '@/components/ui/Button';
 import { BrandIcon } from '@/components/ui/BrandIcon';
 import { Logo } from '@/components/ui/Logo';
 import { Container } from './Container';
 import styles from './Footer.module.css';
+
+/*
+ * Le bandeau « Savoir ce qui freine vos demandes » (avec bouton « Faire le
+ * diagnostic ») vivait ici, affiché sur presque toutes les pages. Retiré
+ * avec la suppression de la page /diagnostic — pas repointé vers /contact,
+ * retiré entièrement à la demande explicite du propriétaire du site.
+ */
 
 export function Footer() {
   const pathname = usePathname();
@@ -29,38 +35,10 @@ export function Footer() {
   ) {
     return null;
   }
-  if (pathname === '/diagnostic') return null;
-
-  // La verticale conciergerie et son simulateur ont été retirés du site
-  // (commit `7b89646`) : ces routes ne correspondent plus à rien.
-  const hasPageSpecificCta = pathname === '/nettoyage-automobile' || pathname === '/tarifs';
 
   return (
     <footer className={styles.footer}>
       <Container>
-        {pathname === '/' || hasPageSpecificCta ? null : (
-          <section className={styles.cta} data-surface="inverse" aria-labelledby="footer-cta-title">
-            <div className={styles.ctaCopy}>
-              <p className={styles.ctaEyebrow}>Votre prochaine étape</p>
-              <h2 id="footer-cta-title" className={styles.ctaTitle}>
-                Savoir ce qui freine vos demandes.
-              </h2>
-              <p className={styles.ctaText}>
-                Le diagnostic prend trois minutes. Il identifie ce qui bloque aujourd’hui et ce qu’il
-                faut corriger en premier — avant même de parler de budget.
-              </p>
-            </div>
-            <div className={styles.ctaActions}>
-              <ButtonLink href="/diagnostic" ctaId="final_diagnostic" variant="inverse" withArrow>
-                Faire le diagnostic
-              </ButtonLink>
-              <ButtonLink href="/tarifs" ctaId="footer_pricing" variant="inverseSecondary">
-                Voir les tarifs
-              </ButtonLink>
-            </div>
-          </section>
-        )}
-
         <div className={styles.grid}>
           <div className={styles.brandColumn}>
             <Link href="/" className={styles.logoLink} aria-label="Qualifyr — Accueil">

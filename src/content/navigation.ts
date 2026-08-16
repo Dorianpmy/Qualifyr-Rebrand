@@ -16,7 +16,6 @@ export const routeLabels: Readonly<Record<string, string>> = {
   '/realisations': 'Réalisations',
   '/realisations/sw-car-cleaning': 'SW Carcleaning',
   '/a-propos': 'À propos',
-  '/diagnostic': 'Diagnostic',
   '/estimation': 'Estimation',
   '/contact': 'Contact',
   '/blog': 'Journal',
@@ -44,7 +43,6 @@ export const footerServiceNav: readonly NavItem[] = [
   { label: 'Site pour nettoyage automobile et detailing', href: '/nettoyage-automobile' },
   { label: 'Création et refonte de site', href: '/creation-site-web' },
   { label: 'Tarifs', href: '/tarifs' },
-  { label: 'Diagnostic', href: '/diagnostic' },
 ];
 
 export const footerCompanyNav: readonly NavItem[] = [

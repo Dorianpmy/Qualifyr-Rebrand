@@ -1,16 +1,4 @@
-import {
-  activityOptions,
-  budgetStatusOptions,
-  conciergeTypeOptions,
-  demandSourceOptions,
-  labelFor,
-  practiceModeOptions,
-  preferredContactOptions,
-  priorityOptions,
-  siteSituationOptions,
-  timingOptions,
-} from '@/content/forms';
-import type { ContactData, DiagnosticData } from '@/lib/validation';
+import type { ContactData } from '@/lib/validation';
 import type { AttributionData, AttributionTouch } from '@/lib/attribution';
 
 /**
@@ -70,65 +58,6 @@ function attributionBlock(attribution: AttributionData | undefined, submissionPa
 /* Notification reçue par Qualifyr                                     */
 /* ------------------------------------------------------------------ */
 
-export function diagnosticNotification(data: DiagnosticData, receivedAt: Date) {
-  const sources = data.demandSources
-    .map((value) => labelFor(demandSourceOptions, value))
-    .join(', ');
-  const priorities = data.priorities
-    .map((value) => labelFor(priorityOptions, value))
-    .join(', ');
-
-  const text = [
-    block('Demande de diagnostic', [
-      line('Formulaire', 'Diagnostic'),
-      line('Reçue le', formatDate(receivedAt)),
-      line('Page d’origine', data.pageUrl),
-    ]),
-    block('Coordonnées', [
-      line('Nom', [data.firstName, data.lastName].filter(Boolean).join(' ')),
-      line('E-mail', data.email),
-      line('Téléphone', data.phone),
-      line('Contact préféré', labelFor(preferredContactOptions, data.preferredContact)),
-    ]),
-    block('Activité', [
-      line('Type d’activité', labelFor(activityOptions, data.activity)),
-      line(
-        'Précisions',
-        data.activity === 'nettoyage-detailing'
-          ? labelFor(practiceModeOptions, data.practiceMode)
-          : data.activity === 'conciergerie'
-            ? labelFor(conciergeTypeOptions, data.conciergeType)
-            : data.activityDetails,
-      ),
-      line('Entreprise', data.company),
-      line('Site actuel', data.website),
-    ]),
-    block('Situation', [
-      line('Situation du site', labelFor(siteSituationOptions, data.siteSituation)),
-      line('Demandes reçues par', sources),
-      line('Point gênant aujourd’hui', data.situationNote),
-    ]),
-    block('Priorités', [
-      line('Priorités', priorities),
-      line('Résultat souhaité', data.desiredResult),
-    ]),
-    block('Projet', [
-      line('Démarrage', labelFor(timingOptions, data.timing)),
-      line('Budget défini', labelFor(budgetStatusOptions, data.budgetStatus)),
-      line('Montant ou fourchette', data.budgetAmount),
-      line('Contraintes ou attentes', data.constraints),
-    ]),
-    attributionBlock(data.attribution, data.pageUrl),
-  ]
-    .filter(Boolean)
-    .join('\n');
-
-  return {
-    subject: `Diagnostic — ${data.company}`,
-    text,
-  };
-}
-
 export function contactNotification(data: ContactData, receivedAt: Date) {
   const text = [
     block('Message de contact', [
@@ -166,23 +95,15 @@ export function contactNotification(data: ContactData, receivedAt: Date) {
  * réellement dans `src/content/contact.ts`.
  */
 export function acknowledgement(
-  kind: 'diagnostic' | 'contact',
   data: { readonly fullName: string; readonly email: string },
   options: { readonly replyTo: string | null; readonly siteUrl: string },
 ) {
-  const intro =
-    kind === 'diagnostic'
-      ? 'Nous avons bien reçu votre demande de diagnostic.'
-      : 'Nous avons bien reçu votre message.';
-
   const text = [
     `Bonjour ${data.fullName},`,
     '',
-    intro,
+    'Nous avons bien reçu votre message.',
     '',
-    kind === 'diagnostic'
-      ? 'Nous allons lire vos réponses, puis nous vous écrivons à cette adresse avec ce que nous avons vu et ce que nous proposons d’examiner ensemble.'
-      : 'Nous vous répondons à cette adresse.',
+    'Nous vous répondons à cette adresse.',
     '',
     options.replyTo
       ? `Si vous souhaitez ajouter quelque chose, répondez simplement à cet e-mail ou écrivez à ${options.replyTo}.`
@@ -195,10 +116,7 @@ export function acknowledgement(
   ].join('\n');
 
   return {
-    subject:
-      kind === 'diagnostic'
-        ? 'Votre demande de diagnostic — Qualifyr Agence'
-        : 'Votre message — Qualifyr Agence',
+    subject: 'Votre message — Qualifyr Agence',
     text,
   };
 }

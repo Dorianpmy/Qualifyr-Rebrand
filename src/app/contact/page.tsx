@@ -4,7 +4,7 @@ import { WhatsAppDirectButton } from '@/components/agency/WhatsAppDirectButton';
 import { Container } from '@/components/layout/Container';
 import { Section } from '@/components/layout/Section';
 import { ContactForm } from '@/components/form/ContactForm';
-import { ButtonAnchor, ButtonLink } from '@/components/ui/Button';
+import { ButtonAnchor } from '@/components/ui/Button';
 
 import { contact, contactPage } from '@/content/contact';
 import { buildMetadata } from '@/lib/metadata';
@@ -77,20 +77,6 @@ export default function ContactPage() {
                   </ButtonAnchor>
                 </article>
               ) : null}
-
-              <article className={`${styles.directCard} ${styles.diagnosticCard}`}>
-                <span className={styles.cardIndex}>03</span>
-                <h3>Besoin d’un cadrage ?</h3>
-                <p>Le diagnostic guidé permet de structurer votre situation avant l’échange.</p>
-                <ButtonLink
-                  href="/diagnostic"
-                  variant="inverseSecondary"
-                  withArrow
-                  className={styles.cardAction}
-                >
-                  Faire le diagnostic
-                </ButtonLink>
-              </article>
             </div>
 
             <p className={styles.confidentiality}>

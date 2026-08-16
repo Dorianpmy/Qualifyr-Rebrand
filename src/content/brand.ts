@@ -70,9 +70,10 @@ export const collaboration = [
 /**
  * Appel à l'action principal, unique sur tout le site.
  * Formulation conversationnelle : on propose un échange, pas un formulaire.
- * Elle remplace « Demander un diagnostic » (voir docs/01-positionnement.md, §9).
+ * Elle pointe directement vers la page de contact — le parcours de
+ * diagnostic a été retiré du site.
  */
 export const primaryCta = {
   label: 'Parler de mon activité',
-  href: '/diagnostic',
+  href: '/contact',
 } as const;

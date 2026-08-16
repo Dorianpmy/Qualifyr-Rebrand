@@ -25,41 +25,6 @@
 
 .scrolled .inner { min-block-size: 4.375rem; }
 
-.diagnosticHeader {
-  position: relative;
-  border-block-end-color: var(--rule-hairline);
-}
-
-.diagnosticInner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-5);
-  min-block-size: 5.5rem;
-  padding-block-start: var(--safe-top);
-}
-
-.diagnosticBack {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-3);
-  min-block-size: 2.75rem;
-  padding-inline: var(--space-2);
-  color: var(--text-secondary);
-  font-size: var(--text-xs);
-  font-weight: var(--weight-semibold);
-  text-decoration: none;
-  transition: color var(--duration-fast) var(--ease-out);
-}
-
-.diagnosticBack span {
-  color: var(--color-brass-deep);
-  transition: transform var(--duration-base) var(--ease-out);
-}
-
-.diagnosticBack:hover { color: var(--text-primary); }
-.diagnosticBack:hover span { transform: translateX(-0.2rem); }
-
 .brand {
   display: inline-flex;
   align-items: center;
@@ -201,7 +166,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .header, .inner, .navLink::after, .brand, .diagnosticBack span {
+  .header, .inner, .navLink::after, .brand {
     transition: none;
   }
 

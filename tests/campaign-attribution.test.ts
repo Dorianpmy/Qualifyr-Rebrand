@@ -7,13 +7,13 @@ import { GET } from '@/app/go/[campaign]/route';
 describe('liens de campagne', () => {
   it('reste une liste blanche aux destinations attendues', () => {
     expect(campaignLinks).toEqual({
-      instagram: '/diagnostic?utm_source=instagram&utm_medium=organic&utm_campaign=profil',
-      tiktok: '/diagnostic?utm_source=tiktok&utm_medium=organic&utm_campaign=profil',
-      linkedin: '/diagnostic?utm_source=linkedin&utm_medium=organic&utm_campaign=profil',
+      instagram: '/contact?utm_source=instagram&utm_medium=organic&utm_campaign=profil',
+      tiktok: '/contact?utm_source=tiktok&utm_medium=organic&utm_campaign=profil',
+      linkedin: '/contact?utm_source=linkedin&utm_medium=organic&utm_campaign=profil',
       'prospection-nettoyage': '/nettoyage-automobile?utm_source=prospection&utm_medium=dm&utm_campaign=nettoyage_auto',
-      'prospection-conciergerie': '/conciergerie?utm_source=prospection&utm_medium=dm&utm_campaign=conciergerie',
+      'prospection-conciergerie': '/contact?utm_source=prospection&utm_medium=dm&utm_campaign=conciergerie',
       'preuve-sw': '/realisations/sw-car-cleaning?utm_source=prospection&utm_medium=dm&utm_campaign=preuve_sw',
-      partenaire: '/diagnostic?utm_source=partenaire&utm_medium=referral&utm_campaign=partenaires',
+      partenaire: '/contact?utm_source=partenaire&utm_medium=referral&utm_campaign=partenaires',
     });
     expect(isCampaignSlug('instagram')).toBe(true);
     expect(isCampaignSlug('https://example.com')).toBe(false);
@@ -45,7 +45,7 @@ describe('liens de campagne', () => {
 describe('attribution de session', () => {
   it('capture uniquement les UTM permis, le référent externe et le chemin', () => {
     const touch = touchFromLocation(
-      'https://qualifyragence.com/diagnostic?utm_source=instagram&utm_medium=organic&utm_campaign=profil&email=non',
+      'https://qualifyragence.com/contact?utm_source=instagram&utm_medium=organic&utm_campaign=profil&email=non',
       'https://google.fr/search',
       new Date('2026-08-02T10:00:00.000Z'),
     );
@@ -62,7 +62,7 @@ describe('attribution de session', () => {
 
   it('préserve le premier contact et remplace le dernier lors d’une nouvelle campagne', () => {
     const first = touchFromLocation('https://qualifyragence.com/?utm_source=instagram');
-    const second = touchFromLocation('https://qualifyragence.com/diagnostic?utm_source=partenaire');
+    const second = touchFromLocation('https://qualifyragence.com/contact?utm_source=partenaire');
     const result = mergeAttribution(mergeAttribution(undefined, first), second);
     expect(result.firstTouch?.source).toBe('instagram');
     expect(result.lastTouch?.source).toBe('partenaire');
@@ -78,7 +78,7 @@ describe('attribution de session', () => {
 
   it('nettoie et limite les valeurs sans conserver les paramètres personnels', () => {
     const touch = touchFromLocation(
-      `https://qualifyragence.com/diagnostic?utm_source=${encodeURIComponent(`\u0000${'x'.repeat(200)}`)}&phone=0612345678`,
+      `https://qualifyragence.com/contact?utm_source=${encodeURIComponent(`\u0000${'x'.repeat(200)}`)}&phone=0612345678`,
     );
     expect(touch.source).toHaveLength(80);
     expect(touch.source).not.toContain('\u0000');
@@ -94,11 +94,10 @@ describe('attribution de session', () => {
 describe('contrat de mesure', () => {
   it('expose les événements commerciaux attendus sans données personnelles', () => {
     const events: AnalyticsEventName[] = [
-      'page_specialisee_viewed', 'case_study_viewed', 'diagnostic_started',
-      'diagnostic_step_completed', 'diagnostic_reviewed', 'diagnostic_submitted',
-      'diagnostic_whatsapp_opened', 'estimation_started', 'estimation_completed',
+      'page_specialisee_viewed', 'case_study_viewed',
+      'estimation_started', 'estimation_completed',
       'booking_opened', 'whatsapp_direct_opened', 'campaign_redirect_used',
     ];
-    expect(events).toHaveLength(12);
+    expect(events).toHaveLength(7);
   });
 });

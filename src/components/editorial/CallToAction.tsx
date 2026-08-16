@@ -18,7 +18,7 @@ type CallToActionProps = {
   secondaryAction?: ReactNode;
   /**
    * Libellé de l'action principale. À n'utiliser que si la page appelle une
-   * formulation plus précise ; la destination reste `/diagnostic`.
+   * formulation plus précise ; la destination reste `primaryCta.href` (`/contact`).
    */
   actionLabel?: string;
   /** Sur fond clair au lieu du bloc charbon. */
@@ -32,7 +32,7 @@ type CallToActionProps = {
  * Bloc de clôture, identique en bas de chaque page.
  *
  * Il porte l'unique appel à l'action du site — « Parler de mon activité »,
- * vers le diagnostic. Aucune urgence artificielle : pas de « places
+ * vers la page de contact. Aucune urgence artificielle : pas de « places
  * limitées », pas de compte à rebours, pas de promesse de rappel sous 24 h.
  *
  * S'insère dans une `Section surface="inverse"` : c'est la seule section

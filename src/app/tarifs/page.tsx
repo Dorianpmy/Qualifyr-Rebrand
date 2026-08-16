@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import { BookingButton } from '@/components/agency/BookingButton';
-import { DiagnosticLink } from '@/components/agency/DiagnosticLink';
 import { PricingTable } from '@/components/agency/PricingTable';
 import { Container } from '@/components/layout/Container';
 import { Section } from '@/components/layout/Section';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { ButtonLink } from '@/components/ui/Button';
 import { Eyebrow } from '@/components/ui/Eyebrow';
 import { buildMetadata } from '@/lib/metadata';
 import { webPage } from '@/lib/structured-data';
@@ -93,12 +93,12 @@ export default function PricingPage() {
               <Eyebrow>La suite</Eyebrow>
               <h2>Un chiffre précis, sous 48 heures.</h2>
               <p>
-                Le diagnostic prend trois minutes et sert à cadrer votre situation. Vous recevez
+                Contactez-nous et décrivez votre situation en quelques lignes. Vous recevez
                 ensuite une proposition chiffrée, sans relance commerciale.
               </p>
             </div>
             <div className={styles.finalActions}>
-              <DiagnosticLink ctaId="pricing_diagnostic">Faire le diagnostic</DiagnosticLink>
+              <ButtonLink href="/contact" ctaId="pricing_diagnostic">Nous contacter</ButtonLink>
               <BookingButton ctaId="pricing_booking" variant="secondary">
                 Réserver une analyse de parcours
               </BookingButton>

@@ -42,8 +42,8 @@ const labels: Record<string, string> = {
 /**
  * Formulaire de contact.
  *
- * Même socle que le diagnostic : validation partagée avec le serveur, saisies
- * conservées, focus sur la première erreur, état d'envoi, double envoi
+ * Socle commun à tous les formulaires du site : validation partagée avec le
+ * serveur, focus sur la première erreur, état d'envoi, double envoi
  * impossible, champ piège et temps minimal.
  */
 export function ContactForm({ className }: { readonly className?: string | undefined }) {

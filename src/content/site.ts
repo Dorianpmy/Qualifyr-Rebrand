@@ -76,12 +76,6 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
       'Pourquoi Qualifyr se concentre sur le nettoyage automobile et le detailing, et ce que nous refusons de faire.',
     priority: 0.6,
   },
-  '/diagnostic': {
-    title: 'Diagnostic gratuit — ce qui freine vos réservations detailing',
-    description:
-      'Décrivez votre activité. Nous identifions ce qui bloque les demandes : offre, tarifs, parcours mobile.',
-    priority: 0.9,
-  },
   '/estimation': {
     title: 'Estimation budget site detailing — Qualifyr',
     description:
@@ -91,7 +85,7 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
   '/contact': {
     title: 'Contact — Qualifyr Agence',
     description:
-      'Une question sur le detailing, un site ou l’outil de réservation ? Écrivez-nous. Pour une analyse, passez par le diagnostic.',
+      'Une question sur le detailing, un site ou l’outil de réservation ? Écrivez-nous directement, nous vous répondons rapidement.',
     priority: 0.5,
   },
   '/blog': {

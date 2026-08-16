@@ -8,7 +8,6 @@ import styles from './FloatingWhatsApp.module.css';
 
 export function FloatingWhatsApp() {
   const pathname = usePathname();
-  if (pathname === '/diagnostic') return null;
   if (
     pathname.startsWith('/app') ||
     pathname.startsWith('/reservation') ||

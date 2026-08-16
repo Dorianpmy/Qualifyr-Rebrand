@@ -25,7 +25,6 @@ function isSaaSPath(pathname: string) {
 export function Header() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
-  const isDiagnostic = pathname === '/diagnostic';
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 8);
@@ -35,27 +34,6 @@ export function Header() {
   }, []);
 
   if (isSaaSPath(pathname)) return null;
-
-  if (isDiagnostic) {
-    return (
-      <>
-        <header className={`${styles.header} ${styles.diagnosticHeader}`}>
-          <Container>
-            <div className={styles.diagnosticInner}>
-              <Link href="/" className={styles.brand} aria-label="Qualifyr Agence, accueil">
-                <Logo />
-              </Link>
-              <Link href="/" className={styles.diagnosticBack}>
-                <span aria-hidden="true">←</span>
-                Retour au site
-              </Link>
-            </div>
-          </Container>
-        </header>
-        <BookingDialog />
-      </>
-    );
-  }
 
   return (
     <>

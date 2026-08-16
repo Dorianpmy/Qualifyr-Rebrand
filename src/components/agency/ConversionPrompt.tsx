@@ -11,8 +11,7 @@ const inactivityDelay = 60_000;
 function isSaaSPath(pathname: string) {
   return (
     pathname.startsWith('/app') ||
-    pathname.startsWith('/reservation') ||
-    pathname === '/diagnostic'
+    pathname.startsWith('/reservation')
   );
 }
 

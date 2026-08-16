@@ -157,8 +157,6 @@
   margin-block-start: var(--space-2);
 }
 
-.diagnosticCard { border-inline-start-color: var(--color-brass); }
-
 .confidentiality {
   color: var(--text-inverse-secondary);
   font-size: var(--text-3xs);

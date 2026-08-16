@@ -1,28 +1,9 @@
-import type { Metadata } from 'next';
+// The diagnostic funnel has been retired. This file could not be deleted
+// because the sandbox blocked file deletion (unlink returned "Operation not
+// permitted"), so it is neutralized here instead: visiting /diagnostic now
+// 404s like any other removed route.
+import { notFound } from 'next/navigation';
 
-import { DiagnosticForm } from '@/components/form/DiagnosticForm';
-import { buildMetadata } from '@/lib/metadata';
-
-import styles from './page.module.css';
-
-export const metadata: Metadata = buildMetadata('/diagnostic');
-
-type DiagnosticPageProps = {
-  searchParams: Promise<{ activity?: string | string[] }>;
-};
-
-export default async function DiagnosticPage({ searchParams }: DiagnosticPageProps) {
-  const params = await searchParams;
-  const requestedActivity = Array.isArray(params.activity) ? params.activity[0] : params.activity;
-  const initialActivity = requestedActivity === 'nettoyage-automobile'
-    ? 'nettoyage-detailing'
-    : requestedActivity === 'conciergerie'
-      ? 'conciergerie'
-      : undefined;
-
-  return (
-    <div className={styles.page}>
-      <DiagnosticForm initialActivity={initialActivity} />
-    </div>
-  );
+export default function DiagnosticPage(): never {
+  notFound();
 }

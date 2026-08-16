@@ -73,7 +73,7 @@ export default function BlogPage() {
           <CallToAction
             eyebrow="Votre activité"
             title="Un sujet vous concerne directement ?"
-            actionLabel="Faire le diagnostic"
+            actionLabel="Parler de mon activité"
             light
             secondaryAction={(
               <ButtonLink href="/contact" variant="secondary" withArrow>

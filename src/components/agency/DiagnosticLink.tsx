@@ -1,12 +1,5 @@
-import type { ComponentProps } from 'react';
-import { ButtonLink } from '@/components/ui/Button';
-
-type DiagnosticLinkProps = Omit<ComponentProps<typeof ButtonLink>, 'href'>;
-
-/** Entrée unique vers le diagnostic commercial Qualifyr. */
-export function DiagnosticLink({ analyticsVertical, ...props }: DiagnosticLinkProps) {
-  const href = analyticsVertical
-    ? (`/diagnostic?activity=${analyticsVertical}` as const)
-    : '/diagnostic';
-  return <ButtonLink href={href} analyticsVertical={analyticsVertical} {...props} />;
-}
+// The diagnostic funnel has been retired. This file could not be deleted
+// because the sandbox blocked file deletion (unlink returned "Operation not
+// permitted"), so it is neutralized here instead. Nothing in the codebase
+// imports this module anymore.
+export {};
