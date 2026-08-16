@@ -2,6 +2,7 @@
 
 import { useState, type ReactNode } from 'react';
 import { Section } from './Section';
+import { ServiceStack } from './ServiceStack';
 
 /**
  * Services, en onglets et maquettes.
@@ -68,6 +69,14 @@ export function ServiceTabs({
           {heading}
         </h2>
       </header>
+
+      {/* Aperçu en une image avant l'interaction : les trois services, en
+          pile, avant que le visiteur n'entre dans le détail via les onglets
+          ci-dessous. Purement décoratif — le contenu réel est porté par le
+          `tablist`, pas dupliqué ici pour un lecteur d'écran. */}
+      <div className="mb-16 hidden justify-center pt-2 sm:flex">
+        <ServiceStack />
+      </div>
 
       {/* Barre d'onglets : une pastille par service, dans un cadre unique.
           Le cadre extérieur donne l'impression d'un sélecteur, pas de boutons
