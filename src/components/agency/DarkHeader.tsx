@@ -43,12 +43,31 @@ const proLink = { href: '/app', label: 'Espace pro' } as const;
 export function DarkHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  /*
+   * Le bouton hamburger a disparu en production sans qu'on en trouve la
+   * cause exacte depuis cet environnement (pas d'accès à un navigateur
+   * réel pour inspecter) : `className="lg:hidden"` plus un `style` en
+   * ligne forçant `display: flex` aurait dû suffire, et n'a pas suffi. La
+   * bascule desktop/mobile est donc recalculée en JavaScript, comme
+   * `scrolled` juste au-dessus — la même méthode, déjà fiable ici — plutôt
+   * que confiée à une classe Tailwind dont on ne sait plus dire pourquoi
+   * elle a cessé de s'appliquer.
+   */
+  const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
   }, []);
 
   // Le panneau mobile pousse le reste de la page si on ne bloque pas le
@@ -131,9 +150,8 @@ export function DarkHeader() {
             aria-expanded={menuOpen}
             aria-controls="mobile-nav-panel"
             aria-label={menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
-            className="lg:hidden"
             style={{
-              display: 'flex',
+              display: isDesktop ? 'none' : 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               width: '2.5rem',
@@ -156,7 +174,7 @@ export function DarkHeader() {
           `position`/`inset` ont déjà silencieusement échoué ailleurs dans ce
           projet à cause des `!important` de la charte historique — voir
           `BeforeAfterSection.tsx`. */}
-      {menuOpen ? (
+      {menuOpen && !isDesktop ? (
         <div
           id="mobile-nav-panel"
           style={{
@@ -169,7 +187,6 @@ export function DarkHeader() {
             overflowY: 'auto',
             background: '#0e0e0f',
           }}
-          className="lg:hidden"
         >
           <nav
             aria-label="Menu"

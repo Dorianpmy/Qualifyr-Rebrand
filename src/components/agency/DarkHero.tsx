@@ -61,7 +61,7 @@ export function DarkHero({
   trust,
 }: DarkHeroProps) {
   return (
-    <Section glow="top" className="pb-20 pt-24 sm:pt-32">
+    <Section glow="top" glowIntensity="soft" className="pb-20 pt-24 sm:pt-32">
       {/* 44 rem : la colonne de lecture. Au-delà, le titre cesse d'être un
           objet et devient un bandeau. Elle vit à l'intérieur du conteneur
           commun, qui gère la largeur de page et le centrage. */}
