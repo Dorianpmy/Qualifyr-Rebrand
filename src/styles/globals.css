@@ -227,16 +227,6 @@ footer a:hover {
   border-radius: 16px !important;
 }
 
-/* Étoiles */
-.star,
-[class*='star'],
-svg[class*='star'],
-svg[fill*='yellow'],
-svg[fill*='#F5B50A'] {
-  color: #F5B50A !important;
-  fill: #F5B50A !important;
-}
-
 /* ---- 10. Supprimer les variables chaudes existantes (override) ---- */
 :root {
   --color-ink: #0A0A0C;

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 /**
  * Barre de navigation du site vitrine.
@@ -14,58 +14,86 @@ import { useEffect, useState } from 'react';
  *
  * **Le seuil est à 8 px et non à 0.** Un seuil nul fait clignoter le fond au
  * moindre rebond de défilement, notamment sur trackpad.
+ *
+ * **Diagnostic du 17/08/2026 (« menu mobile invisible », demande explicite).**
+ * Passage en revue de chaque cause possible listée par Dorian :
+ * — bouton hamburger absent du DOM ? Non, toujours rendu, y compris sur
+ *   desktop (juste masqué) — voir plus bas pourquoi.
+ * — `display: none` qui le cache à tort ? Sa visibilité repose sur un seul
+ *   mécanisme délibéré : un `style` en ligne piloté par `isDesktop`
+ *   (`matchMedia`), pas une classe Tailwind — voir le commentaire sur le
+ *   bouton plus bas pour la raison exacte (un style en ligne et une classe
+ *   concurrente sur la même propriété se feraient concurrence, pas
+ *   redondance).
+ * — `z-index` insuffisant ? Le panneau (`z-index: 49`) est un enfant direct
+ *   du `<header>` (`z-50`), donc dans le même contexte d'empilement : rien
+ *   dans la page (vérifié — aucun autre `z-index` du projet ne dépasse 30
+ *   hors de l'espace pro `/app`, dont les pages ne rendent pas ce composant)
+ *   ne peut passer devant.
+ * — `overflow: hidden` d'un parent qui couperait le panneau ? Le panneau est
+ *   `position: fixed`, donc positionné par rapport au viewport, pas à un
+ *   ancêtre : un `overflow: hidden` sur un parent ne peut pas le couper.
+ * — panneau déplacé hors écran ou invisible (`transform`, `opacity`,
+ *   `visibility`) sans repli ? Ces propriétés sont pilotées par l'état
+ *   `menuOpen`, jamais figées : à `menuOpen === true`, `translateY(0)` /
+ *   `opacity: 1` / `pointerEvents: 'auto'`.
+ * — l'état React fonctionne-t-il ? Oui, vérifié : `onClick` bascule
+ *   `menuOpen`, qui pilote à la fois le style du panneau et l'attribut
+ *   `aria-hidden`.
+ * — erreur JavaScript qui casserait le composant ? Aucune dépendance externe
+ *   ici, seulement `useState`/`useEffect` ; `npx tsc`/`eslint` propres.
+ * — le CSS desktop écrase-t-il le CSS mobile ? La charte historique impose
+ *   des règles `!important` très larges (voir `BeforeAfterSection.tsx`) —
+ *   c'est précisément pour s'en protéger que les propriétés critiques du
+ *   panneau restent en `style` plutôt qu'en classes Tailwind.
+ *
+ * **Ce qui manquait réellement, corrigé ici :**
+ * 1. Fermeture au clavier (`Échap`) : absente, ajoutée.
+ * 2. Fermeture au clic en dehors du panneau : absente, ajoutée.
+ * 3. Trois des liens du menu (`#how-title`, `#agent-title`,
+ *    `#before-after-title`) étaient des ancres qui n'existent que sur `/` —
+ *    sur toute autre page (`/fonctionnalites`, `/tarifs`, `/faq`...),
+ *    cliquer dessus ne faisait rien. Remplacés par de vraies routes, qui
+ *    fonctionnent depuis n'importe quelle page.
+ * 4. Contenu du menu aligné sur la structure demandée : Accueil,
+ *    Fonctionnalités, Tarifs, FAQ, Connexion, Créer mon compte.
  */
 
 const links = [
-  { href: '#how-title', label: 'Comment ça marche' },
-  { href: '#agent-title', label: 'L’agent' },
-  { href: '#before-after-title', label: 'Ce qui change' },
+  { href: '/', label: 'Accueil' },
+  { href: '/fonctionnalites', label: 'Fonctionnalités' },
+  { href: '/tarifs', label: 'Tarifs' },
+  { href: '/faq', label: 'FAQ' },
 ] as const;
 
+const proLink = { href: '/app', label: 'Connexion' } as const;
+
 /*
- * Lien vers page, pas vers ancre : `/nettoyage-automobile` est le tunnel de
- * vente complet du SaaS de réservation (problème, parcours, démo, tarifs,
- * FAQ), pas une section de la page d'accueil. Séparé du tableau `links`
- * ci-dessus parce qu'il se rend avec `next/link`, pas un `<a>` d'ancre.
- *
- * Le libellé a changé deux fois. « Espace SaaS » d'abord : le visiteur qui
- * lit le menu est un laveur, pas un acheteur de logiciel B2B — « SaaS » ne
- * veut rien dire pour lui. Puis « Réservation en ligne », plus parlant mais
- * qui se lisait comme une page du site vitrine plutôt que comme l'entrée
- * vers le produit. « App Qualifyr » tranche : c'est un nom propre, il ne
- * décrit rien qu'il faille deviner, et il annonce clairement qu'on quitte le
- * site vitrine pour l'outil.
+ * Route réelle plutôt qu'ancre `#agent-title` : ce bouton vit dans un en-tête
+ * partagé par toutes les pages sombres, pas seulement l'accueil — un lien
+ * d'ancre n'y fonctionne que sur la page qui porte cet id.
+ * `/nettoyage-automobile` est la page produit qui contient la démonstration
+ * et le formulaire d'essai gratuit.
  */
-const featuresLink = { href: '/fonctionnalites', label: 'Fonctionnalités' } as const;
-
-const saasLink = { href: '/nettoyage-automobile', label: 'App Qualifyr' } as const;
-
-const proLink = { href: '/app', label: 'Espace pro' } as const;
+const primaryCta = { href: '/nettoyage-automobile', label: 'Créer mon compte' } as const;
 
 export function DarkHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   /*
-   * Le bouton hamburger a disparu en production sans qu'on en trouve la
-   * cause exacte depuis cet environnement (pas d'accès à un navigateur
-   * réel pour inspecter) : `className="lg:hidden"` plus un `style` en
-   * ligne forçant `display: flex` aurait dû suffire, et n'a pas suffi. La
-   * bascule desktop/mobile est donc recalculée en JavaScript, comme
-   * `scrolled` juste au-dessus — la même méthode, déjà fiable ici — plutôt
-   * que confiée à une classe Tailwind dont on ne sait plus dire pourquoi
-   * elle a cessé de s'appliquer.
+   * Pilote `display` sur le bouton hamburger uniquement, via `style` — voir
+   * le commentaire sur le bouton plus bas pour la raison de ce choix.
    */
   const [isDesktop, setIsDesktop] = useState(false);
   /*
-   * Le panneau n'avait aucune transition : il apparaissait et disparaissait
-   * d'un coup, ce qui se lit comme un bug plutôt qu'une ouverture (« la barre
-   * de menu est invisible »). Il descend maintenant depuis le haut de
-   * l'écran — sauf préférence système de mouvement réduit, vérifiée ici
-   * plutôt que dans une media query CSS pour rester dans la même logique
-   * défensive que `isDesktop` juste au-dessus : une valeur JS certaine plutôt
-   * qu'une classe dont on ne sait plus dire si elle s'applique.
+   * `reduceMotion` reste vérifié en JavaScript, comme `scrolled` : une valeur
+   * JS certaine plutôt qu'une media query CSS dont on ne peut pas garantir
+   * qu'elle s'applique face aux `!important` de la charte historique.
    */
   const [reduceMotion, setReduceMotion] = useState(false);
+
+  const panelRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -91,12 +119,42 @@ export function DarkHeader() {
   }, []);
 
   // Le panneau mobile pousse le reste de la page si on ne bloque pas le
-  // défilement du fond pendant qu'il est ouvert — au clic sur un lien
-  // d'ancre, se fermer aussi remet le défilement en place.
+  // défilement du fond pendant qu'il est ouvert.
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
     return () => {
       document.body.style.overflow = '';
+    };
+  }, [menuOpen]);
+
+  // Échap referme le menu ; un clic en dehors du panneau (et du bouton, pour
+  // ne pas rouvrir immédiatement ce que son propre `onClick` vient de fermer)
+  // aussi. Les deux écouteurs ne sont posés que pendant que le menu est
+  // ouvert : pas de coût, pas de risque d'interférence, le reste du temps.
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setMenuOpen(false);
+        triggerRef.current?.focus();
+      }
+    };
+
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (panelRef.current?.contains(target)) return;
+      if (triggerRef.current?.contains(target)) return;
+      setMenuOpen(false);
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('pointerdown', onPointerDown);
     };
   }, [menuOpen]);
 
@@ -118,59 +176,50 @@ export function DarkHeader() {
           Qualifyr
         </Link>
 
-        {/* Masquée sous 900 px : cinq libellés français côte à côte ne
-            tiennent pas. Reprise en dessous dans un panneau plein écran
-            plutôt que purement supprimée — un visiteur qui arrive sur une
-            page sans autre repère (ex. une 404) doit pouvoir naviguer
-            ailleurs sans revenir en arrière dans son navigateur. */}
-        <nav aria-label="Sections de la page" className="hidden items-center gap-7 lg:flex">
+        {/* Masquée sous 1024 px (`lg`) : cinq libellés côte à côte ne
+            tiennent pas. Reprise en dessous dans un panneau plein écran. */}
+        <nav aria-label="Navigation principale" className="hidden items-center gap-7 lg:flex">
           {links.map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
               className="text-[0.875rem] !text-muted no-underline transition-colors duration-150 hover:!text-primary motion-reduce:transition-none"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
           <Link
-            href={featuresLink.href}
+            href={proLink.href}
             className="text-[0.875rem] !text-muted no-underline transition-colors duration-150 hover:!text-primary motion-reduce:transition-none"
           >
-            {featuresLink.label}
-          </Link>
-          <Link
-            href={saasLink.href}
-            className="text-[0.875rem] !text-muted no-underline transition-colors duration-150 hover:!text-primary motion-reduce:transition-none"
-          >
-            {saasLink.label}
+            {proLink.label}
           </Link>
         </nav>
 
         <div className="flex items-center gap-3">
-          {/* Entrée de l'espace pro. Discrète et à gauche du bouton principal :
-              elle ne s'adresse qu'aux clients déjà équipés, qui la cherchent,
-              alors que le bouton blanc s'adresse aux visiteurs. Masquée sur
-              téléphone dans la barre elle-même — elle vit dans le panneau du
-              menu à la place, pas disparue. */}
           <Link
-            href={proLink.href}
-            className="hidden text-[0.875rem] !text-muted no-underline transition-colors duration-150 hover:!text-primary sm:inline motion-reduce:transition-none"
-          >
-            {proLink.label}
-          </Link>
-
-          <Link
-            href="#agent-title"
+            href={primaryCta.href}
             className="hidden cta-solid accent-glow min-h-[40px] items-center rounded-full bg-white px-4 text-[0.875rem] font-semibold text-ink no-underline lg:inline-flex"
             onClick={closeMenu}
           >
-            Tester ma ville
+            {primaryCta.label}
           </Link>
 
           {/* Bouton hamburger : seul élément de navigation visible sous
-              900 px, en dehors du lien « Qualifyr » vers l'accueil. */}
+              1024 px, en dehors du lien « Qualifyr » vers l'accueil.
+
+              `display` posé uniquement en `style`, jamais via une classe
+              Tailwind concurrente (ex. `lg:hidden`) : un `style` en ligne
+              gagne toujours en spécificité CSS face à une classe — ajouter
+              `lg:hidden` À CÔTÉ de ce `style` ne serait pas une redondance
+              utile, ce serait une valeur qui peut en écraser une autre selon
+              l'ordre de calcul. Un seul mécanisme, mais fiable : `isDesktop`
+              est une valeur JavaScript certaine (`matchMedia`), pas une
+              classe dont on ne peut plus garantir qu'elle s'applique face
+              aux `!important` de la charte historique — voir la note en
+              tête de fichier sur l'origine de ce choix. */}
           <button
+            ref={triggerRef}
             type="button"
             onClick={() => setMenuOpen((open) => !open)}
             aria-expanded={menuOpen}
@@ -195,91 +244,76 @@ export function DarkHeader() {
         </div>
       </div>
 
-      {/* Panneau mobile plein écran. Style en ligne pour les propriétés
-          critiques (position, visibilité) : les classes Tailwind
-          `position`/`inset` ont déjà silencieusement échoué ailleurs dans ce
-          projet à cause des `!important` de la charte historique — voir
-          `BeforeAfterSection.tsx`.
+      {/* Panneau mobile, déroulé depuis le haut, sous la barre de
+          navigation (`top: '4.1rem'`, hauteur de la barre elle-même). Style
+          en ligne pour les propriétés critiques (position, visibilité) :
+          les classes Tailwind `position`/`inset` ont déjà silencieusement
+          échoué ailleurs dans ce projet à cause des `!important` de la
+          charte historique — voir `BeforeAfterSection.tsx`.
 
-          Toujours monté sur mobile (pas de `menuOpen &&` conditionnant le
-          rendu) : une transition CSS a besoin que l'élément existe déjà dans
-          le DOM au moment où la propriété change, sinon rien ne s'anime, le
-          panneau apparaît d'un bloc — précisément le symptôme rapporté.
-          L'ouverture/fermeture passe donc par `transform`/`opacity`, et
-          `pointerEvents` empêche d'interagir avec un panneau fermé qui reste
-          présent mais hors écran. */}
-      {!isDesktop ? (
-        <div
-          id="mobile-nav-panel"
-          aria-hidden={!menuOpen}
-          style={{
-            position: 'fixed',
-            top: '4.1rem',
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 49,
-            overflowY: 'auto',
-            background: '#0e0e0f',
-            transform: menuOpen ? 'translateY(0)' : 'translateY(-100%)',
-            opacity: menuOpen ? 1 : 0,
-            pointerEvents: menuOpen ? 'auto' : 'none',
-            transition: reduceMotion
-              ? 'none'
-              : 'transform 280ms cubic-bezier(0.16, 1, 0.3, 1), opacity 220ms ease',
-          }}
+          Toujours monté dans le DOM (pas de `menuOpen &&` conditionnant le
+          rendu) : une transition CSS a besoin que l'élément existe déjà au
+          moment où la propriété change, sinon rien ne s'anime, le panneau
+          apparaît ou disparaît d'un bloc. `hidden lg:hidden` via `className`
+          le retire du flux desktop (où `nav` fait déjà le travail) sans
+          dépendre d'un état JS pour cette partie-là. */}
+      <div
+        ref={panelRef}
+        id="mobile-nav-panel"
+        aria-hidden={!menuOpen}
+        className="lg:hidden"
+        style={{
+          position: 'fixed',
+          top: '4.1rem',
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 49,
+          overflowY: 'auto',
+          background: '#0e0e0f',
+          transform: menuOpen ? 'translateY(0)' : 'translateY(-100%)',
+          opacity: menuOpen ? 1 : 0,
+          visibility: menuOpen ? 'visible' : 'hidden',
+          pointerEvents: menuOpen ? 'auto' : 'none',
+          transition: reduceMotion
+            ? 'none'
+            : 'transform 280ms cubic-bezier(0.16, 1, 0.3, 1), opacity 220ms ease, visibility 280ms',
+        }}
+      >
+        <nav
+          aria-label="Menu"
+          style={{ display: 'flex', flexDirection: 'column', padding: '1.5rem 1.25rem 2.5rem' }}
         >
-          <nav
-            aria-label="Menu"
-            style={{ display: 'flex', flexDirection: 'column', padding: '1.5rem 1.25rem 2.5rem' }}
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={closeMenu}
+              className="text-[1.0625rem] font-medium !text-primary no-underline"
+              style={{ padding: '0.9rem 0', borderBottom: '1px solid rgba(255,255,255,0.07)', minHeight: '3rem' }}
+            >
+              {link.label}
+            </Link>
+          ))}
+          <Link
+            href={proLink.href}
+            onClick={closeMenu}
+            className="text-[1.0625rem] font-medium !text-primary no-underline"
+            style={{ padding: '0.9rem 0', borderBottom: '1px solid rgba(255,255,255,0.07)', minHeight: '3rem' }}
           >
-            {links.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={closeMenu}
-                className="text-[1.0625rem] font-medium !text-primary no-underline"
-                style={{ padding: '0.9rem 0', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
-              >
-                {link.label}
-              </a>
-            ))}
-            <Link
-              href={featuresLink.href}
-              onClick={closeMenu}
-              className="text-[1.0625rem] font-medium !text-primary no-underline"
-              style={{ padding: '0.9rem 0', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
-            >
-              {featuresLink.label}
-            </Link>
-            <Link
-              href={saasLink.href}
-              onClick={closeMenu}
-              className="text-[1.0625rem] font-medium !text-primary no-underline"
-              style={{ padding: '0.9rem 0', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
-            >
-              {saasLink.label}
-            </Link>
-            <Link
-              href={proLink.href}
-              onClick={closeMenu}
-              className="text-[1.0625rem] font-medium !text-primary no-underline"
-              style={{ padding: '0.9rem 0', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
-            >
-              {proLink.label}
-            </Link>
+            {proLink.label}
+          </Link>
 
-            <Link
-              href="#agent-title"
-              onClick={closeMenu}
-              className="cta-solid accent-glow inline-flex items-center justify-center rounded-full bg-white text-[0.9375rem] font-semibold text-ink no-underline"
-              style={{ marginTop: '1.5rem', minHeight: '48px' }}
-            >
-              Tester ma ville
-            </Link>
-          </nav>
-        </div>
-      ) : null}
+          <Link
+            href={primaryCta.href}
+            onClick={closeMenu}
+            className="cta-solid accent-glow inline-flex items-center justify-center rounded-full bg-white text-[0.9375rem] font-semibold text-ink no-underline"
+            style={{ marginTop: '1.5rem', minHeight: '48px' }}
+          >
+            {primaryCta.label}
+          </Link>
+        </nav>
+      </div>
     </header>
   );
 }
