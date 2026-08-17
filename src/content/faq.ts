@@ -11,27 +11,27 @@ export const faq: readonly FaqItem[] = [
   {
     question: 'À qui s’adresse Qualifyr ?',
     answer:
-      'Aux professionnels du nettoyage automobile mobile et du detailing à domicile, en France et en Suisse. Que vous travailliez seul ou avec une petite équipe, sur une zone précise.',
+      'Aux laveurs auto à domicile, en France et en Suisse. Que vous travailliez seul ou avec une petite équipe, sur une zone précise.',
   },
   {
     question: 'Travaillez-vous avec tous les métiers ?',
     answer:
-      'Non. Qualifyr se concentre sur le detailing et le nettoyage automobile afin de proposer un accompagnement et un outil réellement adaptés à ce métier.',
+      'Non. Qualifyr se concentre sur le nettoyage automobile à domicile afin de proposer un accompagnement et un outil réellement adaptés à ce métier.',
   },
   {
     question: 'Proposez-vous seulement un site internet ?',
     answer:
-      'Non. Le site est un maillon. Nous construisons l’enchaînement : être trouvé, comprendre les formules, réserver un créneau, envoyer les bonnes infos (véhicule, photos), puis confirmer. Nous proposons aussi Qualifyr Detailers, un outil de réservation en ligne.',
+      'Non. Le site est un maillon. Nous construisons l’enchaînement : être trouvé, comprendre les formules, réserver un créneau, envoyer les bonnes infos (véhicule, photos), puis confirmer. Nous proposons aussi Qualifyr, un outil de réservation en ligne pour laveurs auto.',
   },
   {
-    question: 'Qu’est-ce que Qualifyr Detailers ?',
+    question: 'Qu’est-ce que l’outil de réservation Qualifyr ?',
     answer:
-      'C’est l’outil SaaS : chaque detailer a une page de réservation (formules, estimation, photos, créneau). Les demandes arrivent dans un espace pro pour confirmer. Ce n’est pas un site vitrine sur mesure : c’est un produit en abonnement.',
+      'C’est l’outil SaaS : chaque laveur auto a une page de réservation (formules, estimation, photos, créneau). Les demandes arrivent dans un espace pro pour confirmer. Ce n’est pas un site vitrine sur mesure : c’est un produit en abonnement.',
   },
   {
     question: 'Peut-on intégrer une prise de rendez-vous ?',
     answer:
-      'Oui. Nous mettons en place le parcours de demande adapté à votre activité, ou vous utilisez directement Qualifyr Detailers pour centraliser les créneaux.',
+      'Oui. Nous mettons en place le parcours de demande adapté à votre activité, ou vous utilisez directement l’outil de réservation Qualifyr pour centraliser les créneaux.',
   },
   {
     question: 'Dois-je changer tous mes outils ?',

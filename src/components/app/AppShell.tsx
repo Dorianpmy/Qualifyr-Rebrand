@@ -100,7 +100,7 @@ export function AppShell({
       <aside className={styles.sidebar}>
         <div className={styles.sidebarBrand}>
           <strong>{detailerName}</strong>
-          <span>{city ?? 'Espace detailer'}</span>
+          <span>{city ?? 'Espace pro'}</span>
           <span className={styles.brandTag}>Qualifyr</span>
         </div>
 

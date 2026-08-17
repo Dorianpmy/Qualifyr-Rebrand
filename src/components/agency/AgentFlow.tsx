@@ -200,7 +200,7 @@ export function AgentFlow() {
           <div className="w-full max-w-[30rem] surface-card p-5 text-start">
             <p className="mb-1 text-[0.75rem] uppercase tracking-[0.08em] text-faint">Votre zone</p>
             <p className="text-[0.9375rem] text-muted">
-              « Detailing à domicile, 15 km autour de Lyon 3e. »
+              « Lavage auto à domicile, 15 km autour de Lyon 3e. »
             </p>
           </div>
 

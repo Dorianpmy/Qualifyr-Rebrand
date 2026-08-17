@@ -51,7 +51,7 @@ export const swCarCleaning = {
   gallery: [
     {
       src: '/images/sw-car-cleaning/site-accueil.webp',
-      alt: 'Page d’accueil du site SW Carcleaning présentant le lavage automobile et le detailing à domicile à Fribourg.',
+      alt: 'Page d’accueil du site SW Carcleaning présentant le lavage automobile à domicile à Fribourg.',
       width: 1440,
       height: 900,
       device: 'desktop',
@@ -79,7 +79,7 @@ export const context = {
     'Une présentation claire ne consiste donc pas à en dire plus, mais à répondre plus tôt : ce que couvre chaque formule, pour qui, jusqu’où le service se déplace, et comment entrer en contact sans avoir à chercher.',
   ],
   aspects: [
-    { label: 'Activité', value: 'Lavage et detailing à domicile' },
+    { label: 'Activité', value: 'Lavage auto à domicile' },
     { label: 'Zone', value: 'Fribourg et alentours' },
     { label: 'Méthode', value: '100 % à la main' },
     { label: 'Publics', value: 'Particuliers, entreprises, entretien régulier' },

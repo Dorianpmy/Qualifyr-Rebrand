@@ -40,7 +40,7 @@ export const primaryNav: readonly NavItem[] = [
  * Pied de page — une entrée par destination réelle.
  */
 export const footerServiceNav: readonly NavItem[] = [
-  { label: 'Site pour nettoyage automobile et detailing', href: '/nettoyage-automobile' },
+  { label: 'Site pour laveurs auto à domicile', href: '/nettoyage-automobile' },
   { label: 'Création et refonte de site', href: '/creation-site-web' },
   { label: 'Tarifs', href: '/tarifs' },
 ];

@@ -2,17 +2,17 @@
  * Positionnement produit SaaS (interne + copy source).
  *
  * Agence  → sites & identité (vitrine).
- * SaaS    → acquisition + réservation pour detailers FR / CH.
+ * SaaS    → acquisition + réservation pour laveurs auto FR / CH.
  *
- * Référence mentale : « le TrendTrack du detailing » =
+ * Référence mentale : « le TrendTrack du lavage auto » =
  * avantage concurrentiel sur le parcours client, pas un clone Detailr.
  */
 
 export const saasPositioning = {
-  name: 'Qualifyr Detailers',
-  oneLiner: 'Le parcours qui remplit le planning des detailers.',
+  name: 'Qualifyr',
+  oneLiner: 'Le parcours qui remplit le planning des laveurs auto.',
   pitch: [
-    'Chaque detailer a sa page de réservation.',
+    'Chaque laveur auto a sa page de réservation.',
     'Le client choisit, estime, envoie photos et créneau.',
     'Toi, tu confirmes — sans aller-retour WhatsApp.',
   ],

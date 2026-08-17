@@ -17,7 +17,7 @@ export const aboutPage = {
 } as const;
 
 export const aboutIntro = [
-  'Qualifyr accompagne une verticale précise : le nettoyage automobile mobile et le detailing. Nous ne cherchons pas à servir tous les métiers. Nous adaptons une méthode claire aux véhicules, zones, formules et créneaux de votre activité.',
+  'Qualifyr accompagne une verticale précise : le nettoyage automobile mobile, à domicile. Nous ne cherchons pas à servir tous les métiers. Nous adaptons une méthode claire aux véhicules, zones, formules et créneaux de votre activité.',
   'Nous travaillons à distance, ce qui permet d’intervenir où que vous soyez sans facturer des déplacements qui n’apportent rien. Les échanges sont directs, en français simple, avec la personne qui construit réellement le parcours.',
 ] as const;
 

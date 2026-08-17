@@ -9,9 +9,9 @@ export const productionDomain = 'qualifyragence.com';
  * Zéro mention conciergerie / Airbnb.
  */
 export const homeSeo = {
-  title: 'Qualifyr — Sites & réservation pour detailers',
+  title: 'Qualifyr — Sites & réservation pour laveurs auto',
   description:
-    'Agence et outil pour le detailing auto en France et en Suisse. Sites clairs, formules visibles, parcours de réservation — moins de DM, plus de RDV.',
+    'Agence et outil pour les laveurs auto à domicile en France et en Suisse. Sites clairs, formules visibles, parcours de réservation — moins de DM, plus de RDV.',
 } as const;
 
 export const site = {
@@ -35,19 +35,19 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
     priority: 1,
   },
   '/creation-site-web': {
-    title: 'Création de site pour detailers et nettoyage auto — Qualifyr',
+    title: 'Création de site pour laveurs auto à domicile — Qualifyr',
     description:
-      'Site pensé pour convertir : formules lisibles, tarifs visibles, prise de contact simple. Pour les professionnels du detailing qui veulent plus de demandes.',
+      'Site pensé pour convertir : formules lisibles, tarifs visibles, prise de contact simple. Pour les laveurs auto à domicile qui veulent plus de demandes.',
     priority: 0.9,
   },
   '/nettoyage-automobile': {
-    title: 'Site pour detailing et nettoyage auto — plus de réservations',
+    title: 'Site pour laveurs auto à domicile — plus de réservations',
     description:
-      'Prestations claires, tarifs par véhicule, réservation simple. Pour les detailers qui veulent moins de messages Instagram et plus de rendez-vous.',
+      'Prestations claires, tarifs par véhicule, réservation simple. Pour les laveurs auto qui veulent moins de messages Instagram et plus de rendez-vous.',
     priority: 0.9,
   },
   '/tarifs': {
-    title: 'Tarifs — site pour detailing | Qualifyr',
+    title: 'Tarifs — site pour laveurs auto | Qualifyr',
     description:
       'Fourchettes affichées : site vitrine et site avec parcours de demande. Transparence avant le premier appel.',
     priority: 0.9,
@@ -55,29 +55,29 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
   '/methode': {
     title: 'Méthode Qualifyr — de l’offre floue à la demande qualifiée',
     description:
-      'Comprendre, clarifier, concevoir, améliorer. Comment nous transformons un savoir-faire detailing en parcours de réservation.',
+      'Comprendre, clarifier, concevoir, améliorer. Comment nous transformons un savoir-faire de lavage auto en parcours de réservation.',
     priority: 0.9,
   },
   '/realisations': {
-    title: 'Réalisations — sites detailing et nettoyage auto | Qualifyr',
+    title: 'Réalisations — sites pour laveurs auto | Qualifyr',
     description:
-      'Projets publiés : structure de l’offre, identité et parcours de contact pour le detailing mobile.',
+      'Projets publiés : structure de l’offre, identité et parcours de contact pour le lavage auto mobile.',
     priority: 0.8,
   },
   '/realisations/sw-car-cleaning': {
-    title: 'SW Car Cleaning (Fribourg) — étude de cas detailing | Qualifyr',
+    title: 'SW Car Cleaning (Fribourg) — étude de cas | Qualifyr',
     description:
-      'Clarification des formules, identité et prise de contact pour un service de lavage et detailing à domicile à Fribourg.',
+      'Clarification des formules, identité et prise de contact pour un service de lavage auto à domicile à Fribourg.',
     priority: 0.7,
   },
   '/a-propos': {
-    title: 'À propos — agence detailing France & Suisse | Qualifyr',
+    title: 'À propos — agence pour laveurs auto | Qualifyr',
     description:
-      'Pourquoi Qualifyr se concentre sur le nettoyage automobile et le detailing, et ce que nous refusons de faire.',
+      'Pourquoi Qualifyr se concentre sur le nettoyage automobile à domicile, et ce que nous refusons de faire.',
     priority: 0.6,
   },
   '/estimation': {
-    title: 'Estimation budget site detailing — Qualifyr',
+    title: 'Estimation budget site laveur auto — Qualifyr',
     description:
       'Orientation claire et fourchette de budget indicative en quelques minutes, avant le premier échange.',
     priority: 0.8,
@@ -85,13 +85,13 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
   '/contact': {
     title: 'Contact — Qualifyr Agence',
     description:
-      'Une question sur le detailing, un site ou l’outil de réservation ? Écrivez-nous directement, nous vous répondons rapidement.',
+      'Une question sur le lavage auto, un site ou l’outil de réservation ? Écrivez-nous directement, nous vous répondons rapidement.',
     priority: 0.5,
   },
   '/blog': {
-    title: 'Journal detailing — conseils pour remplir l’agenda | Qualifyr',
+    title: 'Journal laveurs auto — conseils pour remplir l’agenda | Qualifyr',
     description:
-      'Offre, Google, parcours de réservation : articles concrets pour développer une activité de detailing.',
+      'Offre, Google, parcours de réservation : articles concrets pour développer une activité de lavage auto.',
     priority: 0.7,
   },
   '/mentions-legales': {

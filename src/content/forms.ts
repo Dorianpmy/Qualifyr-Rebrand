@@ -14,7 +14,7 @@ export type SelectOption = {
 export const activityOptions = [
   {
     value: 'nettoyage-detailing',
-    label: 'Nettoyage automobile / detailing',
+    label: 'Nettoyage automobile / lavage à domicile',
     description: 'Prestations mobiles, à domicile ou dans votre atelier.',
   },
   {

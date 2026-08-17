@@ -31,7 +31,7 @@ const groups = [
     title: 'Votre compte',
     links: [
       { href: '/app', label: 'Espace professionnel' },
-      { href: '/nettoyage-automobile', label: 'Pour les detailers' },
+      { href: '/nettoyage-automobile', label: 'Pour les laveurs auto' },
       { href: '/estimation', label: 'Estimation' },
       { href: '/contact', label: 'Nous écrire' },
     ],

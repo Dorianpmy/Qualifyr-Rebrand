@@ -9,7 +9,7 @@ import type { Route } from '@/types';
 
 /**
  * Données structurées (JSON-LD).
- * Uniquement faits vérifiables — detailing / nettoyage auto.
+ * Uniquement faits vérifiables — lavage auto à domicile / nettoyage auto.
  */
 
 function absolute(path: string): string {
@@ -36,14 +36,14 @@ export function organization() {
     image: absolute('/images/og/qualifyr-og-v3.png'),
     areaServed: servedCountries(),
     knowsAbout: [
-      'Detailing automobile',
+      'Lavage automobile à domicile',
       'Nettoyage automobile mobile',
-      'Création de sites web pour detailers',
+      'Création de sites web pour laveurs auto',
       'Parcours de réservation en ligne',
-      'Clarification de l’offre detailing',
+      'Clarification de l’offre de lavage auto',
       'Identité de marque',
       'Expérience utilisateur mobile',
-      'Logiciel de réservation pour detailers',
+      'Logiciel de réservation pour laveurs auto',
     ],
   };
 
@@ -103,11 +103,11 @@ export function webDesignService() {
     '@context': 'https://schema.org',
     '@type': 'Service',
     '@id': `${site.url}/creation-site-web#service`,
-    name: 'Création de site web pour detailers',
-    serviceType: 'Conception de sites web pour le detailing automobile',
+    name: 'Création de site web pour laveurs auto',
+    serviceType: 'Conception de sites web pour le lavage automobile à domicile',
     url: absolute('/creation-site-web'),
     description:
-      'Conception de sites clairs et orientés réservation pour les professionnels du nettoyage automobile et du detailing.',
+      'Conception de sites clairs et orientés réservation pour les laveurs auto à domicile.',
     provider: { '@id': `${site.url}/#organization` },
   };
 }
@@ -119,16 +119,16 @@ export function verticalService(content: VerticalServiceContent) {
     '@context': 'https://schema.org',
     '@type': 'Service',
     '@id': `${url}#service`,
-    name: 'Création de site internet pour nettoyage automobile et detailing',
+    name: 'Création de site internet pour laveurs auto à domicile',
     serviceType:
-      'Création de site internet pour les professionnels du nettoyage automobile mobile et du detailing',
+      'Création de site internet pour les laveurs auto à domicile',
     url,
     description: pageMeta[content.route].description,
-    category: ['Nettoyage automobile mobile', 'Detailing à domicile'],
+    category: ['Nettoyage automobile mobile', 'Lavage auto à domicile'],
     areaServed: servedCountries(),
     audience: {
       '@type': 'BusinessAudience',
-      audienceType: 'Professionnels du nettoyage automobile mobile et du detailing',
+      audienceType: 'Laveurs auto à domicile',
     },
     provider: { '@id': `${site.url}/#organization` },
     mainEntityOfPage: { '@id': `${url}#webpage` },

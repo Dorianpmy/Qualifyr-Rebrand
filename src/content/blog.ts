@@ -21,11 +21,11 @@ export type BlogArticle = {
 export const blogIntro = {
   eyebrow: 'Le journal',
   title: 'Des repères pour mieux présenter et développer votre activité.',
-  body: 'Offre, identité, site et prise de contact : des articles concrets pour les professionnels du nettoyage automobile et du detailing.',
+  body: 'Offre, identité, site et prise de contact : des articles concrets pour les laveurs auto à domicile.',
 } as const;
 
 /**
- * File éditoriale Qualifyr — recentrée detailing / nettoyage auto.
+ * File éditoriale Qualifyr — recentrée lavage auto à domicile.
  */
 export const blogArticles = [
   {
@@ -323,23 +323,23 @@ export const blogArticles = [
       'La bonne question n’est pas seulement “dois-je afficher mes prix ?”, mais “puis-je expliquer honnêtement ce que le client obtient à ce prix et ce qui peut le faire varier ?”.',
   },
   {
-    slug: 'trouver-des-clients-en-detailing',
+    slug: 'trouver-des-clients-en-lavage-auto',
     number: '08',
     category: 'Nettoyage automobile',
-    title: 'Trouver des clients en detailing sans dépendre d’Instagram',
+    title: 'Trouver des clients en lavage auto sans dépendre d’Instagram',
     excerpt:
-      'Instagram vous fait découvrir, mais il ne remplit pas un agenda. Ce qui manque à la plupart des detailers se situe juste après la découverte.',
-    seoTitle: 'Trouver des clients en detailing automobile — Qualifyr',
+      'Instagram vous fait découvrir, mais il ne remplit pas un agenda. Ce qui manque à la plupart des laveurs auto se situe juste après la découverte.',
+    seoTitle: 'Trouver des clients en lavage auto à domicile — Qualifyr',
     seoDescription:
-      'Pourquoi les réseaux sociaux ne suffisent pas à remplir un agenda de detailing, et quels canaux apportent réellement des réservations.',
+      'Pourquoi les réseaux sociaux ne suffisent pas à remplir un agenda de lavage auto, et quels canaux apportent réellement des réservations.',
     publishedAt: '2026-08-10T13:00:00+02:00',
     introduction:
-      'La plupart des professionnels du detailing ont une vitrine correcte : un compte Instagram, de belles photos, des avant-après convaincants. Et pourtant leur agenda reste irrégulier. Le problème n’est presque jamais la visibilité — c’est ce qui se passe entre l’instant où quelqu’un admire votre travail et celui où il réserve.',
+      'La plupart des laveurs auto à domicile ont une vitrine correcte : un compte Instagram, de belles photos, des avant-après convaincants. Et pourtant leur agenda reste irrégulier. Le problème n’est presque jamais la visibilité — c’est ce qui se passe entre l’instant où quelqu’un admire votre travail et celui où il réserve.',
     sections: [
       {
         title: 'Ce qu’Instagram ne fait pas',
         paragraphs: [
-          'Il ne prend pas de rendez-vous. Il ne classe pas vos tarifs par type de véhicule. Il n’encaisse pas d’acompte, donc il ne protège pas vos créneaux. Et surtout, il n’existe pas sur Google : celui qui cherche un detailer dans sa ville ne tombera jamais sur un compte social.',
+          'Il ne prend pas de rendez-vous. Il ne classe pas vos tarifs par type de véhicule. Il n’encaisse pas d’acompte, donc il ne protège pas vos créneaux. Et surtout, il n’existe pas sur Google : celui qui cherche un laveur auto dans sa ville ne tombera jamais sur un compte social.',
           'Ces clients-là, vous ne les voyez même pas passer. C’est la partie invisible de votre manque à gagner.',
         ],
       },
@@ -370,18 +370,18 @@ export const blogArticles = [
       },
     ],
     conclusion:
-      'Gardez Instagram pour ce qu’il fait très bien : montrer votre niveau de finition. Mais ajoutez derrière un chemin qui permet de comparer, de choisir et de réserver. La plupart des detailers n’ont pas un problème d’audience — ils ont un problème de conversion.',
+      'Gardez Instagram pour ce qu’il fait très bien : montrer votre niveau de finition. Mais ajoutez derrière un chemin qui permet de comparer, de choisir et de réserver. La plupart des laveurs auto n’ont pas un problème d’audience — ils ont un problème de conversion.',
   },
   {
-    slug: 'grille-tarifaire-detailing-par-vehicule',
+    slug: 'grille-tarifaire-lavage-auto-par-vehicule',
     number: '09',
     category: 'Nettoyage automobile',
-    title: 'Construire une grille tarifaire de detailing lisible',
+    title: 'Construire une grille tarifaire de lavage auto lisible',
     excerpt:
       'Un client qui ne comprend pas votre grille ne négocie pas : il n’écrit pas. Voici comment structurer des tarifs qui décident à votre place.',
-    seoTitle: 'Grille tarifaire detailing par type de véhicule — Qualifyr',
+    seoTitle: 'Grille tarifaire lavage auto par type de véhicule — Qualifyr',
     seoDescription:
-      'Formules, suppléments et tarifs par gabarit : comment présenter ses prix de detailing pour supprimer les questions et accélérer la réservation.',
+      'Formules, suppléments et tarifs par gabarit : comment présenter ses prix de lavage auto pour supprimer les questions et accélérer la réservation.',
     publishedAt: '2026-08-10T14:00:00+02:00',
     introduction:
       'La question « c’est combien pour un SUV ? » revient des dizaines de fois par mois. Chaque occurrence est le symptôme d’une grille qui ne répond pas d’elle-même — et chaque réponse manuelle est du temps qui ne vous est pas payé.',

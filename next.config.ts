@@ -117,6 +117,19 @@ const nextConfig: NextConfig = {
         destination: '/diagnostic',
         permanent: true,
       },
+      // Repositionnement « laveur auto » plutôt que « detailer » (demande de
+      // Dorian) : ces deux slugs ont changé, la redirection évite de perdre
+      // le référencement déjà acquis sur les anciennes URLs.
+      {
+        source: '/blog/trouver-des-clients-en-detailing',
+        destination: '/blog/trouver-des-clients-en-lavage-auto',
+        permanent: true,
+      },
+      {
+        source: '/blog/grille-tarifaire-detailing-par-vehicule',
+        destination: '/blog/grille-tarifaire-lavage-auto-par-vehicule',
+        permanent: true,
+      },
     ];
   },
 };

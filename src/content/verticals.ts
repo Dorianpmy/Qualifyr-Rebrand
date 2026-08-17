@@ -89,7 +89,7 @@ const sharedMethod = method;
 export const automotiveVertical: VerticalServiceContent = {
   route: '/nettoyage-automobile',
   hero: {
-    eyebrow: 'Expertise · Nettoyage automobile & detailing',
+    eyebrow: 'Expertise · Nettoyage automobile à domicile',
     title: 'Un site qui transforme vos abonnés en réservations.',
     lead:
       'Instagram vous fait connaître, mais il ne prend pas de rendez-vous. Qualifyr conçoit le site qui présente vos formules, affiche vos tarifs par type de véhicule et transforme une visite en demande de créneau — sans passer par vingt messages privés.',
@@ -115,7 +115,7 @@ export const automotiveVertical: VerticalServiceContent = {
       {
         number: '03',
         title: 'Introuvable sur Google',
-        body: 'Celui qui cherche un detailer dans votre ville ne tombe jamais sur un compte Instagram. Ces clients-là, vous ne les voyez même pas passer.',
+        body: 'Celui qui cherche un laveur auto dans votre ville ne tombe jamais sur un compte Instagram. Ces clients-là, vous ne les voyez même pas passer.',
       },
     ],
   },
@@ -168,7 +168,7 @@ export const automotiveVertical: VerticalServiceContent = {
       {
         number: '02',
         title: 'Vous cessez d’être comparé à un lavage à 15 €',
-        body: 'Tant que rien ne montre l’écart entre passer un rouleau et corriger une peinture, votre prix paraît élevé sans raison. Quand le niveau de soin se voit avant le tarif, le tarif cesse d’être le sujet.',
+        body: 'Tant que rien ne montre l’écart entre un lavage rapide et une prestation soignée, votre prix paraît élevé sans raison. Quand le niveau de soin se voit avant le tarif, le tarif cesse d’être le sujet.',
       },
       {
         number: '03',
@@ -181,11 +181,11 @@ export const automotiveVertical: VerticalServiceContent = {
     eyebrow: 'Pourquoi nous',
     title: 'Nous connaissons vos objections mieux que votre prochaine agence.',
     lead:
-      'Nous nous concentrons sur le nettoyage automobile et le detailing. Voici ce que cette spécialisation vous fait gagner concrètement.',
+      'Nous nous concentrons sur le nettoyage automobile à domicile. Voici ce que cette spécialisation vous fait gagner concrètement.',
     items: [
       {
-        title: 'Nous n’écrirons pas « lavage » sur votre site',
-        body: 'Une agence généraliste range le detailing dans « nettoyage de voiture », confond une correction de peinture avec un polissage et vend une protection céramique comme une cire. Vos clients avertis le voient en une phrase — et ce sont eux qui paient le plus cher.',
+        title: 'Nous connaissons les contraintes du lavage à domicile',
+        body: 'Une agence généraliste ignore qu’un lavage à domicile dépend de l’accès à l’eau et à l’électricité, confond une formule intérieur/extérieur avec un forfait complet et ne pense jamais à afficher la zone d’intervention. Vos clients le remarquent en une phrase — et ce sont eux qui hésitent le plus longtemps.',
       },
       {
         title: 'Nous savons ce qu’il demande avant de réserver',
@@ -206,7 +206,7 @@ export const automotiveVertical: VerticalServiceContent = {
     eyebrow: 'Réalisation réelle',
     title: 'SW Carcleaning',
     body:
-      'Une identité et un site conçus pour présenter une activité de lavage et detailing à domicile à Fribourg, clarifier les formules et faciliter la prise de contact.',
+      'Une identité et un site conçus pour présenter une activité de lavage auto à domicile à Fribourg, clarifier les formules et faciliter la prise de contact.',
     points: ['Présentation des formules', 'Zone d’intervention visible', 'Parcours pensé pour le mobile'],
     image: swCarCleaning.gallery[0],
     externalUrl: swCarCleaning.externalUrl ?? undefined,
@@ -218,12 +218,12 @@ export const automotiveVertical: VerticalServiceContent = {
     {
       question: 'J’ai déjà Instagram, à quoi sert un site ?',
       answer:
-        'Instagram vous fait découvrir, il ne fait pas réserver. Il ne classe pas vos tarifs par véhicule, ne bloque pas de créneau et n’apparaît pas quand quelqu’un cherche un detailer sur Google. Le site prend le relais exactement là où votre compte s’arrête.',
+        'Instagram vous fait découvrir, il ne fait pas réserver. Il ne classe pas vos tarifs par véhicule, ne bloque pas de créneau et n’apparaît pas quand quelqu’un cherche un laveur auto sur Google. Le site prend le relais exactement là où votre compte s’arrête.',
     },
     {
       question: 'Travaillez-vous uniquement avec le nettoyage automobile mobile ?',
       answer:
-        'Cette page s’adresse au nettoyage automobile mobile et au detailing, à domicile comme en atelier. Nous adaptons le parcours à vos prestations, à votre zone et à votre manière de recevoir les demandes.',
+        'Cette page s’adresse au nettoyage automobile mobile, à domicile comme en atelier. Nous adaptons le parcours à vos prestations, à votre zone et à votre manière de recevoir les demandes.',
     },
     {
       question: 'Puis-je conserver mon site actuel ?',

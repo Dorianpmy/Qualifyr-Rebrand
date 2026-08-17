@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 
 export const metadata: Metadata = {
-  title: 'Espace detailer — Qualifyr',
+  title: 'Espace pro — Qualifyr',
   robots: { index: false, follow: false },
 
   /*

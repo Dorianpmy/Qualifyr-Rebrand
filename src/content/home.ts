@@ -4,7 +4,7 @@ import { objectives, swCarCleaning } from './sw-car-cleaning';
  * Hero — positionnement recentré nettoyage automobile / detailing.
  */
 export const hero = {
-  eyebrow: 'Agence digitale · Nettoyage automobile & detailing',
+  eyebrow: 'Agence digitale · Nettoyage automobile à domicile',
   title: 'Des sites qui transforment vos abonnés en réservations.',
   body:
     'Instagram vous fait connaître. Un site clair présente vos formules, affiche vos tarifs et transforme une visite en demande de créneau — sans passer par vingt messages privés.',
@@ -21,10 +21,10 @@ export const heroMoments = [
  * Lien vers app.qualifyragence.com — DA produit séparée de l’agence.
  */
 export const saasHome = {
-  eyebrow: 'Outil detailers · France & Suisse',
+  eyebrow: 'Outil laveurs auto · France & Suisse',
   title: 'Le parcours qui remplit ton planning.',
   lead:
-    'Chaque detailer a sa page de réservation. Le client choisit la formule, envoie des photos et un créneau. Toi, tu confirmes — sans aller-retour WhatsApp.',
+    'Chaque laveur auto a sa page de réservation. Le client choisit la formule, envoie des photos et un créneau. Toi, tu confirmes — sans aller-retour WhatsApp.',
   points: [
     {
       title: 'Page client dédiée',
@@ -40,7 +40,7 @@ export const saasHome = {
     },
   ],
   primaryCta: {
-    label: 'Voir l’outil detailers',
+    label: 'Voir l’outil laveurs auto',
     href: 'https://app.qualifyragence.com/reservation/demo',
   },
   secondaryCta: {
@@ -75,7 +75,7 @@ export const frictionPoints = [
   {
     number: '01',
     title: 'Des formules floues',
-    body: 'Intérieur, extérieur, detailing complet — sans hiérarchie claire, le prospect compare au prix et part ailleurs.',
+    body: 'Intérieur, extérieur, prestation complète — sans hiérarchie claire, le prospect compare au prix et part ailleurs.',
   },
   {
     number: '02',
@@ -91,7 +91,7 @@ export const frictionPoints = [
 
 export const sectors = [
   {
-    title: 'Nettoyage automobile mobile et detailing',
+    title: 'Nettoyage automobile mobile à domicile',
     body: 'Présentez clairement vos formules, votre zone d’intervention et la façon de réserver.',
   },
 ] as const;
@@ -117,7 +117,7 @@ export const transformations = [
 /** @deprecated Conservé pour compat — préférer frictionPoints. */
 export const serviceCompanies = [
   {
-    title: 'Nettoyage automobile & detailing',
+    title: 'Nettoyage automobile à domicile',
     body: 'Présenter les prestations, valoriser le niveau de travail et simplifier le passage vers la prise de contact.',
     href: '/nettoyage-automobile' as const,
   },

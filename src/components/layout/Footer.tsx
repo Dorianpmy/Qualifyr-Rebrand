@@ -45,8 +45,8 @@ export function Footer() {
               <Logo />
             </Link>
             <p className={styles.positioning}>
-              Nous concevons les sites et les outils d’acquisition des professionnels du nettoyage
-              automobile mobile et du detailing à domicile.
+              Nous concevons les sites et les outils d’acquisition des laveurs auto à domicile,
+              en France et en Suisse.
             </p>
             {contact.social.length > 0 ? (
               <ul className={styles.socials} aria-label="Réseaux sociaux">

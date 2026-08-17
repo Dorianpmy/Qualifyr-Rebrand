@@ -16,7 +16,7 @@ type PaymentMode = 'spread' | 'standard';
 
 const activities: readonly { id: ActivityId; title: string; description: string }[] = [
   { id: 'automobile', title: 'Nettoyage automobile mobile', description: 'Formules, véhicule, zone d’intervention et demande de rendez-vous.' },
-  { id: 'detailing', title: 'Detailing à domicile', description: 'Niveau de finition, état du véhicule, préparation et réservation.' },
+  { id: 'detailing', title: 'Lavage premium à domicile', description: 'Niveau de finition, état du véhicule, préparation et réservation.' },
   { id: 'conciergerie', title: 'Conciergerie', description: 'Besoin, séjour, périmètre de l’accompagnement et prise de contact.' },
   { id: 'autre', title: 'Autre demande de service', description: 'Présentez votre activité. Nous vérifierons d’abord si notre méthode lui correspond.' },
 ];

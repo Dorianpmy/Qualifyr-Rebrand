@@ -24,7 +24,7 @@ export const services: readonly Service[] = [
           <p className="mb-1 text-[0.6875rem] uppercase tracking-[0.08em] text-faint">
             Votre périmètre
           </p>
-          <p className="text-[0.9375rem] text-muted">Detailing à domicile · 15 km · Lyon 3e</p>
+          <p className="text-[0.9375rem] text-muted">Lavage auto à domicile · 15 km · Lyon 3e</p>
         </GlowCard>
 
         {/* Les trois agents, nommés. « Il cherche / il trie / il retient »

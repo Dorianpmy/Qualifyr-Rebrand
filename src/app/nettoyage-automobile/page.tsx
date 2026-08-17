@@ -55,7 +55,7 @@ export default function AutomotiveCleaningPage() {
       <DarkHeader />
 
       <DarkHero
-        eyebrow="Nettoyage automobile & detailing"
+        eyebrow="Nettoyage automobile à domicile"
         title={hero.title}
         subtitle={hero.lead}
         ctaLabel="Tester le tunnel client"
