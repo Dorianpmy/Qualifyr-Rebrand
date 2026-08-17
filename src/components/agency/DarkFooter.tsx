@@ -37,11 +37,18 @@ const groups = [
     ],
   },
   {
+    /*
+     * Les deux liens pointaient vers `/confidentialite` et `/cgv`, deux
+     * routes qui n'existent pas (404 confirmés) : le reste du site utilise
+     * `/politique-de-confidentialite`, jamais `/confidentialite`, et aucune
+     * page CGV n'a jamais été construite. Corrigé pour pointer vers la page
+     * réelle ; le lien CGV est retiré tant qu'aucune page CGV n'existe — un
+     * lien légal cassé nuit plus à la confiance que son absence.
+     */
     title: 'Légal',
     links: [
       { href: '/mentions-legales', label: 'Mentions légales' },
-      { href: '/confidentialite', label: 'Confidentialité' },
-      { href: '/cgv', label: 'Conditions de vente' },
+      { href: '/politique-de-confidentialite', label: 'Confidentialité' },
     ],
   },
 ] as const;

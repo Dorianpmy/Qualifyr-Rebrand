@@ -21,30 +21,71 @@ type Offer = {
 };
 
 /**
- * SaaS inchangé / enrichi (couches) — sites baissés.
- * Ordre : SaaS puis offres site one-shot.
+ * SaaS puis offres site one-shot.
+ *
+ * Les trois premières entrées reprennent mot pour mot les trois offres SaaS
+ * affichées sur `/` et `/nettoyage-automobile` (`DarkPricing.tsx`) — mêmes
+ * noms, mêmes prix mensuels, mêmes contenus. Cette page affichait jusqu'ici
+ * une quatrième offre SaaS différente (« Réservation + atelier », 49 €/mois
+ * en un seul palier) : un prospect qui comparait cette page à l'accueil
+ * voyait deux grilles tarifaires incompatibles pour ce qui est le même
+ * produit. Les prix ici sont les tarifs mensuels sans engagement (la bascule
+ * annuelle avec remise −20 % reste sur `/` et `/nettoyage-automobile`, qui
+ * gardent le comparatif complet) : les montants doivent rester identiques
+ * dans les deux endroits si l'un des deux change.
  */
 const offers: readonly Offer[] = [
   {
-    kicker: 'SaaS',
-    title: 'Réservation + atelier',
-    from: 49,
+    kicker: 'SaaS · Agent seul',
+    title: 'On vient vous chercher des clients',
+    from: 17,
     cadence: 'par mois',
     convertible: false,
     audience:
-      'Tout le système de réservation, la preuve visuelle et la facturation.',
+      'Votre semaine a des trous et le téléphone ne sonne pas. L’agent démarche votre secteur pendant que vous êtes sur un véhicule.',
     items: [
-      'Page de réservation (formules, véhicule, créneau)',
-      'Acompte encaissé à la réservation',
-      'Tableau de bord des demandes',
-      'Galerie avant / après',
-      'Factures (mentions FR, numérotation)',
-      'Espace pro renforcé',
-      'Priorité évolutions produit',
+      'Il travaille toutes vos communes, pas seulement la vôtre',
+      'Il vise les entreprises qui entretiennent vraiment : loueurs, VTC, concessions, flottes',
+      'Il répond au premier message',
+      'Un rapport de secteur par e-mail',
+    ],
+    href: '/nettoyage-automobile',
+    linkLabel: 'Analyser ma zone',
+  },
+  {
+    kicker: 'SaaS · Pack complet',
+    title: 'On les trouve, et on les garde',
+    from: 59,
+    cadence: 'par mois',
+    convertible: false,
+    audience:
+      'Trouver un client ne sert à rien s’il annule la veille. Les rendez-vous arrivent seuls et l’acompte est déjà encaissé.',
+    items: [
+      'Tout l’agent d’acquisition, sur toutes vos communes',
+      'Tout le système de réservation et sa facturation',
+      'Les rendez-vous trouvés par l’agent atterrissent dans le même agenda',
+      'Un seul abonnement, une seule facture',
     ],
     href: '/nettoyage-automobile',
     linkLabel: 'Voir la démo',
     featured: true,
+  },
+  {
+    kicker: 'SaaS · Système seul',
+    title: 'On arrête de vous poser des lapins',
+    from: 49,
+    cadence: 'par mois',
+    convertible: false,
+    audience:
+      'Les demandes, vous les avez. Ce sont les devis du soir et les créneaux bloqués pour rien qui vous coûtent vos semaines.',
+    items: [
+      'Prix et durée affichés avant réservation',
+      'Acompte encaissé au clic',
+      'Relance automatique des devis abandonnés',
+      'Facturation France/Suisse',
+    ],
+    href: '/nettoyage-automobile',
+    linkLabel: 'Voir le tableau de bord',
   },
   {
     kicker: 'Agence · Vitrine',

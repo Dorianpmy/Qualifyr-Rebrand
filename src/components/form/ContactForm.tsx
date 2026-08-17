@@ -153,6 +153,13 @@ export function ContactForm({ className }: { readonly className?: string | undef
           {formLabels.contactSubmit}
         </Button>
         <RequiredNote />
+        {/* Réassurance juste sous le bouton d'envoi : c'est l'endroit où un
+            visiteur hésite encore une seconde avant de cliquer, pas un
+            endroit pour de nouvelles informations qu'il devrait chercher
+            ailleurs. */}
+        <p className={styles.required}>
+          Réponse sous 24 à 48 h ouvrées, à l’adresse indiquée. Aucun appel commercial surprise.
+        </p>
       </FormActions>
     </form>
   );

@@ -56,38 +56,30 @@ export default function HomePage() {
         subtitle="Gardez les mains sur la polisseuse. Votre système filtre les curieux, encaisse les acomptes, et votre agent d’acquisition démarche de nouveaux clients sur votre secteur pendant que vous travaillez."
         ctaLabel="Tester l’agent sur ma ville"
         ctaHref="#agent-title"
-        secondaryLabel="Voir le SaaS de réservation"
-        secondaryHref="/nettoyage-automobile"
+        /*
+         * Le lien secondaire pointait vers `/nettoyage-automobile`, qui
+         * présente la même offre SaaS que cette page sous un autre habillage
+         * — aucun chemin n'existait donc, depuis le hero, vers l'autre offre
+         * réelle de Qualifyr : les sites construits sur mesure. Corrigé pour
+         * aiguiller vers cette offre plutôt que de dupliquer le CTA
+         * principal.
+         */
+        secondaryLabel="Besoin d’un site sur mesure ?"
+        secondaryHref="/creation-site-web"
         ctaNote="Sans carte bancaire. France et Suisse."
-        proof={{
-          /*
-           * CHIFFRE ET PORTRAITS À VÉRIFIER AVANT MISE EN LIGNE PUBLIQUE.
-           *
-           * Deux affirmations sont posées ici, à l'endroit exact où le visiteur
-           * cherche une raison de croire le reste de la page.
-           *
-           * 1. Le décompte. Tu m'as indiqué que « +100 » n'était pas encore
-           *    vrai. Le premier prospect qui demande une référence, ou un
-           *    concurrent qui compte tes clients, le découvrira.
-           *
-           * 2. Les portraits. Ce sont des visages qui n'appartiennent à aucun
-           *    de tes clients. Un professionnel qui reconnaît un portrait
-           *    d'illustration cesse de croire le reste — y compris les choses
-           *    vraies, comme le prix ferme ou l'acompte encaissé.
-           *
-           * Le bandeau `<TrustStrip />` reste disponible : remplace tout ce
-           * bloc par `trust` pour revenir à une réassurance sans chiffre.
-           */
-          count: '+100 utilisateurs',
-          rating: 5,
-          ratingLabel: 'Note moyenne — à vérifier avant publication',
-          avatars: [
-            { src: '/images/proof/proof-1.webp', alt: 'Professionnel équipé avec Qualifyr' },
-            { src: '/images/proof/proof-2.webp', alt: 'Professionnelle équipée avec Qualifyr' },
-            { src: '/images/proof/proof-3.webp', alt: 'Professionnel équipé avec Qualifyr' },
-            { src: '/images/proof/proof-4.webp', alt: 'Professionnelle équipée avec Qualifyr' },
-          ],
-        }}
+        /*
+         * `proof` (compteur « +100 utilisateurs » + quatre portraits) a été
+         * retiré : le commentaire qui l'accompagnait ici même disait très
+         * précisément que ni le chiffre ni les visages n'étaient vrais, et
+         * demandait une vérification avant mise en ligne publique — jamais
+         * faite avant que le site ne devienne public. `trust` active
+         * `TrustStrip`, construit pour occuper exactement cette place avec
+         * trois promesses vérifiables aujourd'hui plutôt qu'un chiffre
+         * invérifiable. Le jour où de vrais clients acceptent d'être cités
+         * (voir la méthode de collecte de témoignages), `proof` reprend sa
+         * place avec leurs vrais visages et leur nombre exact.
+         */
+        trust
       />
 
       <ServiceTabs
