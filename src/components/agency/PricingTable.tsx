@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { formatMoney, roundUpToTen, swissPriceFactor, type PricingRegion } from '@/lib/offer-configurator';
 import type { Route } from '@/types';
+import { SubscribeButton } from './SubscribeButton';
 import styles from './PricingTable.module.css';
 
 type Offer = {
@@ -18,6 +19,10 @@ type Offer = {
   readonly href: Route;
   readonly linkLabel: string;
   readonly featured?: boolean;
+  /** Présent uniquement sur les 3 offres SaaS : fait apparaître le bouton
+      « S'abonner directement » (voir `SubscribeButton.tsx`). Les 2 offres
+      d'agence, vendues sur devis, n'ont pas d'équivalent en paiement direct. */
+  readonly billingPlan?: 'agent' | 'complet' | 'systeme';
 };
 
 /**
@@ -51,6 +56,7 @@ const offers: readonly Offer[] = [
     ],
     href: '/nettoyage-automobile',
     linkLabel: 'Analyser ma zone',
+    billingPlan: 'agent',
   },
   {
     kicker: 'SaaS · Pack complet',
@@ -69,6 +75,7 @@ const offers: readonly Offer[] = [
     href: '/nettoyage-automobile',
     linkLabel: 'Voir la démo',
     featured: true,
+    billingPlan: 'complet',
   },
   {
     kicker: 'SaaS · Système seul',
@@ -86,6 +93,7 @@ const offers: readonly Offer[] = [
     ],
     href: '/nettoyage-automobile',
     linkLabel: 'Voir le tableau de bord',
+    billingPlan: 'systeme',
   },
   {
     kicker: 'Agence · Vitrine',
@@ -177,6 +185,16 @@ export function PricingTable() {
             <Link className={styles.link} href={offer.href}>
               {offer.linkLabel}
             </Link>
+
+            {offer.billingPlan ? (
+              <p className={styles.subscribeRow}>
+                <SubscribeButton
+                  plan={offer.billingPlan}
+                  cadence="monthly"
+                  className={styles.subscribeLink}
+                />
+              </p>
+            ) : null}
           </article>
         ))}
       </div>

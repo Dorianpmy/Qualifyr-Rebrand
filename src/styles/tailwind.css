@@ -1023,3 +1023,43 @@
     }
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Point de statut vert — `TrustStrip`.
+
+   Un point qui respire plutôt qu'un vrai clignotement (opacité 1 → 0,45,
+   jamais 0) : un point qui disparaît complètement toutes les 1,8 s se lit
+   comme un bug de rendu, pas comme un signal « actif ». La couleur est
+   volontairement hors de la charte du site (qui n'autorise la couleur qu'à
+   deux endroits, voir la note de `DarkHero`) : ce point ne porte aucune
+   information de marque, seulement un signal de statut universellement
+   compris — même logique que les points verts « en ligne » des outils de
+   messagerie.
+
+   Neutralisé comme toute animation du site par la préférence de mouvement
+   réduit globale (`*, *::before, *::after { animation-duration: 0.01ms
+   !important }` dans `base.css`) : un point fixe reste visible, il cesse
+   seulement de respirer.
+--------------------------------------------------------------------------- */
+@keyframes qualifyr-status-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.85);
+  }
+}
+
+.status-dot {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: #34d399;
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.18);
+  animation: qualifyr-status-pulse 1.8s ease-in-out infinite;
+}

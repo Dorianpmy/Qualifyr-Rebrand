@@ -1,36 +1,41 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { useState } from 'react';
 import { Section } from './Section';
 import { orbTints } from './agent-visuals';
 import { Orb } from './ServiceTabs';
 import { StepLoadingBar } from './StepLoadingBar';
 
 /**
- * Avant / après — la friction actuelle contre le résultat, en bascule.
+ * Avant / après — la friction actuelle contre le résultat, côte à côte.
  *
  * **Pourquoi ce bloc convertit.** Les sections de fonctionnalités décrivent le
  * produit ; celle-ci décrit la journée du lecteur. Un laveur qui se reconnaît
  * dans « le devis qu'on rédige le soir » a déjà admis le problème — et on ne
  * vend pas une solution à quelqu'un qui n'a pas admis le problème.
  *
- * **Une carte qui bascule, pas deux côte à côte.** La version précédente
- * posait les deux colonnes en permanence — lisible sur un écran large, mais
- * deux colonnes de cinq lignes empilées sur téléphone faisaient défiler
- * longtemps avant d'atteindre la suite de la page. Une bascule « Sans
- * Qualifyr / Avec Qualifyr » ramène la comparaison à une seule carte, dans
- * les deux formats — inspirée d'une référence envoyée (une page concurrente
- * qui traite le même argument ainsi), reconstruite dans la charte du site :
- * une seule icône par ligne, jamais cinq couleurs différentes — la charte
- * n'autorise la couleur qu'à deux endroits sur la page (voir la note de
- * `DarkHero`), et une pastille par ligne dans cinq teintes en ferait un
- * troisième, puis un quatrième.
+ * **Les deux colonnes sont visibles en même temps, sans bascule.** Une
+ * version précédente cachait l'une des deux derrière un sélecteur
+ * « Sans Qualifyr / Avec Qualifyr » : un visiteur pressé ne cliquait jamais
+ * dessus et ne voyait donc qu'une moitié de l'argument. Voir « avant » et
+ * « après » d'un même regard, sans action requise, fait le travail de
+ * comparaison à la place du lecteur plutôt que de le lui demander. Sur
+ * téléphone, les colonnes s'empilent — « Sans Qualifyr » toujours en premier,
+ * puis « Avec Qualifyr » juste en dessous : on ne raconte le problème avant la
+ * solution.
  *
  * **Les cinq lignes restent les mêmes concepts des deux côtés.** La ligne
- * « téléphone » reste la ligne « téléphone » qu'on soit sur « avant » ou
- * « après » — seul le texte et le repère (croix ou coche) changent. Ça
- * évite au lecteur de rechercher où est passée « sa » ligne quand il bascule.
+ * « téléphone » reste la ligne « téléphone » dans les deux colonnes — seuls le
+ * texte et le repère (croix ou coche) changent. Le lecteur retrouve chaque
+ * ligne à la même position des deux côtés, sans avoir à la rechercher.
+ *
+ * **L'écart entre les colonnes n'est pas décoratif.** La carte « Avec
+ * Qualifyr » porte `.node-hero`, dont le halo (`box-shadow`, jusqu'à 34px de
+ * flou) déborde dans toutes les directions, y compris vers la gauche —
+ * directement dans la carte voisine si l'écart est trop faible. `gap-10`
+ * (2,5rem, 40px) laisse ce flou se dissiper avant d'atteindre « Sans
+ * Qualifyr », par le même raisonnement que l'écart utilisé ailleurs dans ce
+ * fichier entre la bascule des tarifs et une carte `.node-hero` voisine.
  */
 
 type Row = {
@@ -137,9 +142,66 @@ const clientNoise = [
   'Vous êtes où ? Ça fait 10 min',
 ] as const;
 
-export function BeforeAfterSection() {
-  const [after, setAfter] = useState(false);
+/**
+ * Icône + titre + corps + barre de progression pour une ligne, dans l'une ou
+ * l'autre colonne. Partagé entre les deux pour que les cinq lignes restent
+ * visuellement identiques des deux côtés — seuls le texte, le style barré et
+ * la couleur du titre changent.
+ */
+function RowItem({
+  row,
+  index,
+  active,
+}: {
+  readonly row: Row;
+  readonly index: number;
+  readonly active: boolean;
+}) {
+  const Icon = row.icon;
+  return (
+    <li className="flex flex-col gap-3.5">
+      <div className="flex gap-3.5">
+        {/* Le contour reprend le dégradé tricolore déjà porté par la carte
+            « Avec Qualifyr » (voir `.node-hero` dans `tailwind.css`) — un
+            seul motif de couleur répété dix fois (cinq lignes × deux
+            colonnes), pas dix teintes différentes.
 
+            La couleur du glyphe est posée en `style`, pas via `text-faint` +
+            `currentColor` : combinée au double fond (`padding-box`/
+            `border-box`) de la bordure dégradée, la classe utilitaire
+            cessait de s'appliquer en production — icônes invisibles alors
+            que le contour restait visible. Une couleur écrite en dur gagne
+            toujours, quelle que soit la cause exacte de l'échec de la
+            cascade. */}
+        <span
+          aria-hidden="true"
+          className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg [&_svg]:size-[1rem]"
+          style={{
+            border: '1px solid transparent',
+            background:
+              'linear-gradient(#141416, #141416) padding-box, linear-gradient(135deg, var(--accent-1), var(--accent-3) 50%, var(--accent-2)) border-box',
+            color: '#9a9a9c',
+          }}
+        >
+          <Icon />
+        </span>
+        <div>
+          <p
+            className={`text-[0.9375rem] font-semibold leading-[1.35] ${active ? 'text-primary' : 'text-muted line-through decoration-white/20'}`}
+          >
+            {active ? row.afterTitle : row.beforeTitle}
+          </p>
+          <p className="mt-0.5 text-[0.8125rem] leading-[1.5] text-faint">
+            {active ? row.afterBody : row.beforeBody}
+          </p>
+        </div>
+      </div>
+      <StepLoadingBar index={index} />
+    </li>
+  );
+}
+
+export function BeforeAfterSection() {
   return (
     <Section labelledBy="before-after-title" className="py-24">
       <header className="mx-auto mb-10 max-w-[46rem] text-center">
@@ -155,170 +217,87 @@ export function BeforeAfterSection() {
         </p>
       </header>
 
-      {/* La bascule — mêmes classes que `.period-switch`/`.period-option`
-          dans `tailwind.css`, déjà éprouvées pour les tarifs : un vrai
-          `radiogroup` au clavier, pas des `div` cliquables muettes.
+      {/* Deux colonnes, toujours visibles. `items-start` : la carte
+          « Avec Qualifyr » ne doit pas s'étirer à la hauteur de sa voisine
+          si l'une des deux devient plus haute qu'attendu (texte agrandi par
+          le navigateur, traduction plus longue). */}
+      <div className="mx-auto grid max-w-[64rem] items-start gap-10 sm:grid-cols-2">
+        <div
+          className="flex flex-col rounded-[1.5rem] p-6 sm:p-8"
+          style={{ background: '#0f0f10', border: '1px solid rgba(255,255,255,0.06)' }}
+        >
+          <div className="mx-auto mb-7 hidden w-full max-w-[20rem] sm:block">
+            {/* Bulles bleues façon iMessage, alignées à droite comme des
+                messages envoyés. Coin inférieur droit moins arrondi que les
+                trois autres : c'est la convention visuelle de la « queue »
+                de bulle sur iOS, reconnaissable même sans la pointe
+                elle-même. Empilées en flux normal, pas à des coordonnées
+                fixes : un texte plus long que prévu pousse la bulle
+                suivante au lieu de la recouvrir. */}
+            <div className="flex w-full flex-col items-end gap-2">
+              {clientNoise.map((message) => (
+                <span
+                  key={message}
+                  className="max-w-[85%] rounded-2xl rounded-br-md px-3.5 py-2 text-[0.8125rem] leading-[1.4] text-white"
+                  style={{ background: '#0a84ff' }}
+                >
+                  {message}
+                </span>
+              ))}
+            </div>
+          </div>
 
-          `mb-12` et non `mb-8` : la carte en dessous porte `.node-hero`
-          côté « après », dont le halo (`box-shadow`, jusqu'à 34px de flou,
-          sans décalage) déborde dans toutes les directions y compris vers le
-          haut. À 2rem d'écart, ce halo baignait la bascule elle-même — texte
-          qui se lit mal, contours qui se brouillent. 3rem laisse le flou se
-          dissiper avant d'atteindre les boutons. */}
-      <div className="mb-12 flex justify-center">
-        <div role="radiogroup" aria-label="Avant ou après Qualifyr" className="period-switch">
-          <button
-            type="button"
-            role="radio"
-            aria-checked={!after}
-            onClick={() => setAfter(false)}
-            className="period-option"
+          <p
+            className="mb-6 inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-[0.6875rem] font-semibold uppercase tracking-[0.08em]"
+            style={{ border: '1px solid rgba(255,255,255,0.08)', color: 'var(--color-faint)' }}
           >
             <CrossIcon />
             Sans Qualifyr
-          </button>
-          <button
-            type="button"
-            role="radio"
-            aria-checked={after}
-            onClick={() => setAfter(true)}
-            className="period-option"
+          </p>
+
+          <ul className="grid gap-4">
+            {rows.map((row, index) => (
+              <RowItem key={row.beforeTitle} row={row} index={index} active={false} />
+            ))}
+          </ul>
+        </div>
+
+        <div className="node-hero flex flex-col rounded-[1.5rem] p-6 sm:p-8">
+          <div className="mx-auto mb-7 hidden w-full max-w-[20rem] sm:block">
+            {/* Montage libre : l'orbe au centre, les trois rôles autour, à
+                des coins fixes — quatre éléments qui ne se chevauchent
+                jamais quel que soit le texte, contrairement à une pile de
+                bulles. */}
+            <div
+              className="relative mx-auto flex items-center justify-center"
+              style={{ height: '6.5rem', width: '100%' }}
+            >
+              <Orb tint={orbTints.qualifyr} size="3.25rem" />
+              {workers.map((worker) => (
+                <span
+                  key={worker.name}
+                  style={{ position: 'absolute', ...worker.style }}
+                  className="surface-pill px-3 py-1 text-[0.75rem] font-medium text-muted"
+                >
+                  {worker.name}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Seul aplat blanc de la section : marque ce qui est acquis. */}
+          <p
+            className="mb-6 inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-[0.6875rem] font-semibold uppercase tracking-[0.08em]"
+            style={{ backgroundColor: '#ffffff', color: '#0e0e0f' }}
           >
             <CheckIcon />
             Avec Qualifyr
-          </button>
-        </div>
-      </div>
-
-      <div className="mx-auto max-w-[38rem]">
-        <div
-          className={
-            after
-              ? 'node-hero flex flex-col rounded-[1.5rem] p-6 sm:p-8'
-              : 'flex flex-col rounded-[1.5rem] p-6 sm:p-8'
-          }
-          style={after ? undefined : { background: '#0f0f10', border: '1px solid rgba(255,255,255,0.06)' }}
-        >
-          {/* En-tête visuel : le bruit du côté « avant », l'agent et ses
-              rôles côté « après ». Repli sans lui sous 640 px — l'un comme
-              l'autre perdent leur lisibilité en dessous de cette largeur.
-
-              **Deux mises en page, pas une seule réutilisée.** L'« après »
-              reste un montage libre (l'orbe au centre, les trois rôles
-              autour) : quatre éléments à des coins fixes, ça ne se chevauche
-              jamais. L'« avant » est devenu une vraie pile de messages —
-              quatre bulles à taille libre les unes sous les autres se
-              chevauchaient forcément une fois posées à des coordonnées
-              fixes dans un cadre de hauteur figée ; un texte plus long que
-              prévu, et deux bulles se recouvraient. Un empilement en flux
-              normal ne peut pas produire ce bug : chaque bulle pousse la
-              suivante. */}
-          <div className="mx-auto mb-7 hidden w-full max-w-[20rem] sm:block">
-            {after ? (
-              <div
-                className="relative mx-auto flex items-center justify-center"
-                style={{ height: '6.5rem', width: '100%' }}
-              >
-                <Orb tint={orbTints.qualifyr} size="3.25rem" />
-                {workers.map((worker) => (
-                  <span
-                    key={worker.name}
-                    style={{ position: 'absolute', ...worker.style }}
-                    className="surface-pill px-3 py-1 text-[0.75rem] font-medium text-muted"
-                  >
-                    {worker.name}
-                  </span>
-                ))}
-              </div>
-            ) : (
-              /* Bulles bleues façon iMessage, alignées à droite comme des
-                 messages envoyés — repris de la référence envoyée. Coin
-                 inférieur droit moins arrondi que les trois autres : c'est la
-                 convention visuelle de la « queue » de bulle sur iOS,
-                 reconnaissable même sans la pointe elle-même. */
-              <div className="flex w-full flex-col items-end gap-2">
-                {clientNoise.map((message) => (
-                  <span
-                    key={message}
-                    className="max-w-[85%] rounded-2xl rounded-br-md px-3.5 py-2 text-[0.8125rem] leading-[1.4] text-white"
-                    style={{ background: '#0a84ff' }}
-                  >
-                    {message}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* La pastille d'état — repère de ce qui est affiché, comme sur la
-              référence. Croix et sable pour « avant », coche et blanc plein
-              pour « après » : le seul aplat blanc de la section marque ce qui
-              est acquis. */}
-          <p
-            className="mb-6 inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-[0.6875rem] font-semibold uppercase tracking-[0.08em]"
-            style={
-              after
-                ? { backgroundColor: '#ffffff', color: '#0e0e0f' }
-                : { border: '1px solid rgba(255,255,255,0.08)', color: 'var(--color-faint)' }
-            }
-          >
-            {after ? <CheckIcon /> : <CrossIcon />}
-            {after ? 'Avec Qualifyr' : 'Sans Qualifyr'}
           </p>
 
-          <ul className="grid gap-4 sm:grid-cols-2 sm:gap-x-6">
-            {rows.map((row, index) => {
-              const Icon = row.icon;
-              return (
-                <li key={row.beforeTitle} className="flex flex-col gap-3.5">
-                  {/* Une barre « style chargement » par point, pas une seule
-                      barre décorative au-dessus du bloc entier — c'est bien
-                      à cet endroit qu'elle donne du rythme à la lecture,
-                      point par point, comme sur « Comment ça marche ». */}
-                  <div className="flex gap-3.5">
-                    {/* Le contour reprend le dégradé tricolore déjà porté par
-                        la carte elle-même (voir `.node-hero` dans
-                        `tailwind.css`) — un seul motif de couleur répété
-                        cinq fois, pas cinq teintes différentes. Ça reste
-                        dans l'esprit « la couleur n'apparaît qu'à deux
-                        endroits » : c'est la même signature qui se prolonge
-                        sur les icônes, pas une troisième zone colorée.
-
-                        La couleur du glyphe est posée en `style`, pas via
-                        `text-faint` + `currentColor` : combinée au double
-                        fond (`padding-box`/`border-box`) de la bordure
-                        dégradée, la classe utilitaire cessait de
-                        s'appliquer en production — icônes invisibles alors
-                        que le contour restait visible. Même symptôme, même
-                        remède que la carte tarifaire sombre plus haut dans
-                        le projet : une couleur écrite en dur gagne
-                        toujours, quelle que soit la cause exacte de
-                        l'échec de la cascade. */}
-                    <span
-                      aria-hidden="true"
-                      className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg [&_svg]:size-[1rem]"
-                      style={{
-                        border: '1px solid transparent',
-                        background:
-                          'linear-gradient(#141416, #141416) padding-box, linear-gradient(135deg, var(--accent-1), var(--accent-3) 50%, var(--accent-2)) border-box',
-                        color: '#9a9a9c',
-                      }}
-                    >
-                      <Icon />
-                    </span>
-                    <div>
-                      <p className={`text-[0.9375rem] font-semibold leading-[1.35] ${after ? 'text-primary' : 'text-muted line-through decoration-white/20'}`}>
-                        {after ? row.afterTitle : row.beforeTitle}
-                      </p>
-                      <p className="mt-0.5 text-[0.8125rem] leading-[1.5] text-faint">
-                        {after ? row.afterBody : row.beforeBody}
-                      </p>
-                    </div>
-                  </div>
-                  <StepLoadingBar index={index} />
-                </li>
-              );
-            })}
+          <ul className="grid gap-4">
+            {rows.map((row, index) => (
+              <RowItem key={row.afterTitle} row={row} index={index} active />
+            ))}
           </ul>
         </div>
       </div>

@@ -159,7 +159,13 @@ function Mark({ value, strong }: { readonly value: Support; readonly strong: boo
         role="img"
         aria-label="Oui"
         className="mx-auto size-[1.15rem] fill-none [stroke-linecap:round] [stroke-linejoin:round] [stroke-width:2]"
-        style={{ stroke: strong ? 'var(--accent-2)' : 'rgba(255,255,255,0.32)' }}
+        /* Couleur écrite en dur plutôt que `var(--accent-2)` : la même
+           variable, référencée sans repli dans une propriété `stroke`
+           héritée, a déjà produit ailleurs dans ce projet des couleurs
+           inattendues quand la cascade qui la définit échoue en production.
+           #b8dcd0 est la valeur exacte de `--accent-2` (céladon) sur ce
+           thème — écrite ici, elle ne dépend plus de rien. */
+        style={{ stroke: strong ? '#b8dcd0' : 'rgba(255,255,255,0.32)' }}
       >
         <path d="M3 8.5l3.2 3.2L13 4.8" />
       </svg>
@@ -296,7 +302,16 @@ export function CompareSection() {
                     style={{ color: '#9a9a9c' }}
                   >
                     <span className="flex items-start gap-2.5">
-                      <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-faint [&_svg]:size-[0.95rem]">
+                      {/* `text-faint` retiré au profit d'une couleur en dur :
+                          même remède que le libellé juste à côté, sur le même
+                          principe — un glyphe SVG en `currentColor` hérite de
+                          la couleur de son ancêtre le plus proche qui la
+                          déclare, pas forcément de cette classe si la
+                          cascade qui la porte est perdue en production. */}
+                      <span
+                        className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] [&_svg]:size-[0.95rem]"
+                        style={{ color: '#9a9a9c' }}
+                      >
                         {RowIcon ? <RowIcon /> : null}
                       </span>
                       <span className="pt-0.5">{row.label}</span>

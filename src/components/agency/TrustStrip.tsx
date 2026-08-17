@@ -31,11 +31,16 @@ export function TrustStrip() {
           {index > 0 ? (
             <span aria-hidden="true" className="hidden h-8 w-px bg-hairline sm:block" />
           ) : null}
-          <span className="text-center sm:text-start">
-            <span className="block text-[0.9375rem] font-semibold text-primary">
-              {point.label}
+          <span className="flex items-center gap-2.5">
+            {/* Point vert : signal « actif », pas une couleur de marque —
+                voir la note dans `tailwind.css` sur `.status-dot`. */}
+            <span aria-hidden="true" className="status-dot" />
+            <span className="text-center sm:text-start">
+              <span className="block text-[0.9375rem] font-semibold text-primary">
+                {point.label}
+              </span>
+              <span className="block text-[0.8125rem] text-faint">{point.detail}</span>
             </span>
-            <span className="block text-[0.8125rem] text-faint">{point.detail}</span>
           </span>
         </li>
       ))}

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { FeatureComparisonTable } from './FeatureComparisonTable';
 import { Section } from './Section';
+import { SubscribeButton } from './SubscribeButton';
 
 /**
  * Tarifs — trois offres, deux périodicités.
@@ -80,6 +81,10 @@ const darkVarsReset = {
 
 type Plan = {
   readonly id: string;
+  /** Identifiant stable pour Stripe — voir `SubscribeButton` et
+      `lib/billing/stripe.ts`. Distinct de `id` : celui-ci ne doit jamais
+      changer même si `id` (utilisé pour `key` et l'affichage) est retouché. */
+  readonly billingPlan: 'agent' | 'complet' | 'systeme';
   readonly kicker: string;
   readonly title: string;
   /** Tarif mensuel sans engagement, en euros. */
@@ -101,6 +106,7 @@ const ANNUAL_DISCOUNT = 0.2;
 const plans: readonly Plan[] = [
   {
     id: 'agent',
+    billingPlan: 'agent',
     kicker: 'Agent seul',
     title: 'On vient vous chercher des clients',
     monthly: 17,
@@ -118,6 +124,7 @@ const plans: readonly Plan[] = [
   },
   {
     id: 'complet',
+    billingPlan: 'complet',
     kicker: 'Pack complet',
     title: 'On les trouve, et on les garde',
     monthly: 59,
@@ -138,6 +145,7 @@ const plans: readonly Plan[] = [
   },
   {
     id: 'saas',
+    billingPlan: 'systeme',
     kicker: 'Système seul',
     title: 'On arrête de vous poser des lapins',
     monthly: 49,
@@ -327,6 +335,22 @@ function PlanCard({ plan, annual }: { plan: Plan; annual: boolean }) {
 
       <p className="mt-3 text-center text-[0.75rem] leading-[1.4] text-faint" style={dark(DARK_TEXT_FAINT)}>
         {plan.note}
+      </p>
+
+      {/* Bouton secondaire, discret et sans encadré : pour le prospect déjà
+          convaincu qui veut payer maintenant plutôt que de repasser par
+          l'essai gratuit du CTA principal. Voir la note en tête de
+          `SubscribeButton.tsx`. */}
+      <p className="mt-2 text-center">
+        <SubscribeButton
+          plan={plan.billingPlan}
+          cadence={annual ? 'annual' : 'monthly'}
+          className="text-[0.75rem] underline underline-offset-4 transition-colors duration-150 disabled:opacity-60"
+          style={{
+            color: plan.featured ? DARK_TEXT_FAINT : LIGHT_ACCENT_TEXT,
+            textDecorationColor: plan.featured ? 'rgba(255,255,255,0.25)' : 'rgba(31,111,92,0.35)',
+          }}
+        />
       </p>
     </div>
   );
