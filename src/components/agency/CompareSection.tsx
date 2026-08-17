@@ -282,9 +282,18 @@ export function CompareSection() {
               const RowIcon = rowIcons[index];
               return (
                 <tr key={row.label} className="border-t border-hairline">
+                  {/* Couleur posée en `style`, pas via `text-muted` : ce
+                      libellé a été vu rendu en sable/orange en production
+                      alors que la classe utilitaire vaut un gris neutre en
+                      source — même symptôme que les icônes de
+                      `BeforeAfterSection` plus haut dans le projet, une
+                      classe qui cesse de s'appliquer sans cause identifiée.
+                      Une couleur écrite en dur ne laisse plus de prise à ce
+                      genre de perte silencieuse. */}
                   <th
                     scope="row"
-                    className="py-3.5 pr-4 text-start text-[0.875rem] font-normal leading-[1.45] text-muted"
+                    className="py-3.5 pr-4 text-start text-[0.875rem] font-normal leading-[1.45]"
+                    style={{ color: '#9a9a9c' }}
                   >
                     <span className="flex items-start gap-2.5">
                       <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-faint [&_svg]:size-[0.95rem]">

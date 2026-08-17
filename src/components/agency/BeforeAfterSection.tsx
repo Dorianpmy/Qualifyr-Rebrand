@@ -1,7 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Section } from './Section';
 import { orbTints } from './agent-visuals';
 import { Orb } from './ServiceTabs';
@@ -139,6 +139,44 @@ const clientNoise = [
 export function BeforeAfterSection() {
   const [after, setAfter] = useState(false);
 
+  /*
+   * Barre animée sous l'en-tête — inspirée d'une référence envoyée (une barre
+   * de progression sur une page concurrente). Purement décorative : elle ne
+   * représente aucune statistique, seulement le mouvement de bascule que le
+   * bloc s'apprête à montrer. Après l'audit qui a retiré le faux « +100
+   * utilisateurs » ailleurs sur le site, hors de question d'habiller une
+   * barre qui grandit avec un chiffre qu'on ne mesure pas — la charte
+   * dégradée (sable/lilas/céladon) suffit à faire l'effet sans rien
+   * affirmer.
+   *
+   * Se remplit une seule fois, à l'entrée dans le viewport : `once` évite
+   * qu'elle se relance en boucle à chaque scroll de va-et-vient, ce qui
+   * userait l'effet plus vite qu'il ne convainc.
+   */
+  const barRef = useRef<HTMLDivElement>(null);
+  const [barFilled, setBarFilled] = useState(false);
+
+  useEffect(() => {
+    const el = barRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      setBarFilled(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setBarFilled(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.4 },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <Section labelledBy="before-after-title" className="py-24">
       <header className="mx-auto mb-10 max-w-[46rem] text-center">
@@ -148,16 +186,37 @@ export function BeforeAfterSection() {
         <h2 id="before-after-title" className="mb-4 text-section">
           Votre semaine, avant et après.
         </h2>
-        <p className="text-xl leading-[1.6] text-muted">
+        <p className="mb-6 text-xl leading-[1.6] text-muted">
           Rien de ce qui suit n’est un gain de temps théorique. Ce sont les cinq moments où votre
           journée déraille aujourd’hui.
         </p>
+        <div
+          ref={barRef}
+          aria-hidden="true"
+          className="mx-auto h-[3px] w-full max-w-[14rem] overflow-hidden rounded-full bg-white/10"
+        >
+          <div
+            className="h-full rounded-full"
+            style={{
+              width: barFilled ? '100%' : '0%',
+              background: 'linear-gradient(90deg, var(--accent-1), var(--accent-3) 50%, var(--accent-2))',
+              transition: 'width 1100ms cubic-bezier(0.16, 1, 0.3, 1)',
+            }}
+          />
+        </div>
       </header>
 
       {/* La bascule — mêmes classes que `.period-switch`/`.period-option`
           dans `tailwind.css`, déjà éprouvées pour les tarifs : un vrai
-          `radiogroup` au clavier, pas des `div` cliquables muettes. */}
-      <div className="mb-8 flex justify-center">
+          `radiogroup` au clavier, pas des `div` cliquables muettes.
+
+          `mb-12` et non `mb-8` : la carte en dessous porte `.node-hero`
+          côté « après », dont le halo (`box-shadow`, jusqu'à 34px de flou,
+          sans décalage) déborde dans toutes les directions y compris vers le
+          haut. À 2rem d'écart, ce halo baignait la bascule elle-même — texte
+          qui se lit mal, contours qui se brouillent. 3rem laisse le flou se
+          dissiper avant d'atteindre les boutons. */}
+      <div className="mb-12 flex justify-center">
         <div role="radiogroup" aria-label="Avant ou après Qualifyr" className="period-switch">
           <button
             type="button"
