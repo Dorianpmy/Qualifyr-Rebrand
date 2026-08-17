@@ -70,59 +70,78 @@ body:not(:has(main [data-theme='dark'])) {
   }
 }
 
-/* ---- 3. Typographie — Sans-Serif moderne, zéro serif ---- */
-body,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-span,
-a,
-label,
-input,
-textarea,
-select,
-button,
-[lang],
-* {
-  font-family: 'Inter', 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif !important;
-}
+/*
+ * Section 3 (typographie), à son tour scopée le 18/08/2026 : cause racine
+ * du bug « la police des titres ne correspond jamais à `fonts.ts` », trouvée
+ * sur demande explicite d'audit avant refonte de police. Ce bloc forçait
+ * `font-family: Inter !important` sur `*` — littéralement tout élément de
+ * toute page, y compris `h1`-`h6` sur les pages sombres — et un `h1 {
+ * font-size/line-height !important }` séparé. Le même mécanisme que le
+ * bouton hamburger (un `!important` de feuille de style bat toujours un
+ * `style`/une classe non important, quelle que soit leur spécificité) :
+ * `tailwind.css` pose bien `[data-theme='dark'] :is(h1,h2,h3,h4) {
+ * font-family: var(--font-heading) }`, mais sans `!important`, ce fichier
+ * gagnait systématiquement. Les titres du site s'affichaient donc en Inter
+ * (chargé en dur ligne 1 de ce fichier), jamais dans la police réellement
+ * configurée dans `fonts.ts` (Instrument Sans jusqu'ici, Manrope
+ * désormais) — un bug invisible dans le code, seulement visible à l'écran,
+ * qui n'avait jamais été signalé avant cette demande précise.
+ */
+body:not(:has(main [data-theme='dark'])) {
+  /* ---- 3. Typographie — Sans-Serif moderne, zéro serif ---- */
+  body,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  span,
+  a,
+  label,
+  input,
+  textarea,
+  select,
+  button,
+  [lang],
+  * {
+    font-family: 'Inter', 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif !important;
+  }
 
-/* Forcer l'absence de serif partout */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-.title,
-.heading,
-.heroTitle,
-.saasTitle,
-.ctaTitle,
-.caseContent h2,
-.product h2,
-.offer h2,
-.briefHeading h2,
-.directHeading h2,
-.final h2,
-.block h2 {
-  font-family: 'Inter', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
-  font-weight: 700 !important;
-  letter-spacing: -0.025em !important;
-}
+  /* Forcer l'absence de serif partout */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .title,
+  .heading,
+  .heroTitle,
+  .saasTitle,
+  .ctaTitle,
+  .caseContent h2,
+  .product h2,
+  .offer h2,
+  .briefHeading h2,
+  .directHeading h2,
+  .final h2,
+  .block h2 {
+    font-family: 'Inter', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.025em !important;
+  }
 
-h1 {
-  font-size: clamp(2.5rem, 8vw, 5rem) !important;
-  line-height: 1.05 !important;
-}
+  h1 {
+    font-size: clamp(2.5rem, 8vw, 5rem) !important;
+    line-height: 1.05 !important;
+  }
 
-h2 {
-  font-size: clamp(1.8rem, 4vw, 2.8rem) !important;
-  line-height: 1.1 !important;
+  h2 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem) !important;
+    line-height: 1.1 !important;
+  }
 }
 
 body:not(:has(main [data-theme='dark'])) {

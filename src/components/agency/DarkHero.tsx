@@ -151,10 +151,23 @@ export function DarkHero({
           <span className="text-faint">{eyebrow}</span>
         </p>
 
-        {/* Corps plafonné à 3,5 rem, pas 4,5. La référence compose son titre
-            plus petit que la plupart des pages SaaS — c'est ce qui lui donne
-            l'air calme plutôt qu'insistant. */}
-        <h1 className="mb-6 text-[clamp(2.1rem,5vw,3.4rem)] font-bold leading-[1.08] tracking-[-0.03em] text-primary">
+        {/* Configuration du 18/08/2026 (demande explicite) : taille, graisse,
+            crénage et interligne en `style`, pas en classes Tailwind — même
+            précaution que partout ailleurs dans ce projet face aux
+            `!important` de la charte historique (voir `globals.css`, section
+            3, désormais scopée mais par prudence). `750` n'est atteignable
+            que parce que `fonts.ts` charge Manrope en graisse variable (pas
+            de `weight` fixe) : un poids intermédiaire entre 700 et 800
+            n'existe dans aucun fichier statique. */}
+        <h1
+          className="mb-6 text-primary"
+          style={{
+            fontSize: 'clamp(2.5rem, 6vw, 5rem)',
+            fontWeight: 750,
+            letterSpacing: '-0.055em',
+            lineHeight: 0.94,
+          }}
+        >
           {title}
           {highlight ? (
             <>
@@ -164,7 +177,12 @@ export function DarkHero({
           ) : null}
         </h1>
 
-        <p className="mb-9 max-w-[34rem] text-[1.0625rem] leading-[1.65] text-muted">{subtitle}</p>
+        <p
+          className="mb-9 max-w-[34rem] text-[1.0625rem] text-muted"
+          style={{ fontWeight: 400, lineHeight: 1.6, letterSpacing: '-0.01em' }}
+        >
+          {subtitle}
+        </p>
 
         <div className="flex flex-wrap items-center justify-center gap-3">
           <Link

@@ -10,12 +10,16 @@
  * Ces trois promesses-là occupent la même place : celle où l'œil cherche une
  * raison de croire, juste sous le bouton.
  *
- * **Contenu remplacé le 17/08/2026** par les trois bénéfices courts demandés
- * explicitement pour la refonte du hero (« Plus de visibilité / Plus de
- * réservations / Moins de temps perdu ») — ce composant est le seul endroit
- * du hero prévu pour ce rôle (réassurance juste sous le CTA), inutile d'en
- * créer un second. `detail` reste vide : la demande donnait trois libellés
- * courts, pas de sous-texte, et en inventer un romprait ce texte exact.
+ * **Contenu retravaillé le 18/08/2026** (demande « ton anti-bullshit »,
+ * refonte hero). Les trois bénéfices demandés textuellement étaient
+ * « Vous êtes visible / Vous publiez sans réfléchir, des idées prêtes à
+ * utiliser / Vous recevez plus de demandes ». Le deuxième décrit une
+ * fonctionnalité de suggestions de contenu à publier que Qualifyr n'a pas
+ * (voir `services-content.tsx` : agent de prospection, réservation à prix
+ * ferme, filtrage des curieux — rien sur la création de contenu) ; la
+ * demande elle-même impose de reformuler honnêtement une promesse non
+ * disponible plutôt que de l'utiliser telle quelle. Les deux autres sont
+ * conservés dans leur esprit et ancrés sur les fonctionnalités réelles.
  *
  * Le jour où de vrais clients existent, `SocialProof` reprend cette place avec
  * leurs visages et leur nombre exact. Dix vrais convainquent plus que cent
@@ -23,9 +27,18 @@
  */
 
 const points = [
-  { label: 'Plus de visibilité', detail: '' },
-  { label: 'Plus de réservations', detail: '' },
-  { label: 'Moins de temps perdu', detail: '' },
+  {
+    label: 'Vous n’avez plus à démarcher',
+    detail: 'Un agent travaille votre secteur pendant que vous lavez des véhicules.',
+  },
+  {
+    label: 'Vous arrêtez les devis du soir',
+    detail: 'Le prix et la durée s’affichent à l’écran, plus besoin de les rédiger à la main.',
+  },
+  {
+    label: 'Vous recevez plus de demandes',
+    detail: 'Un parcours simple pour permettre aux clients de vous contacter.',
+  },
 ] as const;
 
 export function TrustStrip() {

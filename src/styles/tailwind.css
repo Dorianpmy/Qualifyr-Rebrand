@@ -84,13 +84,15 @@
 
   /*
    * Les deux familles réellement chargées par `next/font` — voir
-   * `src/lib/fonts.ts`. Elles étaient déclarées ici en « Inter », qui n'est
-   * chargée nulle part : tout le site tombait donc sur la police système, ce
-   * qui explique les titres sans caractère.
+   * `src/lib/fonts.ts`.
    *
-   * Instrument Sans porte les titres : une grotesque étroite se resserre en
-   * gros corps, là où Manrope s'étale. Manrope garde le texte courant, où ses
-   * contreformes ouvertes tiennent mieux la lecture en petit corps.
+   * **Manrope porte les titres, Inter le texte courant** (18/08/2026,
+   * demande explicite — remplace Instrument Sans/Manrope). Au-delà du choix
+   * de police lui-même, ces deux variables n'avaient de toute façon jamais
+   * produit l'effet voulu jusqu'ici sur les pages sombres : `globals.css`
+   * forçait `font-family: Inter !important` sur tout élément de toute page,
+   * sans condition — voir le commentaire à l'endroit où ce bloc a été scopé
+   * hors des pages `[data-theme='dark']`, section 3.
    */
   --font-sans: var(--font-body), system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-heading: var(--font-display), var(--font-body), system-ui, sans-serif;
@@ -182,13 +184,20 @@
     font-family: var(--font-sans);
   }
 
-  /* Les titres passent sur la grotesque étroite, et resserrent leur crénage.
-     Le crénage négatif est indissociable du choix de police : Instrument Sans
-     est dessinée pour être composée serrée en grand corps, et l'espacement par
-     défaut d'un navigateur la fait paraître relâchée. */
+  /* Les titres passent sur la grotesque des titres (Manrope, voir
+     `fonts.ts`), et resserrent leur crénage. Le crénage négatif est
+     indissociable du choix de police : composée serrée en grand corps,
+     l'espacement par défaut d'un navigateur la fait paraître relâchée.
+     Configuration du 18/08/2026 (demande explicite) : `700 / -0.045em /
+     0.98` sert de base à tous les titres ; le H1 du hero la resserre encore
+     (voir `DarkHero.tsx`), au cas par cas plutôt qu'ici, puisque lui seul a
+     une taille assez grande pour justifier un réglage encore plus serré. */
   [data-theme='dark'] :is(h1, h2, h3, h4) {
     font-family: var(--font-heading);
     font-feature-settings: 'ss01';
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    line-height: 0.98;
   }
 
   [data-theme='dark'] :is(h1, h2, h3, h4, p) {
