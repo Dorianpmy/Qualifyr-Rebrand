@@ -66,15 +66,25 @@ export function DarkHero({
           objet et devient un bandeau. Elle vit à l'intérieur du conteneur
           commun, qui gère la largeur de page et le centrage. */}
       <div className="mx-auto flex max-w-[44rem] flex-col items-center text-center">
-        {/* Bordure et texte en dégradé : le badge est le seul endroit de la
-            page où la couleur apparaît en tant que telle. */}
+        {/* Bordure en dégradé : le badge est le seul endroit de la page où la
+            couleur apparaît en tant que telle.
+
+            Le texte, lui, n'est plus en dégradé. `accent-text` s'appuie sur
+            `background-clip: text` avec un repli `color: var(--accent-1)` —
+            et ce repli, le sable, se lit orange sur un écran réel (déjà
+            documenté ailleurs dans ce fichier de style). Quand le
+            clip-to-text ne s'applique pas — le même genre de perte
+            silencieuse que d'autres classes dans ce projet — c'est ce repli
+            qui reste affiché, orange en plein hero. Un gris neutre, comme
+            tous les autres sur-titres du site, ne laisse plus cette
+            possibilité. */}
         <p className="accent-ring mb-7 inline-flex items-center gap-2 rounded-full py-1.5 pl-2.5 pr-3.5 text-[0.8125rem] font-medium">
           <span
             aria-hidden="true"
             className="size-1.5 rounded-full"
             style={{ background: 'linear-gradient(100deg, var(--accent-1), var(--accent-2))' }}
           />
-          <span className="accent-text">{eyebrow}</span>
+          <span className="text-faint">{eyebrow}</span>
         </p>
 
         {/* Corps plafonné à 3,5 rem, pas 4,5. La référence compose son titre

@@ -1,10 +1,11 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { Section } from './Section';
 import { orbTints } from './agent-visuals';
 import { Orb } from './ServiceTabs';
+import { StepLoadingBar } from './StepLoadingBar';
 
 /**
  * Avant / après — la friction actuelle contre le résultat, en bascule.
@@ -139,44 +140,6 @@ const clientNoise = [
 export function BeforeAfterSection() {
   const [after, setAfter] = useState(false);
 
-  /*
-   * Barre animée sous l'en-tête — inspirée d'une référence envoyée (une barre
-   * de progression sur une page concurrente). Purement décorative : elle ne
-   * représente aucune statistique, seulement le mouvement de bascule que le
-   * bloc s'apprête à montrer. Après l'audit qui a retiré le faux « +100
-   * utilisateurs » ailleurs sur le site, hors de question d'habiller une
-   * barre qui grandit avec un chiffre qu'on ne mesure pas — la charte
-   * dégradée (sable/lilas/céladon) suffit à faire l'effet sans rien
-   * affirmer.
-   *
-   * Se remplit une seule fois, à l'entrée dans le viewport : `once` évite
-   * qu'elle se relance en boucle à chaque scroll de va-et-vient, ce qui
-   * userait l'effet plus vite qu'il ne convainc.
-   */
-  const barRef = useRef<HTMLDivElement>(null);
-  const [barFilled, setBarFilled] = useState(false);
-
-  useEffect(() => {
-    const el = barRef.current;
-    if (!el || typeof IntersectionObserver === 'undefined') {
-      setBarFilled(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
-          setBarFilled(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.4 },
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <Section labelledBy="before-after-title" className="py-24">
       <header className="mx-auto mb-10 max-w-[46rem] text-center">
@@ -190,20 +153,6 @@ export function BeforeAfterSection() {
           Rien de ce qui suit n’est un gain de temps théorique. Ce sont les cinq moments où votre
           journée déraille aujourd’hui.
         </p>
-        <div
-          ref={barRef}
-          aria-hidden="true"
-          className="mx-auto h-[3px] w-full max-w-[14rem] overflow-hidden rounded-full bg-white/10"
-        >
-          <div
-            className="h-full rounded-full"
-            style={{
-              width: barFilled ? '100%' : '0%',
-              background: 'linear-gradient(90deg, var(--accent-1), var(--accent-3) 50%, var(--accent-2))',
-              transition: 'width 1100ms cubic-bezier(0.16, 1, 0.3, 1)',
-            }}
-          />
-        </div>
       </header>
 
       {/* La bascule — mêmes classes que `.period-switch`/`.period-option`
@@ -318,47 +267,55 @@ export function BeforeAfterSection() {
           </p>
 
           <ul className="grid gap-4 sm:grid-cols-2 sm:gap-x-6">
-            {rows.map((row) => {
+            {rows.map((row, index) => {
               const Icon = row.icon;
               return (
-                <li key={row.beforeTitle} className="flex gap-3.5">
-                  {/* Le contour reprend le dégradé tricolore déjà porté par la
-                      carte elle-même (voir `.node-hero` dans `tailwind.css`) —
-                      un seul motif de couleur répété cinq fois, pas cinq
-                      teintes différentes. Ça reste dans l'esprit « la couleur
-                      n'apparaît qu'à deux endroits » : c'est la même
-                      signature qui se prolonge sur les icônes, pas une
-                      troisième zone colorée.
+                <li key={row.beforeTitle} className="flex flex-col gap-3.5">
+                  {/* Une barre « style chargement » par point, pas une seule
+                      barre décorative au-dessus du bloc entier — c'est bien
+                      à cet endroit qu'elle donne du rythme à la lecture,
+                      point par point, comme sur « Comment ça marche ». */}
+                  <div className="flex gap-3.5">
+                    {/* Le contour reprend le dégradé tricolore déjà porté par
+                        la carte elle-même (voir `.node-hero` dans
+                        `tailwind.css`) — un seul motif de couleur répété
+                        cinq fois, pas cinq teintes différentes. Ça reste
+                        dans l'esprit « la couleur n'apparaît qu'à deux
+                        endroits » : c'est la même signature qui se prolonge
+                        sur les icônes, pas une troisième zone colorée.
 
-                      La couleur du glyphe est posée en `style`, pas via
-                      `text-faint` + `currentColor` : combinée au double fond
-                      (`padding-box`/`border-box`) de la bordure dégradée, la
-                      classe utilitaire cessait de s'appliquer en production —
-                      icônes invisibles alors que le contour restait visible.
-                      Même symptôme, même remède que la carte tarifaire
-                      sombre plus haut dans le projet : une couleur écrite en
-                      dur gagne toujours, quelle que soit la cause exacte de
-                      l'échec de la cascade. */}
-                  <span
-                    aria-hidden="true"
-                    className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg [&_svg]:size-[1rem]"
-                    style={{
-                      border: '1px solid transparent',
-                      background:
-                        'linear-gradient(#141416, #141416) padding-box, linear-gradient(135deg, var(--accent-1), var(--accent-3) 50%, var(--accent-2)) border-box',
-                      color: '#9a9a9c',
-                    }}
-                  >
-                    <Icon />
-                  </span>
-                  <div>
-                    <p className={`text-[0.9375rem] font-semibold leading-[1.35] ${after ? 'text-primary' : 'text-muted line-through decoration-white/20'}`}>
-                      {after ? row.afterTitle : row.beforeTitle}
-                    </p>
-                    <p className="mt-0.5 text-[0.8125rem] leading-[1.5] text-faint">
-                      {after ? row.afterBody : row.beforeBody}
-                    </p>
+                        La couleur du glyphe est posée en `style`, pas via
+                        `text-faint` + `currentColor` : combinée au double
+                        fond (`padding-box`/`border-box`) de la bordure
+                        dégradée, la classe utilitaire cessait de
+                        s'appliquer en production — icônes invisibles alors
+                        que le contour restait visible. Même symptôme, même
+                        remède que la carte tarifaire sombre plus haut dans
+                        le projet : une couleur écrite en dur gagne
+                        toujours, quelle que soit la cause exacte de
+                        l'échec de la cascade. */}
+                    <span
+                      aria-hidden="true"
+                      className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg [&_svg]:size-[1rem]"
+                      style={{
+                        border: '1px solid transparent',
+                        background:
+                          'linear-gradient(#141416, #141416) padding-box, linear-gradient(135deg, var(--accent-1), var(--accent-3) 50%, var(--accent-2)) border-box',
+                        color: '#9a9a9c',
+                      }}
+                    >
+                      <Icon />
+                    </span>
+                    <div>
+                      <p className={`text-[0.9375rem] font-semibold leading-[1.35] ${after ? 'text-primary' : 'text-muted line-through decoration-white/20'}`}>
+                        {after ? row.afterTitle : row.beforeTitle}
+                      </p>
+                      <p className="mt-0.5 text-[0.8125rem] leading-[1.5] text-faint">
+                        {after ? row.afterBody : row.beforeBody}
+                      </p>
+                    </div>
                   </div>
+                  <StepLoadingBar index={index} />
                 </li>
               );
             })}
