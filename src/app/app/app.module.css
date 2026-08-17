@@ -242,6 +242,36 @@
   }
 }
 
+/* Pastille surélevée au centre de la pilule mobile — voir le commentaire
+   dans AppShell.tsx. N'existe que sous 900 px : passé ce seuil la barre
+   redevient un menu vertical classique, où un bouton rond en relief n'a pas
+   de sens (rien à surélever au-dessus). */
+@media (max-width: 899.98px) {
+  .navItemFab {
+    position: relative;
+    top: -0.85rem;
+    min-width: 3.75rem;
+    min-height: 3.75rem;
+    border-radius: 999px;
+    border-color: transparent;
+    background: linear-gradient(140deg, var(--accent-1), var(--accent-2));
+    color: #0e0e0f;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  .navItemFab .navIcon {
+    inline-size: 1.6rem;
+    block-size: 1.6rem;
+  }
+
+  /* Le libellé reste dans le DOM (nom accessible porté par `aria-label` sur
+     le lien) mais disparaît visuellement : un texte dans un cercle de cette
+     taille se serait chevauché avec l'icône. */
+  .navItemFab .navLabel {
+    display: none;
+  }
+}
+
 .navLogoutMobile {
   display: none;
 }

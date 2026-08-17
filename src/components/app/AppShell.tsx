@@ -73,6 +73,13 @@ const icons = {
   ),
 } as const;
 
+const clientPageIcon = (
+  <svg {...iconProps}>
+    <path d="M14 4h6v6M20 4l-8.5 8.5" />
+    <path d="M18 14v4.5A1.5 1.5 0 0 1 16.5 20h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10" />
+  </svg>
+);
+
 export function AppShell({
   detailerName,
   detailerSlug,
@@ -86,14 +93,37 @@ export function AppShell({
   active: 'demandes' | 'planning' | 'tarifs' | 'factures' | 'cases' | 'prospection';
   children: ReactNode;
 }) {
-  const tabs = [
+  const tabsBeforeFab = [
     { key: 'demandes', href: '/app', label: 'Demandes', icon: icons.demandes },
     { key: 'planning', href: '/app/planning', label: 'Planning', icon: icons.planning },
     { key: 'prospection', href: '/app/prospection', label: 'Prospection', icon: icons.prospection },
+  ] as const;
+
+  const tabsAfterFab = [
     { key: 'tarifs', href: '/app/prestations', label: 'Prestations', icon: icons.tarifs },
     { key: 'cases', href: '/app/cases', label: 'Avant/Après', icon: icons.cases },
     { key: 'factures', href: '/app/invoices', label: 'Factures', icon: icons.factures },
   ] as const;
+
+  const renderTab = (tab: (typeof tabsBeforeFab)[number] | (typeof tabsAfterFab)[number]) => {
+    const isActive = active === tab.key;
+    return (
+      <Link
+        key={tab.key}
+        href={tab.href}
+        /*
+         * `aria-current` plutôt qu'une classe seule : un lecteur
+         * d'écran annonce « page actuelle » sans avoir à deviner ce
+         * que signifie un contour coloré.
+         */
+        aria-current={isActive ? 'page' : undefined}
+        className={`${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
+      >
+        {tab.icon}
+        <span className={styles.navLabel}>{tab.label}</span>
+      </Link>
+    );
+  };
 
   return (
     <div className={styles.shell} data-app="dashboard">
@@ -105,37 +135,30 @@ export function AppShell({
         </div>
 
         <nav className={styles.sidebarNav} aria-label="Navigation espace pro">
-          {tabs.map((tab) => {
-            const isActive = active === tab.key;
-            return (
-              <Link
-                key={tab.key}
-                href={tab.href}
-                /*
-                 * `aria-current` plutôt qu'une classe seule : un lecteur
-                 * d'écran annonce « page actuelle » sans avoir à deviner ce
-                 * que signifie un contour coloré.
-                 */
-                aria-current={isActive ? 'page' : undefined}
-                className={`${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
-              >
-                {tab.icon}
-                <span className={styles.navLabel}>{tab.label}</span>
-              </Link>
-            );
-          })}
+          {tabsBeforeFab.map(renderTab)}
 
+          {/*
+            La pastille surélevée au centre — reprise de la référence
+            envoyée (barre basse avec un bouton rond en relief au milieu),
+            mais avec l'icône « ouvrir en externe » déjà utilisée dans ce
+            fichier pour la page client, pas un logo tiers : c'est
+            l'action la plus utile à mettre en avant ici, celle qu'un
+            professionnel utilise pour montrer ou partager sa page de
+            réservation. Sur desktop, `.navItemFab` s'efface et redevient
+            une ligne de menu normale — le relief n'a de sens que dans une
+            pilule flottante en bas d'un écran de téléphone.
+          */}
           <Link
             href={`/reservation/${detailerSlug}`}
-            className={`${styles.navItem} ${styles.navItemDesktopOnly}`}
+            className={`${styles.navItem} ${styles.navItemFab}`}
             target="_blank"
+            aria-label="Page client"
           >
-            <svg {...iconProps}>
-              <path d="M14 4h6v6M20 4l-8.5 8.5" />
-              <path d="M18 14v4.5A1.5 1.5 0 0 1 16.5 20h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10" />
-            </svg>
+            {clientPageIcon}
             <span className={styles.navLabel}>Page client</span>
           </Link>
+
+          {tabsAfterFab.map(renderTab)}
         </nav>
 
         <div className={styles.sidebarFooter}>
