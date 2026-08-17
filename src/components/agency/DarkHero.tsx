@@ -58,19 +58,25 @@ export type DarkHeroProps = {
 };
 
 /**
- * Position de chacune des bulles du nuage décoratif, en pourcentage de la
- * largeur/hauteur de la section (le nuage occupe `inset-0` sur la `<section>`
- * elle-même, pas sur la colonne de texte étroite) — pensées pour rester dans
- * le vide de part et d'autre de la colonne centrale de 44rem sur un écran
- * large. Recyclées par index si `messages` contient plus ou moins de cinq
- * entrées.
+ * Position de chacune des bulles du nuage décoratif — même disposition à
+ * toutes les tailles d'écran (18/08/2026, demande explicite : « le même
+ * format que desktop » sur mobile aussi). Une première version affichait un
+ * nuage dispersé en pourcentages de la largeur de la section sur desktop,
+ * et une simple rangée empilée en flux normal en dessous de 1024px : deux
+ * mises en page différentes, exactement ce que le format mobile ne devait
+ * pas être. Ici, un seul conteneur `max-w-[26rem]` (donc jamais plus large
+ * que la colonne de texte), centré, à toutes les tailles : les positions en
+ * pourcentage restent sûres même à 320px puisqu'elles ne dépendent plus de
+ * la largeur de la section entière — même principe déjà éprouvé par le
+ * nuage de `BeforeAfterSection`. Recyclées par index si `messages` contient
+ * plus ou moins de cinq entrées.
  */
 const heroCloudPositions = [
-  { left: '-1%', top: '4%', transform: 'rotate(-6deg)' },
-  { right: '-2%', top: '14%', transform: 'rotate(5deg)' },
-  { left: '1%', top: '52%', transform: 'rotate(4deg)' },
-  { right: '0%', top: '64%', transform: 'rotate(-5deg)' },
-  { left: '36%', bottom: '-1%', transform: 'rotate(3deg)' },
+  { left: 0, top: '0.25rem', transform: 'rotate(-5deg)' },
+  { left: '38%', top: 0, transform: 'rotate(4deg)' },
+  { left: '8%', top: '4.75rem', transform: 'rotate(-3deg)' },
+  { right: '6%', top: '4.25rem', transform: 'rotate(5deg)' },
+  { right: 0, bottom: 0, transform: 'rotate(3deg)' },
 ] as const;
 
 export function DarkHero({
@@ -90,40 +96,23 @@ export function DarkHero({
   return (
     <Section glow="top" glowIntensity="soft" className="pb-20 pt-24 sm:pt-32">
       {messages && messages.length > 0 ? (
-        <>
-          {/* Nuage dispersé, desktop uniquement (`lg:` = 1024px). En dessous,
-              la colonne de texte (44rem) occupe déjà presque toute la
-              largeur disponible : un nuage positionné en pourcentage de la
-              section entière chevaucherait le texte plutôt que de flotter
-              dans le vide à côté. `absolute inset-0` sur la `<section>`
-              (positionnée) elle-même, placé AVANT le contenu dans le DOM :
-              peint derrière lui sans z-index positif à gérer, le même
-              principe que `AmbientGlow` juste en dessous dans la pile. */}
-          <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden overflow-hidden lg:block">
-            {messages.map((text, index) => (
-              <MessageBubble
-                key={text}
-                text={text}
-                compact={index % 2 === 1}
-                style={{ ...heroCloudPositions[index % heroCloudPositions.length] }}
-              />
-            ))}
-          </div>
-
-          {/* Rangée compacte, en flux normal : de 320px à 1024px (mobile et
-              tablette, y compris le portrait 768px explicitement demandé
-              dans les tests). `flex-wrap` ne peut pas déborder de l'écran,
-              contrairement à des positions en pourcentage sur une colonne
-              étroite. */}
-          <div
-            aria-hidden="true"
-            className="mx-auto mb-7 flex w-full max-w-[26rem] flex-wrap items-center justify-center gap-2 lg:hidden"
-          >
-            {messages.map((text) => (
-              <MessageBubble key={text} text={text} compact position="static" />
-            ))}
-          </div>
-        </>
+        <div
+          aria-hidden="true"
+          className="relative mx-auto mb-6 w-full max-w-[26rem] overflow-visible"
+          style={{ height: '9.75rem' }}
+        >
+          {messages.map((text, index) => (
+            <MessageBubble
+              key={text}
+              text={text}
+              compact={index === 1 || index === 2 || index === 3}
+              style={{
+                ...heroCloudPositions[index % heroCloudPositions.length],
+                zIndex: index === 0 || index === 4 ? 2 : 1,
+              }}
+            />
+          ))}
+        </div>
       ) : null}
 
       {/* 44 rem : la colonne de lecture. Au-delà, le titre cesse d'être un
