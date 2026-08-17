@@ -36,6 +36,8 @@ const links = [
  * décrit rien qu'il faille deviner, et il annonce clairement qu'on quitte le
  * site vitrine pour l'outil.
  */
+const featuresLink = { href: '/fonctionnalites', label: 'Fonctionnalités' } as const;
+
 const saasLink = { href: '/nettoyage-automobile', label: 'App Qualifyr' } as const;
 
 const proLink = { href: '/app', label: 'Espace pro' } as const;
@@ -131,6 +133,12 @@ export function DarkHeader() {
               {link.label}
             </a>
           ))}
+          <Link
+            href={featuresLink.href}
+            className="text-[0.875rem] !text-muted no-underline transition-colors duration-150 hover:!text-primary motion-reduce:transition-none"
+          >
+            {featuresLink.label}
+          </Link>
           <Link
             href={saasLink.href}
             className="text-[0.875rem] !text-muted no-underline transition-colors duration-150 hover:!text-primary motion-reduce:transition-none"
@@ -236,6 +244,14 @@ export function DarkHeader() {
                 {link.label}
               </a>
             ))}
+            <Link
+              href={featuresLink.href}
+              onClick={closeMenu}
+              className="text-[1.0625rem] font-medium !text-primary no-underline"
+              style={{ padding: '0.9rem 0', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+            >
+              {featuresLink.label}
+            </Link>
             <Link
               href={saasLink.href}
               onClick={closeMenu}

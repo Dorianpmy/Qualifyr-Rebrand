@@ -66,19 +66,24 @@ export default function HomePage() {
          * exact demandé.
          */
         title="Le SaaS tout-en-un pour les laveurs auto"
-        subtitle="Gérez vos demandes, vos réservations et vos clients depuis un seul outil conçu pour le lavage automobile mobile et le detailing."
-        ctaLabel="Découvrir Qualifyr"
-        ctaHref="#agent-title"
         /*
-         * CTA secondaire aligné sur le texte obligatoire « Essayer Qualifyr »
-         * et redirigé vers `/nettoyage-automobile`, la page qui présente le
-         * produit SaaS en détail (démo, tarifs, tableau de bord) — cohérent
-         * avec « essayer » plutôt que « créer un site ». Le CTA « Créer mon
-         * site avec Qualifyr » vit plus bas, dans `FinalCtaSection`, pour ne
-         * pas dupliquer un troisième bouton dans le hero.
+         * Proposition de valeur mise à jour (17/08/2026, second passage SEO/GEO) :
+         * texte exact demandé, plus court que la version précédente.
          */
-        secondaryLabel="Essayer Qualifyr"
-        secondaryHref="/nettoyage-automobile"
+        subtitle="Gérez votre activité de lavage auto, vos demandes et vos clients depuis un seul logiciel."
+        /*
+         * CTA principal/secondaire remplacés par les textes exacts de la
+         * dernière demande (« Créer mon compte » / « Découvrir les
+         * fonctionnalités »). Le premier pointe vers la même ancre qu'avant
+         * (`#agent-title`) : c'est le même parcours d'essai gratuit qui mène
+         * à l'espace pro, aucune page de création de compte séparée n'existe
+         * — changer le libellé ne change pas la destination réelle. Le
+         * second pointe vers `/fonctionnalites`, la nouvelle page dédiée.
+         */
+        ctaLabel="Créer mon compte"
+        ctaHref="#agent-title"
+        secondaryLabel="Découvrir les fonctionnalités"
+        secondaryHref="/fonctionnalites"
         ctaNote="Sans carte bancaire. France et Suisse."
         /*
          * `proof` (compteur « +100 utilisateurs » + quatre portraits) a été

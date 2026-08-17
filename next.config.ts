@@ -136,6 +136,32 @@ const nextConfig: NextConfig = {
         destination: '/realisations',
         permanent: true,
       },
+      /*
+       * Repositionnement SaaS-first (17/08/2026) : Qualifyr ne sert plus le
+       * secteur conciergerie / gestion locative. Ces routes n'avaient pas de
+       * page publiée dans ce dépôt (elles ne vivaient que dans des messages
+       * WhatsApp pré-remplis, déjà retirés) — la redirection existe au cas où
+       * un lien externe ou un favori pointe encore dessus. Aucune page
+       * actuelle ne couvre ce sujet : l'accueil est la destination la plus
+       * honnête, pas une page qui ferait semblant de répondre à la demande.
+       */
+      { source: '/conciergerie', destination: '/', permanent: true },
+      { source: '/conciergerie/:city', destination: '/', permanent: true },
+      { source: '/outil-conciergerie', destination: '/', permanent: true },
+      { source: '/simulateur-revenus-locatifs', destination: '/', permanent: true },
+      // Ancien snippet Google positionnant Qualifyr comme agence généraliste
+      // conciergerie + nettoyage auto : toute URL de recherche interne liée
+      // à ce positionnement renvoie vers la page produit actuelle.
+      { source: '/nettoyage-general', destination: '/nettoyage-automobile', permanent: true },
+      /*
+       * Pas de page /politique-cookies séparée : le site ne dépose aucun
+       * cookie aujourd'hui (voir `content/legal.ts`), la section "Cookies et
+       * mesure d'audience" de la politique de confidentialité couvre déjà ce
+       * sujet en détail. Dupliquer ce contenu dans une deuxième page créerait
+       * deux sources à tenir synchronisées pour la même information — la
+       * redirection garde une seule URL qui répond à cette recherche.
+       */
+      { source: '/politique-cookies', destination: '/politique-de-confidentialite#cookies', permanent: true },
     ];
   },
 };

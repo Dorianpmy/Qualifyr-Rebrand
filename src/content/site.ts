@@ -50,9 +50,27 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
     priority: 0.9,
   },
   '/tarifs': {
-    title: 'Tarifs — site pour laveurs auto | Qualifyr',
+    title: 'Tarifs du logiciel pour laveurs auto | Qualifyr',
     description:
-      'Fourchettes affichées : site vitrine et site avec parcours de demande. Transparence avant le premier appel.',
+      'Découvrez les tarifs et fonctionnalités des offres Qualifyr, le SaaS spécialisé pour les laveurs auto et detailers.',
+    priority: 0.9,
+  },
+  '/fonctionnalites': {
+    title: 'Fonctionnalités du SaaS pour laveurs auto | Qualifyr',
+    description:
+      'Découvrez les fonctionnalités Qualifyr pour gérer votre activité de lavage auto, vos prospects, vos clients, vos demandes et vos réservations.',
+    priority: 0.9,
+  },
+  '/logiciel-laveur-auto': {
+    title: 'Logiciel pour laveur auto : devis, réservations et clients | Qualifyr',
+    description:
+      'Un logiciel conçu pour les laveurs auto afin de gérer les demandes, les réservations, les prospects et les clients plus facilement.',
+    priority: 0.9,
+  },
+  '/logiciel-detailing-automobile': {
+    title: 'Logiciel pour detailing automobile et lavage mobile | Qualifyr',
+    description:
+      'Développez votre activité de detailing et de lavage auto mobile avec un SaaS conçu pour gérer vos demandes et vos clients.',
     priority: 0.9,
   },
   '/methode': {
@@ -86,9 +104,9 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
     priority: 0.5,
   },
   '/faq': {
-    title: 'FAQ — SaaS pour laveurs auto et detailing automobile | Qualifyr',
+    title: 'FAQ SaaS pour laveurs auto et detailers | Qualifyr',
     description:
-      'Fonctionnement, tarifs, zones couvertes, paiements et périmètre du SaaS Qualifyr pour les laveurs auto et les professionnels du detailing automobile.',
+      'Toutes les réponses sur Qualifyr, le logiciel de gestion et de conversion dédié aux laveurs auto et professionnels du detailing.',
     priority: 0.7,
   },
   '/blog': {

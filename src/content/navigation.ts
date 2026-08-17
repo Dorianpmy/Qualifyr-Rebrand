@@ -11,6 +11,9 @@ export const routeLabels: Readonly<Record<string, string>> = {
   '/': 'Accueil',
   '/creation-site-web': 'Création de site web',
   '/nettoyage-automobile': 'Nettoyage automobile',
+  '/fonctionnalites': 'Fonctionnalités',
+  '/logiciel-laveur-auto': 'Logiciel laveur auto',
+  '/logiciel-detailing-automobile': 'Logiciel detailing automobile',
   '/tarifs': 'Tarifs',
   '/methode': 'Méthode',
   '/realisations': 'Réalisations',
@@ -40,6 +43,9 @@ export const primaryNav: readonly NavItem[] = [
  * Pied de page — une entrée par destination réelle.
  */
 export const footerServiceNav: readonly NavItem[] = [
+  { label: 'Fonctionnalités', href: '/fonctionnalites' },
+  { label: 'Logiciel pour laveur auto', href: '/logiciel-laveur-auto' },
+  { label: 'Logiciel detailing automobile', href: '/logiciel-detailing-automobile' },
   { label: 'Site pour laveurs auto à domicile', href: '/nettoyage-automobile' },
   { label: 'Création et refonte de site', href: '/creation-site-web' },
   { label: 'Tarifs', href: '/tarifs' },
