@@ -11,7 +11,6 @@ export type Route =
   | '/tarifs'
   | '/methode'
   | '/realisations'
-  | '/realisations/sw-car-cleaning'
   | '/a-propos'
   | '/estimation'
   | '/contact'

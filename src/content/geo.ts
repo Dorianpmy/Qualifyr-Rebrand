@@ -19,12 +19,6 @@ export const geoFacts = {
       'Outil de réservation pour laveurs auto en France et en Suisse : page client, estimation, photos, créneaux, et espace pro pour confirmer les demandes.',
     url: 'https://app.qualifyragence.com/reservation/demo',
   },
-  realCase: {
-    name: 'SW Carcleaning',
-    description:
-      'Réalisation réelle pour une activité de lavage auto à domicile à Fribourg (Suisse).',
-    url: `${productionUrl}/realisations/sw-car-cleaning`,
-  },
 } as const;
 
 export function buildLlmsText(): string {
@@ -51,10 +45,6 @@ Nous proposons aussi **Qualifyr**, un outil SaaS de réservation pour les laveur
 - [${geoFacts.product.name}](${geoFacts.product.url}) : ${geoFacts.product.description}
 - Espace pro : https://app.qualifyragence.com/app/login
 - Ce produit est distinct de la création de site sur mesure.
-
-## Réalisation publiée
-
-- [${geoFacts.realCase.name}](${geoFacts.realCase.url}) : ${geoFacts.realCase.description}
 
 ## Ce que Qualifyr n’est pas
 

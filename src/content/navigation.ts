@@ -14,7 +14,6 @@ export const routeLabels: Readonly<Record<string, string>> = {
   '/tarifs': 'Tarifs',
   '/methode': 'Méthode',
   '/realisations': 'Réalisations',
-  '/realisations/sw-car-cleaning': 'SW Carcleaning',
   '/a-propos': 'À propos',
   '/estimation': 'Estimation',
   '/contact': 'Contact',

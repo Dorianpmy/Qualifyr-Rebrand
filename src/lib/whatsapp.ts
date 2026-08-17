@@ -11,7 +11,7 @@
  */
 const contextualMessages: Readonly<Record<string, string>> = {
   '/nettoyage-automobile':
-    'Bonjour, je suis dans le nettoyage automobile / detailing et je regarde votre offre de site. J’aimerais savoir ce que ça donnerait pour mon activité.',
+    'Bonjour, je suis laveur auto à domicile et je regarde votre offre de site. J’aimerais savoir ce que ça donnerait pour mon activité.',
   '/conciergerie':
     'Bonjour, je gère une conciergerie et je cherche à obtenir plus de demandes de propriétaires. J’aimerais en discuter.',
   '/outil-conciergerie':
@@ -24,8 +24,6 @@ const contextualMessages: Readonly<Record<string, string>> = {
     'Bonjour, j’ai commencé une estimation sur votre site et j’aimerais valider quelques points avec vous.',
   '/creation-site-web':
     'Bonjour, j’ai un projet de site pour mon activité de services et j’aimerais en parler.',
-  '/realisations/sw-car-cleaning':
-    'Bonjour, j’ai vu votre réalisation pour SW Car Cleaning. J’aimerais savoir ce qui serait possible pour mon activité.',
   '/blog':
     'Bonjour, j’ai lu un de vos articles et j’aimerais échanger sur ma situation.',
   '/a-propos':

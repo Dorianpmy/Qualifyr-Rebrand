@@ -36,9 +36,11 @@ export function VerticalServicePage({ content }: VerticalServicePageProps) {
                 >
                   Présenter mon activité
                 </ButtonLink>
-                <ButtonLink href={content.hero.secondaryHref} variant="secondary">
-                  {content.hero.secondaryLabel}
-                </ButtonLink>
+                {content.hero.secondaryHref && content.hero.secondaryLabel ? (
+                  <ButtonLink href={content.hero.secondaryHref} variant="secondary">
+                    {content.hero.secondaryLabel}
+                  </ButtonLink>
+                ) : null}
               </div>
             </div>
             <div className={styles.heroIndex} aria-label="Contenu de la page">

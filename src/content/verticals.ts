@@ -1,6 +1,6 @@
 import type { FaqItem } from './faq';
 import { method } from './home';
-import { swCarCleaning } from './sw-car-cleaning';
+import type { GalleryItem } from './sw-car-cleaning';
 import type { Route } from '@/types';
 
 type EditorialItem = {
@@ -17,7 +17,7 @@ type VerticalProof =
       readonly body: string;
       readonly points: readonly string[];
       /** Capture, servie en repli quand aucune adresse publique n'est fournie. */
-      readonly image: (typeof swCarCleaning.gallery)[number];
+      readonly image: GalleryItem;
       readonly externalUrl?: string | undefined;
       readonly domain?: string | undefined;
       readonly link: Route;
@@ -39,8 +39,8 @@ export type VerticalServiceContent = {
     readonly eyebrow: string;
     readonly title: string;
     readonly lead: string;
-    readonly secondaryHref: Route;
-    readonly secondaryLabel: string;
+    readonly secondaryHref?: Route;
+    readonly secondaryLabel?: string;
   };
   readonly problems: {
     readonly eyebrow: string;
@@ -93,8 +93,6 @@ export const automotiveVertical: VerticalServiceContent = {
     title: 'Un site qui transforme vos abonnés en réservations.',
     lead:
       'Instagram vous fait connaître, mais il ne prend pas de rendez-vous. Qualifyr conçoit le site qui présente vos formules, affiche vos tarifs par type de véhicule et transforme une visite en demande de créneau — sans passer par vingt messages privés.',
-    secondaryHref: '/realisations/sw-car-cleaning',
-    secondaryLabel: 'Voir SW Carcleaning',
   },
   problems: {
     eyebrow: 'Ce qui vous coûte des créneaux',
@@ -192,27 +190,27 @@ export const automotiveVertical: VerticalServiceContent = {
         body: 'Combien de temps ça prend. Si les rayures partent vraiment. Ce qui se passe si le véhicule est plus sale que prévu. Où vous vous installez, et ce dont vous avez besoin sur place. Ces réponses ne sont pas des détails à caser en bas de page : ce sont elles qui débloquent la réservation.',
       },
       {
-        title: 'Vous pouvez vérifier notre travail en ligne',
-        body: 'SW Carcleaning est en ligne, publique, ouvrable maintenant. Nous préférons un site que vous pouvez juger vous-même à une liste de logos et de chiffres que personne ne vérifie jamais.',
-      },
-      {
         title: 'Vous restez propriétaire de tout',
         body: 'Le nom de domaine, les contenus, les accès, les photographies de vos véhicules. Aucun abonnement construit pour vous retenir, aucune dépendance installée exprès. Si vous partez, vous partez avec le site.',
       },
     ],
   },
+  /*
+   * `proof` n'est actuellement affiché par aucune page live — le seul
+   * composant qui le consomme (`VerticalServicePage.tsx`) n'est importé
+   * nulle part. Champ non optionnel dans `VerticalServiceContent`, gardé en
+   * `'concept'` générique (sans référence à un client précis) le temps
+   * qu'une vraie réalisation soit republiée.
+   */
   proof: {
-    kind: 'real',
-    eyebrow: 'Réalisation réelle',
-    title: 'SW Carcleaning',
+    kind: 'concept',
+    eyebrow: 'Ce que nous construisons',
+    title: 'Un site pensé pour votre activité',
     body:
-      'Une identité et un site conçus pour présenter une activité de lavage auto à domicile à Fribourg, clarifier les formules et faciliter la prise de contact.',
+      'Formules lisibles, tarifs par véhicule, zone d’intervention visible et parcours de contact simplifié — la structure que nous posons pour chaque professionnel du lavage auto à domicile.',
     points: ['Présentation des formules', 'Zone d’intervention visible', 'Parcours pensé pour le mobile'],
-    image: swCarCleaning.gallery[0],
-    externalUrl: swCarCleaning.externalUrl ?? undefined,
-    domain: 'swcarcleaning.ch',
-    link: '/realisations/sw-car-cleaning',
-    linkLabel: 'Voir comment nous l’avons construit',
+    link: '/tarifs',
+    linkLabel: 'Voir les tarifs',
   },
   faq: [
     {

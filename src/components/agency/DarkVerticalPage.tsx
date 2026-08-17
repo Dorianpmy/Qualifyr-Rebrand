@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { Section } from './Section';
+import { StepLoadingBar } from './StepLoadingBar';
 
 /**
  * Blocs de page métier, à la charte sombre.
@@ -172,7 +173,7 @@ export function JourneySection({
           }}
         />
 
-        {steps.map((step) => (
+        {steps.map((step, index) => (
           <li
             key={step.number}
             className="relative flex flex-col rounded-[1.25rem] p-6"
@@ -188,6 +189,7 @@ export function JourneySection({
               {step.title}
             </h3>
             <p className="text-[0.9375rem] leading-[1.55] text-muted">{step.body}</p>
+            <StepLoadingBar index={index} />
           </li>
         ))}
       </ol>

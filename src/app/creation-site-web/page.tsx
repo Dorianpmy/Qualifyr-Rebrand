@@ -4,11 +4,9 @@ import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { Container } from '@/components/layout/Container';
 import { Section } from '@/components/layout/Section';
 import { EditorialCard } from '@/components/editorial/EditorialCard';
-import { InteractiveSitePreview } from '@/components/editorial/InteractiveSitePreview';
 import { MethodStep } from '@/components/editorial/MethodStep';
 import { SectionHeading } from '@/components/editorial/SectionHeading';
 import { JsonLd } from '@/components/seo/JsonLd';
-import { TextLink } from '@/components/ui/TextLink';
 
 import {
   expectedOutcomes,
@@ -16,7 +14,6 @@ import {
   projectSteps,
   webDesignPage,
 } from '@/content/web-design';
-import { swCarCleaning } from '@/content/sw-car-cleaning';
 import { buildMetadata } from '@/lib/metadata';
 import { breadcrumbList, webDesignService } from '@/lib/structured-data';
 import styles from './page.module.css';
@@ -92,30 +89,6 @@ export default function WebDesignPage() {
               </MethodStep>
             ))}
           </ol>
-        </Container>
-      </Section>
-
-      <Section spacing="tight">
-        <Container>
-          <div className={styles.caseStudy}>
-            {swCarCleaning.externalUrl ? (
-              <InteractiveSitePreview
-                url={swCarCleaning.externalUrl}
-                title="Site SW Carcleaning interactif"
-                domain="swcarcleaning.ch"
-                caption="Réalisation réelle · Fribourg"
-                compact
-              />
-            ) : null}
-            <div className={styles.caseText}>
-              <SectionHeading
-                eyebrow="Réalisation réelle"
-                title="SW Carcleaning"
-                lead="Une identité et un site conçus pour présenter un service de nettoyage automobile à domicile et faciliter la prise de contact."
-              />
-              <TextLink href="/realisations/sw-car-cleaning">Découvrir le projet</TextLink>
-            </div>
-          </div>
         </Container>
       </Section>
 

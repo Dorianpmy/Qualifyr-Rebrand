@@ -45,9 +45,6 @@ export function AttributionCapture() {
         vertical: pathname === '/conciergerie' ? 'conciergerie' : 'nettoyage-automobile',
       });
     }
-    if (pathname === '/realisations/sw-car-cleaning') {
-      trackEvent('case_study_viewed', { pagePath: pathname, vertical: 'nettoyage-automobile' });
-    }
   }, [pathname]);
 
   return null;

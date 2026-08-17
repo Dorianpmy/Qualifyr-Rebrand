@@ -245,6 +245,30 @@
     border-radius: 999px !important;
     box-shadow: none !important;
     font-weight: 600 !important;
+    /* Même transition que les boutons de l'agence vitrine (`Button.module.css`) —
+       un léger soulèvement au survol, un tassement au clic. Absente jusqu'ici sur
+       la charte sombre : les boutons principaux du site (hero, tarifs, CTA de
+       fermeture) n'avaient aucune réaction au survol. */
+    transition: transform 160ms ease !important;
+  }
+
+  [data-theme='dark'] .cta-solid:hover:not(:disabled) {
+    transform: translateY(-2px);
+  }
+
+  [data-theme='dark'] .cta-solid:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-theme='dark'] .cta-solid {
+      transition: none !important;
+    }
+
+    [data-theme='dark'] .cta-solid:hover:not(:disabled),
+    [data-theme='dark'] .cta-solid:active:not(:disabled) {
+      transform: none;
+    }
   }
 
   [data-theme='dark'] .cta-solid:disabled {

@@ -1,5 +1,3 @@
-import { objectives, swCarCleaning } from './sw-car-cleaning';
-
 /**
  * Hero — positionnement recentré nettoyage automobile / detailing.
  */
@@ -129,12 +127,3 @@ export const method = [
   { number: '03', title: 'Concevoir', body: 'L’identité, les contenus, le site et le parcours de contact.' },
   { number: '04', title: 'Améliorer', body: 'Les détails, la lisibilité, l’expérience mobile et les points de friction.' },
 ] as const;
-
-export const featuredCase = {
-  client: swCarCleaning.client,
-  sector: swCarCleaning.sector,
-  summary: swCarCleaning.summary,
-  logo: swCarCleaning.logo,
-  preview: swCarCleaning.gallery[0],
-  objectives: objectives.slice(0, 3),
-} as const;

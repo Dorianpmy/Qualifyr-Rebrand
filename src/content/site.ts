@@ -64,12 +64,6 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
       'Projets publiés : structure de l’offre, identité et parcours de contact pour le lavage auto mobile.',
     priority: 0.8,
   },
-  '/realisations/sw-car-cleaning': {
-    title: 'SW Car Cleaning (Fribourg) — étude de cas | Qualifyr',
-    description:
-      'Clarification des formules, identité et prise de contact pour un service de lavage auto à domicile à Fribourg.',
-    priority: 0.7,
-  },
   '/a-propos': {
     title: 'À propos — agence pour laveurs auto | Qualifyr',
     description:

@@ -130,6 +130,12 @@ const nextConfig: NextConfig = {
         destination: '/blog/grille-tarifaire-lavage-auto-par-vehicule',
         permanent: true,
       },
+      // Étude de cas retirée à la demande de Dorian.
+      {
+        source: '/realisations/sw-car-cleaning',
+        destination: '/realisations',
+        permanent: true,
+      },
     ];
   },
 };

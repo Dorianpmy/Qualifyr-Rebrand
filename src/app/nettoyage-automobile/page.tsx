@@ -60,8 +60,9 @@ export default function AutomotiveCleaningPage() {
         subtitle={hero.lead}
         ctaLabel="Tester le tunnel client"
         ctaHref="#demo-title"
-        secondaryLabel={hero.secondaryLabel}
-        secondaryHref={hero.secondaryHref}
+        {...(hero.secondaryLabel && hero.secondaryHref
+          ? { secondaryLabel: hero.secondaryLabel, secondaryHref: hero.secondaryHref }
+          : {})}
         ctaNote="Démonstration complète, sans inscription."
         /*
          * `trust` et non `proof` : le bandeau de réassurance ne cite aucun
