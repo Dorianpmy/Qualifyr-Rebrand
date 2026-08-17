@@ -54,12 +54,14 @@ export default function HomePage() {
 
       <DarkHero
         /*
-         * Badge/H1/sous-titre/CTA/microcopie : textes exacts de la demande
-         * du 17/08/2026 (refonte header + première section). Remplacent les
-         * textes du repositionnement SEO/GEO précédent — c'est la décision
-         * de contenu la plus récente, elle l'emporte sur celle d'avant.
+         * Badge retravaillé le 18/08/2026 (audit copywriting sitewide, ton
+         * anti-bullshit demandé) : « La visibilité qui fait briller votre
+         * activité » ne dit ni à qui s'adresse Qualifyr ni ce qu'il fait —
+         * exactement le type de phrase que la demande liste en exemple à
+         * éviter. Remplacée par une phrase d'audience, factuelle : à qui
+         * s'adresse le produit, en une ligne, avant même le H1.
          */
-        eyebrow="La visibilité qui fait briller votre activité"
+        eyebrow="Pour les laveurs auto et préparateurs automobiles"
         /*
          * Refonte du 18/08/2026 (ton « anti-bullshit », demande explicite) :
          * remplace le H1 de positionnement SEO du tour précédent. C'est la
@@ -99,17 +101,25 @@ export default function HomePage() {
          */
         trust
         /*
-         * Nuage de bulles bleues (#1683F8) demandé explicitement pour la
-         * première section — voir `MessageBubble`. Réservé à l'accueil : ce
-         * même composant `DarkHero` sert aussi à `/nettoyage-automobile` et
-         * aux pages `/logiciel-*`, où ce nuage n'a pas été demandé.
+         * Nuage de bulles bleues (#1683F8) demandé explicitement — voir
+         * `MessageBubble`. Réservé à l'accueil : ce même composant
+         * `DarkHero` sert aussi à `/nettoyage-automobile` et aux pages
+         * `/logiciel-*`, où ce nuage n'a pas été demandé.
+         *
+         * **Textes remplacés le 18/08/2026** (audit copywriting sitewide) :
+         * les cinq messages fournis à l'origine (« Quoi poster cette
+         * semaine ? », « Mes publications sont prêtes »...) décrivaient une
+         * fonctionnalité de suggestions de contenu à publier que Qualifyr
+         * n'a pas — même problème et même correction que pour le sous-titre
+         * et les bénéfices ci-dessus. Remplacés par des messages ancrés sur
+         * les fonctionnalités réelles (prospection, prix ferme, devis).
          */
         messages={[
-          'Quoi poster cette semaine ?',
-          'Je veux attirer plus de clients',
-          'La page blanche, terminé',
-          'Mes publications sont prêtes',
-          'Plus de réservations ce mois-ci',
+          'C’est combien pour une Clio ?',
+          'Prix affiché, acompte encaissé',
+          'Fini les devis écrits le soir',
+          'Un agent démarche pour vous',
+          'Un client de plus cette semaine',
         ]}
       />
 

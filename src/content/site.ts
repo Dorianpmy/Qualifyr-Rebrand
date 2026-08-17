@@ -69,8 +69,16 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
   },
   '/logiciel-detailing-automobile': {
     title: 'Logiciel pour detailing automobile et lavage mobile | Qualifyr',
+    /*
+     * Reformulée le 18/08/2026 (audit copywriting sitewide) : « Développez
+     * votre activité... avec un SaaS conçu pour » ne disait rien de
+     * concret — remplacée par la même structure factuelle que la
+     * description de `/logiciel-laveur-auto` juste au-dessus. Mots-clés et
+     * intention de recherche inchangés (« detailing automobile », « lavage
+     * mobile », « SaaS », gestion des demandes/clients).
+     */
     description:
-      'Développez votre activité de detailing et de lavage auto mobile avec un SaaS conçu pour gérer vos demandes et vos clients.',
+      'Un SaaS conçu pour le detailing automobile et le lavage mobile : gérez vos demandes, vos réservations et vos clients depuis un seul outil.',
     priority: 0.9,
   },
   '/methode': {

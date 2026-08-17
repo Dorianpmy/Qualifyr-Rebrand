@@ -53,32 +53,49 @@
 --------------------------------------------------------------------------- */
 @theme {
   /* --- Surfaces ---
-     Le fond n'est pas un noir pur : #0e0e0f porte une pointe de chaud. Un
-     #000000 franc écrase les cartes posées dessus — il ne reste plus de marge
-     pour créer de la profondeur en dessous. */
-  --color-ink: #0e0e0f;
-  --color-panel: #131314;
-  --color-panel-raised: #1b1b1d;
-  --color-panel-sunken: #101011;
+     Palette resserrée le 18/08/2026 (demande explicite, troisième passage
+     sur les mêmes valeurs) : `#08090b`/`#101216` remplacent `#0e0e0f`/
+     `#131314` — un noir légèrement plus froid et plus profond, cohérent
+     avec un bleu comme couleur principale. Toujours pas de noir pur
+     (`#000000`) : la même raison tient encore, un noir franc écrase les
+     cartes posées dessus et ne laisse plus de marge pour la profondeur en
+     dessous. `panel-raised`/`panel-sunken` conservent le même écart relatif
+     qu'avant, translaté sur la nouvelle base. */
+  --color-ink: #08090b;
+  --color-panel: #101216;
+  --color-panel-raised: #191c21;
+  --color-panel-sunken: #0b0c0e;
 
-  /* Bordures : jamais pleines, jamais colorées. */
+  /* Bordures : jamais pleines, jamais colorées. `hairline-strong` valait
+     déjà exactement la bordure demandée (`rgba(255,255,255,0.10)`). */
   --color-hairline: rgba(255, 255, 255, 0.06);
   --color-hairline-strong: rgba(255, 255, 255, 0.1);
 
   /* --- Texte ---
-     Trois niveaux, et **jamais de blanc pur**. Sur un fond sombre, le blanc
-     pur produit un halo qui fatigue à la lecture ; #e0e0e0 donne le même
-     contraste perçu sans l'éblouissement. */
-  --color-primary: #e0e0e0;
-  --color-muted: #9a9a9c;
-  --color-faint: #6e6e70;
+     Trois niveaux. `primary` remonte de `#e0e0e0` à `#f5f7fa` (demande
+     explicite) — toujours pas un blanc pur (`#ffffff`), qui produirait le
+     halo fatigant à la lecture documenté ici depuis le début du projet ;
+     `#f5f7fa` s'en approche sans y être. `muted`/`faint` suivent la même
+     bascule vers un gris plus froid. */
+  --color-primary: #f5f7fa;
+  --color-muted: #a7adb8;
+  --color-faint: #7a8190;
 
   /* --- Accents ---
      Réservés à de petits points de couleur dans les grilles, jamais à des
      masses. Une couleur qui occupe une surface cesse d'être un accent et
-     devient un fond. */
+     devient un fond.
+
+     `accent-blue` passe à `#1683f8` (18/08/2026, demande explicite : « bleu
+     comme couleur principale », déjà utilisé tel quel dans `MessageBubble`)
+     — c'était déjà un bleu, seule la teinte exacte change, aucun endroit du
+     projet ne dépendait de l'ancienne valeur `#4d79fc` en particulier.
+     `accent-blue-light` est nouveau (`#55aeff`, « bleu clair » demandé),
+     disponible pour les états hover/focus qui voudraient une variante plus
+     claire du même bleu. */
   --color-accent-emerald: #7bff7d;
-  --color-accent-blue: #4d79fc;
+  --color-accent-blue: #1683f8;
+  --color-accent-blue-light: #55aeff;
   --color-accent-rose: #ffd0c9;
   --color-accent-violet: #c671ff;
 
@@ -164,14 +181,51 @@
      */
     --accent-3: #c9c4ee;
 
-    --color-primary: #e0e0e0;
-    --color-muted: #9a9a9c;
-    --color-faint: #6e6e70;
+    /* Resynchronisé le 18/08/2026 avec les jetons `[data-theme='dark']` et
+       `@theme` — le commentaire au-dessus prévenait explicitement du risque
+       de divergence en cas de changement à un seul endroit ; c'est
+       exactement ce qui venait de se produire avant cette correction. */
+    --color-primary: #f5f7fa;
+    --color-muted: #a7adb8;
+    --color-faint: #7a8190;
     --color-hairline: rgba(255, 255, 255, 0.06);
     --color-hairline-strong: rgba(255, 255, 255, 0.1);
   }
 
+  /*
+   * **Cause racine trouvée le 18/08/2026, en vérifiant la CSS réellement
+   * compilée (pas seulement la source) avant la refonte de palette
+   * demandée.** `tokens.css` pose un `:root { --color-ink: #171513; ... }`
+   * en dehors de toute `@layer` — la charte chaude de l'ancien site agence
+   * (« palette chaude et éditoriale... interdits absolus : bleu »).
+   * `@theme` (ici, plus bas dans ce fichier) compile ses propres jetons
+   * dans `@layer theme`, et un `:root` hors couche gagne TOUJOURS contre un
+   * `:root` en couche, quelle que soit sa position — l'inverse du réflexe
+   * habituel « !important bat le reste », mais la même leçon : la
+   * cascade a un mécanisme de plus que la spécificité. Résultat concret :
+   * `--color-ink`, `--color-primary`, `--color-muted` etc. n'ont jamais
+   * valu leurs jetons « Dark Minimalist » sur les éléments qui n'en
+   * disposent pas localement — seul le `background-color`/`color` en dur
+   * `!important` de `globals.css` sur `html, body` a caché le problème
+   * (proche visuellement, #171513 reste très sombre). Tout élément portant
+   * `.bg-ink`/`.text-primary` sans passer par `html`/`body` directement
+   * héritait donc silencieusement de la charte chaude. Corrigé en reposant
+   * ici, à même `[data-theme='dark']`, les jetons réellement voulus : un
+   * sélecteur qui matche un élément précis du DOM (pas seulement `:root`)
+   * gagne pour ce sous-arbre, indépendamment des couches.
+   */
   [data-theme='dark'] {
+    --color-ink: #08090b;
+    --color-panel: #101216;
+    --color-panel-raised: #191c21;
+    --color-panel-sunken: #0b0c0e;
+    --color-primary: #f5f7fa;
+    --color-muted: #a7adb8;
+    --color-faint: #7a8190;
+    --color-hairline: rgba(255, 255, 255, 0.06);
+    --color-hairline-strong: rgba(255, 255, 255, 0.1);
+    --color-accent-blue: #1683f8;
+    --color-accent-blue-light: #55aeff;
     color-scheme: dark;
     background-color: var(--color-ink);
     color: var(--color-primary);
@@ -1067,7 +1121,10 @@
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 999px;
-  background: #34d399;
-  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.18);
+  /* #22c55e : vert de validation demandé le 18/08/2026, à utiliser
+     uniquement là où un signal « actif »/« validé » est réellement
+     nécessaire — c'est déjà le seul endroit du projet qui en porte un. */
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
   animation: qualifyr-status-pulse 1.8s ease-in-out infinite;
 }
