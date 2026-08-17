@@ -130,10 +130,10 @@ const workers = [
 
 /** Le bruit d'aujourd'hui, en en-tête visuel du côté « avant ». */
 const clientNoise = [
-  { text: 'C’est combien pour une Clio ?', style: { left: 0, top: 0 } },
-  { text: 'Vous pouvez passer dans 20 min ?', style: { right: 0, top: '1.5rem' } },
-  { text: 'Finalement je vais annuler', style: { bottom: '2rem', left: '1rem' } },
-  { text: 'Vous êtes où ? Ça fait 10 min', style: { bottom: 0, right: 0 } },
+  'C’est combien pour une Clio ?',
+  'Vous pouvez passer dans 20 min ?',
+  'Finalement je vais annuler',
+  'Vous êtes où ? Ça fait 10 min',
 ] as const;
 
 export function BeforeAfterSection() {
@@ -252,13 +252,24 @@ export function BeforeAfterSection() {
         >
           {/* En-tête visuel : le bruit du côté « avant », l'agent et ses
               rôles côté « après ». Repli sans lui sous 640 px — l'un comme
-              l'autre perdent leur lisibilité en dessous de cette largeur. */}
-          <div
-            className="mx-auto mb-7 hidden items-center justify-center sm:flex"
-            style={{ position: 'relative', overflow: 'hidden', height: '6.5rem', width: '100%', maxWidth: '20rem' }}
-          >
+              l'autre perdent leur lisibilité en dessous de cette largeur.
+
+              **Deux mises en page, pas une seule réutilisée.** L'« après »
+              reste un montage libre (l'orbe au centre, les trois rôles
+              autour) : quatre éléments à des coins fixes, ça ne se chevauche
+              jamais. L'« avant » est devenu une vraie pile de messages —
+              quatre bulles à taille libre les unes sous les autres se
+              chevauchaient forcément une fois posées à des coordonnées
+              fixes dans un cadre de hauteur figée ; un texte plus long que
+              prévu, et deux bulles se recouvraient. Un empilement en flux
+              normal ne peut pas produire ce bug : chaque bulle pousse la
+              suivante. */}
+          <div className="mx-auto mb-7 hidden w-full max-w-[20rem] sm:block">
             {after ? (
-              <>
+              <div
+                className="relative mx-auto flex items-center justify-center"
+                style={{ height: '6.5rem', width: '100%' }}
+              >
                 <Orb tint={orbTints.qualifyr} size="3.25rem" />
                 {workers.map((worker) => (
                   <span
@@ -269,17 +280,24 @@ export function BeforeAfterSection() {
                     {worker.name}
                   </span>
                 ))}
-              </>
+              </div>
             ) : (
-              clientNoise.map((message) => (
-                <span
-                  key={message.text}
-                  style={{ position: 'absolute', ...message.style }}
-                  className="max-w-[11rem] rounded-2xl rounded-bl-md border border-white/[0.07] bg-white/[0.03] px-3 py-2 text-[0.75rem] leading-[1.4] text-faint"
-                >
-                  {message.text}
-                </span>
-              ))
+              /* Bulles bleues façon iMessage, alignées à droite comme des
+                 messages envoyés — repris de la référence envoyée. Coin
+                 inférieur droit moins arrondi que les trois autres : c'est la
+                 convention visuelle de la « queue » de bulle sur iOS,
+                 reconnaissable même sans la pointe elle-même. */
+              <div className="flex w-full flex-col items-end gap-2">
+                {clientNoise.map((message) => (
+                  <span
+                    key={message}
+                    className="max-w-[85%] rounded-2xl rounded-br-md px-3.5 py-2 text-[0.8125rem] leading-[1.4] text-white"
+                    style={{ background: '#0a84ff' }}
+                  >
+                    {message}
+                  </span>
+                ))}
+              </div>
             )}
           </div>
 
@@ -299,7 +317,7 @@ export function BeforeAfterSection() {
             {after ? 'Avec Qualifyr' : 'Sans Qualifyr'}
           </p>
 
-          <ul className="grid gap-4">
+          <ul className="grid gap-4 sm:grid-cols-2 sm:gap-x-6">
             {rows.map((row) => {
               const Icon = row.icon;
               return (

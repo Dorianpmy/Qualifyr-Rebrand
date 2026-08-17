@@ -54,6 +54,16 @@ export function DarkHeader() {
    * elle a cessé de s'appliquer.
    */
   const [isDesktop, setIsDesktop] = useState(false);
+  /*
+   * Le panneau n'avait aucune transition : il apparaissait et disparaissait
+   * d'un coup, ce qui se lit comme un bug plutôt qu'une ouverture (« la barre
+   * de menu est invisible »). Il descend maintenant depuis le haut de
+   * l'écran — sauf préférence système de mouvement réduit, vérifiée ici
+   * plutôt que dans une media query CSS pour rester dans la même logique
+   * défensive que `isDesktop` juste au-dessus : une valeur JS certaine plutôt
+   * qu'une classe dont on ne sait plus dire si elle s'applique.
+   */
+  const [reduceMotion, setReduceMotion] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -65,6 +75,14 @@ export function DarkHeader() {
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 1024px)');
     const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setReduceMotion(mq.matches);
     update();
     mq.addEventListener('change', update);
     return () => mq.removeEventListener('change', update);
@@ -173,10 +191,19 @@ export function DarkHeader() {
           critiques (position, visibilité) : les classes Tailwind
           `position`/`inset` ont déjà silencieusement échoué ailleurs dans ce
           projet à cause des `!important` de la charte historique — voir
-          `BeforeAfterSection.tsx`. */}
-      {menuOpen && !isDesktop ? (
+          `BeforeAfterSection.tsx`.
+
+          Toujours monté sur mobile (pas de `menuOpen &&` conditionnant le
+          rendu) : une transition CSS a besoin que l'élément existe déjà dans
+          le DOM au moment où la propriété change, sinon rien ne s'anime, le
+          panneau apparaît d'un bloc — précisément le symptôme rapporté.
+          L'ouverture/fermeture passe donc par `transform`/`opacity`, et
+          `pointerEvents` empêche d'interagir avec un panneau fermé qui reste
+          présent mais hors écran. */}
+      {!isDesktop ? (
         <div
           id="mobile-nav-panel"
+          aria-hidden={!menuOpen}
           style={{
             position: 'fixed',
             top: '4.1rem',
@@ -186,6 +213,12 @@ export function DarkHeader() {
             zIndex: 49,
             overflowY: 'auto',
             background: '#0e0e0f',
+            transform: menuOpen ? 'translateY(0)' : 'translateY(-100%)',
+            opacity: menuOpen ? 1 : 0,
+            pointerEvents: menuOpen ? 'auto' : 'none',
+            transition: reduceMotion
+              ? 'none'
+              : 'transform 280ms cubic-bezier(0.16, 1, 0.3, 1), opacity 220ms ease',
           }}
         >
           <nav
