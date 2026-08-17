@@ -16,28 +16,58 @@ body {
   scrollbar-color: #141417 #0A0A0C;
 }
 
-/* ---- 2. Cartes / Conteneurs ---- */
-section,
-header,
-footer,
-[data-surface='inverse'],
-[data-surface='raised'],
-[data-surface='sunken'],
-div[class*='Section'],
-div[class*='Card'],
-div[class*='card'],
-aside,
-.editorialBar {
-  background-color: #141417 !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 16px !important;
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.35) !important;
-}
+/*
+ * Sections 2 et 4 à 9 : portée restreinte aux pages qui n'utilisent PAS la
+ * charte sombre actuelle (`[data-theme='dark']`, voir `page.tsx`,
+ * `DarkHeader.tsx`, etc.).
+ *
+ * **Cause racine trouvée le 17/08/2026, sur signalement explicite d'un
+ * bouton hamburger dont le style ne correspondait à rien de ce que son
+ * propre code déclarait.** Ces règles ciblaient jusqu'ici `button`, `a`,
+ * `input`... sans aucune condition, avec `!important` — hors des feuilles de
+ * style, un `!important` d'auteur gagne TOUJOURS face à un `style` en ligne
+ * non important, quelle que soit sa spécificité. Concrètement : le bouton
+ * hamburger de `DarkHeader.tsx` (un simple `<button>`) posait son propre
+ * fond transparent, sa bordure, sa taille — et ce fichier les remplaçait
+ * silencieusement par un bouton vert plein, sans bordure, à coins
+ * arrondis 12px, avec `padding: 12px 24px`, quel que soit le contenu réel
+ * du `style` du composant. Le même sort attendait potentiellement tout
+ * `<button>` ou `<a>` de la charte sombre sans classe assez spécifique pour
+ * résister (`SubscribeButton`, les liens du panneau mobile, etc.).
+ *
+ * Ce fichier semble être les vestiges d'une refonte « Dark Mode Premium,
+ * accent vert » abandonnée (voir l'en-tête de fichier), coexistant avec la
+ * charte actuelle (accents sable/céladon, boutons blancs) sans avoir jamais
+ * été retirée. Le périmètre le plus sûr aujourd'hui est de la restreindre
+ * aux pages qui n'ont pas encore de section `[data-theme='dark']` — les
+ * pages toujours sur l'ancienne charte claire (`/a-propos`, `/contact`,
+ * `/tarifs`...) — plutôt que de la supprimer entièrement sans pouvoir
+ * vérifier visuellement l'effet sur ces pages-là dans cet environnement.
+ */
+body:not(:has(main [data-theme='dark'])) {
+  /* ---- 2. Cartes / Conteneurs ---- */
+  section,
+  header,
+  footer,
+  [data-surface='inverse'],
+  [data-surface='raised'],
+  [data-surface='sunken'],
+  div[class*='Section'],
+  div[class*='Card'],
+  div[class*='card'],
+  aside,
+  .editorialBar {
+    background-color: #141417 !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.35) !important;
+  }
 
-/* Conteneur wide/plein écran : fond transparent pour la grille, pas de carte */
-.container,
-div[class*='Container'] {
-  background-color: transparent !important;
+  /* Conteneur wide/plein écran : fond transparent pour la grille, pas de carte */
+  .container,
+  div[class*='Container'] {
+    background-color: transparent !important;
+  }
 }
 
 /* ---- 3. Typographie — Sans-Serif moderne, zéro serif ---- */
@@ -95,136 +125,138 @@ h2 {
   line-height: 1.1 !important;
 }
 
-/* ---- 4. Accent / Glow — boutons principaux ---- */
-button,
-a.btn,
-a.Button,
-a[class*='button'],
-a[class*='Button'],
-button[class*='button'],
-button[class*='Button'],
-.primary,
-.inverse,
-.cta,
-[data-cta-id] {
-  background: #12b76a !important;
-  color: #FFFFFF !important;
-  border: none !important;
-  border-radius: 12px !important;
-  padding: 12px 24px !important;
-  font-weight: 600 !important;
-  font-size: 1rem !important;
-  transition: all 0.25s ease !important;
-  box-shadow: 0 0 0px rgba(18, 183, 106, 0) !important;
-  min-height: 44px !important;
-}
+body:not(:has(main [data-theme='dark'])) {
+  /* ---- 4. Accent / Glow — boutons principaux ---- */
+  button,
+  a.btn,
+  a.Button,
+  a[class*='button'],
+  a[class*='Button'],
+  button[class*='button'],
+  button[class*='Button'],
+  .primary,
+  .inverse,
+  .cta,
+  [data-cta-id] {
+    background: #12b76a !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 12px 24px !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+    transition: all 0.25s ease !important;
+    box-shadow: 0 0 0px rgba(18, 183, 106, 0) !important;
+    min-height: 44px !important;
+  }
 
-button:hover,
-a.btn:hover,
-a.Button:hover,
-a[class*='button']:hover,
-a[class*='Button']:hover,
-button[class*='button']:hover,
-button[class*='Button']:hover,
-.primary:hover,
-.inverse:hover,
-.cta:hover {
-  background: #0F9F5C !important;
-  box-shadow: 0 0 20px rgba(18, 183, 106, 0.4), 0 0 40px rgba(18, 183, 106, 0.15) !important;
-  transform: translateY(-2px) !important;
-}
+  button:hover,
+  a.btn:hover,
+  a.Button:hover,
+  a[class*='button']:hover,
+  a[class*='Button']:hover,
+  button[class*='button']:hover,
+  button[class*='Button']:hover,
+  .primary:hover,
+  .inverse:hover,
+  .cta:hover {
+    background: #0F9F5C !important;
+    box-shadow: 0 0 20px rgba(18, 183, 106, 0.4), 0 0 40px rgba(18, 183, 106, 0.15) !important;
+    transform: translateY(-2px) !important;
+  }
 
-/* Boutons secondaires / contours */
-.secondary,
-[class*='secondary'],
-.inverseSecondary,
-a[class*='secondary'] {
-  background: rgba(255, 255, 255, 0.06) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  color: #F5F5F7 !important;
-  border-radius: 12px !important;
-  min-height: 44px !important;
-  padding: 12px 24px !important;
-}
+  /* Boutons secondaires / contours */
+  .secondary,
+  [class*='secondary'],
+  .inverseSecondary,
+  a[class*='secondary'] {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    color: #F5F5F7 !important;
+    border-radius: 12px !important;
+    min-height: 44px !important;
+    padding: 12px 24px !important;
+  }
 
-.secondary:hover,
-[class*='secondary']:hover,
-.inverseSecondary:hover,
-a[class*='secondary']:hover {
-  background: rgba(255, 255, 255, 0.12) !important;
-  border-color: rgba(255, 255, 255, 0.25) !important;
-}
+  .secondary:hover,
+  [class*='secondary']:hover,
+  .inverseSecondary:hover,
+  a[class*='secondary']:hover {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+  }
 
-/* ---- 5. Liens ---- */
-a {
-  color: #12b76a !important;
-  text-decoration-color: rgba(18, 183, 106, 0.5) !important;
-  text-underline-offset: 0.2em !important;
-}
+  /* ---- 5. Liens ---- */
+  a {
+    color: #12b76a !important;
+    text-decoration-color: rgba(18, 183, 106, 0.5) !important;
+    text-underline-offset: 0.2em !important;
+  }
 
-a:hover {
-  color: #0F9F5C !important;
-  text-decoration-color: #0F9F5C !important;
-}
+  a:hover {
+    color: #0F9F5C !important;
+    text-decoration-color: #0F9F5C !important;
+  }
 
-/* ---- 6. Formulaires — inputs, textarea ---- */
-input,
-textarea,
-select {
-  background: #1A1A1D !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  color: #F5F5F7 !important;
-  border-radius: 10px !important;
-  padding: 10px 14px !important;
-  font-size: 16px !important;
-}
+  /* ---- 6. Formulaires — inputs, textarea ---- */
+  input,
+  textarea,
+  select {
+    background: #1A1A1D !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: #F5F5F7 !important;
+    border-radius: 10px !important;
+    padding: 10px 14px !important;
+    font-size: 16px !important;
+  }
 
-input:focus,
-textarea:focus,
-select:focus {
-  border-color: #12b76a !important;
-  box-shadow: 0 0 0 2px rgba(18, 183, 106, 0.2) !important;
-  outline: none !important;
-}
+  input:focus,
+  textarea:focus,
+  select:focus {
+    border-color: #12b76a !important;
+    box-shadow: 0 0 0 2px rgba(18, 183, 106, 0.2) !important;
+    outline: none !important;
+  }
 
-/* ---- 7. Header ---- */
-header,
-[class*='header'],
-.Header {
-  background: rgba(10, 10, 12, 0.85) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-}
+  /* ---- 7. Header ---- */
+  header,
+  [class*='header'],
+  .Header {
+    background: rgba(10, 10, 12, 0.85) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+  }
 
-/* ---- 8. Footer ---- */
-footer,
-[class*='footer'],
-.Footer {
-  background: #0A0A0C !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
-  color: #F5F5F7 !important;
-}
+  /* ---- 8. Footer ---- */
+  footer,
+  [class*='footer'],
+  .Footer {
+    background: #0A0A0C !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: #F5F5F7 !important;
+  }
 
-footer a,
-[class*='footer'] a {
-  color: #8A8A8E !important;
-}
+  footer a,
+  [class*='footer'] a {
+    color: #8A8A8E !important;
+  }
 
-footer a:hover {
-  color: #F5F5F7 !important;
-}
+  footer a:hover {
+    color: #F5F5F7 !important;
+  }
 
-/* ---- 9. Preuve sociale — bloc témoignages / avatars ---- */
-.social-proof,
-[class*='social'],
-[class*='proof'],
-[class*='testimonial'],
-[class*='avatar-stack'],
-[class*='avatar'] {
-  background: #141417 !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 16px !important;
+  /* ---- 9. Preuve sociale — bloc témoignages / avatars ---- */
+  .social-proof,
+  [class*='social'],
+  [class*='proof'],
+  [class*='testimonial'],
+  [class*='avatar-stack'],
+  [class*='avatar'] {
+    background: #141417 !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 16px !important;
+  }
 }
 
 /* ---- 10. Supprimer les variables chaudes existantes (override) ---- */

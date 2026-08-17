@@ -217,7 +217,25 @@ export function DarkHeader() {
               est une valeur JavaScript certaine (`matchMedia`), pas une
               classe dont on ne peut plus garantir qu'elle s'applique face
               aux `!important` de la charte historique — voir la note en
-              tête de fichier sur l'origine de ce choix. */}
+              tête de fichier sur l'origine de ce choix.
+
+              **Révision du 17/08/2026 (cause racine trouvée) :** ce bouton
+              est un simple `<button>` sans classe assez spécifique pour
+              résister à la règle `button { background: #12b76a !important;
+              border: none !important; ... }` de `globals.css` (charte
+              « Dark Mode Premium » abandonnée mais jamais retirée) — un
+              `!important` de feuille de style l'emporte toujours sur un
+              `style` en ligne non important, quelle que soit sa spécificité.
+              C'est la cause exacte de tous les signalements précédents
+              (« bouton invisible », fond/bordure/icône qui ne correspondent
+              pas au code). Cette règle est désormais scindée dans
+              `globals.css` pour ne plus s'appliquer aux pages `[data-theme=
+              'dark']` (voir ce fichier) — mais par prudence supplémentaire,
+              l'icône SVG est aussi remplacée ici par l'icône CSS trois
+              barres demandée, et les dimensions/fond sont renforcés pour
+              rester lisibles même si une règle externe venait à s'imposer à
+              nouveau : 44×44px minimum, fond opaque (plus de `transparent`),
+              bordure visible, contraste élevé (blanc sur fond sombre). */}
           <button
             ref={triggerRef}
             type="button"
@@ -227,19 +245,56 @@ export function DarkHeader() {
             aria-label={menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
             style={{
               display: isDesktop ? 'none' : 'flex',
+              flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              width: '2.5rem',
-              height: '2.5rem',
-              borderRadius: '999px',
-              border: '1px solid rgba(255,255,255,0.15)',
-              background: 'transparent',
-              color: '#f5f4f2',
+              gap: '5px',
+              width: '2.75rem',
+              height: '2.75rem',
+              minWidth: '44px',
+              minHeight: '44px',
+              borderRadius: '10px',
+              border: '1px solid rgba(255,255,255,0.32)',
+              background: 'rgba(255,255,255,0.12)',
+              color: '#ffffff',
             }}
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-              {menuOpen ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
-            </svg>
+            <span
+              aria-hidden="true"
+              style={{
+                display: 'block',
+                width: '20px',
+                height: '2px',
+                borderRadius: '2px',
+                background: '#ffffff',
+                transition: reduceMotion ? 'none' : 'transform 200ms ease, opacity 150ms ease',
+                transform: menuOpen ? 'translateY(7px) rotate(45deg)' : 'none',
+              }}
+            />
+            <span
+              aria-hidden="true"
+              style={{
+                display: 'block',
+                width: '20px',
+                height: '2px',
+                borderRadius: '2px',
+                background: '#ffffff',
+                transition: reduceMotion ? 'none' : 'opacity 150ms ease',
+                opacity: menuOpen ? 0 : 1,
+              }}
+            />
+            <span
+              aria-hidden="true"
+              style={{
+                display: 'block',
+                width: '20px',
+                height: '2px',
+                borderRadius: '2px',
+                background: '#ffffff',
+                transition: reduceMotion ? 'none' : 'transform 200ms ease, opacity 150ms ease',
+                transform: menuOpen ? 'translateY(-7px) rotate(-45deg)' : 'none',
+              }}
+            />
           </button>
         </div>
       </div>
