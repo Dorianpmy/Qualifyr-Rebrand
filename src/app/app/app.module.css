@@ -616,7 +616,10 @@
 }
 
 .badgeConfirme {
-  background: rgba(18, 183, 106, 0.16);
+  /* #22c55e : vert de validation de la charte (18/08/2026, recherche
+     exhaustive du vert demandée explicitement) — remplace un vert
+     arbitraire par la seule teinte de succès autorisée. */
+  background: rgba(34, 197, 94, 0.16);
   color: var(--color-primary);
 }
 

@@ -157,7 +157,10 @@ body:not(:has(main [data-theme='dark'])) {
   .inverse,
   .cta,
   [data-cta-id] {
-    background: #12b76a !important;
+    /* Vert (#12b76a) remplacé le 18/08/2026 par le laiton de la charte
+       claire (#b08a52, tokens.css) — recherche exhaustive du vert demandée
+       explicitement. */
+    background: #b08a52 !important;
     color: #FFFFFF !important;
     border: none !important;
     border-radius: 12px !important;
@@ -165,7 +168,7 @@ body:not(:has(main [data-theme='dark'])) {
     font-weight: 600 !important;
     font-size: 1rem !important;
     transition: all 0.25s ease !important;
-    box-shadow: 0 0 0px rgba(18, 183, 106, 0) !important;
+    box-shadow: 0 0 0px rgba(176, 138, 82, 0) !important;
     min-height: 44px !important;
   }
 
@@ -179,8 +182,8 @@ body:not(:has(main [data-theme='dark'])) {
   .primary:hover,
   .inverse:hover,
   .cta:hover {
-    background: #0F9F5C !important;
-    box-shadow: 0 0 20px rgba(18, 183, 106, 0.4), 0 0 40px rgba(18, 183, 106, 0.15) !important;
+    background: #967244 !important;
+    box-shadow: 0 0 20px rgba(176, 138, 82, 0.4), 0 0 40px rgba(176, 138, 82, 0.15) !important;
     transform: translateY(-2px) !important;
   }
 
@@ -207,14 +210,14 @@ body:not(:has(main [data-theme='dark'])) {
 
   /* ---- 5. Liens ---- */
   a {
-    color: #12b76a !important;
-    text-decoration-color: rgba(18, 183, 106, 0.5) !important;
+    color: #b08a52 !important;
+    text-decoration-color: rgba(176, 138, 82, 0.5) !important;
     text-underline-offset: 0.2em !important;
   }
 
   a:hover {
-    color: #0F9F5C !important;
-    text-decoration-color: #0F9F5C !important;
+    color: #967244 !important;
+    text-decoration-color: #967244 !important;
   }
 
   /* ---- 6. Formulaires — inputs, textarea ---- */
@@ -232,8 +235,8 @@ body:not(:has(main [data-theme='dark'])) {
   input:focus,
   textarea:focus,
   select:focus {
-    border-color: #12b76a !important;
-    box-shadow: 0 0 0 2px rgba(18, 183, 106, 0.2) !important;
+    border-color: #b08a52 !important;
+    box-shadow: 0 0 0 2px rgba(176, 138, 82, 0.2) !important;
     outline: none !important;
   }
 
@@ -278,8 +281,42 @@ body:not(:has(main [data-theme='dark'])) {
   }
 }
 
-/* ---- 10. Supprimer les variables chaudes existantes (override) ---- */
-:root {
+/*
+ * ---- 10. « Supprimer les variables chaudes existantes » — DÉSACTIVÉ le
+ * 18/08/2026 (recherche exhaustive du vert demandée explicitement). ----
+ *
+ * **La découverte la plus significative de cette recherche.** Ce bloc
+ * redéfinissait `--color-brass` à `#12b76a` (vert) sur `:root`, sans aucune
+ * condition. `--color-brass` est la couleur d'accent (« laiton doré »,
+ * `#b08a52` dans `tokens.css`) de DIZAINES de composants et pages encore
+ * sur l'ancienne charte claire — `Button`, `Eyebrow`, `Footer`, `Header`,
+ * `Divider`, `TextLink`, `SkipLink`, `MobileNavigation`, tout le dossier
+ * `editorial/` (CallToAction, CasePlate, JourneyTrack, QuoteBlock,
+ * MethodStep, HeroComposition, FAQAccordion, ArticleCard...), tout le
+ * dossier `estimate/`, `OfferConfigurator`, `RentalEstimator`, et les pages
+ * `/tarifs`, `/contact`, `/a-propos`, `/realisations`, `/methode`, `/blog`,
+ * `/mentions-legales`, `/estimation`, `/creation-site-web` — vérifié par
+ * recherche de `var(--color-brass)` dans tout le projet. Cette teinte
+ * était donc *le* vert visible sur le site : pas un détail décoratif
+ * isolé, l'accent principal d'une bonne moitié des pages encore en ligne.
+ *
+ * Le même bloc redéfinissait aussi `--focus-ring` (anneau de focus vert,
+ * partout), `--state-success` (un succès de formulaire vert, alors que
+ * `tokens.css` interdit explicitement le vert pour les états de formulaire
+ * — « jamais rouge vif ni vert »), et plusieurs autres jetons.
+ *
+ * Ce bloc appartenait à la même charte « Dark Mode Premium » abandonnée
+ * que les sections déjà neutralisées plus haut dans ce fichier — mais
+ * contrairement à elles, il n'a plus aucun rôle utile même sur les pages
+ * qui n'utilisent pas encore `[data-theme='dark']` : les composants de la
+ * charte sombre lisent leurs propres jetons (`--color-accent-blue` etc.,
+ * posés directement sur `[data-theme='dark']`, voir `tailwind.css`), pas
+ * `--color-brass`. Les pages encore sur l'ancienne charte, elles,
+ * n'avaient jamais besoin de ce vert : `tokens.css` définit déjà la bonne
+ * valeur (`#b08a52`, laiton). Neutraliser entièrement ce bloc restaure
+ * donc la couleur réellement voulue, sans rien casser nulle part.
+ */
+[data-qualifyr-disabled-legacy-green-override] {
   --color-ink: #0A0A0C;
   --color-espresso: #0A0A0C;
   --color-ivory: #F5F5F7;
@@ -331,11 +368,21 @@ section[data-reveal-target],
   position: relative;
 }
 
-section[data-reveal-target]::before {
+/*
+ * Vert remplacé le 18/08/2026 (recherche exhaustive demandée
+ * explicitement) par le laiton de la charte claire (`#b08a52`, voir
+ * `tokens.css`) — cette règle n'est pas scopée à `[data-theme='dark']` et
+ * s'applique à tout `section[data-reveal-target]`, y compris sur les
+ * pages qui n'ont pas encore la charte sombre. Scopée hors des pages
+ * sombres : `AmbientGlow` y joue déjà ce rôle avec les jetons bleus de la
+ * charte actuelle (voir `AmbientGlow.tsx`) ; superposer ce halo-ci
+ * doublerait l'effet sans y ajouter de teinte cohérente.
+ */
+body:not(:has(main [data-theme='dark'])) section[data-reveal-target]::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 0%, rgba(18, 183, 106, 0.05) 0%, transparent 60%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(176, 138, 82, 0.05) 0%, transparent 60%);
   pointer-events: none;
   z-index: 0;
 }
@@ -364,21 +411,48 @@ section[data-reveal-target]>*:first-child {
   background: #1A1A1D;
 }
 
-/* ---- 13. Sélection de texte ---- */
-::selection {
-  background: rgba(18, 183, 106, 0.3);
+/*
+ * Sections 13 et 14, scopées à leur tour le 18/08/2026 : recherche
+ * exhaustive de vert demandée explicitement, deux résidus supplémentaires
+ * trouvés ici, tous deux liés aux états `hover`/`focus`/`active`
+ * explicitement dans le périmètre de la demande — donc plausiblement
+ * responsables du vert « encore visible » signalé, plus difficiles à
+ * repérer par capture d'écran statique qu'un bouton (la sélection de texte
+ * et l'anneau de focus ne se voient qu'en interagissant). Même mécanisme
+ * que partout ailleurs dans ce fichier : non scopées, ces règles
+ * s'appliquaient à toute page, y compris les pages sombres.
+ */
+body:not(:has(main [data-theme='dark'])) {
+  /* ---- 13. Sélection de texte ---- */
+  ::selection {
+    background: rgba(176, 138, 82, 0.3);
+    color: #FFFFFF;
+  }
+
+  /* ---- 14. Focus visible ---- */
+  :focus-visible {
+    outline: 2px solid #b08a52 !important;
+    outline-offset: 2px !important;
+    border-radius: 4px !important;
+  }
+
+  [data-surface='inverse'] :focus-visible {
+    outline-color: #F5F5F7 !important;
+  }
+}
+
+/* Équivalents pour les pages sombres, en bleu (#1683f8) plutôt qu'en vert :
+   `base.css` porte déjà un `:focus-visible { outline: 2px solid
+   var(--focus-ring); }` non scopé qui perd face à la règle `!important`
+   ci-dessus sur les pages claires — sur les pages sombres, il devient la
+   seule règle active dès lors que `--focus-ring` vaut le bleu de la charte
+   (posé sur `[data-theme='dark']`, voir plus haut dans ce fichier) plutôt
+   que `--color-brass` (vert, section 10 plus bas). Pas d'équivalent
+   `!important` nécessaire : sur les pages sombres, aucune règle verte ne
+   reste en concurrence. */
+[data-theme='dark'] ::selection {
+  background: rgba(22, 131, 248, 0.3);
   color: #FFFFFF;
-}
-
-/* ---- 14. Focus visible ---- */
-:focus-visible {
-  outline: 2px solid #12b76a !important;
-  outline-offset: 2px !important;
-  border-radius: 4px !important;
-}
-
-[data-surface='inverse'] :focus-visible {
-  outline-color: #F5F5F7 !important;
 }
 
 /* ---- 15. Animations réduites ---- */

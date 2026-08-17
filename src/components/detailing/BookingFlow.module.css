@@ -85,7 +85,10 @@
 .progress span {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, #32d583, var(--accent));
+  /* Vert (#32d583) supprimé le 18/08/2026 (recherche exhaustive demandée
+     explicitement) : remplacé par le bleu de la charte, `--accent` restant
+     le blanc réservé au bouton d'action (voir l'en-tête de ce fichier). */
+  background: linear-gradient(90deg, #1683f8, #55aeff);
   border-radius: 999px;
   transition: width 0.25s ease;
 }

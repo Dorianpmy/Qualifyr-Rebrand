@@ -111,7 +111,7 @@
 
 .nameField input:focus {
   outline: none;
-  border-color: rgba(18, 183, 106, 0.6);
+  border-color: rgba(22, 131, 248, 0.6); /* bleu de la charte, remplace le vert (18/08/2026) */
 }
 
 .scopeTitle {
@@ -174,7 +174,7 @@
 }
 
 .inline:focus-within {
-  border-color: rgba(18, 183, 106, 0.6);
+  border-color: rgba(22, 131, 248, 0.6); /* bleu de la charte, remplace le vert (18/08/2026) */
 }
 
 .unit {
@@ -454,7 +454,7 @@
 
 .baseSearch input:focus {
   outline: none;
-  border-color: rgba(18, 183, 106, 0.6);
+  border-color: rgba(22, 131, 248, 0.6); /* bleu de la charte, remplace le vert (18/08/2026) */
 }
 
 .baseButton {

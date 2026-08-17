@@ -93,7 +93,6 @@
      `accent-blue-light` est nouveau (`#55aeff`, « bleu clair » demandé),
      disponible pour les états hover/focus qui voudraient une variante plus
      claire du même bleu. */
-  --color-accent-emerald: #7bff7d;
   --color-accent-blue: #1683f8;
   --color-accent-blue-light: #55aeff;
   --color-accent-rose: #ffd0c9;
@@ -226,6 +225,13 @@
     --color-hairline-strong: rgba(255, 255, 255, 0.1);
     --color-accent-blue: #1683f8;
     --color-accent-blue-light: #55aeff;
+    /* `--focus-ring` vaut `--color-brass` (vert, `#12b76a`) par défaut sur
+       `:root` — voir `globals.css`, section 10. La redéfinir ici, sur un
+       sélecteur qui matche l'élément précis plutôt que `:root`, la sort de
+       cet héritage pour tout le sous-arbre sombre : l'anneau de focus
+       (`base.css`, `:focus-visible { outline: 2px solid var(--focus-ring)
+       }`) devient bleu au lieu de vert sur toutes les pages sombres. */
+    --focus-ring: var(--color-accent-blue);
     color-scheme: dark;
     background-color: var(--color-ink);
     color: var(--color-primary);

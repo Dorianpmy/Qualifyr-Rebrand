@@ -99,9 +99,12 @@ const statusLabel: Record<Status, string> = {
 };
 
 /* Le statut est la seule couleur de la page : trois pastilles suffisent à
-   scanner l'état du projet sans lire une ligne. */
+   scanner l'état du projet sans lire une ligne.
+   `live` posé en couleur arbitraire (#22c55e, la charte) plutôt qu'en
+   `bg-emerald-400` (18/08/2026, recherche exhaustive du vert demandée
+   explicitement) : `emerald-400` n'est pas la teinte de la charte. */
 const statusDot: Record<Status, string> = {
-  live: 'bg-emerald-400/70',
+  live: 'bg-[#22c55e]/70',
   wip: 'bg-amber-400/70',
   blocked: 'bg-rose-400/70',
 };
