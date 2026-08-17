@@ -163,7 +163,7 @@ export function DarkHeader() {
   return (
     <header
       data-theme="dark"
-      className={`sticky top-0 z-50 w-full transition-colors duration-200 motion-reduce:transition-none ${
+      className={`sticky top-0 z-[10000] w-full transition-colors duration-200 motion-reduce:transition-none ${
         scrolled || menuOpen ? 'border-b border-hairline bg-ink/80 backdrop-blur-md' : ''
       }`}
     >
@@ -323,7 +323,11 @@ export function DarkHeader() {
           left: 0,
           right: 0,
           bottom: 0,
-          zIndex: 49,
+          /* 10000, demande explicite du 17/08/2026 (refonte header). Marge
+             confortable au-dessus de --z-overlay (200, charte historique) et
+             de l'ancien z-50 du header : rien dans le projet n'a besoin de
+             passer devant un menu ouvert. */
+          zIndex: 10000,
           overflowY: 'auto',
           background: '#0e0e0f',
           transform: menuOpen ? 'translateY(0)' : 'translateY(-100%)',

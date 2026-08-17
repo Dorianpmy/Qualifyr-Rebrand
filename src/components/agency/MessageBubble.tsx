@@ -29,12 +29,21 @@ type MessageBubbleProps = {
    *  d'arrière-plan d'un nuage dispersé) — reste en bleu plein, jamais
    *  délavée : seule la taille change, jamais la couleur ni l'opacité. */
   readonly compact?: boolean;
+  /**
+   * `'absolute'` (défaut) pour un nuage dispersé positionné via `style`.
+   * `'static'` pour une rangée en flux normal (utilisé sur mobile dans
+   * `DarkHero` : une position en pourcentage a du sens sur un nuage large,
+   * pas sur une colonne étroite où elle ferait sortir la bulle de l'écran —
+   * `flex-wrap` en flux normal ne déborde jamais, quelle que soit la
+   * largeur).
+   */
+  readonly position?: 'absolute' | 'static';
 };
 
-export function MessageBubble({ text, style, compact = false }: MessageBubbleProps) {
+export function MessageBubble({ text, style, compact = false, position = 'absolute' }: MessageBubbleProps) {
   return (
     <span
-      className={`absolute font-medium leading-[1.35] ${
+      className={`${position === 'absolute' ? 'absolute' : 'relative'} font-medium leading-[1.35] ${
         compact
           ? 'max-w-[8.5rem] px-3 py-1.5 text-[0.75rem] sm:max-w-[9.5rem] sm:px-3.5 sm:py-2 sm:text-[0.8125rem]'
           : 'max-w-[9.5rem] px-3.5 py-2 text-[0.8125rem] sm:max-w-[11rem] sm:px-4 sm:py-2.5 sm:text-[0.875rem]'

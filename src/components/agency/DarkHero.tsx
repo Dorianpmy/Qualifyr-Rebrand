@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { MessageBubble } from './MessageBubble';
 import { Section } from './Section';
 import { SocialProof, type SocialProofProps } from './SocialProof';
 import { TrustStrip } from './TrustStrip';
@@ -45,7 +46,32 @@ export type DarkHeroProps = {
    * réassurance empilés se neutralisent.
    */
   readonly trust?: boolean;
+  /**
+   * Bulles de messages bleues décoratives (demande explicite du 17/08/2026),
+   * réservées à la page d'accueil : `DarkHero` est aussi utilisé par
+   * `/nettoyage-automobile`, `/logiciel-laveur-auto` et
+   * `/logiciel-detailing-automobile`, où ce nuage n'a pas été demandé — ne
+   * s'affiche donc que si on le passe explicitement en prop, jamais par
+   * défaut.
+   */
+  readonly messages?: readonly string[];
 };
+
+/**
+ * Position de chacune des bulles du nuage décoratif, en pourcentage de la
+ * largeur/hauteur de la section (le nuage occupe `inset-0` sur la `<section>`
+ * elle-même, pas sur la colonne de texte étroite) — pensées pour rester dans
+ * le vide de part et d'autre de la colonne centrale de 44rem sur un écran
+ * large. Recyclées par index si `messages` contient plus ou moins de cinq
+ * entrées.
+ */
+const heroCloudPositions = [
+  { left: '-1%', top: '4%', transform: 'rotate(-6deg)' },
+  { right: '-2%', top: '14%', transform: 'rotate(5deg)' },
+  { left: '1%', top: '52%', transform: 'rotate(4deg)' },
+  { right: '0%', top: '64%', transform: 'rotate(-5deg)' },
+  { left: '36%', bottom: '-1%', transform: 'rotate(3deg)' },
+] as const;
 
 export function DarkHero({
   eyebrow,
@@ -59,13 +85,51 @@ export function DarkHero({
   ctaNote,
   proof,
   trust,
+  messages,
 }: DarkHeroProps) {
   return (
     <Section glow="top" glowIntensity="soft" className="pb-20 pt-24 sm:pt-32">
+      {messages && messages.length > 0 ? (
+        <>
+          {/* Nuage dispersé, desktop uniquement (`lg:` = 1024px). En dessous,
+              la colonne de texte (44rem) occupe déjà presque toute la
+              largeur disponible : un nuage positionné en pourcentage de la
+              section entière chevaucherait le texte plutôt que de flotter
+              dans le vide à côté. `absolute inset-0` sur la `<section>`
+              (positionnée) elle-même, placé AVANT le contenu dans le DOM :
+              peint derrière lui sans z-index positif à gérer, le même
+              principe que `AmbientGlow` juste en dessous dans la pile. */}
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden overflow-hidden lg:block">
+            {messages.map((text, index) => (
+              <MessageBubble
+                key={text}
+                text={text}
+                compact={index % 2 === 1}
+                style={{ ...heroCloudPositions[index % heroCloudPositions.length] }}
+              />
+            ))}
+          </div>
+
+          {/* Rangée compacte, en flux normal : de 320px à 1024px (mobile et
+              tablette, y compris le portrait 768px explicitement demandé
+              dans les tests). `flex-wrap` ne peut pas déborder de l'écran,
+              contrairement à des positions en pourcentage sur une colonne
+              étroite. */}
+          <div
+            aria-hidden="true"
+            className="mx-auto mb-7 flex w-full max-w-[26rem] flex-wrap items-center justify-center gap-2 lg:hidden"
+          >
+            {messages.map((text) => (
+              <MessageBubble key={text} text={text} compact position="static" />
+            ))}
+          </div>
+        </>
+      ) : null}
+
       {/* 44 rem : la colonne de lecture. Au-delà, le titre cesse d'être un
           objet et devient un bandeau. Elle vit à l'intérieur du conteneur
           commun, qui gère la largeur de page et le centrage. */}
-      <div className="mx-auto flex max-w-[44rem] flex-col items-center text-center">
+      <div className="relative mx-auto flex max-w-[44rem] flex-col items-center text-center">
         {/* Bordure en dégradé : le badge est le seul endroit de la page où la
             couleur apparaît en tant que telle.
 

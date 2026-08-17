@@ -7,8 +7,15 @@
  * vérifiable, la phrase est fausse et les visages servent à la rendre
  * crédible — jusqu'au premier prospect qui demande une référence.
  *
- * Ces trois promesses-là sont vraies aujourd'hui, et elles occupent la même
- * place : celle où l'œil cherche une raison de croire, juste sous le bouton.
+ * Ces trois promesses-là occupent la même place : celle où l'œil cherche une
+ * raison de croire, juste sous le bouton.
+ *
+ * **Contenu remplacé le 17/08/2026** par les trois bénéfices courts demandés
+ * explicitement pour la refonte du hero (« Plus de visibilité / Plus de
+ * réservations / Moins de temps perdu ») — ce composant est le seul endroit
+ * du hero prévu pour ce rôle (réassurance juste sous le CTA), inutile d'en
+ * créer un second. `detail` reste vide : la demande donnait trois libellés
+ * courts, pas de sous-texte, et en inventer un romprait ce texte exact.
  *
  * Le jour où de vrais clients existent, `SocialProof` reprend cette place avec
  * leurs visages et leur nombre exact. Dix vrais convainquent plus que cent
@@ -16,9 +23,9 @@
  */
 
 const points = [
-  { label: 'Prix ferme', detail: 'affiché en trois minutes' },
-  { label: 'Acompte encaissé', detail: 'avant le rendez-vous' },
-  { label: 'France et Suisse', detail: 'euro ou franc' },
+  { label: 'Plus de visibilité', detail: '' },
+  { label: 'Plus de réservations', detail: '' },
+  { label: 'Moins de temps perdu', detail: '' },
 ] as const;
 
 export function TrustStrip() {
@@ -39,7 +46,9 @@ export function TrustStrip() {
               <span className="block text-[0.9375rem] font-semibold text-primary">
                 {point.label}
               </span>
-              <span className="block text-[0.8125rem] text-faint">{point.detail}</span>
+              {point.detail ? (
+                <span className="block text-[0.8125rem] text-faint">{point.detail}</span>
+              ) : null}
             </span>
           </span>
         </li>

@@ -53,51 +53,47 @@ export default function HomePage() {
       <DarkHeader />
 
       <DarkHero
-        eyebrow="SaaS pour laveurs auto & detailing automobile"
         /*
-         * Repositionnement SaaS-first (17/08/2026, demande explicite) : le H1
-         * doit porter mot pour mot la phrase de positionnement obligatoire —
-         * ce n'est pas une préférence stylistique, c'est ce que Google et les
-         * IA génératives lisent en premier sur la page. L'ancien titre
-         * (« Ne répondez plus aux « C'est combien pour une Clio ? » ») était
-         * plus incisif mais ne contenait ni « SaaS » ni « laveurs auto » :
-         * illisible pour un moteur qui doit comprendre ce qu'est Qualifyr en
-         * une phrase. Pas de `highlight` ici : en ajouter un romprait le H1
-         * exact demandé.
+         * Badge/H1/sous-titre/CTA/microcopie : textes exacts de la demande
+         * du 17/08/2026 (refonte header + première section). Remplacent les
+         * textes du repositionnement SEO/GEO précédent — c'est la décision
+         * de contenu la plus récente, elle l'emporte sur celle d'avant.
+         */
+        eyebrow="La visibilité qui fait briller votre activité"
+        /*
+         * Le H1 lui-même n'a pas changé : la demande le reprend mot pour mot
+         * (« Le SaaS tout-en-un pour les laveurs auto »), donc pas de
+         * régression sur la phrase de positionnement SEO obligatoire du
+         * passage précédent. Pas de `highlight` ici : en ajouter un
+         * romprait le H1 exact demandé.
          */
         title="Le SaaS tout-en-un pour les laveurs auto"
-        /*
-         * Proposition de valeur mise à jour (17/08/2026, second passage SEO/GEO) :
-         * texte exact demandé, plus court que la version précédente.
-         */
-        subtitle="Gérez votre activité de lavage auto, vos demandes et vos clients depuis un seul logiciel."
-        /*
-         * CTA principal/secondaire remplacés par les textes exacts de la
-         * dernière demande (« Créer mon compte » / « Découvrir les
-         * fonctionnalités »). Le premier pointe vers la même ancre qu'avant
-         * (`#agent-title`) : c'est le même parcours d'essai gratuit qui mène
-         * à l'espace pro, aucune page de création de compte séparée n'existe
-         * — changer le libellé ne change pas la destination réelle. Le
-         * second pointe vers `/fonctionnalites`, la nouvelle page dédiée.
-         */
-        ctaLabel="Créer mon compte"
+        subtitle="Attirez plus de clients, publiez régulièrement et développez votre activité de lavage automobile sans perdre de temps."
+        ctaLabel="Créer mon compte gratuitement"
         ctaHref="#agent-title"
-        secondaryLabel="Découvrir les fonctionnalités"
-        secondaryHref="/fonctionnalites"
-        ctaNote="Sans carte bancaire. France et Suisse."
+        secondaryLabel="Voir comment ça marche"
+        secondaryHref="#how-title"
+        ctaNote="Sans engagement · Mise en route rapide"
         /*
-         * `proof` (compteur « +100 utilisateurs » + quatre portraits) a été
-         * retiré : le commentaire qui l'accompagnait ici même disait très
-         * précisément que ni le chiffre ni les visages n'étaient vrais, et
-         * demandait une vérification avant mise en ligne publique — jamais
-         * faite avant que le site ne devienne public. `trust` active
-         * `TrustStrip`, construit pour occuper exactement cette place avec
-         * trois promesses vérifiables aujourd'hui plutôt qu'un chiffre
-         * invérifiable. Le jour où de vrais clients acceptent d'être cités
-         * (voir la méthode de collecte de témoignages), `proof` reprend sa
-         * place avec leurs vrais visages et leur nombre exact.
+         * `proof` (compteur « +100 utilisateurs » + quatre portraits) reste
+         * hors service : ni le chiffre ni les visages n'étaient vrais. Voir
+         * `trust` ci-dessous, dont le contenu porte maintenant les trois
+         * bénéfices demandés ici.
          */
         trust
+        /*
+         * Nuage de bulles bleues (#1683F8) demandé explicitement pour la
+         * première section — voir `MessageBubble`. Réservé à l'accueil : ce
+         * même composant `DarkHero` sert aussi à `/nettoyage-automobile` et
+         * aux pages `/logiciel-*`, où ce nuage n'a pas été demandé.
+         */
+        messages={[
+          'Quoi poster cette semaine ?',
+          'Je veux attirer plus de clients',
+          'La page blanche, terminé',
+          'Mes publications sont prêtes',
+          'Plus de réservations ce mois-ci',
+        ]}
       />
 
       <ServiceTabs
