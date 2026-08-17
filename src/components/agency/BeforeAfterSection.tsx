@@ -1,6 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import { MessageBubble } from './MessageBubble';
 import { Section } from './Section';
 import { orbTints } from './agent-visuals';
 import { Orb } from './ServiceTabs';
@@ -138,13 +139,19 @@ const workers = [
  * Le bruit d'aujourd'hui, en en-tête visuel du côté « avant ».
  *
  * Dispersé plutôt qu'empilé : deux messages au premier plan, à gauche et à
- * droite (`prominent`), deux autres en arrière-plan, plus petits et plus
- * transparents, pour donner une impression de désordre plutôt qu'une liste
- * bien rangée — c'est le sentiment que la section décrit. Couleurs neutres
- * (gris), pas de bulles bleues façon iMessage : sur fond bleu vif, le texte
- * s'est déjà lu orange en production (voir la couleur écrite en dur plus bas
- * dans ce fichier) ; un fond neutre retire ce risque en même temps qu'il
- * élimine l'effet « messagerie » trop léger pour ce que la section raconte.
+ * droite (`prominent`), deux autres en arrière-plan, plus petits (`MessageBubble
+ * compact`), pour donner une impression de désordre plutôt qu'une liste bien
+ * rangée — c'est le sentiment que la section décrit.
+ *
+ * **Bulles bleues (`#1683F8`), demande explicite du 17/08/2026, en référence
+ * directe à neverboring.app (déjà l'inspiration du fichier de style — voir
+ * l'en-tête de `globals.css`).** Une version précédente était passée au gris
+ * neutre après un bug où le texte se lisait orange en production ; ce bug
+ * venait d'une classe de couleur de texte posée à côté d'un fond en `style`
+ * (perte de classe en cascade, même symptôme que `RowItem` plus bas et
+ * `CompareSection.tsx`), pas du bleu en tant que tel. `MessageBubble` pose
+ * fond ET texte en `style`, donc ce risque ne s'applique plus — voir ce
+ * composant pour le détail.
  */
 const clientNoise = [
   {
@@ -257,34 +264,22 @@ export function BeforeAfterSection() {
             boxShadow: '0 20px 40px -24px rgba(0,0,0,0.55)',
           }}
         >
-          <div className="relative mx-auto mb-7 hidden w-full max-w-[20rem] sm:block" style={{ height: '7.5rem' }}>
-            {/* Nuage dispersé plutôt que pile de bulles bleues — voir le
-                commentaire sur `clientNoise` plus haut. Les deux messages
-                `prominent` portent la couleur en `style`, jamais via une
-                classe utilitaire seule : `text-white` sur un fond posé en
-                `style` a déjà cessé de s'appliquer ailleurs dans ce projet
-                (voir `RowItem` et `CompareSection.tsx`), toujours pour la
-                même raison — une classe perdue quelque part dans la
-                cascade en production. Une couleur écrite en dur ne laisse
-                plus cette possibilité. */}
+          {/* Visible dès le mobile (plus de `hidden sm:block`) : la demande
+              explicite est que ces bulles restent visibles sur téléphone,
+              sans déborder de l'écran. `MessageBubble` réduit sa propre
+              taille sous `sm:`, donc pas de dépassement à 320px même avec
+              les textes les plus longs du tableau (« Vous pouvez passer
+              dans 20 min ? »). Hauteur du conteneur légèrement augmentée
+              (8.5rem au lieu de 7.5rem) pour laisser la place aux bulles qui
+              enveloppent leur texte sur deux lignes en dessous de 400px. */}
+          <div className="relative mx-auto mb-7 w-full max-w-[20rem]" style={{ height: '8.5rem' }}>
             {clientNoise.map((message) => (
-              <span
+              <MessageBubble
                 key={message.text}
-                className="absolute max-w-[10.5rem] rounded-2xl px-3.5 py-2 text-[0.8125rem] leading-[1.4]"
-                style={{
-                  ...message.style,
-                  zIndex: message.prominent ? 2 : 1,
-                  color: message.prominent ? '#ffffff' : 'rgba(255,255,255,0.4)',
-                  background: message.prominent ? '#2a2a2e' : 'rgba(255,255,255,0.04)',
-                  border: message.prominent
-                    ? '1px solid rgba(255,255,255,0.09)'
-                    : '1px solid rgba(255,255,255,0.05)',
-                  boxShadow: message.prominent ? '0 10px 24px -10px rgba(0,0,0,0.55)' : 'none',
-                  fontSize: message.prominent ? undefined : '0.75rem',
-                }}
-              >
-                {message.text}
-              </span>
+                text={message.text}
+                compact={!message.prominent}
+                style={{ ...message.style, zIndex: message.prominent ? 2 : 1 }}
+              />
             ))}
           </div>
 
