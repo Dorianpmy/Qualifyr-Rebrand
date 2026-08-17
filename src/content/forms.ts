@@ -19,8 +19,8 @@ export const activityOptions = [
   },
   {
     value: 'autre-service',
-    label: 'Autre entreprise de services',
-    description: 'Présentez votre activité : nous vérifierons si le projet est cohérent.',
+    label: 'Autre activité liée au véhicule',
+    description: 'Detailing, esthétique auto, préparation ou nettoyage professionnel : présentez votre activité, nous vérifierons si le projet est cohérent.',
   },
 ] as const satisfies readonly SelectOption[];
 

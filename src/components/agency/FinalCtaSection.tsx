@@ -56,11 +56,11 @@ export function FinalCtaSection() {
               Analyser ma zone gratuitement
             </Link>
             <Link
-              href="/nettoyage-automobile"
+              href="/creation-site-web"
               className="inline-flex min-h-[48px] items-center rounded-full px-6 text-[0.9375rem] font-semibold !text-primary no-underline transition-colors duration-150 hover:bg-white/[0.06]"
               style={{ border: '1px solid rgba(255,255,255,0.15)' }}
             >
-              Voir le SaaS de réservation
+              Créer mon site avec Qualifyr
             </Link>
           </div>
 

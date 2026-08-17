@@ -82,7 +82,7 @@ export const blogArticles = [
       'Une bonne page d’accueil donne des repères immédiats : ce que vous faites, pour qui, pourquoi vous choisir et comment vous contacter.',
     seoTitle: 'Ce qu’une page d’accueil doit faire comprendre — Qualifyr',
     seoDescription:
-      'Les informations essentielles à organiser sur la page d’accueil d’une entreprise de services pour guider clairement ses visiteurs.',
+      'Les informations essentielles à organiser sur la page d’accueil d’un laveur auto ou detailer pour guider clairement ses visiteurs.',
     publishedAt: '2026-07-31T09:00:00+02:00',
     introduction:
       'La page d’accueil n’a pas besoin de raconter toute l’entreprise. Elle doit donner assez de repères pour que le visiteur comprenne l’activité, vérifie qu’il est au bon endroit et poursuive sans hésiter.',
@@ -209,7 +209,7 @@ export const blogArticles = [
       'Sur mobile, la clarté dépend moins du nombre d’effets que de l’ordre des informations, de la taille des actions et de la vitesse de lecture.',
     seoTitle: 'Concevoir un site mobile clair pour ses clients — Qualifyr',
     seoDescription:
-      'Les choix essentiels pour rendre le site mobile d’une entreprise de services plus lisible, plus confortable et plus simple à contacter.',
+      'Les choix essentiels pour rendre le site mobile d’un laveur auto ou detailer plus lisible, plus confortable et plus simple à contacter.',
     publishedAt: '2026-08-02T08:00:00+02:00',
     introduction:
       'Une personne qui consulte un service sur son téléphone peut être en déplacement, comparer plusieurs prestataires ou chercher une réponse précise. Le site doit rester confortable sans demander une attention prolongée.',
@@ -292,7 +292,7 @@ export const blogArticles = [
       'Afficher un prix peut rassurer ou créer une fausse comparaison. Tout dépend de ce qui est fixe, de ce qui varie et de la manière dont le montant est expliqué.',
     seoTitle: 'Faut-il afficher ses prix sur un site de services ? — Qualifyr',
     seoDescription:
-      'Les questions à se poser avant d’afficher un tarif, un prix de départ ou une estimation sur le site d’une entreprise de services.',
+      'Les questions à se poser avant d’afficher un tarif, un prix de départ ou une estimation sur le site d’un laveur auto ou detailer.',
     publishedAt: '2026-08-04T08:00:00+02:00',
     introduction:
       'Un prix visible peut faire gagner du temps et aider le client à se situer. Il peut aussi donner une impression inexacte si la prestation dépend fortement de l’état, de la durée, de la zone ou de plusieurs options.',

@@ -61,7 +61,7 @@ describe('getRecommendations', () => {
   });
 
   it('ajoute uniquement les briques correspondant aux options choisies', () => {
-    const titles = getRecommendations('conciergerie', 'site', 'image', ['redaction']).map((item) => item.title);
+    const titles = getRecommendations('autre', 'site', 'image', ['redaction']).map((item) => item.title);
     expect(titles).toContain('Des contenus entièrement rédigés');
     expect(titles).not.toContain('Un acompte lorsque la prestation le justifie');
   });

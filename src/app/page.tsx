@@ -16,7 +16,7 @@ import { ServiceTabs } from '@/components/agency/ServiceTabs';
 import { services } from '@/components/agency/services-content';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { buildMetadata } from '@/lib/metadata';
-import { webPage } from '@/lib/structured-data';
+import { softwareApplication, webPage } from '@/lib/structured-data';
 
 /**
  * Page d'accueil — charte « Dark Minimalist ».
@@ -46,26 +46,39 @@ export default function HomePage() {
   return (
     <div data-theme="dark" className="bg-ink">
       <JsonLd data={webPage('/')} />
+      {/* Le SaaS lui-même, distinct de l'organisation : voir le commentaire
+          de `softwareApplication()` dans `structured-data.ts`. */}
+      <JsonLd data={softwareApplication()} />
 
       <DarkHeader />
 
       <DarkHero
-        eyebrow="SaaS de réservation + Agent IA"
-        title="Ne répondez plus aux"
-        highlight="« C’est combien pour une Clio ? »"
-        subtitle="Gardez les mains sur la polisseuse. Votre système filtre les curieux, encaisse les acomptes, et votre agent d’acquisition démarche de nouveaux clients sur votre secteur pendant que vous travaillez."
-        ctaLabel="Tester l’agent sur ma ville"
+        eyebrow="SaaS pour laveurs auto & detailing automobile"
+        /*
+         * Repositionnement SaaS-first (17/08/2026, demande explicite) : le H1
+         * doit porter mot pour mot la phrase de positionnement obligatoire —
+         * ce n'est pas une préférence stylistique, c'est ce que Google et les
+         * IA génératives lisent en premier sur la page. L'ancien titre
+         * (« Ne répondez plus aux « C'est combien pour une Clio ? » ») était
+         * plus incisif mais ne contenait ni « SaaS » ni « laveurs auto » :
+         * illisible pour un moteur qui doit comprendre ce qu'est Qualifyr en
+         * une phrase. Pas de `highlight` ici : en ajouter un romprait le H1
+         * exact demandé.
+         */
+        title="Le SaaS tout-en-un pour les laveurs auto"
+        subtitle="Gérez vos demandes, vos réservations et vos clients depuis un seul outil conçu pour le lavage automobile mobile et le detailing."
+        ctaLabel="Découvrir Qualifyr"
         ctaHref="#agent-title"
         /*
-         * Le lien secondaire pointait vers `/nettoyage-automobile`, qui
-         * présente la même offre SaaS que cette page sous un autre habillage
-         * — aucun chemin n'existait donc, depuis le hero, vers l'autre offre
-         * réelle de Qualifyr : les sites construits sur mesure. Corrigé pour
-         * aiguiller vers cette offre plutôt que de dupliquer le CTA
-         * principal.
+         * CTA secondaire aligné sur le texte obligatoire « Essayer Qualifyr »
+         * et redirigé vers `/nettoyage-automobile`, la page qui présente le
+         * produit SaaS en détail (démo, tarifs, tableau de bord) — cohérent
+         * avec « essayer » plutôt que « créer un site ». Le CTA « Créer mon
+         * site avec Qualifyr » vit plus bas, dans `FinalCtaSection`, pour ne
+         * pas dupliquer un troisième bouton dans le hero.
          */
-        secondaryLabel="Besoin d’un site sur mesure ?"
-        secondaryHref="/creation-site-web"
+        secondaryLabel="Essayer Qualifyr"
+        secondaryHref="/nettoyage-automobile"
         ctaNote="Sans carte bancaire. France et Suisse."
         /*
          * `proof` (compteur « +100 utilisateurs » + quatre portraits) a été

@@ -77,8 +77,8 @@ export const verticalAdaptations = [
     body: 'Véhicule, formule, adresse, zone et créneau sont organisés avant la confirmation.',
   },
   {
-    title: 'Conciergeries',
-    body: 'Besoin, séjour ou destination sont précisés avant l’échange et le suivi.',
+    title: 'Detailing automobile',
+    body: 'Niveau de finition, état du véhicule et préparation sont précisés avant la réservation.',
   },
 ] as const;
 

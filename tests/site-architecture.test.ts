@@ -22,12 +22,14 @@ import {
  * d'accueil ont été retirées ; celles qui vérifient encore des pages ou
  * contenus toujours en place ont été conservées telles quelles.
  *
- * Chaque changement ci-dessous a été vérifié à la main contre le code source
- * actuel (`grep`), faute de pouvoir faire tourner la suite de tests dans cet
- * environnement pour le confirmer par exécution — `vitest` y échoue sur un
- * binding natif manquant (`@rolldown/binding-linux-arm64-gnu`), un problème
- * d'environnement sans rapport avec le code. À faire tourner sur un poste où
- * `npm test` fonctionne avant de considérer ce fichier définitivement à jour.
+ * Mise à jour du 17/08/2026 (repositionnement SaaS-first) : `vitest`
+ * fonctionne bien dans ce sandbox (le commentaire précédent, qui affirmait le
+ * contraire, était erroné) — cette exécution a révélé que plusieurs
+ * assertions ci-dessous n'avaient en réalité jamais été mises à jour après le
+ * renommage « detailer/detailing → laveur auto » et la suppression de la
+ * page /realisations/sw-car-cleaning (toutes deux antérieures à cette
+ * session). Corrigées ici pour refléter le code source réel, vérifié par
+ * lecture directe des fichiers concernés.
  */
 
 const projectRoot = fileURLToPath(new URL('../', import.meta.url));
@@ -49,7 +51,7 @@ describe('architecture commerciale', () => {
 
   it('publie une route estimation canonique qui réutilise le configurateur', () => {
     expect(estimation).toContain('<OfferConfigurator showIntro={false} />');
-    expect(pageMeta['/estimation'].title).toBe('Estimation budget site detailing — Qualifyr');
+    expect(pageMeta['/estimation'].title).toBe('Estimation budget site laveur auto — Qualifyr');
     expect(pageMeta['/estimation'].description).toBe(
       'Orientation claire et fourchette de budget indicative en quelques minutes, avant le premier échange.',
     );
@@ -67,24 +69,30 @@ describe('pages métier', () => {
   const automotivePage = source('src/app/nettoyage-automobile/page.tsx');
 
   it('publie la verticale officielle avec le composant partagé', () => {
-    expect(automotivePage).toContain('<VerticalServicePage content={automotiveVertical} />');
+    // La page vit sur la charte « Dark Minimalist » (`DarkHero`, `CardsSection`,
+    // `JourneySection`, `FaqSection`…) et non sur l'ancien `VerticalServicePage`
+    // (non importé nulle part, voir le commentaire sur `automotiveVertical.proof`
+    // dans `content/verticals.ts`) : on vérifie que le contenu réel de
+    // `automotiveVertical` est bien branché, pas un nom de composant obsolète.
+    expect(automotivePage).toContain('automotiveVertical');
+    expect(automotivePage).toContain("faqPage('/nettoyage-automobile', faq)");
     expect(sitemapRoutes).toContain('/nettoyage-automobile');
     expect(sitemapRoutes).not.toContain('/conciergerie');
   });
 
   it('utilise les métadonnées commerciales validées', () => {
     expect(pageMeta['/nettoyage-automobile']).toMatchObject({
-      title: 'Site pour detailing et nettoyage auto — plus de réservations',
+      title: 'Site pour laveurs auto à domicile — plus de réservations',
       description:
-        'Prestations claires, tarifs par véhicule, réservation simple. Pour les detailers qui veulent moins de messages Instagram et plus de rendez-vous.',
+        'Prestations claires, tarifs par véhicule, réservation simple. Pour les laveurs auto qui veulent moins de messages Instagram et plus de rendez-vous.',
     });
   });
 
   it('décrit l’expertise avec un Service et la FAQ réellement affichée', () => {
     expect(verticalService(automotiveVertical)).toMatchObject({
       '@type': 'Service',
-      name: 'Création de site internet pour nettoyage automobile et detailing',
-      category: ['Nettoyage automobile mobile', 'Detailing à domicile'],
+      name: 'Création de site internet pour laveurs auto à domicile',
+      category: ['Nettoyage automobile mobile', 'Lavage auto à domicile'],
       mainEntityOfPage: {
         '@id': 'https://qualifyragence.com/nettoyage-automobile#webpage',
       },
@@ -107,7 +115,10 @@ describe('pages métier', () => {
   });
 
   it('ne revendique aucun résultat chiffré ou témoignage sans preuve publiée', () => {
-    expect(automotiveVertical.proof.kind).toBe('real');
+    // `kind: 'concept'` — pas `'real'` — tant qu'aucune réalisation vraie
+    // n'est republiée : voir le commentaire sur `proof` dans
+    // `content/verticals.ts`. C'est le choix honnête, pas une régression.
+    expect(automotiveVertical.proof.kind).toBe('concept');
     expect(JSON.stringify(automotiveVertical)).not.toMatch(/\d+\s?%|témoignage|clients satisfaits/i);
   });
 });
@@ -120,8 +131,17 @@ describe('lisibilité pour les moteurs génératifs', () => {
     expect(geoFacts.specializations.length).toBeGreaterThan(0);
     expect(llms).toContain('https://qualifyragence.com/nettoyage-automobile');
     expect(llms).not.toContain('https://qualifyragence.com/conciergerie');
-    expect(llms).toContain('SW Carcleaning');
+    // La page « SW Car Cleaning » a été retirée du site (P0, session
+    // précédente) : le résumé GEO ne doit plus la citer.
+    expect(llms).not.toContain('SW Carcleaning');
     expect(llms).not.toContain('laboratoire');
+    // « conciergerie » reste présent une fois, dans l'espace négatif
+    // (« Qualifyr n'est PAS un outil de conciergerie ») — disqualifier
+    // explicitement ce secteur aide un lecteur automatique à ne pas
+    // mal classer Qualifyr. Ce qui compte est qu'il n'apparaisse jamais en
+    // dehors de cette phrase de négation.
+    expect(llms.match(/conciergerie/gi)?.length).toBe(1);
+    expect(llms).toContain('SaaS');
   });
 
   it('rend l’expertise explicite dans l’entité Organization', () => {

@@ -36,14 +36,14 @@ export function organization() {
     image: absolute('/images/og/qualifyr-og-v3.png'),
     areaServed: servedCountries(),
     knowsAbout: [
+      'SaaS pour laveurs auto et detailing automobile',
+      'Gestion des demandes et des réservations',
+      'Suivi des prospects et des clients',
       'Lavage automobile à domicile',
+      'Detailing automobile',
       'Nettoyage automobile mobile',
-      'Création de sites web pour laveurs auto',
       'Parcours de réservation en ligne',
-      'Clarification de l’offre de lavage auto',
-      'Identité de marque',
-      'Expérience utilisateur mobile',
-      'Logiciel de réservation pour laveurs auto',
+      'Création de sites web pour laveurs auto (fonctionnalité complémentaire)',
     ],
   };
 
@@ -95,6 +95,49 @@ export function webPage(route: Route) {
       width: 1200,
       height: 630,
     },
+  };
+}
+
+/**
+ * Le SaaS Qualifyr lui-même (abonnement) — distinct de `organization()`, qui
+ * décrit l'éditeur, et de `webDesignService()`, qui décrit la fonctionnalité
+ * complémentaire de création de site. Reflète les trois formules réellement
+ * affichées sur `/` et `/nettoyage-automobile` (`DarkPricing.tsx`) : les
+ * montants doivent rester synchronisés si l'un des deux change.
+ */
+export function softwareApplication() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    '@id': `${site.url}/#software`,
+    name: 'Qualifyr',
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Web',
+    description:
+      'SaaS de gestion des demandes, réservations, prospects et clients pour les laveurs auto à domicile et les professionnels du detailing automobile, en France et en Suisse.',
+    url: absolute('/'),
+    provider: { '@id': `${site.url}/#organization` },
+    audience: {
+      '@type': 'BusinessAudience',
+      audienceType: 'Laveurs auto à domicile et professionnels du detailing automobile',
+    },
+    areaServed: servedCountries(),
+    offers: [
+      { name: 'Agent seul', price: '17', priceCurrency: 'EUR', billingIncrement: 'P1M' },
+      { name: 'Système seul', price: '49', priceCurrency: 'EUR', billingIncrement: 'P1M' },
+      { name: 'Pack complet', price: '59', priceCurrency: 'EUR', billingIncrement: 'P1M' },
+    ].map((offer) => ({
+      '@type': 'Offer',
+      name: offer.name,
+      price: offer.price,
+      priceCurrency: offer.priceCurrency,
+      priceSpecification: {
+        '@type': 'UnitPriceSpecification',
+        price: offer.price,
+        priceCurrency: offer.priceCurrency,
+        billingIncrement: offer.billingIncrement,
+      },
+    })),
   };
 }
 

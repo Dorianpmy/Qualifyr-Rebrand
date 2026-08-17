@@ -14,6 +14,7 @@ export type Route =
   | '/a-propos'
   | '/estimation'
   | '/contact'
+  | '/faq'
   | '/blog'
   | '/mentions-legales'
   | '/politique-de-confidentialite';

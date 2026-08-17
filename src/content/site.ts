@@ -5,13 +5,16 @@ export const productionDomain = 'qualifyragence.com';
 
 /**
  * Snippet Google principal.
- * Titre ~55–60 car. Description ~150–160 car.
- * Zéro mention conciergerie / Airbnb.
+ * Repositionnement SaaS-first (17/08/2026) : Qualifyr est présenté comme le
+ * SaaS pour laveurs auto et detailing automobile, pas comme une agence de
+ * création de sites. La création de site reste une fonctionnalité de la
+ * plateforme, jamais l'activité principale affichée ici.
+ * Zéro mention conciergerie / Airbnb / secteur généraliste.
  */
 export const homeSeo = {
-  title: 'Qualifyr — Sites & réservation pour laveurs auto',
+  title: 'SaaS pour laveur auto et detailing automobile | Qualifyr',
   description:
-    'Agence et outil pour les laveurs auto à domicile en France et en Suisse. Sites clairs, formules visibles, parcours de réservation — moins de DM, plus de RDV.',
+    'Qualifyr est le SaaS dédié aux laveurs auto : demandes de devis, réservations, prospects, clients et présence en ligne réunis au même endroit.',
 } as const;
 
 export const site = {
@@ -81,6 +84,12 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
     description:
       'Une question sur le lavage auto, un site ou l’outil de réservation ? Écrivez-nous directement, nous vous répondons rapidement.',
     priority: 0.5,
+  },
+  '/faq': {
+    title: 'FAQ — SaaS pour laveurs auto et detailing automobile | Qualifyr',
+    description:
+      'Fonctionnement, tarifs, zones couvertes, paiements et périmètre du SaaS Qualifyr pour les laveurs auto et les professionnels du detailing automobile.',
+    priority: 0.7,
   },
   '/blog': {
     title: 'Journal laveurs auto — conseils pour remplir l’agenda | Qualifyr',

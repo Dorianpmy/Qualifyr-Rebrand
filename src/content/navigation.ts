@@ -17,6 +17,7 @@ export const routeLabels: Readonly<Record<string, string>> = {
   '/a-propos': 'À propos',
   '/estimation': 'Estimation',
   '/contact': 'Contact',
+  '/faq': 'FAQ',
   '/blog': 'Journal',
   '/mentions-legales': 'Mentions légales',
   '/politique-de-confidentialite': 'Politique de confidentialité',
@@ -48,6 +49,7 @@ export const footerCompanyNav: readonly NavItem[] = [
   { label: 'Réalisations', href: '/realisations' },
   { label: 'Méthode', href: '/methode' },
   { label: 'Journal', href: '/blog' },
+  { label: 'FAQ', href: '/faq' },
   { label: 'À propos', href: '/a-propos' },
   { label: 'Contact', href: '/contact' },
 ];

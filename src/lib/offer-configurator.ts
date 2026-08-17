@@ -1,4 +1,4 @@
-export type ActivityId = 'automobile' | 'detailing' | 'conciergerie' | 'autre';
+export type ActivityId = 'automobile' | 'detailing' | 'autre';
 export type SituationId = 'lancement' | 'recommandation' | 'site' | 'multicanal' | 'croissance';
 export type ObstacleId = 'comparaison' | 'incompletes' | 'echanges' | 'image' | 'retour';
 export type OptionId = 'acompte' | 'reservation' | 'redaction';

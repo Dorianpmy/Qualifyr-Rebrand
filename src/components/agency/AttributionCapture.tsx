@@ -39,10 +39,10 @@ export function AttributionCapture() {
   }, []);
 
   useEffect(() => {
-    if (pathname === '/nettoyage-automobile' || pathname === '/conciergerie') {
+    if (pathname === '/nettoyage-automobile') {
       trackEvent('page_specialisee_viewed', {
         pagePath: pathname,
-        vertical: pathname === '/conciergerie' ? 'conciergerie' : 'nettoyage-automobile',
+        vertical: 'nettoyage-automobile',
       });
     }
   }, [pathname]);

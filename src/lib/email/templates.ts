@@ -110,8 +110,8 @@ export function acknowledgement(
       : 'Si vous souhaitez ajouter quelque chose, répondez simplement à cet e-mail.',
     '',
     '—',
-    'Qualifyr Agence',
-    'Nettoyage automobile mobile et conciergeries',
+    'Qualifyr',
+    'SaaS pour laveurs auto et detailing automobile',
     options.siteUrl,
   ].join('\n');
 

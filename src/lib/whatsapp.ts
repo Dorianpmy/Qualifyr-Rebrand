@@ -12,12 +12,6 @@
 const contextualMessages: Readonly<Record<string, string>> = {
   '/nettoyage-automobile':
     'Bonjour, je suis laveur auto à domicile et je regarde votre offre de site. J’aimerais savoir ce que ça donnerait pour mon activité.',
-  '/conciergerie':
-    'Bonjour, je gère une conciergerie et je cherche à obtenir plus de demandes de propriétaires. J’aimerais en discuter.',
-  '/outil-conciergerie':
-    'Bonjour, je suis intéressé par votre outil d’acquisition pour conciergerie à 79 €/mois. J’ai quelques questions avant de tester.',
-  '/simulateur-revenus-locatifs':
-    'Bonjour, je viens d’essayer votre simulateur de revenus. J’aimerais savoir comment le proposer à mes propriétaires.',
   '/tarifs':
     'Bonjour, je regarde vos tarifs et j’aimerais savoir dans quelle formule se situe mon projet.',
   '/estimation':
@@ -33,26 +27,8 @@ const contextualMessages: Readonly<Record<string, string>> = {
   '/contact': 'Bonjour, j’aimerais échanger avec vous au sujet de mon projet.',
 };
 
-/** Villes : le message reprend la ville pour que l'échange démarre situé. */
-function localMessage(pathname: string): string | null {
-  // Le groupe capturant est extrait explicitement : l'accès indexé seul est
-  // considéré comme potentiellement indéfini par le compilateur.
-  const slug = /^\/conciergerie\/([a-z-]+)$/.exec(pathname)?.[1];
-  if (!slug) return null;
-
-  const city = slug
-    .split('-')
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join('-');
-
-  return `Bonjour, je gère une conciergerie à ${city} et je cherche à signer plus de mandats. J’aimerais en discuter.`;
-}
-
 export function buildDirectWhatsAppMessage(pathname?: string | null) {
   if (!pathname) return 'Bonjour, je souhaite discuter de mon projet avec Qualifyr.';
-
-  const local = localMessage(pathname);
-  if (local) return local;
 
   if (pathname.startsWith('/blog/')) {
     return 'Bonjour, je viens de lire un de vos articles et j’aimerais échanger sur ma situation.';

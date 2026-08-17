@@ -75,9 +75,9 @@ export function Header() {
         <div className={styles.editorialBar} aria-label="Informations Qualifyr">
           <Container>
             <div className={styles.editorialInner}>
-              <p>01 — Qualifyr Agence</p>
-              <p>Entreprises de services</p>
-              <p>Identité · Site · Parcours</p>
+              <p>01 — Qualifyr</p>
+              <p>SaaS laveurs auto & detailing</p>
+              <p>Demandes · Réservations · Clients</p>
             </div>
           </Container>
         </div>
