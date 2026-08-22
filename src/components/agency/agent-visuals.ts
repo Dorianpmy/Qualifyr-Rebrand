@@ -44,7 +44,12 @@ export const orbTints = {
  * qu'elles désignent des clients. Un monogramme sur un dégradé simple dit ce
  * qu'il est — un être humain dont on n'a pas la photo.
  */
+/* La clé `celadon` garde son nom bien que la teinte soit passée du vert
+   d'eau au bleu givré le 22/08/2026 : elle est référencée ailleurs, et un
+   renommage à ce stade ne changerait rien à ce qui s'affiche tout en
+   risquant d'en oublier un appel. Le nom désigne un emplacement dans la
+   palette, pas une couleur littérale. */
 export const personTints = {
   sable: 'linear-gradient(145deg, #f7e2c6, #e8b98a)',
-  celadon: 'linear-gradient(145deg, #cdeade, #93c9b8)',
+  celadon: 'linear-gradient(145deg, #d3e2f2, #9bb8d6)',
 } as const;

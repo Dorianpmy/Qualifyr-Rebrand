@@ -71,9 +71,14 @@ const lightVars = {
 } as CSSProperties;
 
 /* `--accent-2` (céladon pastel) est réglé pour un texte clair sur fond
-   sombre : 1,5:1 sur blanc, illisible. Un vert plus soutenu, déjà utilisé
-   par `Mark` en `tone="light"` dans FeatureComparisonTable, tient ~6:1. */
-const LIGHT_ACCENT_TEXT = '#1f6f5c';
+   sombre : 1,5:1 sur blanc, illisible. Il faut donc une teinte propre aux
+   cartes claires.
+   Le vert sapin `#1f6f5c` qui tenait ce rôle est retiré le 22/08/2026
+   (« enlève toutes sortes de vert »). Remplacé par l'encre de la charte,
+   qui monte à ~14:1 sur ces cartes — donc plus lisible qu'avant, pas
+   moins. La hiérarchie repose désormais sur la graisse et la taille, pas
+   sur la couleur. */
+const LIGHT_ACCENT_TEXT = '#1a1a1c';
 
 const DARK_TEXT_PRIMARY = '#e0e0e0';
 const DARK_TEXT_MUTED = '#9a9a9c';
@@ -383,7 +388,7 @@ function PlanCard({ plan, annual }: { plan: Plan; annual: boolean }) {
           className="text-[0.8125rem] font-medium underline underline-offset-4 transition-colors duration-150"
           style={{
             color: plan.featured ? DARK_TEXT_FAINT : LIGHT_ACCENT_TEXT,
-            textDecorationColor: plan.featured ? 'rgba(255,255,255,0.25)' : 'rgba(31,111,92,0.35)',
+            textDecorationColor: plan.featured ? 'rgba(255,255,255,0.25)' : 'rgba(26, 26, 28,0.35)',
           }}
         >
           {plan.ctaLabel}

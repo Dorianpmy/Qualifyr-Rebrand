@@ -163,9 +163,9 @@ function Mark({ value, strong }: { readonly value: Support; readonly strong: boo
            variable, référencée sans repli dans une propriété `stroke`
            héritée, a déjà produit ailleurs dans ce projet des couleurs
            inattendues quand la cascade qui la définit échoue en production.
-           #b8dcd0 est la valeur exacte de `--accent-2` (céladon) sur ce
+           #b8cfe4 est la valeur exacte de `--accent-2` (céladon) sur ce
            thème — écrite ici, elle ne dépend plus de rien. */
-        style={{ stroke: strong ? '#b8dcd0' : 'rgba(255,255,255,0.32)' }}
+        style={{ stroke: strong ? '#b8cfe4' : 'rgba(255,255,255,0.32)' }}
       >
         <path d="M3 8.5l3.2 3.2L13 4.8" />
       </svg>

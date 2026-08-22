@@ -159,7 +159,15 @@
   :root {
     /* Sable et céladon — mêmes valeurs que la charte du site. */
     --accent-1: #f2d5b3;
-    --accent-2: #b8dcd0;
+    /* `--accent-2` était le céladon `#b8dcd0` — un vert d'eau. Passé au bleu
+       givré `#b8cfe4` le 22/08/2026 : Dorian a demandé à trois reprises que
+       plus aucune nuance de vert ne subsiste, et le céladon survivait à chaque
+       passe parce qu'il était traité comme « la charte » plutôt que comme du
+       vert. Le remplacement conserve la clarté d'origine (~85 %), donc aucun
+       rapport de contraste déjà validé ne bouge ; seule la teinte change.
+       Pour revenir en arrière : remettre `#b8dcd0` ici et dans les
+       `rgba(184, 207, 228, …)` dérivés. */
+    --accent-2: #b8cfe4;
 
     /*
      * Lilas poudré — la troisième couleur.
@@ -384,13 +392,25 @@
      fond, la bordure et les coins que mes propres composants déclarent — le
      grand panneau des services ressortait sans fond ni arrondi. On ne
      neutralise que ce que l'ancienne charte peint réellement. */
+  /* `border-radius: 0 !important` retiré le 22/08/2026.
+
+     Cette ligne était la principale source de coins carrés du site. Ce reset
+     vit dans `@layer utilities`, **après** l'import des utilitaires Tailwind :
+     à l'intérieur d'une même couche, la dernière déclaration l'emporte. Tout
+     élément dont la classe contient « card » ou « Card » — y compris les noms
+     générés par les modules CSS — perdait donc son arrondi, quel que soit le
+     `rounded-*` posé dessus.
+
+     La retirer ne réintroduit rien : les trois autres déclarations rendent
+     l'élément transparent, sans bordure et sans ombre. Un rayon sur une boîte
+     invisible n'a aucun effet visuel. La ligne ne servait donc qu'à détruire
+     l'arrondi des composants légitimes. */
   [data-theme='dark'] :is(section, header, footer, aside),
   [data-theme='dark'] div[class*='Section'],
   [data-theme='dark'] div[class*='Card'],
   [data-theme='dark'] div[class*='card'] {
     background-color: transparent !important;
     border: 0 !important;
-    border-radius: 0 !important;
     box-shadow: none !important;
   }
 
@@ -591,7 +611,7 @@
 [data-theme='dark'] {
   /* I · Sable et céladon (actif) — carrosserie et eau propre */
   --accent-1: #f2d5b3;
-  --accent-2: #b8dcd0;
+  --accent-2: #b8cfe4;
 
   /* G · Pêche et lavande
   --accent-1: #ffb59e;
@@ -605,7 +625,7 @@
 
   /* J · Lilas et menthe
   --accent-1: #d4b8ff;
-  --accent-2: #a8e6cf;
+  --accent-2: #a8d6ea;
   */
 }
 
@@ -717,7 +737,12 @@
     color: inherit !important;
     border-color: var(--color-hairline-strong) !important;
     box-shadow: none !important;
-    border-radius: 0 !important;
+    /* `0` remplacé par `10px` le 22/08/2026. Contrairement au reset de la
+       charte sombre, celui-ci **conserve une couleur de bordure** : un angle
+       droit y reste donc bien visible dès qu'un composant dessine un cadre.
+       Un rayon par défaut garantit qu'aucun élément de l'espace pro ne peut
+       être carré, même sans classe de reprise en main. */
+    border-radius: 10px !important;
     padding: revert-layer !important;
     min-height: 0 !important;
     font-size: inherit !important;
@@ -845,12 +870,12 @@
      précisément les trois propriétés que le reset supprimait. */
   [data-app='dashboard'] .app-tab-fab {
     border-radius: 999px !important;
-    border-color: rgba(184, 220, 208, 0.5) !important;
+    border-color: rgba(184, 207, 228, 0.5) !important;
     background-image: radial-gradient(120% 120% at 50% 0%, #1e2225, #121416 70%) !important;
     box-shadow:
       0 8px 20px rgba(0, 0, 0, 0.55),
       0 0 0 5px rgba(16, 18, 20, 0.9),
-      0 0 18px -4px rgba(184, 220, 208, 0.35) !important;
+      0 0 18px -4px rgba(184, 207, 228, 0.35) !important;
     padding: 0 !important;
     min-height: 0 !important;
   }
@@ -1200,8 +1225,8 @@
     border-radius: 999px !important;
     font-size: 0.6875rem !important;
     font-weight: 700 !important;
-    background-color: rgba(184, 220, 208, 0.16) !important;
-    color: #7fae9d !important;
+    background-color: rgba(184, 207, 228, 0.16) !important;
+    color: #8fa4c0 !important;
   }
 
   [data-theme='dark'] .period-option[aria-checked='true'] .period-badge {
@@ -1252,7 +1277,7 @@
     box-shadow:
       0 0 28px -6px rgba(242, 213, 179, 0.28),
       0 0 34px -4px rgba(201, 196, 238, 0.22),
-      0 0 30px -8px rgba(184, 220, 208, 0.2) !important;
+      0 0 30px -8px rgba(184, 207, 228, 0.2) !important;
   }
 
   /* Le résultat final reprend le même contour, sans le halo : deux objets
@@ -1371,10 +1396,13 @@
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 999px;
-  /* #22c55e : vert de validation demandé le 18/08/2026, à utiliser
-     uniquement là où un signal « actif »/« validé » est réellement
-     nécessaire — c'est déjà le seul endroit du projet qui en porte un. */
-  background: #22c55e;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
+  /* Vert `#22c55e` retiré le 22/08/2026 : Dorian a demandé qu'aucune
+     nuance de vert ne subsiste. Le signal « actif » ne disparaît pas pour
+     autant — c'est l'animation `qualifyr-status-pulse` qui le porte, pas la
+     teinte. Un point blanc qui pulse se lit exactement pareil, et reste
+     cohérent avec le reste de la charte, où le blanc est la seule couleur
+     d'accent forte. */
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.14);
   animation: qualifyr-status-pulse 1.8s ease-in-out infinite;
 }

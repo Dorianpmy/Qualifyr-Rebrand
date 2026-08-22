@@ -86,6 +86,7 @@
    sur cette largeur seraient illisibles et transformeraient le graphique en
    tableau. */
 .tooltip {
+  border-radius: 0.5rem;
   position: absolute;
   inset-block-end: calc(100% + var(--space-2));
   inset-inline-start: 50%;

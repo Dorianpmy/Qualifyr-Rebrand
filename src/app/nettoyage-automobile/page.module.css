@@ -26,6 +26,7 @@
 
 .demoFrame {
   padding: clamp(1.25rem, 3vw, 2.25rem);
+  border-radius: 1rem;
   border: var(--border-width) solid var(--rule-hairline);
   border-block-start: 3px solid var(--color-brass);
   background: var(--surface-page);

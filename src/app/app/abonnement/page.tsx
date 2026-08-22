@@ -148,7 +148,7 @@ export default async function SubscriptionPage() {
               // Le céladon de la charte pour l'avertissement — jamais de
               // rouge ni d'orange, que la charte du produit exclut.
               borderColor:
-                notice.tone === 'warning' ? 'rgba(184,220,208,0.35)' : undefined,
+                notice.tone === 'warning' ? 'rgba(184,207,228,0.35)' : undefined,
             }}
           >
             <p style={{ margin: 0, fontSize: '0.9375rem', lineHeight: 1.6, color: '#e0e0e0' }}>
@@ -207,7 +207,7 @@ export default async function SubscriptionPage() {
                       width: '0.35rem',
                       height: '0.35rem',
                       borderRadius: '999px',
-                      background: '#b8dcd0',
+                      background: '#b8cfe4',
                       flexShrink: 0,
                     }}
                   />

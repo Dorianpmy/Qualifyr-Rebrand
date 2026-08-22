@@ -127,7 +127,11 @@ function Mark({ value, tone }: { readonly value: Cell; readonly tone: 'dark' | '
       viewBox="0 0 16 16"
       aria-label="Inclus"
       className="mx-auto size-4 fill-none [stroke-linecap:round] [stroke-linejoin:round] [stroke-width:2]"
-      style={{ stroke: tone === 'light' ? '#1f6f5c' : 'var(--accent-2)' }}
+      /* Vert sapin `#1f6f5c` remplacé par l'encre le 22/08/2026, et
+         céladon `--accent-2` par le blanc : voir la note de `DarkPricing`.
+         Une coche n'a pas besoin d'être verte pour se lire « inclus » —
+         c'est sa forme qui le dit, et elle s'oppose déjà à un tiret. */
+      style={{ stroke: tone === 'light' ? '#1a1a1c' : 'rgba(255,255,255,0.92)' }}
     >
       <path d="M3 8.5l3.2 3.2L13 4.8" />
     </svg>

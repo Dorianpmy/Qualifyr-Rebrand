@@ -188,6 +188,7 @@
 
 .realVisual {
   overflow: hidden;
+  border-radius: 1rem;
   border: 1px solid var(--rule-inverse);
   background: var(--surface-raised);
 }
@@ -215,6 +216,7 @@
   min-block-size: 25rem;
   padding: clamp(1.5rem, 5vw, 4rem);
   overflow: hidden;
+  border-radius: 1rem;
   border: 1px solid var(--rule-hairline);
   background: var(--color-espresso);
   color: var(--text-inverse);
@@ -231,6 +233,7 @@
   display: grid;
   gap: var(--space-4);
   padding: clamp(1.25rem, 3vw, 2.5rem);
+  border-radius: 1rem;
   border: 1px solid var(--rule-inverse);
 }
 

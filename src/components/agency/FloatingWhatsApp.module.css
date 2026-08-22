@@ -30,6 +30,7 @@
 }
 
 .tooltip {
+  border-radius: 0.6rem;
   position: absolute;
   inset-inline-end: calc(100% + var(--space-3));
   padding: 0.55rem 0.75rem;

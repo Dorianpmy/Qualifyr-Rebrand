@@ -50,7 +50,11 @@ export function QualifyrMark({ className }: { readonly className?: string | unde
       {/* Sa queue, qui est une coche : elle démarre à l'intérieur de l'anneau
           et le traverse — c'est ce croisement qui fait lire un Q plutôt qu'une
           loupe. */}
-      <path d="M14.6 14.2 17.4 17.6 21.4 12.2" stroke="#b8dcd0" strokeWidth="2.2" />
+      {/* Céladon `#b8cfe4` remplacé par le blanc le 22/08/2026 : c'était la
+          dernière nuance verte du symbole de marque. La queue du Q reste
+          lisible comme une coche par sa forme et par le fait qu'elle traverse
+          l'anneau, pas par sa couleur. */}
+      <path d="M14.6 14.2 17.4 17.6 21.4 12.2" stroke="#ffffff" strokeWidth="2.2" />
     </svg>
   );
 }

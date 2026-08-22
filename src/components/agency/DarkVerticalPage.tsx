@@ -181,7 +181,7 @@ export function JourneySection({
           >
             <span
               className="mb-4 flex size-9 items-center justify-center rounded-full text-[0.8125rem] font-bold tabular-nums text-ink"
-              style={{ background: 'linear-gradient(145deg, #f2d5b3, #b8dcd0)' }}
+              style={{ background: 'linear-gradient(145deg, #f2d5b3, #b8cfe4)' }}
             >
               {step.number}
             </span>

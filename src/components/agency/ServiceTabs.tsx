@@ -184,7 +184,7 @@ export function Orb({
    * volontairement : l'importer depuis `agent-visuals` recréerait la
    * dépendance que ce repli doit précisément couvrir.
    */
-  const fill = tint ?? 'linear-gradient(145deg, #f2d5b3, #b8dcd0)';
+  const fill = tint ?? 'linear-gradient(145deg, #f2d5b3, #b8cfe4)';
   const isImage = fill.startsWith('/');
 
   return (

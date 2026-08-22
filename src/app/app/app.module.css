@@ -340,13 +340,13 @@
     min-height: 0;
     padding: 0;
     border-radius: 999px;
-    border: 1px solid rgba(184, 220, 208, 0.5);
+    border: 1px solid rgba(184, 207, 228, 0.5);
     background:
       radial-gradient(120% 120% at 50% 0%, #1e2225, #121416 70%);
     box-shadow:
       0 8px 20px rgba(0, 0, 0, 0.55),
       0 0 0 5px rgba(16, 18, 20, 0.9),
-      0 0 18px -4px rgba(184, 220, 208, 0.35);
+      0 0 18px -4px rgba(184, 207, 228, 0.35);
   }
 
   /* L'anneau sombre de 5 px posé par la troisième ombre découpe le bouton
@@ -773,10 +773,13 @@
 }
 
 .badgeConfirme {
-  /* #22c55e : vert de validation de la charte (18/08/2026, recherche
-     exhaustive du vert demandée explicitement) — remplace un vert
-     arbitraire par la seule teinte de succès autorisée. */
-  background: rgba(34, 197, 94, 0.16);
+  /* Vert retiré le 22/08/2026. Les trois badges restent distinguables sans
+     lui : « Confirmé » est le seul à fond blanc translucide et à texte
+     pleinement opaque, « En attente » reste ambre et « Annulé » rouge. Le
+     rouge et l'ambre sont conservés parce qu'ils portent une alerte — les
+     retirer coûterait de la lisibilité ; le vert, lui, ne signalait qu'un
+     état nominal, que le contraste suffit à exprimer. */
+  background: rgba(255, 255, 255, 0.14);
   color: var(--color-primary);
 }
 
@@ -1261,6 +1264,10 @@
 --------------------------------------------------------------------------- */
 
 .paymentPanel {
+  /* Rayon ajouté le 22/08/2026 avec la campagne « plus aucun angle droit ».
+     Le contour dégradé est peint en `border-box` : il suit le rayon tout seul,
+     aucun ajustement du dégradé n'est nécessaire. */
+  border-radius: 14px;
   padding: 1.35rem;
   margin-bottom: 1.15rem;
   border: 1px solid transparent !important;
@@ -1380,7 +1387,7 @@
   box-shadow:
     0 0 28px -8px rgba(242, 213, 179, 0.22),
     0 0 32px -6px rgba(201, 196, 238, 0.18),
-    0 0 28px -10px rgba(184, 220, 208, 0.16) !important;
+    0 0 28px -10px rgba(184, 207, 228, 0.16) !important;
 }
 
 /* La carte prioritaire des indicateurs reprend le contour tricolore, sans

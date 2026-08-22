@@ -4,6 +4,9 @@
   inset: 0;
   margin: auto;
   padding: 0;
+  /* Arrondi ajouté le 22/08/2026 : ce cadre était le dernier angle droit
+     de ce composant. La charte n'a aucun coin vif. */
+  border-radius: 1rem;
   border: var(--border-width) solid var(--rule-hairline);
   background: var(--surface-page);
   color: var(--text-primary);

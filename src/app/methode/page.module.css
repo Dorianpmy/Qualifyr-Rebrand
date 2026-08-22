@@ -129,6 +129,7 @@
   gap: var(--space-3);
   align-content: start;
   padding: var(--space-6);
+  border-radius: 999px;
   border: var(--border-width) solid var(--rule-strong);
   background: var(--surface-raised);
 }
