@@ -91,6 +91,16 @@ export async function createSubscriptionCheckout(input: {
     // Autorise le client à saisir un code promo sur la page Stripe plutôt
     // que d'avoir à en construire un dans ce code.
     allow_promotion_codes: 'true',
+    // Relance des paiements abandonnés (22/08/2026, phase 3 de l'audit
+    // growth marketing) : Stripe demande le consentement à recevoir un
+    // e-mail de relance ('auto' = ne le demande que si nécessaire), puis
+    // fournit un lien de reprise dans l'événement `checkout.session.expired`
+    // — voir `billing/webhook/route.ts`. Sans ce consentement explicite,
+    // Stripe ne renvoie même pas l'e-mail du client dans l'événement
+    // d'expiration : impossible de le relancer sans son accord, ce qui est
+    // le comportement voulu (RGPD).
+    'consent_collection[promotions]': 'auto',
+    'after_expiration[recovery][enabled]': 'true',
     // Le plan et la périodicité voyagent avec la session : c'est ce que le
     // webhook relit pour savoir quoi activer, sans dépendre de l'ordre
     // d'arrivée des événements ni d'un second appel à Stripe.

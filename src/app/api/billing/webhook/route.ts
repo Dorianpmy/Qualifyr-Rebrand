@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { logServerEvent } from '@/lib/analytics-server';
 import { verifyWebhookSignature } from '@/lib/billing/stripe';
+import { resolveTransport } from '@/lib/email/transport';
 
 /**
  * Webhook Stripe — abonnements Qualifyr.
@@ -9,12 +10,16 @@ import { verifyWebhookSignature } from '@/lib/billing/stripe';
  * acomptes clients sur les comptes Connect des professionnels) : à déclarer
  * séparément dans le tableau de bord Stripe, avec son propre secret de
  * signature (`STRIPE_BILLING_WEBHOOK_SECRET`), sur les événements
- * `checkout.session.completed`, `customer.subscription.updated` et
- * `customer.subscription.deleted`.
+ * `checkout.session.completed`, `customer.subscription.updated`,
+ * `customer.subscription.deleted` et, depuis le 22/08/2026,
+ * `checkout.session.expired` (à cocher en plus dans le tableau de bord
+ * Stripe pour que la relance de panier abandonné fonctionne — voir
+ * `lib/billing/stripe.ts`).
  *
  * **Ce que cette route fait aujourd'hui.** Elle vérifie la signature (sans
  * quoi n'importe qui pourrait simuler un paiement), identifie l'abonnement,
- * le plan et la périodicité, et journalise l'événement.
+ * le plan et la périodicité, journalise l'événement, et relance par e-mail
+ * un paiement abandonné quand le client y a consenti.
  *
  * **Ce qu'elle ne fait pas encore, volontairement.** Activer l'accès du
  * client dans l'espace pro (`/app`) suppose de savoir où stocker « ce
@@ -40,6 +45,17 @@ type StripeEvent = {
       readonly metadata?: {
         readonly plan?: string;
         readonly cadence?: string;
+      };
+      readonly customer_details?: {
+        readonly email?: string;
+      };
+      readonly consent?: {
+        readonly promotions?: string;
+      };
+      readonly after_expiration?: {
+        readonly recovery?: {
+          readonly url?: string;
+        };
       };
     };
   };
@@ -74,6 +90,7 @@ export async function POST(request: Request) {
     'checkout.session.completed',
     'customer.subscription.updated',
     'customer.subscription.deleted',
+    'checkout.session.expired',
   ];
 
   if (!handled.includes(event.type)) {
@@ -85,6 +102,50 @@ export async function POST(request: Request) {
   const object = event.data.object;
   const plan = object.metadata?.plan ?? 'inconnu';
   const cadence = object.metadata?.cadence ?? 'inconnue';
+
+  if (event.type === 'checkout.session.expired') {
+    // Relance de paiement abandonné (§3 de l'audit growth marketing).
+    //
+    // **Consentement d'abord.** Sans `consent.promotions === 'opt_in'`,
+    // Stripe ne renvoie même pas l'e-mail du client dans cet événement — il
+    // n'y a alors rien à faire, et c'est volontaire (RGPD, voir
+    // `lib/billing/stripe.ts`).
+    //
+    // **Pas de déduplication en base.** Une session Stripe n'expire qu'une
+    // fois : ce webhook ne devrait donc recevoir cet événement qu'une seule
+    // fois par session, sauf rejeu réseau de Stripe lui-même (rare, et sans
+    // conséquence grave si un même client reçoit deux fois le même lien).
+    // Construire un magasin de déduplication pour ce seul cas n'a pas semblé
+    // justifié tant qu'aucune table `subscriptions` n'existe déjà (voir
+    // PROVISIONING plus bas) — à revoir si un abus est constaté.
+    const email = object.customer_details?.email;
+    const recoveryUrl = object.after_expiration?.recovery?.url;
+    const consented = object.consent?.promotions === 'opt_in';
+
+    if (email && recoveryUrl && consented) {
+      const resolution = resolveTransport();
+      if (resolution.status === 'ready') {
+        const sent = await resolution.transport.send({
+          to: email,
+          from: resolution.from,
+          subject: 'Vous n’avez pas terminé votre abonnement Qualifyr',
+          text: [
+            'Vous avez commencé à vous abonner à Qualifyr et le paiement ne s’est pas terminé.',
+            '',
+            `Reprendre où vous en étiez : ${recoveryUrl}`,
+            '',
+            'Ce lien reste valable 30 jours. Si vous avez changé d’avis, vous pouvez ignorer ce message.',
+          ].join('\n'),
+        });
+        void logServerEvent({
+          eventName: sent.ok ? 'checkout_recovery_email_sent' : 'checkout_recovery_email_failed',
+          metadata: { plan, cadence },
+        });
+      }
+    }
+
+    return NextResponse.json({ received: true });
+  }
 
   // `console.warn`, pas `console.info` : la règle de lint du projet n'autorise
   // que `warn`/`error` sur la console. Ce n'est pas une erreur — juste la

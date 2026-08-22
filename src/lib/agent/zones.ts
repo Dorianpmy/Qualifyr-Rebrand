@@ -1,5 +1,39 @@
 import 'server-only';
+import { resolveTransport } from '@/lib/email/transport';
 import { getServiceSupabaseClient } from '../detailing/supabase-server';
+
+/**
+ * Confirmation immédiate d'une demande de zone (22/08/2026, phase 3 de
+ * l'audit growth marketing).
+ *
+ * Avant ce correctif, rien ne partait entre la demande et le rapport final —
+ * qui peut arriver plusieurs heures plus tard selon la position dans la file
+ * (`/api/agent/process`, une zone toutes les quinze minutes). Un visiteur qui
+ * ne reçoit rien tout de suite ne sait pas si sa demande a été prise en
+ * compte. Pas un « bienvenue » au sens propre — il n'y a pas de compte à ce
+ * stade — donc le message dit ce qui est vrai : la demande est reçue, le
+ * rapport arrive.
+ *
+ * Best-effort et jamais bloquant : si l'envoi échoue, la demande reste
+ * enregistrée, seule la confirmation manque.
+ */
+async function sendZoneConfirmation(email: string, postalCode: string): Promise<void> {
+  const resolution = resolveTransport();
+  if (resolution.status !== 'ready') return;
+
+  await resolution.transport.send({
+    to: email,
+    from: resolution.from,
+    subject: `Votre analyse du secteur ${postalCode} est en cours`,
+    text: [
+      `Votre demande d’analyse autour du ${postalCode} a bien été reçue.`,
+      '',
+      'Le rapport (nombre d’entreprises identifiées, réparties par type) arrive par e-mail sous quelques heures — le délai dépend du nombre de demandes en cours de traitement.',
+      '',
+      'Vous recevez ce message parce que vous avez fait une demande sur qualifyragence.com.',
+    ].join('\n'),
+  });
+}
 
 /**
  * Demande de zone — logique partagée entre le formulaire public
@@ -117,6 +151,12 @@ export async function requestZone(input: RequestZoneInput): Promise<RequestZoneR
       error: 'La demande n’a pas pu être enregistrée. Réessayez dans un instant.',
     };
   }
+
+  // `void` : ne retarde pas la réponse au visiteur, et n'échoue jamais (voir
+  // `sendZoneConfirmation` — `EmailTransport.send` ne lève pas, elle renvoie
+  // un résultat). Seulement sur ce chemin (première demande) : une relance ou
+  // une demande déjà en cours ne doit pas renvoyer une seconde confirmation.
+  void sendZoneConfirmation(email, zone);
 
   return { ok: true, isFree };
 }
