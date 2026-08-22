@@ -93,7 +93,17 @@ export function LoginForm() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <button className={styles.btn} type="submit" disabled={pending}>
+        {/* `cta-solid` (22/08/2026) : sous `data-theme="dark"` (posé sur cette
+            page le même jour), tailwind.css remet le fond de tout <button>
+            sans `.cta-solid` ni classe `bg-*` à transparent
+            ([data-theme='dark'] button:not(.cta-solid):not([class*='bg-'])) —
+            la surcharge `background`/`color` posée sur `.btn` dans
+            app.module.css est donc sans effet une fois cette classe absente :
+            le bouton restait invisible malgré cette surcharge. `.cta-solid`
+            est l'échappatoire prévue par tailwind.css (fond blanc, texte
+            encre, déjà utilisée par CtaSection/SubscribeButton) ; `.btn`
+            garde la mise en page (largeur, hauteur, espacement). */}
+        <button className={`${styles.btn} cta-solid`} type="submit" disabled={pending}>
           {pending ? 'Connexion…' : 'Se connecter'}
         </button>
       </form>

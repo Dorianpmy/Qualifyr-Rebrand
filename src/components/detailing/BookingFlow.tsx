@@ -906,11 +906,31 @@ export function BookingFlow({
                 loading={phase === 'submitting'}
                 disabled={!canProceed.photos || !selectedSlot}
                 onClick={handleSubmit}
+                /* `cta-solid` (22/08/2026) : `Button` (variant="primary") est le
+                   composant de bouton de l'ancienne charte claire — sous
+                   `data-theme="dark"` (posé sur ce tunnel le même jour, voir plus
+                   haut), tailwind.css remet à zéro le fond de tout <button> qui
+                   ne porte ni `.cta-solid` ni une classe `bg-*`
+                   ([data-theme='dark'] button:not(.cta-solid):not([class*='bg-'])),
+                   pour laisser les surfaces de la nouvelle charte reprendre la
+                   main explicitement. Sans cette classe le bouton "Confirmer"
+                   redevenait transparent — invisible sur fond sombre — malgré la
+                   correction du laiton juste au-dessus. `.cta-solid` est
+                   justement l'échappatoire prévue par tailwind.css : fond blanc,
+                   texte encre, pilule, déjà utilisée par CtaSection/
+                   SubscribeButton sur le reste du site sombre. */
+                className="cta-solid"
               >
                 Confirmer
               </Button>
             ) : (
-              <Button type="button" withArrow disabled={!canProceed[activeStep.id]} onClick={goNext}>
+              <Button
+                type="button"
+                withArrow
+                disabled={!canProceed[activeStep.id]}
+                onClick={goNext}
+                className="cta-solid"
+              >
                 Continuer
               </Button>
             )}

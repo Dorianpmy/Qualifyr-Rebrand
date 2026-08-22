@@ -779,17 +779,14 @@
   padding: 0.8rem 1rem;
   border: none;
   border-radius: 10px;
-  /* Corrigé le 22/08/2026 (signalé sur capture d'écran, boutons "Se
-     connecter"/"Recevoir un lien magique" en vert). `--color-primary` est le
-     jeton de *texte* principal du site (quasi blanc, `#f5f7fa` — voir
-     `tailwind.css`), pas une couleur d'action : posé en fond avec un texte
-     `#fff`, ce bouton était blanc sur blanc, illisible, avant même la
-     surcharge verte de l'ancienne charte que `data-theme="dark"` neutralise
-     désormais sur cette page (voir le commentaire dans login/page.tsx). Fond
-     blanc plein + texte encre : exactement le même couple que `.app-primary`
-     un peu plus bas dans ce fichier (bouton d'action du tableau de bord) et
-     que le bouton plein de `CtaSection`/`SubscribeButton` sur le reste du
-     site — le seul élément plein de chaque écran, jamais de vert. */
+  /* Fond/texte réellement posés par la classe `cta-solid` ajoutée sur ce
+     bouton dans `LoginForm.tsx` (22/08/2026) — voir le commentaire là-bas.
+     Une première correction avait mis `background: #ffffff; color: #0e0e0f;`
+     ici même : sans effet, car sous `data-theme="dark"` tailwind.css remet à
+     transparent tout <button> qui ne porte pas `.cta-solid` ni de classe
+     `bg-*`, et une règle non calquée comme celle-ci ne peut pas gagner contre
+     une règle importante posée dans une couche. Ces deux valeurs restent en
+     repli si jamais la classe `cta-solid` disparaissait du composant. */
   background: #ffffff;
   color: #0e0e0f;
   font-weight: 600;
