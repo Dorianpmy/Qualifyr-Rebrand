@@ -126,13 +126,26 @@ function CheckIcon() {
 }
 
 /**
- * Les trois rôles déjà présentés dans `AgentFlow`, repris en pastilles
- * flottantes autour de l'agent central — l'en-tête visuel du côté « après ».
+ * Les trois rôles déjà présentés dans `AgentFlow` — l'en-tête visuel du côté
+ * « après ».
+ *
+ * **En rangée, plus en pastilles flottantes.** La version précédente les
+ * positionnait en absolu autour de l'orbe (deux en haut aux coins, une en bas
+ * au centre) : sur la largeur réelle de la carte, la pastille du bas venait
+ * buter contre l'orbe, et l'ensemble donnait trois étiquettes en suspens
+ * plutôt qu'un système. Une rangée de trois, chacune portant sa propre orbe
+ * de couleur, reprend exactement le motif déjà utilisé dans
+ * `services-content.tsx` — et fait entrer les trois couleurs d'agents dans
+ * une section qui n'en avait aucune.
+ *
+ * Noms courts (« Prospection » et non « Agent Prospection ») : trois fois le
+ * mot « Agent » sur une seule rangée étroite forcerait la troncature, et le
+ * mot est déjà porté par l'orbe.
  */
 const workers = [
-  { name: 'Agent Prospection', style: { left: 0, top: 0 } },
-  { name: 'Agent Filtrage', style: { right: 0, top: 0 } },
-  { name: 'Agent Mémoire', style: { bottom: 0, left: '50%', transform: 'translateX(-50%)' } },
+  { name: 'Prospection', tint: orbTints.sable },
+  { name: 'Filtrage', tint: orbTints.duo },
+  { name: 'Mémoire', tint: orbTints.celadon },
 ] as const;
 
 /**
@@ -153,36 +166,34 @@ const workers = [
  * fond ET texte en `style`, donc ce risque ne s'applique plus — voir ce
  * composant pour le détail.
  */
-// Revu le 22/08/2026 : les positions ci-dessus (34% / 30% côte à côte avec la
-// bulle 0/3) se chevauchaient et masquaient du texte (« Vous pouvez passer
-// dans 20 min ? » réduit à « ...uvez ...ans 20 min », « Finalement je vais
-// annuler » caché derrière « Vous êtes où ? »), signalé par Dorian sur
-// capture d'écran, desktop et mobile. Même principe que le nuage du hero
-// (`DarkHero.tsx`) : deux colonnes (gauche : index 0/2, droite : index 1/3)
-// sur deux rangées franchement séparées verticalement, plutôt que des
-// bulles qui se touchent sur la même rangée. Conteneur élargi à 23rem (au
-// lieu de 20rem) pour profiter de la largeur mobile déjà disponible.
+// Revu deux fois pour le même défaut, et corrigé pour de bon la seconde.
+//
+// 22/08/2026, première tentative : les bulles étaient posées en absolu
+// (`left: 0` / `right: 0`, deux rangées à `top` fixe) en croyant que deux
+// colonnes suffiraient à les séparer. Elles se chevauchaient toujours —
+// « Vous pouvez passer dans 20 min ? » réduit à « …uvez …ans 20 min »,
+// « Finalement je vais annuler » caché derrière « Vous êtes où ? ». La cause
+// est arithmétique : une bulle large (11rem) et une compacte (9,5rem) font
+// 20,5rem à elles deux dans un conteneur de 23rem, soit 2,5rem d'écart
+// théorique — que la rotation (jusqu'à 6°) suffit à consommer, puisqu'elle
+// élargit l'emprise horizontale de chaque bulle d'environ la moitié de sa
+// hauteur multipliée par le sinus de l'angle.
+//
+// 22/08/2026, correctif retenu : **abandon du positionnement absolu.** Les
+// bulles sont deux rangées `flex` avec `justify-between` et un `gap`. Deux
+// éléments d'une même ligne flex ne peuvent structurellement pas se
+// superposer, quels que soient les textes, la langue, la taille de police
+// choisie par le visiteur ou la largeur de l'écran. Le désordre voulu vient
+// alors de la seule rotation, qui ne déplace rien dans le flux.
 const clientNoise = [
-  {
-    text: 'C’est combien pour une Clio ?',
-    prominent: true,
-    style: { left: 0, top: 0, transform: 'rotate(-4deg)' },
-  },
-  {
-    text: 'Vous pouvez passer dans 20 min ?',
-    prominent: false,
-    style: { right: 0, top: '0.25rem', transform: 'rotate(-6deg)' },
-  },
-  {
-    text: 'Finalement je vais annuler',
-    prominent: false,
-    style: { left: 0, top: '3.75rem', transform: 'rotate(6deg)' },
-  },
-  {
-    text: 'Vous êtes où ? Ça fait 10 min',
-    prominent: true,
-    style: { right: 0, top: '3.75rem', transform: 'rotate(4deg)' },
-  },
+  [
+    { text: 'C’est combien pour une Clio ?', prominent: true, tilt: '-3deg' },
+    { text: 'Vous pouvez passer dans 20 min ?', prominent: false, tilt: '-5deg' },
+  ],
+  [
+    { text: 'Finalement je vais annuler', prominent: false, tilt: '5deg' },
+    { text: 'Vous êtes où ? Ça fait 10 min', prominent: true, tilt: '3deg' },
+  ],
 ] as const;
 
 /**
@@ -273,24 +284,33 @@ export function BeforeAfterSection() {
             boxShadow: '0 20px 40px -24px rgba(0,0,0,0.55)',
           }}
         >
-          {/* Visible dès le mobile (plus de `hidden sm:block`) : la demande
-              explicite est que ces bulles restent visibles sur téléphone,
-              sans déborder de l'écran. `MessageBubble` réduit sa propre
-              taille sous `sm:`, donc pas de dépassement à 320px même avec
-              les textes les plus longs du tableau (« Vous pouvez passer
-              dans 20 min ? »). Conteneur élargi à 23rem (au lieu de 20rem,
-              22/08/2026) pour donner à `clientNoise` la marge horizontale
-              nécessaire entre colonnes ; hauteur inchangée à 8.5rem, déjà
-              suffisante pour les deux rangées désormais espacées de
-              3.75rem. */}
-          <div className="relative mx-auto mb-7 w-full max-w-[23rem]" style={{ height: '8.5rem' }}>
-            {clientNoise.map((message) => (
-              <MessageBubble
-                key={message.text}
-                text={message.text}
-                compact={!message.prominent}
-                style={{ ...message.style, zIndex: message.prominent ? 2 : 1 }}
-              />
+          {/* Visible dès le mobile : la demande explicite est que ces bulles
+              restent visibles sur téléphone, sans déborder de l'écran.
+              `MessageBubble` réduit sa propre taille sous `sm:`, donc pas de
+              dépassement à 320px même avec le texte le plus long du tableau.
+
+              `sm:h-[9.5rem]` est la même valeur que sur la carte voisine —
+              c'est ce qui met les deux badges, puis les cinq lignes, à la
+              même hauteur d'une colonne à l'autre. Sans elle, les deux
+              en-têtes visuels ayant des contenus de hauteurs différentes,
+              chaque ligne « avant » se retrouvait décalée de sa ligne
+              « après » : la comparaison ligne à ligne, qui est tout l'objet
+              de cette section, ne se faisait plus. Hauteur libre sous `sm:`,
+              où les colonnes sont empilées et où la question ne se pose
+              pas. */}
+          <div className="mx-auto mb-7 flex w-full max-w-[23rem] flex-col justify-center gap-5 sm:h-[9.5rem]">
+            {clientNoise.map((row) => (
+              <div key={row[0].text} className="flex items-start justify-between gap-3">
+                {row.map((message) => (
+                  <MessageBubble
+                    key={message.text}
+                    text={message.text}
+                    compact={!message.prominent}
+                    position="static"
+                    style={{ transform: `rotate(${message.tilt})` }}
+                  />
+                ))}
+              </div>
             ))}
           </div>
 
@@ -310,24 +330,27 @@ export function BeforeAfterSection() {
         </div>
 
         <div className="node-hero flex flex-col rounded-[1.5rem] p-6 sm:p-8">
-          <div className="mx-auto mb-7 hidden w-full max-w-[20rem] sm:block">
-            {/* Montage libre : l'orbe au centre, les trois rôles autour, à
-                des coins fixes — quatre éléments qui ne se chevauchent
-                jamais quel que soit le texte, contrairement à une pile de
-                bulles. */}
-            <div
-              className="relative mx-auto flex items-center justify-center"
-              style={{ height: '6.5rem', width: '100%' }}
-            >
-              <Orb tint={orbTints.qualifyr} size="3.25rem" />
+          {/* L'agent au-dessus, ses trois rôles en rangée en dessous : la
+              hiérarchie se lit sans qu'aucune flèche ne soit nécessaire.
+              Tout est en flux normal — l'orbe ne peut plus venir buter
+              contre une pastille, ce que le montage en absolu précédent
+              faisait à la largeur réelle de la carte.
+
+              Même `sm:h-[9.5rem]` que la colonne « Sans Qualifyr » : voir
+              l'explication côté gauche. Visible sur mobile aussi, comme les
+              bulles d'en face — masquer l'un des deux en-têtes donnait deux
+              colonnes qui ne se ressemblaient plus du tout sur téléphone. */}
+          <div className="mx-auto mb-7 flex w-full max-w-[23rem] flex-col items-center justify-center gap-4 sm:h-[9.5rem]">
+            <Orb tint={orbTints.qualifyr} size="3.25rem" />
+            <div className="grid w-full grid-cols-3 gap-2">
               {workers.map((worker) => (
-                <span
+                <div
                   key={worker.name}
-                  style={{ position: 'absolute', ...worker.style }}
-                  className="surface-pill px-3 py-1 text-[0.75rem] font-medium text-muted"
+                  className="flex min-w-0 items-center gap-2 rounded-xl border border-white/10 bg-white/[0.02] px-2.5 py-2"
                 >
-                  {worker.name}
-                </span>
+                  <Orb tint={worker.tint} size="1.25rem" />
+                  <span className="truncate text-[0.75rem] text-muted">{worker.name}</span>
+                </div>
               ))}
             </div>
           </div>
