@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { AgentFlow } from '@/components/agency/AgentFlow';
 import { AgentGrid } from '@/components/agency/AgentGrid';
+import { AgentTriad } from '@/components/agency/AgentTriad';
 import { CompareSection } from '@/components/agency/CompareSection';
 import { FaqSection } from '@/components/agency/DarkVerticalPage';
 import { homeFaq } from '@/components/agency/home-faq';
@@ -137,6 +138,13 @@ export default function HomePage() {
       />
 
       <HowItWorks />
+
+      {/* Placée avant `AgentFlow` : celui-ci détaille **un** agent, et le
+          lecteur doit savoir qu'il y en a trois avant d'en voir un seul en
+          gros plan. C'est aussi ici que les trois couleurs d'agents sont
+          introduites — elles ne se lisent comme un repère que si on les a vues
+          désignées une fois. */}
+      <AgentTriad />
 
       <AgentFlow />
 

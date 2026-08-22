@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+import { Logo } from '@/components/ui/Logo';
+
 /**
  * Barre de navigation du site vitrine.
  *
@@ -200,12 +202,31 @@ export function DarkHeader() {
       }`}
     >
       <div className="mx-auto flex max-w-page items-center justify-between gap-6 px-5 py-3.5 sm:px-8">
+        {/* Le lockup officiel, pas le mot en gras (22/08/2026).
+
+            L'en-tête écrivait « Qualifyr » en `font-semibold`, alors que le
+            fichier de marque existait et était décliné par
+            `components/ui/Logo`. Ce composant n'était utilisé que par l'en-tête
+            et le pied de page **clairs**, ceux que `[data-legacy-chrome]`
+            masque sur toute page sombre : le logo de la marque n'apparaissait
+            donc nulle part sur le site réellement visible.
+
+            `Logo` réduit le fichier à son alpha et le recolore en
+            `var(--text-primary)`, qui vaut `#f5f7fa` sous `[data-theme='dark']`.
+            C'est ce qu'il faut ici : le mot-symbole d'origine est un volume
+            blanc glacé et brillant, et le poser tel quel ramènerait un rendu
+            en relief qui jure avec une charte tenue par des filets d'un pixel.
+
+            La largeur est réduite par rapport au réglage par défaut du
+            composant : dans une barre de 56 px de haut, un logo de 10,75 rem
+            écraserait la navigation. */}
         <Link
           href="/"
-          className="text-[0.9375rem] font-semibold tracking-[-0.01em] !text-primary no-underline"
+          aria-label="Qualifyr — retour à l’accueil"
+          className="inline-block shrink-0 !text-primary no-underline [&>span]:w-[7.25rem] sm:[&>span]:w-[8rem]"
           onClick={closeMenu}
         >
-          Qualifyr
+          <Logo />
         </Link>
 
         {/* Masquée sous 1024 px (`lg`) : cinq libellés côte à côte ne
@@ -271,6 +292,13 @@ export function DarkHeader() {
           <button
             ref={triggerRef}
             type="button"
+            /* `nav-trigger` ne sert qu'au focus clavier : un `style` en ligne
+               ne peut pas exprimer `:focus-visible`, et sans anneau visible ce
+               bouton — le seul point de navigation sous 1024 px — est
+               intraversable au clavier. La règle vit dans `tailwind.css`, en
+               `!important`, pour la même raison que tout le reste de ce
+               bouton : la charte historique impose des `!important` larges. */
+            className="nav-trigger"
             onClick={() => setMenuOpen((open) => !open)}
             aria-expanded={menuOpen}
             aria-controls="mobile-nav-panel"

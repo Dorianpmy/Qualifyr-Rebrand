@@ -98,6 +98,20 @@
   --color-accent-rose: #ffd0c9;
   --color-accent-violet: #c671ff;
 
+  /* --- Couleurs d'agents ---
+     Déclarées ici en plus de `:root` pour devenir des utilitaires Tailwind
+     (`text-acquisition`, `border-reservation`, `bg-filtrage`) : sans cela,
+     chaque emploi passerait par un `style` en ligne, et une couleur qu'on ne
+     peut pas écrire en classe finit recopiée en dur un peu partout — c'est
+     exactement comme le céladon `#b8dcd0` avait proliféré.
+
+     La justification du choix des trois teintes est documentée sur les mêmes
+     jetons dans le bloc `:root` plus bas, avec leur domaine d'emploi. */
+  --color-acquisition: #b8e3c5;
+  --color-reservation: #9ecbff;
+  --color-filtrage: #d4b5ed;
+  --color-danger: #ef8f8f;
+
   /*
    * Les deux familles réellement chargées par `next/font` — voir
    * `src/lib/fonts.ts`.
@@ -242,6 +256,52 @@
      * du sobre au bariolé.
      */
     --accent-3: #c9c4ee;
+
+    /* -----------------------------------------------------------------------
+       Couleurs d'agents (22/08/2026).
+
+       **Trois teintes, une par agent, et rien d'autre.** Elles ne servent pas
+       à colorer le site : elles servent à distinguer trois choses qui font des
+       métiers différents. C'est la seule justification acceptable pour une
+       couleur ici — dès qu'une teinte n'identifie plus rien, elle décore, et
+       la charte n'en veut pas.
+
+       Domaine d'emploi, volontairement étroit : le badge de l'agent, son point
+       d'état, la ligne verticale de sa colonne, la bordure de sa carte quand
+       elle est sélectionnée, et l'icône qui le représente. Jamais un aplat,
+       jamais un dégradé, jamais un fond de section, jamais du texte courant.
+
+       **Le céladon revient, mais seulement ici.** Le vert avait été retiré du
+       site le même jour, à la demande de Dorian ; il le réintroduit pour ce
+       seul usage, en connaissance de cause. `--color-primary` reste donc
+       blanc : les boutons principaux ne deviennent pas verts, sans quoi la
+       couleur cesserait d'identifier l'agent pour redevenir de la décoration.
+
+       Les trois sont désaturées et calées sur une clarté proche (~82-85 %) :
+       elles tiennent ensemble sur fond sombre sans qu'aucune ne prenne le pas,
+       et chacune passe AA en texte sur `--color-ink`.
+       ----------------------------------------------------------------------- */
+
+    /* Agent de recensement — interroge le répertoire d'entreprises, analyse
+       une zone, envoie un rapport. Le nom du jeton dit « acquisition » parce
+       que c'est le vocabulaire de Dorian ; le libellé montré au visiteur reste
+       « recensement », qui décrit ce que l'agent fait réellement. */
+    --color-acquisition: #b8e3c5;
+
+    /* Agent de réservation — affiche le prix, gère les créneaux, encaisse
+       l'acompte. Volontairement proche d'`--accent-2` : c'est l'agent que le
+       client final voit, et il doit se lire comme le prolongement du tunnel. */
+    --color-reservation: #9ecbff;
+
+    /* Agent de filtrage — qualifie la demande, identifie le véhicule, réduit
+       les allers-retours. Le violet reste froid et poudré ; un violet saturé
+       basculerait la charte dans le registre « SaaS générique » que Dorian
+       exclut explicitement. */
+    --color-filtrage: #d4b5ed;
+
+    /* Erreur et danger. Rouge adouci plutôt que pur : sur fond sombre, un
+       rouge vif vibre et attire l'œil bien au-delà de son importance. */
+    --color-danger: #ef8f8f;
 
     /* Resynchronisé le 18/08/2026 avec les jetons `[data-theme='dark']` et
        `@theme` — le commentaire au-dessus prévenait explicitement du risque
@@ -1464,4 +1524,53 @@
   background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.14);
   animation: qualifyr-status-pulse 1.8s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------------------------------
+   Focus clavier du bouton de menu mobile (22/08/2026).
+
+   Le bouton porte ses propres styles en `style` en ligne — choix délibéré,
+   documenté dans `DarkHeader.tsx` : la charte historique impose des règles
+   `!important` très larges sur `button`, et un style en ligne est la seule
+   façon fiable de garantir qu'il reste visible. Mais un style en ligne ne sait
+   pas exprimer un état : `:focus-visible` doit donc passer par une classe.
+
+   `!important` ici pour la même raison que le reste : c'est le seul niveau qui
+   survit sûrement aux règles héritées. Sans cet anneau, le seul point de
+   navigation sous 1024 px n'est pas atteignable au clavier — et le fond du
+   bouton étant déjà clair, un `outline` blanc s'y perdrait : on l'écarte de
+   3 px avec un halo sombre en dessous, ce qui le rend lisible sur les deux.
+--------------------------------------------------------------------------- */
+@layer utilities {
+  .nav-trigger:focus-visible {
+    outline: 2px solid #ffffff !important;
+    outline-offset: 3px !important;
+    box-shadow: 0 0 0 5px rgba(8, 9, 11, 0.9) !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Focus clavier de la charte sombre (22/08/2026).
+
+   `globals.css` définit bien un `:focus-visible` global — mais il est scopé
+   `body:not(:has(main [data-theme='dark']))`, c'est-à-dire **uniquement sur
+   les pages claires**. Ce scope avait été posé à raison, pour empêcher le
+   laiton de l'ancienne charte de contaminer les pages sombres ; l'effet de
+   bord n'avait pas été vu : les pages sombres, qui sont aujourd'hui tout le
+   site visible, se sont retrouvées sans anneau de focus explicite.
+
+   Sur la plupart des éléments, l'anneau par défaut du navigateur prend le
+   relais et reste visible. Le poser explicitement fait deux choses que ce
+   défaut ne fait pas : il garantit une couleur lisible sur `#08090b` (l'anneau
+   système est bleu sur Chrome, et se perd sur les cartes bleutées), et il tient
+   face aux `!important` hérités.
+
+   Blanc plutôt qu'une couleur d'accent : le focus n'appartient à aucun agent,
+   et lui donner une teinte d'agent lui ferait dire quelque chose de faux.
+--------------------------------------------------------------------------- */
+@layer utilities {
+  [data-theme='dark'] :focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.85) !important;
+    outline-offset: 2px !important;
+  }
 }
