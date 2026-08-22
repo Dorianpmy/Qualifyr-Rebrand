@@ -586,6 +586,12 @@
 }
 
 .kpi::before {
+  /* `inherit` plutôt qu'une valeur : ce calque se superpose à son parent,
+     il doit donc épouser le rayon de celui-ci quel qu'il soit. Une valeur
+     en dur se désynchroniserait au premier changement du parent, et c'est
+     exactement ce qui laissait des angles droits visibles par-dessus des
+     cartes arrondies (22/08/2026). */
+  border-radius: inherit;
   content: '';
   position: absolute;
   top: 0;

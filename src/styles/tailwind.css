@@ -152,6 +152,61 @@
    nouvelle DA, donc sans toucher au reste du site.
 --------------------------------------------------------------------------- */
 @layer base {
+  /* -------------------------------------------------------------------------
+     Filet de sécurité : aucune surface ne naît avec des angles droits.
+
+     Corriger les angles droits un par un ne tient pas : chaque nouveau
+     composant repart de zéro, et on recommence. La valeur par défaut du
+     navigateur pour `border-radius` est `0`, donc tout élément qui peint un
+     fond ou une bordure sans penser à l'arrondi produit un angle droit.
+     Cette règle change cette valeur par défaut.
+
+     **`:where()` est le point important.** Il annule la spécificité : la règle
+     compte pour 0, donc n'importe quel `rounded-*` de Tailwind, n'importe
+     quel module CSS, n'importe quelle déclaration existante la bat sans
+     effort. Rien de ce qui a déjà un rayon — y compris `rounded-full` sur les
+     pastilles et les avatars — ne bouge. Combiné à `@layer base`, qui passe
+     avant `components` et `utilities`, c'est un plancher, jamais un override.
+
+     Ce que ça arrondit vraiment : les surfaces qui n'avaient rien demandé.
+     Sur un conteneur sans fond ni bordure, un rayon ne se voit pas ; sur une
+     carte oubliée, il rattrape l'oubli. Les barres et écrans pleine largeur
+     annulent explicitement ce défaut là où ils en ont besoin — voir la barre
+     latérale du tableau de bord et les barres fixes du tunnel de réservation,
+     qui remettent `border-radius: 0`.
+     ------------------------------------------------------------------------- */
+  :where(
+    section,
+    article,
+    aside,
+    figure,
+    form,
+    fieldset,
+    dialog,
+    table,
+    blockquote,
+    [class*='card'],
+    [class*='Card'],
+    [class*='panel'],
+    [class*='Panel'],
+    [class*='box'],
+    [class*='Box'],
+    [class*='tile'],
+    [class*='Tile'],
+    [class*='badge'],
+    [class*='Badge'],
+    [class*='chip'],
+    [class*='Chip'],
+    [class*='bubble'],
+    [class*='Bubble'],
+    [class*='frame'],
+    [class*='Frame'],
+    [class*='surface'],
+    [class*='Surface']
+  ) {
+    border-radius: 14px;
+  }
+
   /* Les jetons de la charte sont exposés sur `:root` afin que le dashboard —
      qui ne porte pas `data-theme="dark"` pour éviter le reset des cartes —
      puisse les consommer depuis ses modules CSS. Déclarer les valeurs deux
@@ -457,7 +512,11 @@
     background-image: none !important;
     color: inherit !important;
     border: 0 !important;
-    border-radius: 0 !important;
+    /* `border-radius: 0 !important` retiré le 22/08/2026 : c'était le dernier
+       du projet. Il ne produisait rien de visible ici — l'élément est déjà
+       sans fond, sans bordure et sans ombre — mais le garder aurait suffi à
+       ramener un angle droit le jour où l'un de ces boutons nus recevrait un
+       fond, et l'`!important` aurait rendu la cause difficile à retrouver. */
     box-shadow: none !important;
     padding: 0 !important;
     min-height: 0 !important;
