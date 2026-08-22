@@ -63,4 +63,9 @@ export const faq: readonly FaqItem[] = [
     answer:
       'Oui. Un démarrage est un bon moment : la structure se met en place plus simplement. Nous disons franchement ce qui est utile maintenant et ce qui peut attendre.',
   },
+  {
+    question: 'Comment reçoit-on la facture de l’abonnement ?',
+    answer:
+      'Chaque paiement génère automatiquement une facture, envoyée par e-mail via notre prestataire de paiement Stripe. Nous ne sommes pas encore raccordés à une plateforme de facturation électronique agréée : cette obligation ne s’appliquera aux micro-entreprises qu’à partir de septembre 2027. Besoin d’une facture sous une autre forme ? Écrivez-nous.',
+  },
 ] as const;
