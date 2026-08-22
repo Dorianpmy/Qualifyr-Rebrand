@@ -188,14 +188,17 @@ export default async function AppHomePage({
             <Link
               key={filter.key}
               href={filter.key === 'all' ? '/app' : `/app?status=${filter.key}`}
-              /* `app-filter-active` (22/08/2026) : `styles.filterActive`
-                 seul perdait déjà contre le reset `[data-app='dashboard'] a`
-                 de tailwind.css (règle calquée + importante, qu'une classe de
-                 module CSS non calquée ne peut pas battre, quelle que soit sa
-                 spécificité) — la pastille sélectionnée ne se distinguait pas
-                 des autres. Voir `[data-app='dashboard'] .app-filter-active`
-                 dans tailwind.css pour la vraie couleur. */
-              className={`${styles.filter ?? ''} ${status === filter.key ? `${styles.filterActive ?? ''} app-filter-active` : ''}`.trim()}
+              /* `app-filter` / `app-filter-active` : `styles.filter` et
+                 `styles.filterActive` perdent tous deux contre le reset
+                 `[data-app='dashboard'] a` de tailwind.css (règle calquée et
+                 importante, qu'une classe de module CSS non calquée ne peut
+                 pas battre, quelle que soit sa spécificité).
+
+                 Seule la seconde avait été ajoutée le 22/08/2026, et elle ne
+                 rendait que la couleur : la pastille sélectionnée était bien
+                 blanche, mais les cinq restaient des rectangles à angles vifs
+                 collés à leur texte. `app-filter` leur rend leur forme. */
+              className={`${styles.filter ?? ''} app-filter ${status === filter.key ? `${styles.filterActive ?? ''} app-filter-active` : ''}`.trim()}
             >
               {filter.label}
             </Link>

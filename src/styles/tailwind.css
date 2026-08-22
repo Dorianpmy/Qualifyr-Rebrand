@@ -750,13 +750,56 @@
     color: var(--color-primary) !important;
   }
 
-  /* Pastille de filtre sélectionnée (liste des réservations) : même paire
-     fond blanc / texte encre que `.app-primary`, en pilule plutôt qu'en
-     rectangle puisqu'elle partage sa forme avec les pastilles inactives. */
+  /* -------------------------------------------------------------------------
+     Pastilles de filtre (liste des réservations).
+
+     Elles étaient dessinées en pilules dans `app.module.css` — rayon complet,
+     0,9 rem de respiration horizontale, 2,25 rem de haut, texte grisé — mais
+     ce sont des `<a>` : le reset ci-dessus leur retirait le rayon, le
+     padding, la hauteur, la taille et la couleur du texte. Il n'en restait
+     que cinq rectangles à angles vifs, collés à leur texte et tous du même
+     blanc, dont un rempli — exactement ce que montrait la capture.
+
+     Seul `.app-filter-active` existait ici, et il ne rendait que la couleur :
+     la pastille sélectionnée était donc blanche, mais toujours rectangulaire.
+     `.app-filter` rend la forme à toutes.
+
+     Ne sont reprises que les propriétés effacées par le reset ; la mise en
+     page (`display`, `white-space`, `flex-shrink`) n'y figure pas et reste
+     dans le module.
+     ------------------------------------------------------------------------- */
+  [data-app='dashboard'] .app-filter {
+    border-radius: 999px !important;
+    padding: 0.45rem 0.9rem !important;
+    min-height: 2.25rem !important;
+    font-size: 0.78rem !important;
+    font-weight: 500 !important;
+    color: var(--color-muted) !important;
+    border-color: var(--color-hairline-strong) !important;
+    background-color: rgba(255, 255, 255, 0.02) !important;
+  }
+
+  /* Le survol n'existe que là où il y a un curseur : sur un écran tactile,
+     `:hover` reste collé après le tap et deux pastilles paraîtraient
+     sélectionnées en même temps. */
+  @media (hover: hover) and (pointer: fine) {
+    [data-app='dashboard'] .app-filter:hover {
+      color: var(--color-primary) !important;
+      border-color: rgba(255, 255, 255, 0.2) !important;
+      background-color: rgba(255, 255, 255, 0.05) !important;
+    }
+  }
+
+  /* Sélectionnée : même paire fond blanc / texte encre que `.app-primary`,
+     seul aplat plein de l'écran. L'ombre portée la décolle légèrement de la
+     rangée — c'est ce qui la fait lire comme « posée devant » plutôt que
+     simplement plus claire. */
   [data-app='dashboard'] .app-filter-active {
     background-color: #ffffff !important;
     color: #0e0e0f !important;
     border-color: #ffffff !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35) !important;
   }
 
   /* -------------------------------------------------------------------------
