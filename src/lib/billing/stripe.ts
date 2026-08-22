@@ -110,6 +110,27 @@ export async function createSubscriptionCheckout(input: {
     'metadata[cadence]': input.cadence,
     'subscription_data[metadata][plan]': input.plan,
     'subscription_data[metadata][cadence]': input.cadence,
+    // Collecte de facturation (22/08/2026, étape 2 du plan de test —
+    // `docs/10-rapport-final-facturation-electronique.md`). Absente jusqu'ici :
+    // aucune facture ne pouvait porter l'adresse, le SIRET ou le numéro de TVA
+    // du client, des mentions obligatoires pour une facture française conforme
+    // (voir `docs/08...`, point C). Contrairement à `consent_collection
+    // [promotions]` (retiré plus haut — paramètre indisponible pour un compte
+    // Stripe déclaré en France), `billing_address_collection` et
+    // `tax_id_collection` sont des paramètres standards, disponibles pour tous
+    // les comptes ; **non vérifié en direct depuis cet environnement, qui n'a
+    // pas de clé Stripe de test** — à confirmer par une session Checkout de
+    // test réelle avant tout déploiement (étape 3 du plan de test).
+    billing_address_collection: 'required',
+    'tax_id_collection[enabled]': 'true',
+    // Raison sociale : un champ personnalisé, facultatif. Le nom/prénom sur la
+    // carte bancaire ne suffit pas à identifier une entreprise cliente sur une
+    // facture B2B.
+    'custom_fields[0][key]': 'company_name',
+    'custom_fields[0][label][type]': 'custom',
+    'custom_fields[0][label][custom]': 'Raison sociale (si professionnel)',
+    'custom_fields[0][type]': 'text',
+    'custom_fields[0][optional]': 'true',
     ...(input.customerEmail ? { customer_email: input.customerEmail } : {}),
   }).toString();
 
