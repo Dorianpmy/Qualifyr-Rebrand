@@ -143,6 +143,29 @@ export const tracking = {
   cookies: [] as readonly { readonly name: string; readonly purpose: string }[],
 } as const;
 
+/**
+ * Champs volontairement **non publiés**, sur décision de Dorian.
+ *
+ * **La valeur reste renseignée plus haut, elle n'est pas effacée.** La
+ * distinction est importante : une donnée absente signifie « pas encore
+ * connue » et fait apparaître la note « sera publiée avant la mise en ligne ».
+ * Une donnée retenue signifie « connue, vérifiée, mais pas affichée » — ce qui
+ * n'appelle aucune note d'attente, et permet de la republier en changeant une
+ * seule ligne ici.
+ *
+ * **Adresse retirée le 22/08/2026, à la demande explicite de Dorian**, le
+ * siège étant son domicile personnel.
+ *
+ * ⚠️ **Cette omission est un écart connu à l'article 6 de la LCEN**, qui
+ * impose la publication de l'adresse du siège pour un site professionnel.
+ * Dorian en a été informé avant la modification et l'a assumée. La solution
+ * durable est une domiciliation commerciale : une adresse professionnelle
+ * légale, déclarée comme siège, qui remplace le domicile partout. Dès qu'elle
+ * existera, retirer `'address'` de cette liste et mettre `company.address`
+ * à jour suffira à revenir en conformité.
+ */
+export const withheldFromPublicNotice: readonly (keyof typeof company)[] = ['address'];
+
 /** Vrai si assez d'informations existent pour publier des mentions légales conformes. */
 export function legalNoticeIsComplete(): boolean {
   return (

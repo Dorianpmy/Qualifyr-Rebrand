@@ -7,7 +7,7 @@ import { LegalNav } from '@/components/editorial/LegalNav';
 import { DataBlock, LegalSections } from '@/components/editorial/LegalSections';
 import { JsonLd } from '@/components/seo/JsonLd';
 
-import { company, legalNoticeIsComplete } from '@/content/company';
+import { company, legalNoticeIsComplete, withheldFromPublicNotice } from '@/content/company';
 import { legalNoticePage } from '@/content/legal';
 import { breadcrumbList } from '@/lib/structured-data';
 import { buildMetadata } from '@/lib/metadata';
@@ -46,15 +46,24 @@ export default function MentionsLegalesPage() {
    * elle-même en même temps que la valeur.
    */
   const publisher = [
-    { label: 'Nom commercial', value: company.tradeName },
-    { label: 'Raison sociale', value: company.legalName },
-    { label: 'Forme juridique', value: company.legalForm },
-    { label: 'Capital social', value: company.shareCapital },
-    { label: 'Immatriculation', value: company.registrationNumber },
-    { label: 'Registre du commerce', value: company.registry },
-    { label: 'TVA intracommunautaire', value: company.vatNumber },
-    { label: 'Siège', value: company.address },
-  ].filter((entry) => entry.value !== null);
+    { key: 'tradeName', label: 'Nom commercial', value: company.tradeName },
+    { key: 'legalName', label: 'Raison sociale', value: company.legalName },
+    { key: 'legalForm', label: 'Forme juridique', value: company.legalForm },
+    { key: 'shareCapital', label: 'Capital social', value: company.shareCapital },
+    { key: 'registrationNumber', label: 'Immatriculation', value: company.registrationNumber },
+    { key: 'registry', label: 'Registre du commerce', value: company.registry },
+    { key: 'vatNumber', label: 'TVA intracommunautaire', value: company.vatNumber },
+    { key: 'address', label: 'Siège', value: company.address },
+  ]
+    .filter((entry) => entry.value !== null)
+    /* Champs connus mais volontairement non publiés — voir
+       `withheldFromPublicNotice` dans `content/company.ts`. Ils sont retirés
+       ici, et non mis à `null` à la source : la donnée reste disponible pour
+       tout autre usage, et sa republication tient à une seule ligne. */
+    .filter(
+      (entry) =>
+        !withheldFromPublicNotice.includes(entry.key as keyof typeof company),
+    );
 
   const contactEntries = [
     { label: 'Directeur de la publication', value: company.publicationDirector },
@@ -99,6 +108,10 @@ export default function MentionsLegalesPage() {
             title: 'Éditeur du site',
             paragraphs: [
               'Le site est édité par la structure identifiée ci-dessous. Ces informations proviennent du registre officiel des entreprises.',
+              /* Phrase ajoutée avec le retrait de l'adresse : mieux vaut dire
+                 qu'elle est communicable que de laisser un vide sans
+                 explication, qui se lit comme une omission. */
+              'L’adresse du siège n’est pas publiée sur cette page. Elle est communiquée sur simple demande écrite, ainsi qu’à toute autorité qui en ferait la requête.',
             ],
             body: <DataBlock entries={publisher} />,
           },
