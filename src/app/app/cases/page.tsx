@@ -1,14 +1,30 @@
 import { redirect } from 'next/navigation';
 import { AppShell } from '@/components/app/AppShell';
+import { LockedModule } from '@/components/app/LockedModule';
+import { pageAccess } from '@/lib/billing/page-guard';
 import { CreateCaseForm } from '@/components/app/CreateCaseForm';
 import { getDetailerForOwner } from '@/lib/detailing/dashboard';
 import { listCasesForDetailer } from '@/lib/detailing/cases';
-import { getSessionUser } from '@/lib/detailing/session';
 import styles from '../app.module.css';
 
 export default async function CasesPage() {
-  const user = await getSessionUser();
-  if (!user) redirect('/app/login');
+  /* Contrôle d'accès d'affichage. Il ne remplace pas celui des routes
+     d'API — ce sont elles qui protègent les données — mais il évite
+     d'afficher un module vide à quelqu'un qui ne l'a pas acheté. */
+  const access = await pageAccess('gallery');
+  if (!access.allowed) {
+    return (
+      <AppShell
+        detailerName={access.user.email}
+        detailerSlug=""
+        city={null}
+        active="abonnement"
+      >
+        <LockedModule reason={access.reason} capability="gallery" moduleName="Avant / Après" />
+      </AppShell>
+    );
+  }
+  const { user } = access;
 
   const detailer = await getDetailerForOwner(user.id);
   if (!detailer) redirect('/app');

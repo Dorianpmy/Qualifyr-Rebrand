@@ -1,11 +1,12 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { AppShell } from '@/components/app/AppShell';
+import { LockedModule } from '@/components/app/LockedModule';
+import { pageAccess } from '@/lib/billing/page-guard';
 import { RequestZoneForm } from '@/components/app/RequestZoneForm';
 import { claimZonesForDetailer, listZonesForDetailer } from '@/lib/agent/dashboard';
 import { getDetailerForOwner } from '@/lib/detailing/dashboard';
 import { SEGMENTS } from '@/lib/agent/sirene';
-import { getSessionUser } from '@/lib/detailing/session';
 import styles from '../app.module.css';
 
 /**
@@ -50,8 +51,23 @@ function formatDate(value: string | null): string {
 }
 
 export default async function ProspectionPage() {
-  const user = await getSessionUser();
-  if (!user) redirect('/app/login');
+  /* Contrôle d'accès d'affichage. Il ne remplace pas celui des routes
+     d'API — ce sont elles qui protègent les données — mais il évite
+     d'afficher un module vide à quelqu'un qui ne l'a pas acheté. */
+  const access = await pageAccess('agent.prospecting');
+  if (!access.allowed) {
+    return (
+      <AppShell
+        detailerName={access.user.email}
+        detailerSlug=""
+        city={null}
+        active="abonnement"
+      >
+        <LockedModule reason={access.reason} capability="agent.prospecting" moduleName="Prospection" />
+      </AppShell>
+    );
+  }
+  const { user } = access;
 
   const detailer = await getDetailerForOwner(user.id);
   if (!detailer) redirect('/app');

@@ -1,6 +1,9 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { AppShell } from '@/components/app/AppShell';
+import { LockedModule } from '@/components/app/LockedModule';
+import { landingPathFor } from '@/lib/billing/entitlements';
+import { pageAccess } from '@/lib/billing/page-guard';
 import {
   formatDuration,
   formatPrice,
@@ -15,7 +18,6 @@ import {
   statusLabel,
   vehicleLabel,
 } from '@/lib/detailing/dashboard';
-import { getSessionUser } from '@/lib/detailing/session';
 import styles from './app.module.css';
 
 /** Consigne d'accès — digicode, chien, place réservée. */
@@ -66,8 +68,40 @@ export default async function AppHomePage({
 }: {
   searchParams: Promise<{ status?: string }>;
 }) {
-  const user = await getSessionUser();
-  if (!user) redirect('/app/login');
+  /* Contrôle d'accès d'affichage. Il ne remplace pas celui des routes
+     d'API — ce sont elles qui protègent les données — mais il évite
+     d'afficher un module vide à quelqu'un qui ne l'a pas acheté. */
+  const access = await pageAccess('dashboard');
+
+  /*
+   * `/app` est la destination de toutes les connexions (`LoginForm`,
+   * `auth/confirm`). Un abonné « Agent seul » y arriverait donc sur un écran
+   * verrouillé, juste après avoir payé — l'impression d'un produit cassé
+   * alors qu'il a exactement ce qu'il a acheté. On l'envoie plutôt là où son
+   * offre commence.
+   *
+   * La redirection ne concerne que les comptes qui ont un autre point
+   * d'entrée : sans abonnement du tout, l'écran verrouillé est la bonne
+   * réponse, puisqu'il explique quoi faire.
+   */
+  if (!access.allowed) {
+    const landing = landingPathFor(access.entitlement);
+    if (landing !== '/app' && landing !== '/app/abonnement') redirect(landing);
+  }
+
+  if (!access.allowed) {
+    return (
+      <AppShell
+        detailerName={access.user.email}
+        detailerSlug=""
+        city={null}
+        active="abonnement"
+      >
+        <LockedModule reason={access.reason} capability="dashboard" moduleName="Demandes" />
+      </AppShell>
+    );
+  }
+  const { user } = access;
 
   const detailer = await getDetailerForOwner(user.id);
   if (!detailer) {

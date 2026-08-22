@@ -82,6 +82,12 @@ const icons = {
       <path d="m20 20-4.6-4.6" />
     </svg>
   ),
+  abonnement: (
+    <svg {...iconProps}>
+      <rect x="2.8" y="5.5" width="18.4" height="13" rx="2.2" />
+      <path d="M2.8 10h18.4M6.5 14.5h3.5" />
+    </svg>
+  ),
 } as const;
 
 /**
@@ -111,7 +117,14 @@ export function AppShell({
   detailerName: string;
   detailerSlug: string;
   city?: string | null;
-  active: 'demandes' | 'planning' | 'tarifs' | 'factures' | 'cases' | 'prospection';
+  active:
+    | 'demandes'
+    | 'planning'
+    | 'tarifs'
+    | 'factures'
+    | 'cases'
+    | 'prospection'
+    | 'abonnement';
   children: ReactNode;
 }) {
   /*
@@ -134,6 +147,16 @@ export function AppShell({
     { key: 'tarifs', href: '/app/prestations', label: 'Prestations', icon: icons.tarifs, desktopOnly: false },
     { key: 'cases', href: '/app/cases', label: 'Avant/Après', icon: icons.cases, desktopOnly: true },
     { key: 'factures', href: '/app/invoices', label: 'Factures', icon: icons.factures, desktopOnly: true },
+    /* L'abonnement n'est pas un module quotidien : il se consulte rarement,
+       et n'a donc pas sa place dans les cinq emplacements du téléphone. Il
+       reste joignable depuis chaque écran verrouillé, qui y renvoie. */
+    {
+      key: 'abonnement',
+      href: '/app/abonnement',
+      label: 'Abonnement',
+      icon: icons.abonnement,
+      desktopOnly: true,
+    },
   ] as const;
 
   const renderTab = (tab: (typeof tabsBeforeFab)[number] | (typeof tabsAfterFab)[number]) => {

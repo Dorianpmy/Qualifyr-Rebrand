@@ -135,6 +135,12 @@ export const pageMeta: Readonly<Record<Route, PageMeta>> = {
       'Données des formulaires, finalité, conservation, droits. Transparence sur le traitement.',
     priority: 0.2,
   },
+  '/conditions-generales-de-vente': {
+    title: 'Conditions générales de vente — Qualifyr',
+    description:
+      'Offres, prix, durée, résiliation, défaut de paiement et limites du service.',
+    priority: 0.2,
+  },
 };
 
 export const sitemapRoutes = (Object.keys(pageMeta) as Route[]).filter(

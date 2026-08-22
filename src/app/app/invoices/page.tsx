@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { AppShell } from '@/components/app/AppShell';
+import { LockedModule } from '@/components/app/LockedModule';
+import { pageAccess } from '@/lib/billing/page-guard';
 import { CreateInvoiceForm } from '@/components/app/CreateInvoiceForm';
 import { getDetailerForOwner } from '@/lib/detailing/dashboard';
 import { formatMoney, listInvoicesForDetailer } from '@/lib/detailing/invoices';
-import { getSessionUser } from '@/lib/detailing/session';
 import styles from '../app.module.css';
 
 const STATUS: Record<string, string> = {
@@ -16,8 +17,23 @@ const STATUS: Record<string, string> = {
 };
 
 export default async function InvoicesPage() {
-  const user = await getSessionUser();
-  if (!user) redirect('/app/login');
+  /* Contrôle d'accès d'affichage. Il ne remplace pas celui des routes
+     d'API — ce sont elles qui protègent les données — mais il évite
+     d'afficher un module vide à quelqu'un qui ne l'a pas acheté. */
+  const access = await pageAccess('invoices');
+  if (!access.allowed) {
+    return (
+      <AppShell
+        detailerName={access.user.email}
+        detailerSlug=""
+        city={null}
+        active="abonnement"
+      >
+        <LockedModule reason={access.reason} capability="invoices" moduleName="Factures" />
+      </AppShell>
+    );
+  }
+  const { user } = access;
 
   const detailer = await getDetailerForOwner(user.id);
   if (!detailer) redirect('/app');

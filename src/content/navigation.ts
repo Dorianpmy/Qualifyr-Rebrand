@@ -24,6 +24,7 @@ export const routeLabels: Readonly<Record<string, string>> = {
   '/blog': 'Journal',
   '/mentions-legales': 'Mentions légales',
   '/politique-de-confidentialite': 'Politique de confidentialité',
+  '/conditions-generales-de-vente': 'Conditions générales de vente',
 };
 
 /**
@@ -62,6 +63,9 @@ export const footerCompanyNav: readonly NavItem[] = [
 
 export const legalNav: readonly NavItem[] = [
   { label: 'Mentions légales', href: '/mentions-legales' },
+  /* Les conditions de vente doivent être atteignables depuis n'importe quelle
+     page avant l'achat — c'est la condition de leur opposabilité. */
+  { label: 'Conditions générales de vente', href: '/conditions-generales-de-vente' },
   { label: 'Politique de confidentialité', href: '/politique-de-confidentialite' },
   { label: 'Cookies', href: '/politique-de-confidentialite#cookies' },
 ];

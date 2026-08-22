@@ -1,12 +1,13 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { AppShell } from '@/components/app/AppShell';
+import { LockedModule } from '@/components/app/LockedModule';
+import { pageAccess } from '@/lib/billing/page-guard';
 import { EmbedSnippet } from '@/components/app/EmbedSnippet';
 import { PaymentSetup } from '@/components/app/PaymentSetup';
 import { PricingEditor } from '@/components/app/PricingEditor';
 import { getDetailerForOwner } from '@/lib/detailing/dashboard';
 import { loadCatalogue } from '@/lib/detailing/pricing-admin';
-import { getSessionUser } from '@/lib/detailing/session';
 import styles from '../app.module.css';
 
 // Les tarifs changent depuis cette page même : un instantané de build
@@ -14,8 +15,23 @@ import styles from '../app.module.css';
 export const dynamic = 'force-dynamic';
 
 export default async function PrestationsPage() {
-  const user = await getSessionUser();
-  if (!user) redirect('/app/login');
+  /* Contrôle d'accès d'affichage. Il ne remplace pas celui des routes
+     d'API — ce sont elles qui protègent les données — mais il évite
+     d'afficher un module vide à quelqu'un qui ne l'a pas acheté. */
+  const access = await pageAccess('services');
+  if (!access.allowed) {
+    return (
+      <AppShell
+        detailerName={access.user.email}
+        detailerSlug=""
+        city={null}
+        active="abonnement"
+      >
+        <LockedModule reason={access.reason} capability="services" moduleName="Prestations" />
+      </AppShell>
+    );
+  }
+  const { user } = access;
 
   const detailer = await getDetailerForOwner(user.id);
   if (!detailer) redirect('/app');

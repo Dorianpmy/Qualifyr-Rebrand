@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 import { AppShell } from '@/components/app/AppShell';
+import { LockedModule } from '@/components/app/LockedModule';
+import { pageAccess } from '@/lib/billing/page-guard';
 import {
   formatDuration,
   formatSlotTime,
@@ -11,7 +12,6 @@ import {
 } from '@/lib/detailing/dashboard';
 import { directionsUrl } from '@/lib/detailing/geo';
 import { orderRouteByNearestNeighbor } from '@/lib/detailing/route';
-import { getSessionUser } from '@/lib/detailing/session';
 import styles from '../app.module.css';
 
 /** Repère numéroté d'un arrêt de tournée — 1, 2, 3… l'ordre du trajet. */
@@ -59,8 +59,23 @@ function LegIcon() {
 }
 
 export default async function PlanningPage() {
-  const user = await getSessionUser();
-  if (!user) redirect('/app/login');
+  /* Contrôle d'accès d'affichage. Il ne remplace pas celui des routes
+     d'API — ce sont elles qui protègent les données — mais il évite
+     d'afficher un module vide à quelqu'un qui ne l'a pas acheté. */
+  const access = await pageAccess('planning');
+  if (!access.allowed) {
+    return (
+      <AppShell
+        detailerName={access.user.email}
+        detailerSlug=""
+        city={null}
+        active="abonnement"
+      >
+        <LockedModule reason={access.reason} capability="planning" moduleName="Planning" />
+      </AppShell>
+    );
+  }
+  const { user } = access;
 
   const detailer = await getDetailerForOwner(user.id);
   if (!detailer) {

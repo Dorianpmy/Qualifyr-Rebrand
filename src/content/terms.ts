@@ -1,0 +1,112 @@
+/**
+ * Conditions générales de vente — abonnements Qualifyr.
+ *
+ * **Pourquoi elles existent.** Vendre un abonnement à distance à des
+ * professionnels sans CGV expose l'éditeur : le code de la consommation et le
+ * code de commerce imposent d'informer sur le prix, la durée, la résiliation
+ * et les réclamations avant la souscription. L'audit d'avant mise en
+ * production (`docs/11`) les listait comme absentes et obligatoires.
+ *
+ * **Ce texte décrit le produit réel, pas le produit vendu sur la page
+ * d'accueil.** Chaque affirmation ci-dessous a été vérifiée dans le code : les
+ * limites de l'agent, l'absence de garantie de résultat, ce que le
+ * professionnel reste seul à faire. Des CGV qui promettraient plus que le
+ * logiciel ne fait aggraveraient le problème qu'elles sont censées régler.
+ *
+ * **Ce n'est pas un avis juridique.** Le texte est rédigé à partir des
+ * obligations d'information courantes pour un abonnement logiciel en France ;
+ * il doit être relu par un professionnel du droit avant la première vente,
+ * en particulier sur le droit de rétractation, qui dépend du statut exact des
+ * clients (professionnels au sens du code de la consommation ou non).
+ */
+
+export type TermsSection = {
+  readonly id: string;
+  readonly title: string;
+  readonly paragraphs: readonly string[];
+};
+
+export const termsIntro =
+  'Les présentes conditions régissent la souscription et l’utilisation des abonnements Qualifyr. Elles sont acceptées au moment du paiement.';
+
+export const termsSections: readonly TermsSection[] = [
+  {
+    id: 'objet',
+    title: 'Objet et champ d’application',
+    paragraphs: [
+      'Qualifyr est un logiciel accessible en ligne, proposé par abonnement à des professionnels du lavage et de la préparation automobile. Il réunit deux ensembles distincts : un agent de recensement d’entreprises, et un système de réservation et de facturation.',
+      'Ces conditions s’appliquent à toute souscription réalisée depuis le site. Elles ne couvrent pas les prestations de conception de site réalisées sur devis, qui font l’objet d’un contrat séparé.',
+    ],
+  },
+  {
+    id: 'offres',
+    title: 'Offres et contenu des abonnements',
+    paragraphs: [
+      'Trois offres sont proposées : « Agent seul », « Système seul » et « Pack complet ». Le détail des fonctionnalités incluses dans chacune figure sur la page Tarifs, et est repris dans l’espace professionnel, à la page Abonnement.',
+      'Une offre ne donne accès qu’aux fonctionnalités qu’elle comprend. Les modules non inclus restent visibles dans l’interface mais verrouillés, avec l’indication de l’offre qui les débloque.',
+      'L’agent de recensement interroge le répertoire Sirene de l’INSEE sur le code postal indiqué et les codes postaux immédiatement voisins, retient les établissements dont l’activité déclarée correspond aux segments retenus, et adresse un rapport par courrier électronique. Il ne contacte aucun prospect, ne prend aucun rendez-vous et n’engage aucune conversation.',
+      'Le nombre d’établissements remontés dépend du contenu du répertoire officiel et des quotas de son interface de programmation. Aucun volume minimal n’est garanti.',
+    ],
+  },
+  {
+    id: 'prix',
+    title: 'Prix et facturation',
+    paragraphs: [
+      'Les prix sont indiqués en euros et hors taxes sur la page Tarifs. L’éditeur relève de la franchise en base de taxe sur la valeur ajoutée : la mention « TVA non applicable, article 293 B du code général des impôts » figure sur les factures. En Suisse, la taxe applicable est celle du droit local.',
+      'L’abonnement mensuel est facturé chaque mois. L’abonnement annuel est payé en une fois, à la souscription, pour douze mois.',
+      'Le paiement est traité par Stripe. Aucune coordonnée bancaire ne transite ni n’est conservée par Qualifyr. Une facture est émise automatiquement à chaque échéance et adressée par courrier électronique.',
+      'Les prix peuvent être modifiés. Tout changement est notifié au moins trente jours avant son entrée en vigueur, et ne s’applique qu’à compter de l’échéance suivante ; le client peut résilier d’ici là.',
+    ],
+  },
+  {
+    id: 'duree',
+    title: 'Durée, renouvellement et résiliation',
+    paragraphs: [
+      'L’abonnement est conclu sans engagement de durée pour la formule mensuelle, et pour douze mois pour la formule annuelle. Il se renouvelle par tacite reconduction à chaque échéance.',
+      'La résiliation peut être demandée à tout moment. Elle prend effet à la fin de la période en cours, déjà payée : aucun remboursement au prorata n’est pratiqué, et l’accès est maintenu jusqu’à cette date.',
+      'Après résiliation, les données restent consultables en lecture seule. Rien n’est supprimé du fait de la résiliation.',
+    ],
+  },
+  {
+    id: 'paiement',
+    title: 'Défaut de paiement',
+    paragraphs: [
+      'En cas d’échec de prélèvement, l’accès est maintenu le temps des nouvelles tentatives effectuées par Stripe, et le client en est informé dans son espace.',
+      'Passé ce délai sans régularisation, l’accès est suspendu. Il est rétabli dès le paiement, sans frais ni intervention.',
+    ],
+  },
+  {
+    id: 'obligations',
+    title: 'Obligations du client',
+    paragraphs: [
+      'Le client est responsable de l’exactitude des informations qu’il publie sur sa page de réservation, notamment ses prix, ses durées et sa zone d’intervention.',
+      'Il demeure seul responsable de la relation avec ses propres clients, de l’exécution de ses prestations, de sa facturation et de ses obligations fiscales et sociales.',
+      'L’usage des données d’entreprises issues du répertoire Sirene relève de la responsabilité du client. Il lui appartient de respecter les règles applicables à la prospection, en particulier l’obligation d’information et le droit d’opposition des personnes concernées.',
+    ],
+  },
+  {
+    id: 'disponibilite',
+    title: 'Disponibilité et limites',
+    paragraphs: [
+      'Le service est fourni sans garantie de disponibilité ininterrompue. Il dépend de services tiers — hébergement, Stripe, INSEE, service d’envoi de courrier électronique — dont les interruptions peuvent l’affecter.',
+      'Aucun résultat commercial n’est garanti. Le nombre de demandes, de réservations ou de clients obtenus ne dépend pas du logiciel seul.',
+      'La responsabilité de l’éditeur, en cas de manquement établi, est limitée aux sommes effectivement versées au titre de l’abonnement sur les douze mois précédant le fait générateur.',
+    ],
+  },
+  {
+    id: 'donnees',
+    title: 'Données personnelles',
+    paragraphs: [
+      'Le traitement des données est décrit dans la politique de confidentialité. Le client reste responsable de traitement pour les données de ses propres clients ; l’éditeur agit comme sous-traitant pour ce qui transite par le logiciel.',
+      'Chacun exerce ses droits d’accès, de rectification et d’effacement auprès de l’éditeur, aux coordonnées figurant dans les mentions légales.',
+    ],
+  },
+  {
+    id: 'reclamations',
+    title: 'Réclamations et droit applicable',
+    paragraphs: [
+      'Toute réclamation est adressée à l’éditeur, par courrier électronique, aux coordonnées des mentions légales. Une réponse est apportée dans un délai raisonnable.',
+      'Les présentes conditions sont soumises au droit français. À défaut d’accord amiable, le litige relève des juridictions compétentes.',
+    ],
+  },
+];

@@ -20,7 +20,8 @@ export type Route =
   | '/faq'
   | '/blog'
   | '/mentions-legales'
-  | '/politique-de-confidentialite';
+  | '/politique-de-confidentialite'
+  | '/conditions-generales-de-vente';
 
 /** Ancre interne à la page courante. */
 export type Anchor = `#${string}`;

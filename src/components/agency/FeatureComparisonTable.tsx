@@ -38,7 +38,7 @@ type Row = {
  * technique de `lib/billing/entitlements.ts`. Modifier une ligne ici sans
  * modifier la matrice fait échouer les tests, volontairement.
  */
-const rows: readonly Row[] = [
+export const rows: readonly Row[] = [
   {
     label: 'Agent de recensement',
     hint: 'Les codes postaux voisins de votre zone',
