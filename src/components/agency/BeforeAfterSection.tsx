@@ -213,7 +213,13 @@ function RowItem({
 }) {
   const Icon = row.icon;
   return (
-    <li className="flex flex-col gap-3.5">
+    /* `pb-4` plutôt qu'une gouttière sur la liste : à partir de `sm`, la
+       liste est une sous-grille dont les gouttières sont celles de la grille
+       parente (nulles, cf. le conteneur des deux colonnes). L'espacement
+       entre lignes doit donc appartenir aux lignes elles-mêmes. Pas de
+       padding sous la dernière, qui ferait un bas de carte plus creux que
+       prévu. */
+    <li className="flex flex-col gap-3.5 sm:[&:not(:last-child)]:pb-4">
       <div className="flex gap-3.5">
         {/* Le contour reprend le dégradé tricolore déjà porté par la carte
             « Avec Qualifyr » (voir `.node-hero` dans `tailwind.css`) — un
@@ -271,13 +277,34 @@ export function BeforeAfterSection() {
         </p>
       </header>
 
-      {/* Deux colonnes, toujours visibles. `items-start` : la carte
-          « Avec Qualifyr » ne doit pas s'étirer à la hauteur de sa voisine
-          si l'une des deux devient plus haute qu'attendu (texte agrandi par
-          le navigateur, traduction plus longue). */}
-      <div className="mx-auto grid max-w-[64rem] items-start gap-10 sm:grid-cols-2">
+      {/* Deux colonnes, toujours visibles — et **rigoureusement alignées
+          ligne à ligne**, ce qui demande une grille commune aux deux cartes.
+          `subgrid` est le seul outil qui le garantisse : les sept rangées
+          (visuel d'en-tête, badge, puis les cinq lignes) sont déclarées ici,
+          et chaque carte s'y abonne au lieu de calculer ses propres hauteurs.
+          La rangée 4 fait donc la même hauteur des deux côtés, quel que soit
+          le nombre de lignes sur lesquelles chaque texte se replie.
+
+          Sans cela, le décalage entre colonnes **s'accumulait** de ligne en
+          ligne : les libellés de gauche se replient sur deux lignes quatre
+          fois sur cinq, ceux de droite une seule — d'où presque cent pixels
+          d'écart en bas de section, signalé par Dorian sur capture. Une
+          hauteur minimale fixe par ligne ne pouvait pas corriger ça : à la
+          largeur du point de rupture `sm`, la ligne la plus longue se replie
+          sur quatre lignes, contre deux sur grand écran.
+
+          `items-start` a disparu pour la même raison : les cartes doivent
+          au contraire s'étirer à la même hauteur.
+
+          Interlignes : `gap-y-0` à partir de `sm`, l'espacement passe par
+          les marges et les paddings des éléments eux-mêmes. Une gouttière
+          non nulle sur la grille parente serait héritée par les
+          sous-grilles, et toute tentative de la redéfinir localement
+          décalerait le rendu des pistes par rapport aux positions calculées
+          par le parent. */}
+      <div className="mx-auto grid max-w-[64rem] gap-10 sm:grid-cols-2 sm:grid-rows-[auto_auto_auto_auto_auto_auto_auto] sm:gap-y-0">
         <div
-          className="flex flex-col rounded-[1.5rem] p-6 sm:p-8"
+          className="flex flex-col rounded-[1.5rem] p-6 sm:row-span-7 sm:grid sm:grid-rows-subgrid sm:p-8"
           style={{
             background: '#0f0f10',
             border: '1px solid rgba(255,255,255,0.06)',
@@ -322,14 +349,14 @@ export function BeforeAfterSection() {
             Sans Qualifyr
           </p>
 
-          <ul className="grid gap-4">
+          <ul className="grid gap-4 sm:row-span-5 sm:grid-rows-subgrid sm:gap-0">
             {rows.map((row, index) => (
               <RowItem key={row.beforeTitle} row={row} index={index} active={false} />
             ))}
           </ul>
         </div>
 
-        <div className="node-hero flex flex-col rounded-[1.5rem] p-6 sm:p-8">
+        <div className="node-hero flex flex-col rounded-[1.5rem] p-6 sm:row-span-7 sm:grid sm:grid-rows-subgrid sm:p-8">
           {/* L'agent au-dessus, ses trois rôles en rangée en dessous : la
               hiérarchie se lit sans qu'aucune flèche ne soit nécessaire.
               Tout est en flux normal — l'orbe ne peut plus venir buter
@@ -364,7 +391,7 @@ export function BeforeAfterSection() {
             Avec Qualifyr
           </p>
 
-          <ul className="grid gap-4">
+          <ul className="grid gap-4 sm:row-span-5 sm:grid-rows-subgrid sm:gap-0">
             {rows.map((row, index) => (
               <RowItem key={row.afterTitle} row={row} index={index} active />
             ))}
