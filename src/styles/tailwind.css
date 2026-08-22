@@ -759,6 +759,78 @@
     border-color: #ffffff !important;
   }
 
+  /* -------------------------------------------------------------------------
+     Barre d'onglets basse (mobile) — reprise de la main après le reset.
+
+     **C'est ici que se jouait le rendu médiocre de la barre.** Ses onglets
+     sont des `<a>` : le bloc de neutralisation ci-dessus leur retirait donc
+     le fond, la couleur, le rayon, l'ombre, la hauteur minimale et la
+     graisse. `app.module.css` les redéfinissait bien, mais en vain — une
+     déclaration `!important` posée hors de toute couche est le maillon le
+     plus faible de toutes les déclarations `!important`, et perd contre
+     n'importe quelle règle de couche, y compris celle-ci. La barre affichait
+     donc des onglets tous de la même couleur, sans état actif lisible, et un
+     bouton central rectangulaire au lieu d'un cercle en relief.
+
+     Les propriétés purement géométriques (`display`, `flex-direction`,
+     `grid-template-columns`, tailles d'icônes) ne figurent pas dans le reset
+     et restent donc dans le module. Seul ce qu'il efface est repris ici.
+     ------------------------------------------------------------------------- */
+  [data-app='dashboard'] .app-tab {
+    color: var(--color-faint) !important;
+    /* Le libellé se resserre avec l'écran plutôt que d'être tronqué. Le cas
+       dimensionnant est « Prestations », onze caractères : à 320 px chaque
+       colonne offre environ 53 px utiles, ce que onze caractères à 10 px
+       dépassent. La borne basse (8 px) les y fait tenir ; la borne haute
+       garde la taille d'origine dès 375 px, où la place ne manque plus. */
+    font-size: clamp(0.5rem, 2.55vw, 0.625rem) !important;
+    font-weight: 600 !important;
+    border-radius: 0.85rem !important;
+    border-color: transparent !important;
+    padding: 0.35rem 0.15rem !important;
+    min-height: 3.1rem !important;
+  }
+
+  /* Onglet courant : blanc, et c'est tout — le point céladon qui le souligne
+     est posé par `app.module.css` en `::after`, que le reset n'atteint pas. */
+  [data-app='dashboard'] .app-tab-active {
+    color: var(--color-primary) !important;
+    font-weight: 700 !important;
+  }
+
+  /* Bouton central. Le fond sombre, le liseré céladon et la lueur sont
+     précisément les trois propriétés que le reset supprimait. */
+  [data-app='dashboard'] .app-tab-fab {
+    border-radius: 999px !important;
+    border-color: rgba(184, 220, 208, 0.5) !important;
+    background-image: radial-gradient(120% 120% at 50% 0%, #1e2225, #121416 70%) !important;
+    box-shadow:
+      0 8px 20px rgba(0, 0, 0, 0.55),
+      0 0 0 5px rgba(16, 18, 20, 0.9),
+      0 0 18px -4px rgba(184, 220, 208, 0.35) !important;
+    padding: 0 !important;
+    min-height: 0 !important;
+  }
+
+  /* Au-delà de 900 px la barre redevient un menu vertical : le bouton central
+     n'y est plus un cercle en relief mais une ligne comme les autres. */
+  @media (min-width: 900px) {
+    [data-app='dashboard'] .app-tab {
+      font-size: 0.875rem !important;
+      border-radius: 10px !important;
+      padding: 0.65rem 0.85rem !important;
+      min-height: 0 !important;
+    }
+
+    [data-app='dashboard'] .app-tab-fab {
+      border-radius: 10px !important;
+      border-color: transparent !important;
+      background-image: none !important;
+      box-shadow: none !important;
+      padding: 0.65rem 0.85rem !important;
+    }
+  }
+
   [data-app] :focus-visible {
     outline-color: var(--color-primary) !important;
   }

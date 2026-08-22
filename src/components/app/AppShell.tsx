@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import styles from '@/app/app/app.module.css';
+import { QualifyrMark } from './QualifyrMark';
 
 /**
  * Coque de l'espace pro.
@@ -20,6 +21,16 @@ import styles from '@/app/app/app.module.css';
  * porte la reconnaissance, le libellé la confirme — c'est la convention iOS et
  * Material, et elle vaut ici parce que le detailer n'apprendra pas une
  * grammaire propre à Qualifyr.
+ *
+ * **Cinq emplacements sur mobile, sept sur ordinateur.** La barre en portait
+ * sept partout : à 375 px de large, les deux derniers sortaient de l'écran et
+ * « Prestations » se lisait « Prestatio… ». Une barre d'onglets ne défile pas
+ * — ce qui en dépasse est simplement perdu. Le mobile garde donc les quatre
+ * destinations du quotidien plus le bouton central ; « Avant/Après » et
+ * « Factures », consultées de loin en loin, deviennent deux liens en tête du
+ * tableau de bord (`app/app/page.tsx`) plutôt que de disparaître. Sur
+ * ordinateur, le menu est vertical : la place ne manque pas, les sept entrées
+ * restent.
  */
 
 const iconProps = {
@@ -73,8 +84,18 @@ const icons = {
   ),
 } as const;
 
+/**
+ * Icône « ouvrir en externe » du menu de bureau.
+ *
+ * Le symbole de marque (`QualifyrMark`) la remplace sur mobile, où le bouton
+ * central est en relief et doit se distinguer des onglets. Sur ordinateur, au
+ * contraire, « Page client » est une ligne de menu comme les autres : une
+ * marque en blanc et vert au milieu de six glyphes gris attirerait l'œil sans
+ * raison. Chaque contexte garde donc son icône, et la classe
+ * `navIconDesktopOnly` décide laquelle s'affiche.
+ */
 const clientPageIcon = (
-  <svg {...iconProps}>
+  <svg {...iconProps} className={`${styles.navIcon} ${styles.navIconDesktopOnly}`}>
     <path d="M14 4h6v6M20 4l-8.5 8.5" />
     <path d="M18 14v4.5A1.5 1.5 0 0 1 16.5 20h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10" />
   </svg>
@@ -93,16 +114,26 @@ export function AppShell({
   active: 'demandes' | 'planning' | 'tarifs' | 'factures' | 'cases' | 'prospection';
   children: ReactNode;
 }) {
+  /*
+   * `desktopOnly` marque les entrées que la barre mobile ne peut pas
+   * accueillir sans déborder. Elles restent dans le DOM et dans le menu de
+   * bureau ; seule la barre du téléphone les masque, et le tableau de bord y
+   * renvoie.
+   *
+   * « Prospection » devient « Prospect » : à cinq colonnes sur 320 px, chaque
+   * emplacement dispose d'environ 58 px, ce qui ne suffit pas au mot entier
+   * sans le tronquer.
+   */
   const tabsBeforeFab = [
-    { key: 'demandes', href: '/app', label: 'Demandes', icon: icons.demandes },
-    { key: 'planning', href: '/app/planning', label: 'Planning', icon: icons.planning },
-    { key: 'prospection', href: '/app/prospection', label: 'Prospection', icon: icons.prospection },
+    { key: 'demandes', href: '/app', label: 'Demandes', icon: icons.demandes, desktopOnly: false },
+    { key: 'planning', href: '/app/planning', label: 'Planning', icon: icons.planning, desktopOnly: false },
+    { key: 'prospection', href: '/app/prospection', label: 'Prospect', icon: icons.prospection, desktopOnly: false },
   ] as const;
 
   const tabsAfterFab = [
-    { key: 'tarifs', href: '/app/prestations', label: 'Prestations', icon: icons.tarifs },
-    { key: 'cases', href: '/app/cases', label: 'Avant/Après', icon: icons.cases },
-    { key: 'factures', href: '/app/invoices', label: 'Factures', icon: icons.factures },
+    { key: 'tarifs', href: '/app/prestations', label: 'Prestations', icon: icons.tarifs, desktopOnly: false },
+    { key: 'cases', href: '/app/cases', label: 'Avant/Après', icon: icons.cases, desktopOnly: true },
+    { key: 'factures', href: '/app/invoices', label: 'Factures', icon: icons.factures, desktopOnly: true },
   ] as const;
 
   const renderTab = (tab: (typeof tabsBeforeFab)[number] | (typeof tabsAfterFab)[number]) => {
@@ -117,7 +148,17 @@ export function AppShell({
          * que signifie un contour coloré.
          */
         aria-current={isActive ? 'page' : undefined}
-        className={`${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
+        /*
+         * `app-tab` / `app-tab-active` sont des classes littérales, définies
+         * dans `tailwind.css`. Elles ne sont pas décoratives : le bloc de
+         * neutralisation de l'ancienne charte y vide tout `<a>` du dashboard
+         * avec `!important`, et une déclaration `!important` venant d'un
+         * module CSS (donc hors couche) ne peut pas gagner contre lui. Sans
+         * ces deux classes, l'onglet perd sa couleur, son rayon, sa hauteur
+         * et son état actif — c'est ce qui donnait à la barre son aspect de
+         * liste de liens bruts.
+         */
+        className={`${styles.navItem} app-tab ${tab.desktopOnly ? styles.navItemDesktopOnly : ''} ${isActive ? `${styles.navItemActive} app-tab-active` : ''}`}
       >
         {tab.icon}
         <span className={styles.navLabel}>{tab.label}</span>
@@ -139,21 +180,32 @@ export function AppShell({
 
           {/*
             La pastille surélevée au centre — reprise de la référence
-            envoyée (barre basse avec un bouton rond en relief au milieu),
-            mais avec l'icône « ouvrir en externe » déjà utilisée dans ce
-            fichier pour la page client, pas un logo tiers : c'est
-            l'action la plus utile à mettre en avant ici, celle qu'un
-            professionnel utilise pour montrer ou partager sa page de
-            réservation. Sur desktop, `.navItemFab` s'efface et redevient
-            une ligne de menu normale — le relief n'a de sens que dans une
-            pilule flottante en bas d'un écran de téléphone.
+            envoyée (barre basse avec un bouton rond en relief au milieu).
+
+            **Elle porte désormais le symbole de la marque** (`QualifyrMark`)
+            au lieu de l'icône « ouvrir en externe ». Cette icône générique
+            était le troisième chevron/rectangle d'une barre qui en comptait
+            déjà plusieurs : rien ne distinguait le bouton central des
+            autres, alors que c'est le seul élément en relief. Un signe de
+            marque, lui, ne peut être confondu avec aucun onglet.
+
+            **Sa destination ne change pas** : la page de réservation
+            publique, l'action qu'un professionnel montre ou partage le plus
+            souvent. Le libellé reste dans le DOM pour le menu de bureau ; sur
+            mobile il est masqué (aucun texte ne tient dans un cercle de cette
+            taille) et le nom accessible vient d'`aria-label`.
+
+            Sur desktop, `.navItemFab` s'efface et redevient une ligne de menu
+            normale — le relief n'a de sens que dans une pilule flottante en
+            bas d'un écran de téléphone.
           */}
           <Link
             href={`/reservation/${detailerSlug}`}
-            className={`${styles.navItem} ${styles.navItemFab}`}
+            className={`${styles.navItem} ${styles.navItemFab} app-tab app-tab-fab`}
             target="_blank"
-            aria-label="Page client"
+            aria-label="Ouvrir ma page de réservation"
           >
+            <QualifyrMark className={styles.navFabMark} />
             {clientPageIcon}
             <span className={styles.navLabel}>Page client</span>
           </Link>
@@ -163,7 +215,7 @@ export function AppShell({
 
         <div className={styles.sidebarFooter}>
           <form action="/api/app/logout" method="post">
-            <button type="submit" className={styles.navItem}>
+            <button type="submit" className={`${styles.navItem} app-tab`}>
               <svg {...iconProps}>
                 <path d="M9 20H5.5A1.5 1.5 0 0 1 4 18.5v-13A1.5 1.5 0 0 1 5.5 4H9" />
                 <path d="M16 16l4-4-4-4M20 12H9" />

@@ -39,6 +39,10 @@
   }
 }
 
+/* La réserve basse définitive est posée plus bas dans ce fichier
+   (`calc(6rem + env(safe-area-inset-bottom))`), qui l'emporte. Elle couvre la
+   barre flottante — 0,6rem de décollement plus 3,7rem de hauteur — et laisse
+   de quoi respirer sous le dernier élément de page. */
 .shellMain {
   min-width: 0;
   padding-bottom: 5rem;
@@ -50,33 +54,61 @@
   }
 }
 
-/* Mobile = pilule flottante centrée */
+/* ---------------------------------------------------------------------------
+   Mobile = barre basse flottante.
+
+   **Largeur imposée, plus « auto ».** La barre se dimensionnait sur son
+   contenu (`width: auto`) et se contentait de plafonner à la largeur de
+   l'écran. Avec sept onglets, elle atteignait ce plafond et tout ce qui
+   dépassait était perdu : à 375 px, « Prestations » se lisait
+   « Prestatio… ». Une barre d'onglets ne défile pas — la seule issue est
+   qu'elle occupe une largeur connue et la répartisse. Elle est donc calée
+   sur les deux bords (`left`/`right`) et distribue cinq colonnes égales
+   (`.sidebarNav`), ce qui tient par construction à 320 px comme à 430.
+
+   **Rayon adouci plutôt que pilule.** `999px` collait les onglets des
+   extrémités contre une courbe qui les rognait. `1.35rem` donne les « coins
+   légèrement arrondis » demandés et laisse chaque colonne rectangulaire.
+--------------------------------------------------------------------------- */
 .sidebar {
   order: 0;
   position: fixed;
-  left: 50%;
-  bottom: calc(0.75rem + env(safe-area-inset-bottom));
-  transform: translateX(-50%);
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: calc(0.6rem + env(safe-area-inset-bottom));
   z-index: 50;
   display: flex;
   flex-direction: row;
   align-items: center;
   width: auto;
-  max-width: calc(100vw - 1.5rem);
-  padding: 0.3rem;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(20, 22, 26, 0.92);
-  backdrop-filter: blur(16px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  max-width: 32rem;
+  margin-inline: auto;
+  padding: 0.3rem 0.25rem;
+  border-radius: 1.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(16, 18, 20, 0.88);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  /* Deux ombres : une portée franche qui décolle la barre du contenu, et un
+     liseré clair d'un pixel à l'intérieur du bord haut — c'est ce filet qui
+     donne l'aspect « verre » d'une barre native, invisible mais immédiatement
+     reconnaissable en son absence. */
+  box-shadow:
+    0 12px 34px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 @media (min-width: 900px) {
   .sidebar {
     position: sticky;
     top: 0;
+    /* `right` et `margin-inline` annulent le calage sur les deux bords du
+       mobile — sans quoi la colonne de bureau resterait centrée et détachée
+       du bord gauche. */
     left: auto;
+    right: auto;
     bottom: auto;
+    margin-inline: 0;
     transform: none;
     flex-direction: column;
     align-items: stretch;
@@ -139,15 +171,23 @@
   color: var(--color-primary);
 }
 
+/* Cinq colonnes égales plutôt qu'une rangée qui se dimensionne sur les
+   libellés : « Demandes » est deux fois plus large que « Planning », et une
+   répartition au contenu donnait des espacements inégaux — le défaut le plus
+   visible d'une barre d'onglets. `minmax(0, 1fr)` (et non `1fr`) autorise une
+   colonne à devenir plus étroite que son texte : c'est ce qui empêche la
+   grille de pousser la barre au-delà de l'écran à 320 px. */
 .sidebarNav {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   align-items: center;
-  gap: 0.15rem;
+  gap: 0;
+  width: 100%;
 }
 
 @media (min-width: 900px) {
   .sidebarNav {
+    display: flex;
     flex-direction: column;
     align-items: stretch;
     gap: 0.25rem;
@@ -165,11 +205,15 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.2rem;
-  min-height: 3.25rem;
-  min-width: 4rem;
-  padding: 0.4rem 0.6rem;
-  border-radius: 999px;
+  gap: 0.25rem;
+  min-height: 3.1rem;
+  /* `min-width` retiré : la grille à cinq colonnes fixe déjà la largeur, et un
+     minimum de 4rem forçait la barre à 20rem — soit un débordement garanti
+     sur un écran de 320 px. La cible tactile reste conforme : 3,1rem de haut
+     sur un cinquième de la barre fait au minimum 50 × 50 px à 320 px. */
+  min-width: 0;
+  padding: 0.35rem 0.15rem;
+  border-radius: 0.85rem;
   color: var(--color-faint);
   text-decoration: none;
   font-size: 0.625rem;
@@ -196,6 +240,16 @@
   transform: scale(0.94);
 }
 
+.navLabel {
+  /* Le libellé ne doit jamais élargir sa colonne : s'il ne tient pas, il se
+     coupe proprement plutôt que de pousser la barre hors de l'écran. En
+     pratique aucun des cinq libellés retenus n'atteint cette limite, même à
+     320 px — c'est un garde-fou, pas un comportement attendu. */
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 @media (min-width: 900px) {
   .navItem {
     flex-direction: row;
@@ -220,8 +274,8 @@
 }
 
 .navIcon {
-  inline-size: 1.35rem;
-  block-size: 1.35rem;
+  inline-size: 1.3rem;
+  block-size: 1.3rem;
   flex-shrink: 0;
 }
 
@@ -242,31 +296,70 @@
   }
 }
 
-/* Pastille surélevée au centre de la pilule mobile — voir le commentaire
+/* Le symbole de marque du bouton central : masqué par défaut, il ne sert que
+   dans la barre du téléphone. Sur ordinateur, c'est `clientPageIcon` qui
+   prend le relais (voir le commentaire dans AppShell.tsx). */
+.navFabMark {
+  display: none;
+}
+
+.navIconDesktopOnly {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .navIconDesktopOnly {
+    display: block;
+  }
+}
+
+/* Pastille surélevée au centre de la barre mobile — voir le commentaire
    dans AppShell.tsx. N'existe que sous 900 px : passé ce seuil la barre
    redevient un menu vertical classique, où un bouton rond en relief n'a pas
    de sens (rien à surélever au-dessus). */
 @media (max-width: 899.98px) {
-  .navItemFab {
-    position: relative;
-    top: -0.85rem;
-    min-width: 3.75rem;
-    min-height: 3.75rem;
-    border-radius: 999px;
-    border-color: transparent;
-    background: linear-gradient(140deg, var(--accent-1), var(--accent-2));
-    color: #0e0e0f;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+  .navFabMark {
+    display: block;
+    inline-size: 1.7rem;
+    block-size: 1.7rem;
+    flex-shrink: 0;
   }
 
-  .navItemFab .navIcon {
-    inline-size: 1.6rem;
-    block-size: 1.6rem;
+  /* **Fond sombre, pas un aplat clair.** La version précédente remplissait le
+     cercle d'un dégradé sable → céladon : un disque doré au milieu d'une
+     barre noire, que la charte du produit exclut explicitement. Le bouton
+     reste donc sombre, et c'est le liseré vert plus la lueur qui le
+     détachent — le symbole blanc et vert garde ainsi son contraste, ce qu'un
+     fond clair lui aurait retiré. */
+  .navItemFab {
+    position: relative;
+    top: -0.9rem;
+    justify-self: center;
+    inline-size: 3.4rem;
+    block-size: 3.4rem;
+    min-height: 0;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(184, 220, 208, 0.5);
+    background:
+      radial-gradient(120% 120% at 50% 0%, #1e2225, #121416 70%);
+    box-shadow:
+      0 8px 20px rgba(0, 0, 0, 0.55),
+      0 0 0 5px rgba(16, 18, 20, 0.9),
+      0 0 18px -4px rgba(184, 220, 208, 0.35);
+  }
+
+  /* L'anneau sombre de 5 px posé par la troisième ombre découpe le bouton
+     dans le bord haut de la barre : sans lui, le cercle en relief semblerait
+     simplement collé dessus. */
+
+  .navItemFab:active {
+    transform: scale(0.92);
   }
 
   /* Le libellé reste dans le DOM (nom accessible porté par `aria-label` sur
      le lien) mais disparaît visuellement : un texte dans un cercle de cette
-     taille se serait chevauché avec l'icône. */
+     taille se serait chevauché avec le symbole. */
   .navItemFab .navLabel {
     display: none;
   }
@@ -286,21 +379,78 @@
   }
 }
 
-/* Onglet actif : le contour dégradé, la même signature que partout ailleurs.
-   Sur mobile, le libellé passe en blanc — c'est le contraste qui porte
-   l'information à distance de bras, pas la teinte du filet. */
+/* Onglet actif.
+
+   **Sur mobile : un point vert, pas un cadre.** Le contour dégradé sable →
+   céladon dessinait une capsule autour de l'onglet ; dans une barre qui n'a
+   plus que 0,15 rem de respiration entre colonnes, ce cadre touchait presque
+   ses voisins et ramenait la teinte dorée que la charte du produit exclut.
+   L'onglet actif se signale donc par deux choses seulement : le blanc du
+   libellé et de l'icône, et un point céladon sous le libellé — le repère des
+   barres d'onglets natives, lisible d'un coup d'œil sans rien encadrer.
+
+   Sur ordinateur (voir plus bas), le cadre garde tout son sens : le menu est
+   vertical, chaque ligne dispose de sa largeur entière. */
 .navItemActive {
   color: var(--color-primary);
   font-weight: 700;
-  border: 1px solid transparent;
-  background:
-    linear-gradient(#1b1b1d, #1b1b1d) padding-box,
-    linear-gradient(140deg, var(--accent-1), var(--accent-2)) border-box;
+}
+
+@media (max-width: 899.98px) {
+  .navItemActive {
+    position: relative;
+    background: transparent;
+    border-color: transparent;
+  }
+
+  .navItemActive::after {
+    content: '';
+    position: absolute;
+    bottom: 0.15rem;
+    left: 50%;
+    transform: translateX(-50%);
+    inline-size: 0.25rem;
+    block-size: 0.25rem;
+    border-radius: 999px;
+    background: var(--accent-2);
+  }
+
+  /* Le bouton central ne prend jamais ce traitement : il n'est pas un onglet
+     de destination interne, et un point sous un cercle en relief se lirait
+     comme un défaut d'alignement. */
+  .navItemFab.navItemActive::after {
+    display: none;
+  }
+}
+
+@media (min-width: 900px) {
+  .navItemActive {
+    border: 1px solid transparent;
+    background:
+      linear-gradient(#1b1b1d, #1b1b1d) padding-box,
+      linear-gradient(140deg, var(--accent-1), var(--accent-2)) border-box;
+  }
 }
 
 .navSoon {
   opacity: 0.35;
   pointer-events: none;
+}
+
+/* Relais mobile vers les deux sections sorties de la barre d'onglets — voir
+   le commentaire dans `app/app/page.tsx`. Masqué dès que le menu latéral
+   apparaît, pour ne pas doubler ses entrées. */
+.secondaryLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (min-width: 900px) {
+  .secondaryLinks {
+    display: none;
+  }
 }
 
 .sidebarFooter {
@@ -1198,13 +1348,25 @@
    exactement le bénéfice recherché.
 --------------------------------------------------------------------------- */
 
-/* Onglet courant : le contour passe en tricolore. Sur la barre basse, c'est
-   le seul repère de position — il doit se lire d'un coup d'œil à bout de
-   bras, en plein soleil. */
-.navItemActive {
-  background:
-    linear-gradient(#1b1b1d, #1b1b1d) padding-box,
-    linear-gradient(115deg, var(--accent-1), var(--accent-3) 50%, var(--accent-2)) border-box !important;
+/* Onglet courant : le contour passe en tricolore — **sur ordinateur
+   seulement**.
+
+   Cette règle s'appliquait à toutes les tailles, et son `!important`
+   l'emportait sur la définition d'origine plus haut dans le fichier : la
+   barre du téléphone héritait donc d'une capsule sable → lilas → céladon
+   autour de l'onglet courant. Deux problèmes dans une barre à cinq colonnes :
+   la capsule vient toucher ses voisines, et elle ramène les teintes chaude et
+   violette que la charte du produit exclut. Sur mobile, le repère de position
+   est désormais un point céladon (voir `.navItemActive::after` plus haut).
+
+   Le `!important` est conservé : il neutralise le bloc hérité de `globals.css`
+   qui repeint sans condition le fond de tout élément interactif du dashboard. */
+@media (min-width: 900px) {
+  .navItemActive {
+    background:
+      linear-gradient(#1b1b1d, #1b1b1d) padding-box,
+      linear-gradient(115deg, var(--accent-1), var(--accent-3) 50%, var(--accent-2)) border-box !important;
+  }
 }
 
 /* La carte d'activation du paiement porte le halo : c'est l'action qui

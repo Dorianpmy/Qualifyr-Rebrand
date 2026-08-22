@@ -138,6 +138,28 @@ export default async function AppHomePage({
           </div>
         </div>
 
+        {/*
+          Les deux sections que la barre d'onglets ne peut pas accueillir.
+
+          La barre du téléphone ne tient que cinq emplacements (voir
+          `AppShell.tsx`) : « Avant/Après » et « Factures » en sont sorties.
+          Elles ne sont accessibles depuis nulle part ailleurs — les laisser
+          hors de la barre sans ce relais les rendrait injoignables sur
+          mobile, ce qui reviendrait à supprimer deux fonctionnalités au lieu
+          de les déplacer.
+
+          Ce bloc n'existe donc que sous 900 px : au-delà, les deux entrées
+          sont dans le menu latéral, et les répéter ici ferait doublon.
+        */}
+        <nav className={styles.secondaryLinks} aria-label="Autres sections">
+          <Link href="/app/cases" className={`app-ghost ${styles.btnGhost}`}>
+            Avant / Après
+          </Link>
+          <Link href="/app/invoices" className={`app-ghost ${styles.btnGhost}`}>
+            Factures
+          </Link>
+        </nav>
+
         <div className={styles.kpis}>
           <div className={`${styles.kpi} ${styles.kpiAccent}`}>
             <div className={styles.kpiLabel}>En attente</div>
