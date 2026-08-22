@@ -91,16 +91,18 @@ export async function createSubscriptionCheckout(input: {
     // Autorise le client à saisir un code promo sur la page Stripe plutôt
     // que d'avoir à en construire un dans ce code.
     allow_promotion_codes: 'true',
-    // Relance des paiements abandonnés (22/08/2026, phase 3 de l'audit
-    // growth marketing) : Stripe demande le consentement à recevoir un
-    // e-mail de relance ('auto' = ne le demande que si nécessaire), puis
-    // fournit un lien de reprise dans l'événement `checkout.session.expired`
-    // — voir `billing/webhook/route.ts`. Sans ce consentement explicite,
-    // Stripe ne renvoie même pas l'e-mail du client dans l'événement
-    // d'expiration : impossible de le relancer sans son accord, ce qui est
-    // le comportement voulu (RGPD).
-    'consent_collection[promotions]': 'auto',
-    'after_expiration[recovery][enabled]': 'true',
+    // Relance des paiements abandonnés (tentée le 22/08/2026, phase 3 de
+    // l'audit growth marketing) : retirée le même jour. `consent_collection
+    // [promotions]` n'est pas disponible pour un compte Stripe déclaré en
+    // France — Stripe rejetait alors CHAQUE création de session avec
+    // « `consent_collection.promotions` is not available in your country »,
+    // cassant tous les abonnements, pas seulement la relance. Le webhook
+    // (`billing/webhook/route.ts`) garde son traitement de
+    // `checkout.session.expired` par prudence, mais `object.consent` n'étant
+    // plus jamais renseigné, `consented` y est toujours faux : aucun e-mail
+    // de relance ne part. À réintroduire uniquement si Stripe ouvre ce
+    // paramètre aux comptes FR, ou via un mécanisme de consentement propre
+    // ne dépendant pas de `consent_collection`.
     // Le plan et la périodicité voyagent avec la session : c'est ce que le
     // webhook relit pour savoir quoi activer, sans dépendre de l'ordre
     // d'arrivée des événements ni d'un second appel à Stripe.
