@@ -31,10 +31,11 @@ import { contact } from '@/content/contact';
  * « Ressources » (ce qu'on peut lire ou essayer seul).
  *
  * **Aucun lien n'a été inventé ni supprimé.** Les douze destinations d'avant
- * sont toutes présentes ; s'y ajoutent trois pages qui existaient déjà sans
- * être atteignables depuis le pied de page (`/a-propos`, `/methode`, `/blog`),
- * et les deux comptes sociaux, qui viennent de `content/contact.ts` — donc
- * confirmés par Dorian, pas devinés.
+ * sont toutes présentes, redistribuées entre les quatre groupes. Trois pages
+ * existantes (`/a-propos`, `/methode`, `/blog`) avaient été ajoutées puis
+ * retirées le soir même : un pied de page n'est pas un plan du site, il liste
+ * ce qu'on veut mettre en avant. S'ajoutent seulement les deux comptes
+ * sociaux, qui viennent de `content/contact.ts` — donc confirmés, pas devinés.
  *
  * **La ligne d'agents en bas n'est pas un ornement.** Trois points colorés
  * suffisent à rappeler que le produit est fait de trois briques distinctes,
@@ -69,18 +70,20 @@ const groups = [
     ],
   },
   {
+    /* `/a-propos` et `/methode` avaient été ajoutés ici le 22/08/2026 puis
+       retirés le soir même à la demande de Dorian : le pied de page ne liste
+       que les destinations qu'il veut mettre en avant, pas tout ce qui
+       existe. Les deux pages restent en ligne et atteignables ailleurs. */
     title: 'Entreprise',
     links: [
-      { href: '/a-propos', label: 'À propos' },
-      { href: '/methode', label: 'Notre méthode' },
       { href: '/nettoyage-automobile', label: 'Pour les laveurs auto' },
       { href: '/contact', label: 'Nous écrire' },
     ],
   },
   {
+    /* `/blog` retiré pour la même raison, le même jour. */
     title: 'Ressources',
     links: [
-      { href: '/blog', label: 'Articles' },
       { href: '/faq', label: 'Questions fréquentes' },
       { href: '/estimation', label: 'Estimation' },
       { href: '/app', label: 'Espace professionnel' },
@@ -142,7 +145,7 @@ export function DarkFooter() {
               aria-label="Qualifyr — retour à l’accueil"
               className="mb-5 inline-block text-primary no-underline opacity-90 transition-opacity duration-150 hover:opacity-100"
             >
-              <Logo />
+              <Logo onDark />
             </Link>
 
             <p className="text-[0.875rem] leading-[1.65] text-muted">

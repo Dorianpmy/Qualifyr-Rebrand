@@ -32,6 +32,21 @@
   color: var(--text-inverse);
 }
 
+/* Sur la charte sombre — barre de menu et pied de page (22/08/2026).
+
+   Le lockup s'affichait **noir sur noir**, donc invisible. Cause exacte :
+   `.logo` prend `var(--text-primary)`, et ce jeton ne vaut `#f5f7fa` que dans
+   trois blocs de `tailwind.css` (`.estimation-page` et les formulaires
+   légaux). Partout ailleurs il retombe sur la valeur de `tokens.css`,
+   `var(--color-ink)` — l'encre de l'ancienne charte claire, presque noire.
+
+   Une valeur littérale plutôt qu'un jeton : c'est précisément un jeton mal
+   résolu qui a produit le bug, et la couleur du logo sur fond sombre n'a
+   aucune raison de varier selon le contexte. */
+.onDark {
+  color: #f5f7fa;
+}
+
 @media (max-width: 479px) {
   .logo {
     inline-size: 9.5rem;

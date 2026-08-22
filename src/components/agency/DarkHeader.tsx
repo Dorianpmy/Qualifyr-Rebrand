@@ -226,7 +226,7 @@ export function DarkHeader() {
           className="inline-block shrink-0 !text-primary no-underline [&>span]:w-[7.25rem] sm:[&>span]:w-[8rem]"
           onClick={closeMenu}
         >
-          <Logo />
+          <Logo onDark />
         </Link>
 
         {/* Masquée sous 1024 px (`lg`) : cinq libellés côte à côte ne
