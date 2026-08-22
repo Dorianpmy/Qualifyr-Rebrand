@@ -115,7 +115,14 @@ const plans: readonly Plan[] = [
     items: [
       'Il travaille toutes vos communes, pas seulement la vôtre',
       'Il vise les entreprises qui entretiennent vraiment : loueurs, VTC, concessions, flottes',
-      'Il répond au premier message — vous récupérez la conversation quand elle vaut le coup',
+      // Corrigé le 22/08/2026 (phase 4 de l'audit growth marketing) :
+      // « Il répond au premier message — vous récupérez la conversation »
+      // décrivait une prise de contact et une gestion de conversation
+      // automatisées qui n'existent nulle part dans le code (agent/process
+      // ne fait qu'un comptage par catégorie, envoyé par e-mail — voir
+      // reportHtml dans agent/process/route.ts). Remplacé par ce que le
+      // rapport livre réellement.
+      'Chaque chiffre vient du répertoire officiel Sirene, avec la méthode expliquée dans le rapport',
       'Un rapport de secteur par e-mail, à lire quand vous voulez',
     ],
     ctaLabel: 'Analyser ma zone',

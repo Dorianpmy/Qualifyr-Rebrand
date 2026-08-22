@@ -28,8 +28,16 @@ export const homeFaq = [
   },
   {
     question: 'L’agent va-t-il écrire n’importe quoi à mes clients ?',
+    // Corrigé le 22/08/2026 (phase 4 de l'audit growth marketing). L'ancienne
+    // réponse décrivait un agent conversationnel qui répond aux clients avec
+    // vos tarifs et sait quand vous transférer l'échange — aucune brique de
+    // ce type n'existe dans le code (agent/process se limite à un comptage
+    // d'entreprises envoyé par e-mail, voir reportHtml). La vraie réponse à
+    // cette objection est en fait plus rassurante que celle qu'elle
+    // remplace : l'agent ne parle à aucun client, donc le risque qu'il
+    // décrit n'existe pas.
     answer:
-      'Il répond au premier message avec vos tarifs et vos disponibilités réelles — rien qu’il puisse inventer. Dès que la conversation demande un arbitrage, elle vous revient. Il ne prend jamais d’engagement à votre place.',
+      'Non — il ne parle jamais à vos clients à votre place. Il repère les entreprises de votre secteur et vous envoie leurs informations par e-mail : c’est vous qui décidez quoi écrire, et à qui.',
   },
   {
     question: 'Je travaille en Suisse, ça marche ?',
