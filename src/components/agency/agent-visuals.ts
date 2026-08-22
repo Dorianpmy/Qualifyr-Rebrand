@@ -27,11 +27,12 @@ export const orbTints = {
   /**
    * Agent principal — celui qui représente Dorian personnellement, donc le
    * bleu (choix de Dorian, 22/08/2026 : « mon perso est le bleu »).
+   * Visuel original de Dorian (22/08/2026), pas une recréation.
    */
-  qualifyr: '/images/agents/qualifyr.svg',
-  sable: '/images/agents/agent-a.svg',
-  duo: '/images/agents/agent-b.svg',
-  celadon: '/images/agents/agent-c.svg',
+  qualifyr: '/images/agents/qualifyr.webp',
+  sable: '/images/agents/agent-a.webp',
+  duo: '/images/agents/agent-b.webp',
+  celadon: '/images/agents/agent-c.webp',
 } as const;
 
 /**
