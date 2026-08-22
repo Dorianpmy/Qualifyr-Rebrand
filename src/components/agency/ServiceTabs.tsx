@@ -235,8 +235,20 @@ export function GlowCard({
     <div
       className={`rounded-2xl border border-transparent p-4 ${className}`}
       style={{
-        background:
-          'linear-gradient(#101011, #101011) padding-box, linear-gradient(140deg, var(--accent-1), transparent 45%, var(--accent-2)) border-box',
+        /* Bordure dégradée par double calque + `background-clip` (fond uni en
+           `padding-box`, dégradé en `border-box`). Passé du raccourci
+           `background` (origine/clip empilés par calque dans une seule
+           déclaration) aux propriétés longues séparées : signalé le
+           22/08/2026 sur capture d'écran (Safari iOS) — un coin carré de la
+           couleur du dégradé dépassait du coin arrondi. Le raccourci
+           multi-calque avec une origine/un clip différents par calque est un
+           point connu d'incohérence entre moteurs de rendu ; les propriétés
+           longues (`background-image`/`background-origin`/`background-clip`)
+           sont la forme la plus largement supportée de cette technique. */
+        backgroundImage:
+          'linear-gradient(#101011, #101011), linear-gradient(140deg, var(--accent-1), transparent 45%, var(--accent-2))',
+        backgroundOrigin: 'padding-box, border-box',
+        backgroundClip: 'padding-box, border-box',
       }}
     >
       {children}

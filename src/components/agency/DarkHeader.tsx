@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 /**
  * Barre de navigation du site vitrine.
@@ -57,6 +58,24 @@ import { useEffect, useRef, useState } from 'react';
  *    fonctionnent depuis n'importe quelle page.
  * 4. Contenu du menu aligné sur la structure demandée : Accueil,
  *    Fonctionnalités, Tarifs, FAQ, Connexion, Créer mon compte.
+ *
+ * **Round 2, 22/08/2026 (signalement direct, avec capture d'écran, sur
+ * l'accueil : le bouton passe bien en icône « fermer » mais rien d'autre ne
+ * s'affiche — le hero reste visible derrière).** Le diagnostic du 17/08
+ * ci-dessus avait raison sur tout, SAUF un point qu'aucune des causes
+ * passées en revue ne couvrait : `backdrop-filter` (comme `transform` ou
+ * `filter`) crée un nouveau bloc de confinement pour ses descendants en
+ * `position: fixed`. Or `menuOpen === true` ajoute justement `backdrop-blur-
+ * md` au `<header>` lui-même (`scrolled || menuOpen`, voir le `className`
+ * plus bas) — en ouvrant le menu, le header se piège lui-même : le panneau,
+ * jusqu'ici descendant DOM ordinaire du header, se positionnait par rapport
+ * à la boîte du header (~4rem) au lieu du viewport. Exactement le même
+ * mécanisme que celui trouvé le même jour dans `MobileNavigation.tsx`
+ * (l'autre menu mobile du site, sur les pages sans thème sombre) — deux
+ * bugs indépendants, même cause structurelle. Le panneau est donc
+ * maintenant rendu via `createPortal` dans `document.body`, hors de
+ * l'arbre DOM du header : aucune propriété posée sur un ancêtre (existante
+ * ou future) ne peut plus le casser.
  */
 
 const links = [
@@ -92,8 +111,21 @@ export function DarkHeader() {
    */
   const [reduceMotion, setReduceMotion] = useState(false);
 
+  /*
+   * Portail (voir plus bas) : `document` n'existe pas côté serveur, donc le
+   * panneau ne peut être téléporté qu'une fois monté côté client. `menuOpen`
+   * démarre à `false`, donc ce délai d'un tick est invisible — aucune
+   * interaction possible avant l'hydratation de toute façon.
+   */
+  const [mounted, setMounted] = useState(false);
+
   const panelRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- flag « monté côté client », seul moyen d'éviter `document` en SSR pour le portail plus bas ; aucune divergence d'hydratation possible puisque menuOpen (donc tout rendu visible du panneau) reste `false` jusqu'à l'interaction.
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -306,73 +338,94 @@ export function DarkHeader() {
           échoué ailleurs dans ce projet à cause des `!important` de la
           charte historique — voir `BeforeAfterSection.tsx`.
 
-          Toujours monté dans le DOM (pas de `menuOpen &&` conditionnant le
-          rendu) : une transition CSS a besoin que l'élément existe déjà au
-          moment où la propriété change, sinon rien ne s'anime, le panneau
-          apparaît ou disparaît d'un bloc. `hidden lg:hidden` via `className`
-          le retire du flux desktop (où `nav` fait déjà le travail) sans
-          dépendre d'un état JS pour cette partie-là. */}
-      <div
-        ref={panelRef}
-        id="mobile-nav-panel"
-        aria-hidden={!menuOpen}
-        className="lg:hidden"
-        style={{
-          position: 'fixed',
-          top: '4.1rem',
-          left: 0,
-          right: 0,
-          bottom: 0,
-          /* 10000, demande explicite du 17/08/2026 (refonte header). Marge
-             confortable au-dessus de --z-overlay (200, charte historique) et
-             de l'ancien z-50 du header : rien dans le projet n'a besoin de
-             passer devant un menu ouvert. */
-          zIndex: 10000,
-          overflowY: 'auto',
-          background: '#0e0e0f',
-          transform: menuOpen ? 'translateY(0)' : 'translateY(-100%)',
-          opacity: menuOpen ? 1 : 0,
-          visibility: menuOpen ? 'visible' : 'hidden',
-          pointerEvents: menuOpen ? 'auto' : 'none',
-          transition: reduceMotion
-            ? 'none'
-            : 'transform 280ms cubic-bezier(0.16, 1, 0.3, 1), opacity 220ms ease, visibility 280ms',
-        }}
-      >
-        <nav
-          aria-label="Menu"
-          style={{ display: 'flex', flexDirection: 'column', padding: '1.5rem 1.25rem 2.5rem' }}
-        >
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={closeMenu}
-              className="text-[1.0625rem] font-medium !text-primary no-underline"
-              style={{ padding: '0.9rem 0', borderBottom: '1px solid rgba(255,255,255,0.07)', minHeight: '3rem' }}
-            >
-              {link.label}
-            </Link>
-          ))}
-          <Link
-            href={proLink.href}
-            onClick={closeMenu}
-            className="text-[1.0625rem] font-medium !text-primary no-underline"
-            style={{ padding: '0.9rem 0', borderBottom: '1px solid rgba(255,255,255,0.07)', minHeight: '3rem' }}
-          >
-            {proLink.label}
-          </Link>
+          Toujours monté dans le DOM une fois `mounted` vrai (pas de
+          `menuOpen &&` conditionnant le rendu) : une transition CSS a
+          besoin que l'élément existe déjà au moment où la propriété
+          change, sinon rien ne s'anime, le panneau apparaît ou disparaît
+          d'un bloc. `hidden lg:hidden` via `className` le retire du flux
+          desktop (où `nav` fait déjà le travail) sans dépendre d'un état
+          JS pour cette partie-là.
 
-          <Link
-            href={primaryCta.href}
-            onClick={closeMenu}
-            className="cta-solid accent-glow inline-flex items-center justify-center rounded-full bg-white text-[0.9375rem] font-semibold text-ink no-underline"
-            style={{ marginTop: '1.5rem', minHeight: '48px' }}
-          >
-            {primaryCta.label}
-          </Link>
-        </nav>
-      </div>
+          Rendu via `createPortal` dans `document.body` (voir le
+          commentaire « Round 2 » en tête de fichier) : sorti de l'arbre DOM
+          du `<header>`, `top: '4.1rem'` reste correct puisque `position:
+          fixed` se calcule maintenant par rapport au viewport, à
+          l'endroit exact où le header apparaît visuellement (lui-même
+          toujours collé en `top: 0`). */}
+      {mounted
+        ? createPortal(
+            <div
+              ref={panelRef}
+              id="mobile-nav-panel"
+              aria-hidden={!menuOpen}
+              className="lg:hidden"
+              style={{
+                position: 'fixed',
+                top: '4.1rem',
+                left: 0,
+                right: 0,
+                bottom: 0,
+                /* 10000, demande explicite du 17/08/2026 (refonte header). Marge
+                   confortable au-dessus de --z-overlay (200, charte historique) et
+                   de l'ancien z-50 du header : rien dans le projet n'a besoin de
+                   passer devant un menu ouvert. */
+                zIndex: 10000,
+                overflowY: 'auto',
+                background: '#0e0e0f',
+                transform: menuOpen ? 'translateY(0)' : 'translateY(-100%)',
+                opacity: menuOpen ? 1 : 0,
+                visibility: menuOpen ? 'visible' : 'hidden',
+                pointerEvents: menuOpen ? 'auto' : 'none',
+                transition: reduceMotion
+                  ? 'none'
+                  : 'transform 280ms cubic-bezier(0.16, 1, 0.3, 1), opacity 220ms ease, visibility 280ms',
+              }}
+            >
+              <nav
+                aria-label="Menu"
+                style={{ display: 'flex', flexDirection: 'column', padding: '1.5rem 1.25rem 2.5rem' }}
+              >
+                {links.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={closeMenu}
+                    className="text-[1.0625rem] font-medium !text-primary no-underline"
+                    style={{
+                      padding: '0.9rem 0',
+                      borderBottom: '1px solid rgba(255,255,255,0.07)',
+                      minHeight: '3rem',
+                    }}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+                <Link
+                  href={proLink.href}
+                  onClick={closeMenu}
+                  className="text-[1.0625rem] font-medium !text-primary no-underline"
+                  style={{
+                    padding: '0.9rem 0',
+                    borderBottom: '1px solid rgba(255,255,255,0.07)',
+                    minHeight: '3rem',
+                  }}
+                >
+                  {proLink.label}
+                </Link>
+
+                <Link
+                  href={primaryCta.href}
+                  onClick={closeMenu}
+                  className="cta-solid accent-glow inline-flex items-center justify-center rounded-full bg-white text-[0.9375rem] font-semibold text-ink no-underline"
+                  style={{ marginTop: '1.5rem', minHeight: '48px' }}
+                >
+                  {primaryCta.label}
+                </Link>
+              </nav>
+            </div>,
+            document.body,
+          )
+        : null}
     </header>
   );
 }
