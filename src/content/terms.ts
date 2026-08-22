@@ -26,6 +26,16 @@ export type TermsSection = {
   readonly paragraphs: readonly string[];
 };
 
+/**
+ * Date de dernière mise à jour, affichée en tête de page.
+ *
+ * Écrite en clair plutôt que calculée : une date générée automatiquement
+ * changerait à chaque déploiement, y compris quand le texte n'a pas bougé —
+ * ce qui, sur un document contractuel, revient à mentir. À modifier
+ * **manuellement**, et seulement quand une clause change.
+ */
+export const termsUpdatedAt = '22 août 2026';
+
 export const termsIntro =
   'Les présentes conditions régissent la souscription et l’utilisation des abonnements Qualifyr. Elles sont acceptées au moment du paiement.';
 

@@ -877,6 +877,68 @@
   [data-app] :focus-visible {
     outline-color: var(--color-primary) !important;
   }
+
+  /* -------------------------------------------------------------------------
+     Formulaires hérités posés sur une page à la charte sombre.
+
+     `components/form/*` a été écrit pour l'ancienne identité claire : ses
+     styles consomment les jetons de `tokens.css` (`--surface-raised`,
+     `--text-primary`, `--rule-hairline`…), qui valent crème et encre. Déposé
+     tel quel sur une page noire, le formulaire garde donc des champs clairs
+     sur fond sombre.
+
+     **On redéfinit les jetons plutôt que le composant.** Réécrire
+     `ContactForm` en dupliquerait la validation, l'anti-spam, la gestion du
+     focus et les états — quatre choses qui fonctionnent et qu'il ne faut pas
+     copier. Redéfinir les variables sur un conteneur donne au même composant
+     des couleurs sombres, sans qu'une seule ligne de son code change.
+
+     La portée est volontairement étroite : uniquement à l'intérieur d'un
+     élément portant `.dark-form`. Redéfinir ces jetons sur `[data-theme=
+     'dark']` tout entier aurait touché des composants qui ne le demandaient
+     pas.
+     ------------------------------------------------------------------------- */
+  .dark-form {
+    --surface-page: #0e0e0f;
+    --surface-raised: #141417;
+    --surface-sunken: #17171a;
+    --surface-inverse: #ffffff;
+
+    --text-primary: #f5f7fa;
+    --text-secondary: #a7adb8;
+    --text-inverse: #0e0e0f;
+    --text-inverse-secondary: #4a4a4e;
+
+    --rule-hairline: rgba(255, 255, 255, 0.1);
+    --rule-strong: rgba(255, 255, 255, 0.2);
+
+    --color-ink: #0e0e0f;
+    --color-paper: #141417;
+
+    /* L'accent des champs actifs suit la charte : céladon, jamais le laiton
+       de l'ancienne identité. */
+    --color-brass: #b8dcd0;
+    --color-brass-deep: #8fc4b3;
+    --focus-ring: #b8dcd0;
+
+    /* Erreur : un rouge sourd, lisible sur fond noir sans jurer avec la
+       charte. La consigne exclut le rouge **décoratif** ; un message d'erreur
+       n'est pas décoratif, et le signaler en gris serait un défaut
+       d'accessibilité. */
+    --state-error: #e8a598;
+    --state-error-surface: rgba(232, 165, 152, 0.1);
+    --state-success: #b8dcd0;
+  }
+
+  /* Le bouton d'envoi hérite d'un fond `--surface-inverse` (blanc) et d'un
+     texte `--text-inverse` : la paire reste correcte une fois les jetons
+     inversés ci-dessus, mais le reset des liens et boutons de l'ancienne
+     charte peut encore repeindre le fond. On le fixe explicitement. */
+  .dark-form button[type='submit'] {
+    background-color: #ffffff !important;
+    color: #0e0e0f !important;
+    border-color: transparent !important;
+  }
 }
 
 
