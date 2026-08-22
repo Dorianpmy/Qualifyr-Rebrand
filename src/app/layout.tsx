@@ -27,11 +27,11 @@ export const metadata: Metadata = {
   publisher: brand.fullName,
   icons: {
     icon: [
-      { url: '/icon.svg?v=4', type: 'image/svg+xml', sizes: 'any' },
-      { url: '/icons/qualifyr-48.png?v=4', type: 'image/png', sizes: '48x48' },
+      { url: '/icon.svg?v=5', type: 'image/svg+xml', sizes: 'any' },
+      { url: '/icons/qualifyr-48.png?v=5', type: 'image/png', sizes: '48x48' },
     ],
-    shortcut: '/icon.svg?v=4',
-    apple: [{ url: '/icons/apple-touch-icon.png?v=4', sizes: '180x180', type: 'image/png' }],
+    shortcut: '/icon.svg?v=5',
+    apple: [{ url: '/icons/apple-touch-icon.png?v=5', sizes: '180x180', type: 'image/png' }],
   },
   manifest: '/manifest.webmanifest',
   formatDetection: { telephone: false, address: false, email: false },
