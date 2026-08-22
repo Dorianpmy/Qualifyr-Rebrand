@@ -65,18 +65,26 @@ export type DarkHeroProps = {
  * et une simple rangée empilée en flux normal en dessous de 1024px : deux
  * mises en page différentes, exactement ce que le format mobile ne devait
  * pas être. Ici, un seul conteneur `max-w-[26rem]` (donc jamais plus large
- * que la colonne de texte), centré, à toutes les tailles : les positions en
- * pourcentage restent sûres même à 320px puisqu'elles ne dépendent plus de
- * la largeur de la section entière — même principe déjà éprouvé par le
- * nuage de `BeforeAfterSection`. Recyclées par index si `messages` contient
- * plus ou moins de cinq entrées.
+ * que la colonne de texte), centré, à toutes les tailles.
+ *
+ * Revu le 22/08/2026 : les positions ci-dessus se chevauchaient et
+ * masquaient du texte (ex. « Un agent démarche pour vous » caché derrière
+ * « Un client de plus cette semaine »), signalé directement par Dorian sur
+ * capture d'écran, desktop et mobile. Nouvelle disposition en deux colonnes
+ * (gauche : index 0/2/4, droite : index 1/3) + trois rangées verticales
+ * suffisamment espacées : vérifié à la main qu'à la largeur mobile la plus
+ * étroite réaliste (~320px de contenu), la bulle la plus large de chaque
+ * colonne laisse au moins ~30px de marge avec l'autre colonne, et que
+ * chaque rangée laisse au moins ~0.5rem de marge verticale même si son
+ * texte passe sur deux lignes. Le conteneur est passé de 9.75rem à
+ * 11.25rem pour loger la troisième rangée.
  */
 const heroCloudPositions = [
-  { left: 0, top: '0.25rem', transform: 'rotate(-5deg)' },
-  { left: '38%', top: 0, transform: 'rotate(4deg)' },
-  { left: '8%', top: '4.75rem', transform: 'rotate(-3deg)' },
-  { right: '6%', top: '4.25rem', transform: 'rotate(5deg)' },
-  { right: 0, bottom: 0, transform: 'rotate(3deg)' },
+  { left: 0, top: 0, transform: 'rotate(-5deg)' },
+  { right: 0, top: '0.25rem', transform: 'rotate(4deg)' },
+  { left: '4%', top: '4rem', transform: 'rotate(-3deg)' },
+  { right: '2%', top: '4rem', transform: 'rotate(5deg)' },
+  { left: 0, top: '7.5rem', transform: 'rotate(3deg)' },
 ] as const;
 
 export function DarkHero({
@@ -99,7 +107,7 @@ export function DarkHero({
         <div
           aria-hidden="true"
           className="relative mx-auto mb-6 w-full max-w-[26rem] overflow-visible"
-          style={{ height: '9.75rem' }}
+          style={{ height: '11.25rem' }}
         >
           {messages.map((text, index) => (
             <MessageBubble

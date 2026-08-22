@@ -153,26 +153,35 @@ const workers = [
  * fond ET texte en `style`, donc ce risque ne s'applique plus — voir ce
  * composant pour le détail.
  */
+// Revu le 22/08/2026 : les positions ci-dessus (34% / 30% côte à côte avec la
+// bulle 0/3) se chevauchaient et masquaient du texte (« Vous pouvez passer
+// dans 20 min ? » réduit à « ...uvez ...ans 20 min », « Finalement je vais
+// annuler » caché derrière « Vous êtes où ? »), signalé par Dorian sur
+// capture d'écran, desktop et mobile. Même principe que le nuage du hero
+// (`DarkHero.tsx`) : deux colonnes (gauche : index 0/2, droite : index 1/3)
+// sur deux rangées franchement séparées verticalement, plutôt que des
+// bulles qui se touchent sur la même rangée. Conteneur élargi à 23rem (au
+// lieu de 20rem) pour profiter de la largeur mobile déjà disponible.
 const clientNoise = [
   {
     text: 'C’est combien pour une Clio ?',
     prominent: true,
-    style: { left: 0, top: '0.75rem', transform: 'rotate(-4deg)' },
+    style: { left: 0, top: 0, transform: 'rotate(-4deg)' },
   },
   {
     text: 'Vous pouvez passer dans 20 min ?',
     prominent: false,
-    style: { left: '34%', top: 0, transform: 'rotate(-8deg)' },
+    style: { right: 0, top: '0.25rem', transform: 'rotate(-6deg)' },
   },
   {
     text: 'Finalement je vais annuler',
     prominent: false,
-    style: { right: '30%', bottom: '0.5rem', transform: 'rotate(7deg)' },
+    style: { left: 0, top: '3.75rem', transform: 'rotate(6deg)' },
   },
   {
     text: 'Vous êtes où ? Ça fait 10 min',
     prominent: true,
-    style: { right: 0, bottom: 0, transform: 'rotate(4deg)' },
+    style: { right: 0, top: '3.75rem', transform: 'rotate(4deg)' },
   },
 ] as const;
 
@@ -269,10 +278,12 @@ export function BeforeAfterSection() {
               sans déborder de l'écran. `MessageBubble` réduit sa propre
               taille sous `sm:`, donc pas de dépassement à 320px même avec
               les textes les plus longs du tableau (« Vous pouvez passer
-              dans 20 min ? »). Hauteur du conteneur légèrement augmentée
-              (8.5rem au lieu de 7.5rem) pour laisser la place aux bulles qui
-              enveloppent leur texte sur deux lignes en dessous de 400px. */}
-          <div className="relative mx-auto mb-7 w-full max-w-[20rem]" style={{ height: '8.5rem' }}>
+              dans 20 min ? »). Conteneur élargi à 23rem (au lieu de 20rem,
+              22/08/2026) pour donner à `clientNoise` la marge horizontale
+              nécessaire entre colonnes ; hauteur inchangée à 8.5rem, déjà
+              suffisante pour les deux rangées désormais espacées de
+              3.75rem. */}
+          <div className="relative mx-auto mb-7 w-full max-w-[23rem]" style={{ height: '8.5rem' }}>
             {clientNoise.map((message) => (
               <MessageBubble
                 key={message.text}
