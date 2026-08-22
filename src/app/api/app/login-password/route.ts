@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { logServerEvent } from '@/lib/analytics-server';
 import { detailingPublicEnv } from '@/lib/detailing/env';
 import { setSessionCookies } from '@/lib/detailing/session';
 import { clientIp, rateLimit } from '@/lib/rate-limit';
@@ -62,6 +63,13 @@ export async function POST(request: Request) {
   }
 
   await setSessionCookies(data.session.access_token, data.session.refresh_token);
+
+  // `detailerId` (colonne `analytics_events.detailer_id`) référence
+  // `public.detailers(id)`, pas `auth.users(id)` — cette route ne résout pas
+  // la fiche detailer (coût d'une requête de plus sur le chemin critique de
+  // connexion pour un simple événement de mesure) : l'identifiant Auth part
+  // en `metadata`, sans contrainte de clé étrangère à respecter.
+  void logServerEvent({ eventName: 'dashboard_login_succeeded', metadata: { authUserId: data.user?.id ?? null } });
 
   return NextResponse.json({ ok: true, message: 'Connecté.' });
 }

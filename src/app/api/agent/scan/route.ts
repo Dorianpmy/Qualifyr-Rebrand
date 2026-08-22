@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { requestZone } from '@/lib/agent/zones';
+import { logServerEvent } from '@/lib/analytics-server';
 import { clientIp, rateLimit } from '@/lib/rate-limit';
 
 /**
@@ -67,6 +68,11 @@ export async function POST(request: Request) {
       { status: result.status },
     );
   }
+
+  // C'est aujourd'hui la seule chose qui ressemble à une « qualification » du
+  // tunnel : un visiteur qui laisse une zone et un e-mail. Voir §2 de l'audit
+  // growth marketing (Qualifyr-Audit-Growth-CRO.docx).
+  void logServerEvent({ eventName: 'zone_scan_requested', metadata: { radiusKm: parsed.data.radiusKm ?? null } });
 
   return NextResponse.json(result);
 }

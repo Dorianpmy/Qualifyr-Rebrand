@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { logServerEvent } from '@/lib/analytics-server';
 import { verifyWebhookSignature } from '@/lib/billing/stripe';
 
 /**
@@ -92,6 +93,15 @@ export async function POST(request: Request) {
   console.warn(
     `[billing/webhook] ${event.type} — plan=${plan} cadence=${cadence} customer=${object.customer ?? 'n/a'} status=${object.status ?? 'n/a'}`,
   );
+
+  // Journalisé indépendamment du provisioning (qui ne fait rien encore, voir
+  // le commentaire PROVISIONING plus bas) : c'est ce qui permet de mesurer le
+  // taux de conversion réel abonnement → paiement dès aujourd'hui, avant même
+  // que l'accès /app ne soit branché.
+  void logServerEvent({
+    eventName: event.type === 'checkout.session.completed' ? 'payment_completed' : 'subscription_updated',
+    metadata: { plan, cadence, status: object.status ?? null },
+  });
 
   /*
    * PROVISIONING — à compléter une fois le modèle de données choisi.

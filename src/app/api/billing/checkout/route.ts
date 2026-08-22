@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { logServerEvent } from '@/lib/analytics-server';
 import { createSubscriptionCheckout } from '@/lib/billing/stripe';
 
 /**
@@ -46,6 +47,14 @@ export async function POST(request: Request) {
       successUrl: `${origin}/app?abonnement=confirme`,
       cancelUrl: `${origin}/tarifs?abonnement=annule`,
       ...(parsed.data.email ? { customerEmail: parsed.data.email } : {}),
+    });
+
+    // Journalisé côté serveur plutôt qu'en se fiant au seul clic navigateur
+    // (`SubscribeButton`) : ce point-ci confirme qu'une session Stripe a
+    // réellement été créée, pas seulement qu'un clic a eu lieu.
+    void logServerEvent({
+      eventName: 'checkout_started',
+      metadata: { plan: parsed.data.plan, cadence: parsed.data.cadence },
     });
 
     return NextResponse.json({ url: session.url });

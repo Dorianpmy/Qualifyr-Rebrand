@@ -176,6 +176,8 @@ export function DarkHero({
         <div className="flex flex-wrap items-center justify-center gap-3">
           <Link
             href={ctaHref}
+            data-analytics-event="cta_hero_clicked"
+            data-cta-id={ctaLabel}
             className="cta-solid accent-glow group inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full bg-white px-6 text-[0.9375rem] font-semibold text-ink no-underline transition-colors duration-150 hover:bg-white/90"
           >
             {ctaLabel}
@@ -198,6 +200,8 @@ export function DarkHero({
           {secondaryLabel && secondaryHref ? (
             <Link
               href={secondaryHref}
+              data-analytics-event="cta_secondary_clicked"
+              data-cta-id={secondaryLabel}
               className="inline-flex min-h-[48px] items-center surface-pill px-6 text-[0.9375rem] font-medium !text-muted no-underline transition-colors duration-150 hover:!text-white"
             >
               {secondaryLabel}

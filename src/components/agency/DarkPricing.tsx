@@ -323,6 +323,8 @@ function PlanCard({ plan, annual }: { plan: Plan; annual: boolean }) {
 
       <Link
         href={plan.ctaHref}
+        data-analytics-event="pricing_cta_clicked"
+        data-cta-id={plan.id}
         className={
           plan.featured
             ? 'cta-solid accent-glow inline-flex min-h-[44px] items-center justify-center rounded-full bg-white px-5 text-center text-[0.875rem] font-semibold text-ink no-underline transition-colors duration-150 hover:bg-white/90'

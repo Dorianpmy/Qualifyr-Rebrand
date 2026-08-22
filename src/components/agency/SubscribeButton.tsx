@@ -2,6 +2,7 @@
 
 import type { CSSProperties } from 'react';
 import { useState } from 'react';
+import { trackEvent } from '@/lib/analytics';
 
 /**
  * Déclenche un vrai paiement Stripe pour l'un des trois abonnements SaaS.
@@ -41,6 +42,7 @@ export function SubscribeButton({
 
   async function handleClick() {
     setState('loading');
+    trackEvent('subscribe_button_clicked', { ctaId: `${plan}-${cadence}` });
     try {
       const response = await fetch('/api/billing/checkout', {
         method: 'POST',
