@@ -53,7 +53,7 @@ const steps = [
 
 export default function EstimationPage() {
   return (
-    <DarkPageShell breadcrumb="Estimation">
+    <DarkPageShell breadcrumb="Estimation" scope="estimation-page">
       <JsonLd
         data={breadcrumbList([
           { name: 'Accueil', path: '/' },

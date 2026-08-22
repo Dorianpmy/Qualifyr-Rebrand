@@ -893,12 +893,15 @@
      copier. Redéfinir les variables sur un conteneur donne au même composant
      des couleurs sombres, sans qu'une seule ligne de son code change.
 
-     La portée est volontairement étroite : uniquement à l'intérieur d'un
-     élément portant `.dark-form`. Redéfinir ces jetons sur `[data-theme=
-     'dark']` tout entier aurait touché des composants qui ne le demandaient
-     pas.
+     **Renommée `.qualifyr-form` le 22/08/2026, et doublement scopée.**
+     Le nom précédent (`.dark-form`) était trop générique : posé un jour sur
+     un autre écran par simple association d'idées, il y aurait importé cette
+     palette sans que personne ne comprenne d'où elle venait. Le sélecteur
+     exige désormais **aussi** une page identifiée (`.legal-page`,
+     `.estimation-page`, `.contact-page`), ce qui rend l'effet de bord
+     impossible : la classe seule ne produit rien.
      ------------------------------------------------------------------------- */
-  .dark-form {
+  :is(.legal-page, .estimation-page, .contact-page) .qualifyr-form {
     --surface-page: #0e0e0f;
     --surface-raised: #141417;
     --surface-sunken: #17171a;
@@ -934,7 +937,9 @@
      texte `--text-inverse` : la paire reste correcte une fois les jetons
      inversés ci-dessus, mais le reset des liens et boutons de l'ancienne
      charte peut encore repeindre le fond. On le fixe explicitement. */
-  .dark-form button[type='submit'] {
+  :is(.legal-page, .estimation-page, .contact-page)
+    .qualifyr-form
+    button[type='submit'] {
     background-color: #ffffff !important;
     color: #0e0e0f !important;
     border-color: transparent !important;

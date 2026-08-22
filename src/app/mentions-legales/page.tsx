@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 import { DarkPageShell } from '@/components/editorial/DarkPageShell';
 import { EditorialHeader } from '@/components/editorial/EditorialHeader';
+import { LegalNav } from '@/components/editorial/LegalNav';
 import { DataBlock, LegalSections } from '@/components/editorial/LegalSections';
 import { JsonLd } from '@/components/seo/JsonLd';
 
@@ -57,7 +58,7 @@ export default function MentionsLegalesPage() {
     : ([{ label: 'Hébergeur', value: null }] as const);
 
   return (
-    <DarkPageShell breadcrumb="Mentions légales">
+    <DarkPageShell breadcrumb="Mentions légales" scope="legal-page">
       <JsonLd
         data={breadcrumbList([
           { name: 'Accueil', path: '/' },
@@ -66,7 +67,7 @@ export default function MentionsLegalesPage() {
       />
 
       <EditorialHeader
-        eyebrow={legalNoticePage.eyebrow}
+        eyebrow="01 — Légal"
         title={legalNoticePage.title}
         lead={legalNoticePage.lead}
       >
@@ -143,6 +144,8 @@ export default function MentionsLegalesPage() {
           },
         ]}
       />
+
+      <LegalNav current="/mentions-legales" />
     </DarkPageShell>
   );
 }

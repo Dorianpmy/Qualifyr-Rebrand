@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 import { DarkPageShell } from '@/components/editorial/DarkPageShell';
 import { EditorialHeader } from '@/components/editorial/EditorialHeader';
+import { LegalNav } from '@/components/editorial/LegalNav';
 import { LegalSections } from '@/components/editorial/LegalSections';
 import { JsonLd } from '@/components/seo/JsonLd';
 
@@ -51,7 +52,7 @@ export default function PolitiqueConfidentialitePage() {
   ].filter((item) => item.shown);
 
   return (
-    <DarkPageShell breadcrumb="Confidentialité">
+    <DarkPageShell breadcrumb="Confidentialité" scope="legal-page">
       <JsonLd
         data={breadcrumbList([
           { name: 'Accueil', path: '/' },
@@ -60,7 +61,7 @@ export default function PolitiqueConfidentialitePage() {
       />
 
       <EditorialHeader
-        eyebrow={privacyPage.eyebrow}
+        eyebrow="03 — Légal"
         title={privacyPage.title}
         lead={privacyPage.lead}
       >
@@ -136,6 +137,8 @@ export default function PolitiqueConfidentialitePage() {
           },
         ]}
       />
+
+      <LegalNav current="/politique-de-confidentialite" />
     </DarkPageShell>
   );
 }

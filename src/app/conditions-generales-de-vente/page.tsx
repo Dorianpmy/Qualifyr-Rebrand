@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 import { DarkPageShell } from '@/components/editorial/DarkPageShell';
 import { EditorialHeader } from '@/components/editorial/EditorialHeader';
+import { LegalNav } from '@/components/editorial/LegalNav';
 import { LegalSections } from '@/components/editorial/LegalSections';
 import { JsonLd } from '@/components/seo/JsonLd';
 
@@ -29,7 +30,7 @@ export const metadata: Metadata = buildMetadata('/conditions-generales-de-vente'
  */
 export default function ConditionsGeneralesPage() {
   return (
-    <DarkPageShell breadcrumb="Conditions de vente">
+    <DarkPageShell breadcrumb="Conditions de vente" scope="legal-page">
       <JsonLd
         data={breadcrumbList([
           { name: 'Accueil', path: '/' },
@@ -38,7 +39,7 @@ export default function ConditionsGeneralesPage() {
       />
 
       <EditorialHeader
-        eyebrow="Légal"
+        eyebrow="02 — Légal"
         title="Conditions générales de vente"
         lead={termsIntro}
         updatedAt={termsUpdatedAt}
@@ -85,6 +86,8 @@ export default function ConditionsGeneralesPage() {
           },
         ]}
       />
+
+      <LegalNav current="/conditions-generales-de-vente" />
     </DarkPageShell>
   );
 }

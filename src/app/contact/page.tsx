@@ -26,7 +26,7 @@ export const metadata: Metadata = buildMetadata('/contact');
  * valide à nouveau, limite le débit et renvoie 503 si aucun transport d'e-mail
  * n'est configuré.
  *
- * Sa mise en couleur sombre passe par le conteneur `.dark-form`, qui redéfinit
+ * Sa mise en couleur sombre passe par le conteneur `.qualifyr-form`, qui redéfinit
  * les jetons hérités — voir `tailwind.css`. Zéro ligne du composant modifiée.
  *
  * **Aucun délai de réponse n'est annoncé.** La page précédente n'en promettait
@@ -36,7 +36,7 @@ export const metadata: Metadata = buildMetadata('/contact');
  */
 export default function ContactPage() {
   return (
-    <DarkPageShell breadcrumb="Nous écrire">
+    <DarkPageShell breadcrumb="Nous écrire" scope="contact-page">
       <JsonLd
         data={breadcrumbList([
           { name: 'Accueil', path: '/' },
@@ -60,8 +60,8 @@ export default function ContactPage() {
               {contactPage.briefLead}
             </p>
 
-            {/* `.dark-form` : voir le commentaire en tête de fichier. */}
-            <div className="dark-form">
+            {/* `.qualifyr-form` : voir le commentaire en tête de fichier. */}
+            <div className="qualifyr-form">
               <ContactForm />
             </div>
           </div>

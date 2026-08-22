@@ -26,20 +26,32 @@ import { DarkHeader } from '@/components/agency/DarkHeader';
 export function DarkPageShell({
   children,
   breadcrumb,
+  scope,
 }: {
   readonly children: ReactNode;
   /** Libellé de la page courante. Le lien « Accueil » est ajouté devant. */
   readonly breadcrumb?: string;
+  /**
+   * Classe de portée de la page.
+   *
+   * Elle ne sert pas à styler la coque : elle **conditionne** les règles de
+   * `tailwind.css` qui habillent les formulaires hérités. Un sélecteur qui
+   * exigerait seulement `.qualifyr-form` finirait un jour appliqué ailleurs
+   * par simple réutilisation du nom ; en exigeant aussi la page, l'effet de
+   * bord devient impossible.
+   */
+  readonly scope?: 'legal-page' | 'estimation-page' | 'contact-page';
 }) {
   return (
     <>
       <DarkHeader />
 
-      {/* `data-theme="dark"` est déjà posé par `DarkHeader`, mais le répéter
-          ici protège le corps de la page : si l'en-tête venait à changer, les
-          sections garderaient leurs jetons sombres au lieu de retomber sur la
-          palette claire. */}
-      <div data-theme="dark" className="bg-ink">
+      {/* `data-theme="dark"` est posé sur ce conteneur **et non sur `body`
+          ou `html`** : sa portée s'arrête au corps de la page. Les autres
+          pages du site, qui ne le portent pas, gardent leurs propres jetons.
+          `DarkHeader` le pose déjà pour lui-même ; le répéter ici protège les
+          sections si l'en-tête venait à changer. */}
+      <div data-theme="dark" className={`bg-ink ${scope ?? ''}`.trim()}>
         {breadcrumb ? (
           <nav
             aria-label="Fil d’ariane"
