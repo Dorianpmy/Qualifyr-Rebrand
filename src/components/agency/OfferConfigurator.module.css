@@ -115,7 +115,14 @@
   padding: 0.75rem 1rem;
   margin-block-start: var(--space-4);
   border: 1px solid var(--color-copper-deep);
-  background: rgb(18 183 106 / 0.08);
+  /* `rgb(18 183 106 / 0.08)` — l'ancien vert de marque (#12b76a), écrit en
+     dur, oublié lors de la suppression du vert du site (tâche du 17/08/2026)
+     parce qu'il n'utilisait aucun jeton et échappait donc aux recherches par
+     nom de variable. Remplacé par le céladon de la charte, exprimé en
+     `color-mix` sur `--color-brass` : la teinte suit désormais l'accent de la
+     page au lieu d'être figée, y compris quand `/estimation` redéfinit ce
+     jeton pour son fond sombre. */
+  background: color-mix(in srgb, var(--color-brass) 10%, transparent);
   border-radius: 12px;
 }
 

@@ -901,6 +901,51 @@
      `.estimation-page`, `.contact-page`), ce qui rend l'effet de bord
      impossible : la classe seule ne produit rien.
      ------------------------------------------------------------------------- */
+  /* -------------------------------------------------------------------------
+     Le configurateur d'estimation, sur sa page sombre.
+
+     `OfferConfigurator.module.css` consomme une vingtaine de jetons de
+     l'ancienne identité claire — `--surface-page`, `--surface-raised`,
+     `--surface-sunken`, `--text-primary`, `--color-ink`, `--color-brass`… Posé
+     tel quel sur `/estimation`, il y dessinait donc un grand bloc clair au
+     milieu d'une page noire : le « cadre » signalé par Dorian.
+
+     **Même méthode que pour les formulaires, et pour la même raison.** Le
+     composant porte un calcul de prix couvert par huit tests, une bascule de
+     devise et un suivi d'événements ; le réécrire pour changer des couleurs
+     serait risquer trois fonctionnalités pour un problème de peinture. On
+     redéfinit donc les jetons sur la page, et le même composant se rend
+     sombre sans qu'une ligne de son code change.
+
+     La portée s'arrête à `.estimation-page` : ces jetons ne fuient nulle
+     part ailleurs.
+     ------------------------------------------------------------------------- */
+  .estimation-page {
+    --surface-page: #0e0e0f;
+    --surface-raised: #141417;
+    --surface-sunken: #131316;
+    /* Paire inversée du bouton principal : fond blanc, texte encre. */
+    --surface-inverse: #ffffff;
+    --text-inverse: #0e0e0f;
+    --text-inverse-secondary: #4a4a4e;
+
+    --text-primary: #f5f7fa;
+    --text-secondary: #a7adb8;
+
+    --color-ink: #0e0e0f;
+    --color-espresso: #0e0e0f;
+
+    --rule-hairline: rgba(255, 255, 255, 0.08);
+    --rule-strong: rgba(255, 255, 255, 0.16);
+    --rule-inverse: rgba(255, 255, 255, 0.16);
+
+    /* L'accent du choix sélectionné suit la charte : céladon, jamais le
+       laiton ni le cuivre de l'ancienne identité. */
+    --color-brass: #b8dcd0;
+    --color-copper-deep: #8fc4b3;
+    --focus-ring: #b8dcd0;
+  }
+
   :is(.legal-page, .estimation-page, .contact-page) .qualifyr-form {
     --surface-page: #0e0e0f;
     --surface-raised: #141417;
