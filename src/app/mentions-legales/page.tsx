@@ -31,6 +31,20 @@ export const metadata: Metadata = buildMetadata('/mentions-legales');
  * le lecteur doit pouvoir constater ce qui manque.
  */
 export default function MentionsLegalesPage() {
+  /*
+   * Les lignes sans objet sont retirées, pas affichées comme manquantes.
+   *
+   * « Capital social » et « Registre du commerce » s'affichaient « À publier
+   * avant la mise en ligne » — ce qui était faux et inquiétant : un
+   * entrepreneur individuel **n'a pas** de capital social, et n'est pas
+   * immatriculé au registre du commerce et des sociétés. Annoncer une
+   * information à venir qui n'existera jamais donne l'impression de mentions
+   * incomplètes alors qu'elles sont complètes pour ce statut.
+   *
+   * `filter` sur `null` plutôt que sur une liste de libellés : le jour où la
+   * structure changerait de forme juridique, la ligne réapparaîtrait d'
+   * elle-même en même temps que la valeur.
+   */
   const publisher = [
     { label: 'Nom commercial', value: company.tradeName },
     { label: 'Raison sociale', value: company.legalName },
@@ -40,7 +54,7 @@ export default function MentionsLegalesPage() {
     { label: 'Registre du commerce', value: company.registry },
     { label: 'TVA intracommunautaire', value: company.vatNumber },
     { label: 'Siège', value: company.address },
-  ] as const;
+  ].filter((entry) => entry.value !== null);
 
   const contactEntries = [
     { label: 'Directeur de la publication', value: company.publicationDirector },

@@ -55,7 +55,7 @@ export function EditorialHeader({
             <span
               aria-hidden="true"
               className="size-1.5 rounded-full"
-              style={{ background: 'var(--accent-2)' }}
+              style={{ background: 'rgba(255, 255, 255, 0.45)' }}
             />
             Dernière mise à jour : {updatedAt}
           </p>

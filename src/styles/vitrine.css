@@ -9,7 +9,7 @@
   --vk-ink: #0A0A0C;
   --vk-surface: #141417;
   --vk-surface-2: #1A1A1D;
-  --vk-accent: #12b76a;
+  --vk-accent: #f5f7fa;
   --vk-accent-dim: #0F9F5C;
   --vk-neutral: #F5F5F7;
   --vk-muted: #8A8A8E;
@@ -88,7 +88,7 @@
 
   --vk-shadow-card: 0 2px 12px rgb(0 0 0 / 40%);
   --vk-shadow-card-hover: 0 6px 24px rgb(0 0 0 / 55%);
-  --vk-shadow-glow: 0 0 24px rgb(18 183 106 / 25%);
+  --vk-shadow-glow: 0 0 24px rgb(255 255 255 / 14%);
 
   /* ---- Mouvement ---- */
   --vk-duration-fast: 180ms;

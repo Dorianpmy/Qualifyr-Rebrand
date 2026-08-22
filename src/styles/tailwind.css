@@ -941,9 +941,9 @@
 
     /* L'accent du choix sélectionné suit la charte : céladon, jamais le
        laiton ni le cuivre de l'ancienne identité. */
-    --color-brass: #b8dcd0;
-    --color-copper-deep: #8fc4b3;
-    --focus-ring: #b8dcd0;
+    --color-brass: #ffffff;
+    --color-copper-deep: rgba(255, 255, 255, 0.32);
+    --focus-ring: #ffffff;
   }
 
   :is(.legal-page, .estimation-page, .contact-page) .qualifyr-form {
@@ -965,9 +965,9 @@
 
     /* L'accent des champs actifs suit la charte : céladon, jamais le laiton
        de l'ancienne identité. */
-    --color-brass: #b8dcd0;
-    --color-brass-deep: #8fc4b3;
-    --focus-ring: #b8dcd0;
+    --color-brass: #ffffff;
+    --color-brass-deep: rgba(255, 255, 255, 0.7);
+    --focus-ring: #ffffff;
 
     /* Erreur : un rouge sourd, lisible sur fond noir sans jurer avec la
        charte. La consigne exclut le rouge **décoratif** ; un message d'erreur
@@ -975,7 +975,7 @@
        d'accessibilité. */
     --state-error: #e8a598;
     --state-error-surface: rgba(232, 165, 152, 0.1);
-    --state-success: #b8dcd0;
+    --state-success: #ffffff;
   }
 
   /* Le bouton d'envoi hérite d'un fond `--surface-inverse` (blanc) et d'un
