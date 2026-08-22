@@ -62,13 +62,13 @@ export const company = {
 
   /**
    * Numéro de TVA intracommunautaire, ou mention de franchise en base.
-   * **Encore à confirmer par Dorian** : le registre officiel ne renvoie
-   * aucun numéro de TVA (`tva: null`), cohérent avec la franchise en base —
-   * le régime par défaut d'une micro-entreprise créée fin décembre 2025 —
-   * mais ce n'est pas une certitude tant qu'il ne l'a pas confirmé
-   * explicitement. Ne rien afficher tant que ce champ reste `null`.
+   * Confirmé par Dorian le 22/08/2026 : facturation sans TVA (franchise en
+   * base, régime par défaut d'une micro-entreprise créée fin décembre 2025 —
+   * cohérent avec `tva: null` sur le registre officiel).
    */
-  vatNumber: null as string | null,
+  vatNumber: 'TVA non applicable, article 293 B du CGI (franchise en base)' as
+    | string
+    | null,
 
   /**
    * Adresse du siège. Vérifiée le 22/08/2026 auprès du registre officiel.
@@ -80,14 +80,26 @@ export const company = {
   /** Directeur de la publication. */
   publicationDirector: 'Dorian Poumay' as string | null,
 
-  /** Adresse e-mail de contact publiée. */
-  email: null as string | null,
+  /**
+   * Adresse e-mail de contact publiée. Confirmée par Dorian le 22/08/2026 —
+   * redirige vers sa boîte personnelle, mais c'est l'adresse à afficher.
+   */
+  email: 'contact@qualifyragence.com' as string | null,
 
-  /** Téléphone publié. */
+  /** Téléphone publié. Non retenu — Dorian n'a pas souhaité en publier un. */
   phone: null as string | null,
 
-  /** Hébergeur du site — mention obligatoire en France. */
-  hosting: null as Hosting | null,
+  /**
+   * Hébergeur du site — mention obligatoire en France. Netlify, Inc.
+   * Adresse vérifiée le 22/08/2026 sur les conditions d'utilisation
+   * officielles de Netlify (netlify.com/legal/terms-of-use, section 14,
+   * « Contact Information »).
+   */
+  hosting: {
+    name: 'Netlify, Inc.',
+    address: '101 2nd Street, San Francisco, CA 94105, États-Unis',
+    contact: 'support@netlify.com',
+  } as Hosting | null,
 
   /** Domaine, information factuelle et confirmée. */
   domain: productionDomain,
@@ -96,12 +108,18 @@ export const company = {
 /**
  * Sous-traitants qui traitent réellement des données.
  *
- * **Ne lister que des services effectivement en place.** Aujourd'hui, aucun
- * n'est configuré : ni fournisseur d'e-mail, ni hébergeur retenu, ni outil de
- * mesure d'audience. Le tableau reste vide, et la politique de confidentialité
- * le dit franchement.
+ * **Ne lister que des services effectivement en place.** Netlify héberge le
+ * site en production (confirmé) — ajouté le 22/08/2026. Aucun autre
+ * prestataire n'est configuré à ce jour : ni fournisseur d'e-mail, ni outil
+ * de mesure d'audience.
  */
-export const processors: readonly Processor[] = [];
+export const processors: readonly Processor[] = [
+  {
+    name: 'Netlify, Inc.',
+    purpose: 'Hébergement et distribution du site.',
+    location: 'États-Unis',
+  },
+];
 
 /**
  * Durées de conservation.
