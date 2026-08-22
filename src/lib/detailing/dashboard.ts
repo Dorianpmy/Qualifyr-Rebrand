@@ -344,3 +344,31 @@ export function holdRemaining(holdExpiresAt: string | null, now: Date = new Date
   if (seconds < 60) return 'Expire dans moins d’une minute';
   return `Expire dans ${Math.ceil(seconds / 60)} min`;
 }
+
+/**
+ * La réservation appartient-elle bien à ce professionnel ?
+ *
+ * Sert à valider tout identifiant de réservation venu du navigateur avant de
+ * s'en servir — le cas type est le rattachement d'une facture à une
+ * réservation (`api/app/invoices`). Le filtre porte sur les deux colonnes à
+ * la fois : c'est la conjonction qui rend le contrôle utile, pas la lecture.
+ *
+ * Renvoie `false` si la base est injoignable : refuser le rattachement pendant
+ * une panne vaut mieux que l'accepter sans l'avoir vérifié.
+ */
+export async function bookingBelongsToDetailer(
+  bookingId: string,
+  detailerId: string,
+): Promise<boolean> {
+  const client = getServiceSupabaseClient();
+  if (!client) return false;
+
+  const { data, error } = await client
+    .from('detailer_bookings')
+    .select('id')
+    .eq('id', bookingId)
+    .eq('detailer_id', detailerId)
+    .maybeSingle();
+
+  return !error && Boolean(data?.id);
+}

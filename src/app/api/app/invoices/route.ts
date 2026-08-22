@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { isGuardFailure, requireCapability } from '@/lib/billing/guard';
-import { getDetailerForOwner } from '@/lib/detailing/dashboard';
+import { bookingBelongsToDetailer, getDetailerForOwner } from '@/lib/detailing/dashboard';
 import { createInvoice, type CreateInvoiceInput } from '@/lib/detailing/invoices';
 
 export async function POST(request: Request) {
@@ -52,7 +52,29 @@ export async function POST(request: Request) {
     tvaFranchise: Boolean(body.tvaFranchise),
     issue: body.issue !== false,
   };
-  if (body.bookingId) input.bookingId = body.bookingId;
+  /*
+   * `bookingId` vient du navigateur : il faut vérifier qu'il appartient bien
+   * au professionnel connecté avant de le rattacher à une facture.
+   *
+   * Sans ce contrôle (constaté le 22/08/2026), un professionnel pouvait
+   * rattacher sa facture à la réservation d'un **autre** professionnel en
+   * postant simplement un autre identifiant. Aucune donnée d'autrui n'était
+   * lue — la page de facture ne joint pas la réservation — mais la clé
+   * étrangère pointait vers des données qui ne lui appartiennent pas, et
+   * toute jointure ajoutée plus tard aurait transformé cette anomalie en
+   * fuite. On refuse plutôt que d'ignorer le champ : ne rien dire laisserait
+   * croire que le rattachement a eu lieu.
+   */
+  if (body.bookingId) {
+    const owns = await bookingBelongsToDetailer(body.bookingId, detailer.id);
+    if (!owns) {
+      return NextResponse.json(
+        { ok: false, message: 'Réservation introuvable.' },
+        { status: 404 },
+      );
+    }
+    input.bookingId = body.bookingId;
+  }
   if (body.clientEmail) input.clientEmail = body.clientEmail;
   if (body.clientSiren) input.clientSiren = body.clientSiren;
 

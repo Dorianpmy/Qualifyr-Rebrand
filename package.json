@@ -14,7 +14,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "marketing:links": "node scripts/print-campaign-links.mjs"
+    "marketing:links": "node scripts/print-campaign-links.mjs",
+    "check:env": "node scripts/check-env.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.3",
