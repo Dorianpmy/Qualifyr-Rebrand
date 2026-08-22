@@ -105,13 +105,25 @@ create index if not exists subscriptions_status_idx
 -- `stripe_subscription_id` — rejouer un événement met alors la ligne à jour
 -- au lieu d'en créer une seconde.
 --
--- Partiel (`where ... is not null`) : plusieurs lignes peuvent légitimement
--- ne pas avoir d'identifiant Stripe (abonnement créé à la main, essai
--- interne), et Postgres considère deux `null` comme distincts de toute
--- façon — l'index partiel rend cette intention explicite.
+-- **Index total, et non partiel — corrigé le 22/08/2026 (audit de
+-- vérification).** La première version portait `where stripe_subscription_id
+-- is not null`, dans l'idée de rendre explicite que plusieurs lignes peuvent
+-- ne pas avoir d'identifiant Stripe. C'était une erreur, et elle aurait tout
+-- cassé : PostgreSQL n'infère un index **partiel** dans une clause
+-- `on conflict (colonne)` que si le prédicat de l'index y est répété
+-- (`index_predicate`, cf. documentation de `INSERT ... ON CONFLICT`). Or
+-- PostgREST — donc `supabase.upsert({ onConflict })` — n'émet jamais ce
+-- prédicat. Chaque écriture du webhook aurait échoué sur
+-- « there is no unique or exclusion constraint matching the ON CONFLICT
+-- specification », c'est-à-dire qu'**aucun abonnement n'aurait jamais été
+-- enregistré**.
+--
+-- L'index total obtient exactement le même résultat sans ce piège : dans un
+-- index unique PostgreSQL, deux `null` sont considérés comme distincts, donc
+-- plusieurs lignes sans identifiant Stripe restent permises.
+drop index if exists public.subscriptions_stripe_subscription_id_key;
 create unique index if not exists subscriptions_stripe_subscription_id_key
-  on public.subscriptions (stripe_subscription_id)
-  where stripe_subscription_id is not null;
+  on public.subscriptions (stripe_subscription_id);
 
 -- Un seul abonnement en cours par propriétaire.
 --
@@ -121,6 +133,14 @@ create unique index if not exists subscriptions_stripe_subscription_id_key
 -- `incomplete_expired`) sont exclus : l'historique doit pouvoir empiler
 -- plusieurs abonnements résiliés pour un même compte, et rien ne doit être
 -- supprimé à la résiliation.
+--
+-- **Cet index reste partiel, et c'est sans risque** : rien ne fait jamais
+-- d'`on conflict` dessus. C'est une garantie d'intégrité, pas une cible de
+-- résolution de conflit. Le webhook la respecte en clôturant l'abonnement
+-- vivant précédent avant d'en écrire un nouveau (voir
+-- `api/billing/webhook/route.ts`) — sans quoi un changement d'offre, qui crée
+-- un nouvel abonnement Stripe, violerait cette contrainte et laisserait le
+-- client sans droits après paiement.
 create unique index if not exists subscriptions_one_live_per_owner
   on public.subscriptions (owner_id)
   where status in ('trialing', 'active', 'past_due');

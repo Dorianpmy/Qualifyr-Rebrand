@@ -289,11 +289,46 @@ export async function POST(request: Request) {
       : built.row;
 
   /*
+   * Clôture de l'abonnement vivant précédent, s'il en existe un autre.
+   *
+   * **Sans cette étape, un changement d'offre laissait le client sans
+   * droits après paiement** (constaté à l'audit de vérification du
+   * 22/08/2026). La migration 015 n'autorise qu'un seul abonnement vivant
+   * par propriétaire ; or une montée en gamme crée un **nouvel** abonnement
+   * Stripe, avec un nouvel identifiant. L'écriture de ce nouvel abonnement
+   * entrait donc en conflit avec l'ancien, encore `active` — la route
+   * renvoyait 500, Stripe rejouait en boucle, et le client avait payé pour
+   * rien.
+   *
+   * Même problème quand les événements arrivent dans le désordre : Stripe ne
+   * garantit aucun ordre, et le `created` du nouvel abonnement peut précéder
+   * le `deleted` de l'ancien.
+   *
+   * `canceled` plutôt qu'une suppression : l'historique reste consultable,
+   * comme partout ailleurs dans ce système.
+   */
+  if (row.status === 'trialing' || row.status === 'active' || row.status === 'past_due') {
+    const { error: closeError } = await supabase
+      .from('subscriptions')
+      .update({ status: 'canceled' })
+      .eq('owner_id', ownerId)
+      .neq('stripe_subscription_id', row.stripe_subscription_id)
+      .in('status', ['trialing', 'active', 'past_due']);
+
+    if (closeError) {
+      console.error('[billing/webhook] clôture du précédent impossible', closeError.message);
+      return NextResponse.json({ error: 'Écriture impossible.' }, { status: 500 });
+    }
+  }
+
+  /*
    * `upsert` sur `stripe_subscription_id`, jamais `insert`.
    *
    * C'est ce qui rend la route idempotente : le même événement rejoué par
    * Stripe met la ligne à jour au lieu d'en créer une seconde. L'index unique
-   * partiel de la migration 015 est ce qui donne son sens à `onConflict`.
+   * **total** de la migration 015 est ce qui donne son sens à `onConflict` —
+   * un index partiel n'aurait pas été inféré par PostgREST, et chaque
+   * écriture aurait échoué (voir le commentaire de la migration).
    */
   const { error: upsertError } = await supabase
     .from('subscriptions')

@@ -41,9 +41,13 @@ export const services: readonly Service[] = [
             précisément l'argument de vente. */}
         <div className="grid gap-2 sm:grid-cols-3">
           {[
-            { name: 'Prospection', tint: orbTints.sable },
-            { name: 'Filtrage', tint: orbTints.duo },
-            { name: 'Mémoire', tint: orbTints.celadon },
+            /* Mêmes noms qu'`AgentFlow` et `BeforeAfterSection` : les trois
+               étapes réelles du traitement. « Filtrage » et « Mémoire »
+               annonçaient un tri qualitatif et un apprentissage qui
+               n'existent pas (audit de vérification, 22/08/2026). */
+            { name: 'Recherche', tint: orbTints.sable },
+            { name: 'Classement', tint: orbTints.duo },
+            { name: 'Rapport', tint: orbTints.celadon },
           ].map((agent) => (
             <div
               key={agent.name}

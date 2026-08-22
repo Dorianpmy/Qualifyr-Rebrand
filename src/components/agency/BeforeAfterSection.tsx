@@ -145,10 +145,22 @@ function CheckIcon() {
  * mot « Agent » sur une seule rangée étroite forcerait la troncature, et le
  * mot est déjà porté par l'orbe.
  */
+/*
+ * Renommés le 22/08/2026 (audit de vérification).
+ *
+ * « Filtrage » et « Mémoire » avaient survécu à la correction des promesses :
+ * `AgentFlow` était passé aux trois étapes réelles, mais ces deux libellés
+ * continuaient d'annoncer, en un mot, les deux capacités justement retirées —
+ * un tri qualitatif des demandes et un apprentissage. Trois écrans nommaient
+ * donc le même agent de trois façons différentes, dont deux fausses.
+ *
+ * Les trois noms sont désormais ceux d'`AgentFlow`, dans le même ordre : les
+ * trois étapes que `api/agent/process/route.ts` exécute vraiment.
+ */
 const workers = [
-  { name: 'Prospection', tint: orbTints.sable },
-  { name: 'Filtrage', tint: orbTints.duo },
-  { name: 'Mémoire', tint: orbTints.celadon },
+  { name: 'Recherche', tint: orbTints.sable },
+  { name: 'Classement', tint: orbTints.duo },
+  { name: 'Rapport', tint: orbTints.celadon },
 ] as const;
 
 /**

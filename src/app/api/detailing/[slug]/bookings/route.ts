@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { detailerHasCapabilityBySlug } from '@/lib/billing/guard';
 import { createBooking } from '@/lib/detailing/booking';
 import type {
   LocationMode,
@@ -59,6 +60,31 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   const parsed = bodySchema.safeParse(payload);
   if (!parsed.success) {
     return Response.json({ error: 'invalid_body', issues: parsed.error.issues }, { status: 400 });
+  }
+
+  /*
+   * La page de réservation publique fait partie des offres « Système seul » et
+   * « Pack complet », pas de l'offre « Agent seul ».
+   *
+   * **Ce contrôle manquait** (constaté à l'audit de vérification du
+   * 22/08/2026) : la capacité `booking.public` figurait dans la matrice et
+   * dans le tableau de tarifs, mais aucune route ne la vérifiait. Un abonné
+   * « Agent seul » gardait donc une page de réservation entièrement
+   * fonctionnelle — seul l'encaissement de l'acompte était bloqué, plus loin
+   * dans le parcours. C'est exactement le contournement que la consigne
+   * « ne te contente pas de masquer les boutons » vise.
+   *
+   * Comme pour le checkout d'acompte, la route est publique : le contrôle
+   * porte sur le propriétaire de la fiche, jamais sur l'appelant. Message
+   * neutre — un client final n'a pas à connaître l'abonnement du
+   * professionnel.
+   */
+  const allowed = await detailerHasCapabilityBySlug(slug, 'booking.public');
+  if (!allowed) {
+    return Response.json(
+      { error: 'booking_unavailable', message: 'Les réservations en ligne ne sont pas disponibles.' },
+      { status: 403 },
+    );
   }
 
   const result = await createBooking({ slug, ...parsed.data });

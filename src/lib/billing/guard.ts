@@ -116,6 +116,30 @@ export async function detailerHasCapability(
   capability: Capability,
   options?: { readonly write?: boolean },
 ): Promise<boolean> {
+  return ownerHasCapability({ column: 'id', value: detailerId, capability, ...options });
+}
+
+/**
+ * Même contrôle, à partir du `slug` public d'un professionnel.
+ *
+ * Les routes du parcours client ne connaissent que le slug de l'URL, jamais
+ * l'identifiant interne. Résoudre le slug d'abord puis appeler la variante
+ * par identifiant aurait doublé les allers-retours en base pour rien.
+ */
+export async function detailerHasCapabilityBySlug(
+  slug: string,
+  capability: Capability,
+  options?: { readonly write?: boolean },
+): Promise<boolean> {
+  return ownerHasCapability({ column: 'slug', value: slug, capability, ...options });
+}
+
+async function ownerHasCapability(input: {
+  readonly column: 'id' | 'slug';
+  readonly value: string;
+  readonly capability: Capability;
+  readonly write?: boolean;
+}): Promise<boolean> {
   const { getServiceSupabaseClient } = await import('@/lib/detailing/supabase-server');
   const client = getServiceSupabaseClient();
   if (!client) return false;
@@ -123,11 +147,11 @@ export async function detailerHasCapability(
   const { data, error } = await client
     .from('detailers')
     .select('owner_id')
-    .eq('id', detailerId)
+    .eq(input.column, input.value)
     .maybeSingle();
 
   if (error || !data?.owner_id) return false;
 
   const entitlement = await getEntitlement(String(data.owner_id));
-  return canAccess(entitlement, capability, options);
+  return canAccess(entitlement, input.capability, { write: input.write ?? true });
 }

@@ -49,9 +49,9 @@ const offers: readonly Offer[] = [
     cadence: 'par mois',
     convertible: false,
     audience:
-      'Votre semaine a des trous et le téléphone ne sonne pas. L’agent démarche votre secteur pendant que vous êtes sur un véhicule.',
+      'Votre semaine a des trous et le téléphone ne sonne pas. L’agent recense les entreprises de votre secteur à appeler, pendant que vous êtes sur un véhicule.',
     items: [
-      'Il travaille toutes vos communes, pas seulement la vôtre',
+      'Il couvre les codes postaux voisins de votre zone, pas seulement le vôtre',
       'Il vise les entreprises qui entretiennent vraiment : loueurs, VTC, concessions, flottes',
       // Corrigé le 22/08/2026 — même correction que DarkPricing.tsx :
       // « Il répond au premier message » décrivait une prise de contact
@@ -73,9 +73,9 @@ const offers: readonly Offer[] = [
     audience:
       'Trouver un client ne sert à rien s’il annule la veille. Les rendez-vous arrivent seuls et l’acompte est déjà encaissé.',
     items: [
-      'Tout l’agent d’acquisition, sur toutes vos communes',
+      'Tout l’agent de recensement, sur les codes postaux voisins de votre zone',
       'Tout le système de réservation et sa facturation',
-      'Les rendez-vous trouvés par l’agent atterrissent dans le même agenda',
+      'Le rapport de secteur d’un côté, les réservations de l’autre, sur le même compte',
       'Un seul abonnement, une seule facture',
     ],
     href: '/nettoyage-automobile',
