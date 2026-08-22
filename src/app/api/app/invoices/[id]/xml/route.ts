@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { isGuardFailure, requireCapability } from '@/lib/billing/guard';
 import { buildCiiInvoiceXml } from '@/lib/detailing/einvoice';
 import { getDetailerForOwner } from '@/lib/detailing/dashboard';
 import { detailingServiceEnv } from '@/lib/detailing/env';
 import { getInvoiceWithLines } from '@/lib/detailing/invoices';
-import { getSessionUser } from '@/lib/detailing/session';
 
 /**
  * Téléchargement du XML structuré (CII, EN 16931) d'une facture.
@@ -17,10 +17,12 @@ import { getSessionUser } from '@/lib/detailing/session';
 export const dynamic = 'force-dynamic';
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const user = await getSessionUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Non connecté.' }, { status: 401 });
-  }
+  /* Contrôle d'accès serveur : authentification **et** droit lié à
+     l'abonnement. C'est le seul contrôle qui protège — masquer le
+     module dans l'interface n'empêche pas d'appeler cette URL. */
+  const guard = await requireCapability('invoices');
+  if (isGuardFailure(guard)) return guard.response;
+  const { user } = guard;
 
   const detailer = await getDetailerForOwner(user.id);
   if (!detailer) {

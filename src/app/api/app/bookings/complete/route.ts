@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { isGuardFailure, requireCapability } from '@/lib/billing/guard';
 import { getServiceSupabaseClient } from '@/lib/detailing/supabase-server';
-import { getSessionUser } from '@/lib/detailing/session';
 import { getDetailerForOwner } from '@/lib/detailing/dashboard';
 import { notifyVehicleReady } from '@/lib/detailing/whatsapp';
 import { formatMoney, profileFor } from '@/lib/detailing/locale';
@@ -27,10 +27,12 @@ const bodySchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const user = await getSessionUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Non authentifié.' }, { status: 401 });
-  }
+  /* Contrôle d'accès serveur : authentification **et** droit lié à
+     l'abonnement. C'est le seul contrôle qui protège — masquer le
+     module dans l'interface n'empêche pas d'appeler cette URL. */
+  const guard = await requireCapability('dashboard');
+  if (isGuardFailure(guard)) return guard.response;
+  const { user } = guard;
 
   const owned = await getDetailerForOwner(user.id);
   if (!owned) {

@@ -1,6 +1,13 @@
 import { NextResponse } from 'next/server';
 import { logServerEvent } from '@/lib/analytics-server';
+import {
+  buildSubscriptionRow,
+  emailFromEvent,
+  planByPriceIdFromEnv,
+  type StripeSubscriptionLike,
+} from '@/lib/billing/provisioning';
 import { verifyWebhookSignature } from '@/lib/billing/stripe';
+import { getServiceSupabaseClient } from '@/lib/detailing/supabase-server';
 import { resolveTransport } from '@/lib/email/transport';
 
 /**
@@ -16,20 +23,29 @@ import { resolveTransport } from '@/lib/email/transport';
  * Stripe pour que la relance de panier abandonné fonctionne — voir
  * `lib/billing/stripe.ts`).
  *
- * **Ce que cette route fait aujourd'hui.** Elle vérifie la signature (sans
- * quoi n'importe qui pourrait simuler un paiement), identifie l'abonnement,
- * le plan et la périodicité, journalise l'événement, et relance par e-mail
- * un paiement abandonné quand le client y a consenti.
+ * **Ce que cette route fait.** Elle vérifie la signature (sans quoi n'importe
+ * qui pourrait simuler un paiement), traduit l'événement en ligne
+ * d'abonnement, l'écrit dans `subscriptions`, journalise, et relance par
+ * e-mail un paiement abandonné quand le client y a consenti.
  *
- * **Ce qu'elle ne fait pas encore, volontairement.** Activer l'accès du
- * client dans l'espace pro (`/app`) suppose de savoir où stocker « ce
- * compte a tel abonnement, actif jusqu'à telle date » — une table
- * `subscriptions`, une colonne sur `detailers`, autre chose : ce choix
- * touche au schéma d'authentification existant et ne doit pas être deviné
- * dans ce fichier. Tant que ce n'est pas branché, un abonnement payé est
- * bien créé et facturé côté Stripe, mais n'active rien automatiquement côté
- * Qualifyr — voir le commentaire `PROVISIONING` ci-dessous pour l'endroit
- * exact où ajouter cette logique une fois le modèle de données choisi.
+ * **Provisioning branché le 22/08/2026.** Jusque-là, cette route journalisait
+ * et s'arrêtait : un client pouvait payer sans obtenir le moindre accès. La
+ * table `subscriptions` (migration 015) donne l'endroit où écrire ; c'est
+ * elle que `lib/billing/entitlements.ts` lit pour décider de tout accès.
+ *
+ * **Idempotence.** Stripe garantit « au moins une fois », jamais « exactement
+ * une fois » : le même événement peut arriver deux fois. Toutes les écritures
+ * passent donc par un `upsert` sur `stripe_subscription_id`, qui porte un
+ * index unique — rejouer un événement met la ligne à jour au lieu d'en créer
+ * une seconde.
+ *
+ * **Rattachement au compte.** Stripe ne connaît pas les comptes Qualifyr : il
+ * faut retrouver l'utilisateur à partir du client Stripe (déjà rattaché lors
+ * d'un événement précédent) ou, à défaut, de son e-mail. Si aucun des deux ne
+ * donne de résultat, la route **n'accorde aucun droit** et journalise une
+ * erreur explicite : accorder un accès au mauvais compte serait pire que de
+ * n'en accorder aucun. La réponse reste un `200` — un `500` ferait rejouer
+ * Stripe en boucle sur un problème que le rejeu ne résoudra pas.
  */
 
 export const dynamic = 'force-dynamic';
@@ -37,18 +53,7 @@ export const dynamic = 'force-dynamic';
 type StripeEvent = {
   readonly type: string;
   readonly data: {
-    readonly object: {
-      readonly id: string;
-      readonly customer?: string;
-      readonly customer_email?: string;
-      readonly status?: string;
-      readonly metadata?: {
-        readonly plan?: string;
-        readonly cadence?: string;
-      };
-      readonly customer_details?: {
-        readonly email?: string;
-      };
+    readonly object: StripeSubscriptionLike & {
       readonly consent?: {
         readonly promotions?: string;
       };
@@ -60,6 +65,54 @@ type StripeEvent = {
     };
   };
 };
+
+/**
+ * Retrouve le compte Qualifyr auquel rattacher un abonnement.
+ *
+ * Deux pistes, dans cet ordre :
+ *
+ * 1. **L'identifiant client Stripe**, s'il figure déjà sur une ligne
+ *    d'abonnement. C'est le cas dès le deuxième événement d'un même client, et
+ *    c'est la piste la plus fiable — elle ne dépend d'aucune saisie.
+ * 2. **L'e-mail**, sinon. C'est la seule piste au tout premier événement.
+ *    Comparaison en minuscules : Stripe renvoie l'adresse telle que saisie,
+ *    Supabase la stocke normalisée, et « Jean@… » ne doit pas manquer
+ *    « jean@… ».
+ *
+ * Renvoie `null` si aucune ne donne de résultat. L'appelant doit alors refuser
+ * d'écrire : mieux vaut un abonnement non provisionné, visible dans les
+ * journaux, qu'un accès accordé au mauvais compte.
+ */
+async function findOwnerId(input: {
+  readonly client: ReturnType<typeof getServiceSupabaseClient>;
+  readonly stripeCustomerId: string | null;
+  readonly email: string | null;
+}): Promise<string | null> {
+  const { client, stripeCustomerId, email } = input;
+  if (!client) return null;
+
+  if (stripeCustomerId) {
+    const { data } = await client
+      .from('subscriptions')
+      .select('owner_id')
+      .eq('stripe_customer_id', stripeCustomerId)
+      .limit(1)
+      .maybeSingle();
+    if (data?.owner_id) return String(data.owner_id);
+  }
+
+  if (email) {
+    // `listUsers` plutôt qu'une requête sur `auth.users` : cette table n'est
+    // pas exposée à PostgREST, l'API d'administration est le seul accès.
+    const { data } = await client.auth.admin.listUsers({ page: 1, perPage: 200 });
+    const match = data?.users?.find(
+      (candidate) => (candidate.email ?? '').trim().toLowerCase() === email,
+    );
+    if (match?.id) return match.id;
+  }
+
+  return null;
+}
 
 export async function POST(request: Request) {
   const secret = process.env.STRIPE_BILLING_WEBHOOK_SECRET;
@@ -88,9 +141,17 @@ export async function POST(request: Request) {
 
   const handled = [
     'checkout.session.completed',
+    // Ajouté le 22/08/2026 : un abonnement créé directement dans le tableau
+    // de bord Stripe, ou par un essai, n'émet aucun `checkout.session.*`.
+    // Sans cet événement, ces comptes n'auraient jamais eu de droits.
+    'customer.subscription.created',
     'customer.subscription.updated',
     'customer.subscription.deleted',
     'checkout.session.expired',
+    // Échec de paiement : Stripe passe l'abonnement en `past_due` et émet
+    // aussi un `customer.subscription.updated`, mais celui-ci arrive avec le
+    // statut à jour. On journalise l'échec pour pouvoir le suivre.
+    'invoice.payment_failed',
   ];
 
   if (!handled.includes(event.type)) {
@@ -148,38 +209,107 @@ export async function POST(request: Request) {
   }
 
   // `console.warn`, pas `console.info` : la règle de lint du projet n'autorise
-  // que `warn`/`error` sur la console. Ce n'est pas une erreur — juste la
-  // seule trace disponible tant que le provisioning (voir plus bas) n'écrit
-  // nulle part ailleurs.
+  // que `warn`/`error` sur la console. Ni l'identifiant client ni l'e-mail ne
+  // sont journalisés — un journal d'hébergeur n'est pas l'endroit où faire
+  // vivre une donnée personnelle.
   console.warn(
-    `[billing/webhook] ${event.type} — plan=${plan} cadence=${cadence} customer=${object.customer ?? 'n/a'} status=${object.status ?? 'n/a'}`,
+    `[billing/webhook] ${event.type} — plan=${plan} cadence=${cadence} status=${object.status ?? 'n/a'}`,
   );
 
-  // Journalisé indépendamment du provisioning (qui ne fait rien encore, voir
-  // le commentaire PROVISIONING plus bas) : c'est ce qui permet de mesurer le
-  // taux de conversion réel abonnement → paiement dès aujourd'hui, avant même
-  // que l'accès /app ne soit branché.
   void logServerEvent({
-    eventName: event.type === 'checkout.session.completed' ? 'payment_completed' : 'subscription_updated',
+    eventName:
+      event.type === 'checkout.session.completed' ? 'payment_completed' : 'subscription_updated',
     metadata: { plan, cadence, status: object.status ?? null },
   });
 
-  /*
-   * PROVISIONING — à compléter une fois le modèle de données choisi.
-   *
-   * Ici, et seulement ici, doit vivre la logique qui :
-   *  1. retrouve ou crée le compte Qualifyr associé à `object.customer`
-   *     (ou `object.customer_email` sur `checkout.session.completed`) ;
-   *  2. enregistre le plan actif et sa périodicité ;
-   *  3. sur `customer.subscription.deleted`, révoque l'accès plutôt que de
-   *     supprimer l'historique — un abonnement résilié doit rester
-   *     consultable, pas disparaître.
-   *
-   * Idempotence : Stripe garantit « au moins une fois », pas « exactement
-   * une fois » — le même événement peut arriver deux fois. Toute écriture
-   * ajoutée ici doit pouvoir être rejouée sans effet de bord (ex. un
-   * `upsert` sur l'identifiant Stripe, pas un `insert`).
-   */
+  // --- Provisioning --------------------------------------------------------
 
-  return NextResponse.json({ received: true });
+  // `invoice.payment_failed` n'apporte pas de plan : le changement de statut
+  // arrive par le `customer.subscription.updated` que Stripe émet en même
+  // temps. On se contente donc de le tracer.
+  if (event.type === 'invoice.payment_failed') {
+    void logServerEvent({ eventName: 'payment_failed', metadata: { plan, cadence } });
+    return NextResponse.json({ received: true });
+  }
+
+  const supabase = getServiceSupabaseClient();
+  if (!supabase) {
+    // 503 : contrairement aux autres erreurs, celle-ci se résout d'elle-même
+    // quand la base revient — et Stripe réessaie sur 5xx.
+    console.error('[billing/webhook] base indisponible, provisioning différé');
+    return NextResponse.json({ error: 'Base indisponible.' }, { status: 503 });
+  }
+
+  const built = buildSubscriptionRow({
+    eventType: event.type,
+    object,
+    planByPriceId: planByPriceIdFromEnv(process.env),
+  });
+
+  if (!built.ok) {
+    // Aucun droit accordé : un plan qu'on ne sait pas lire ne doit jamais
+    // devenir un plan par défaut.
+    console.error(
+      `[billing/webhook] provisioning refusé (${built.reason}) sur ${event.type}`,
+    );
+    void logServerEvent({
+      eventName: 'provisioning_failed',
+      metadata: { reason: built.reason, eventType: event.type },
+    });
+    return NextResponse.json({ received: true, provisioned: false });
+  }
+
+  const ownerId = await findOwnerId({
+    client: supabase,
+    stripeCustomerId: built.row.stripe_customer_id,
+    email: emailFromEvent(object),
+  });
+
+  if (!ownerId) {
+    console.error(
+      `[billing/webhook] compte introuvable pour ${event.type} — abonnement non provisionné`,
+    );
+    void logServerEvent({
+      eventName: 'provisioning_failed',
+      metadata: { reason: 'owner-not-found', eventType: event.type },
+    });
+    return NextResponse.json({ received: true, provisioned: false });
+  }
+
+  /*
+   * Résiliation : on met le statut à jour, on ne supprime rien.
+   *
+   * L'historique d'un abonnement résilié doit rester consultable — c'est ce
+   * qui permet à un ancien client de récupérer ses factures. `canAccess`
+   * traite `canceled` comme un accès en lecture seule.
+   */
+  const row =
+    event.type === 'customer.subscription.deleted'
+      ? { ...built.row, status: 'canceled' as const }
+      : built.row;
+
+  /*
+   * `upsert` sur `stripe_subscription_id`, jamais `insert`.
+   *
+   * C'est ce qui rend la route idempotente : le même événement rejoué par
+   * Stripe met la ligne à jour au lieu d'en créer une seconde. L'index unique
+   * partiel de la migration 015 est ce qui donne son sens à `onConflict`.
+   */
+  const { error: upsertError } = await supabase
+    .from('subscriptions')
+    .upsert({ ...row, owner_id: ownerId }, { onConflict: 'stripe_subscription_id' });
+
+  if (upsertError) {
+    console.error('[billing/webhook] écriture impossible', upsertError.message);
+    // 500 : Stripe réessaiera, et une écriture qui échoue pour une raison
+    // transitoire doit pouvoir aboutir au essai suivant.
+    return NextResponse.json({ error: 'Écriture impossible.' }, { status: 500 });
+  }
+
+  void logServerEvent({
+    eventName: 'subscription_provisioned',
+    metadata: { plan: row.plan, status: row.status },
+  });
+
+  return NextResponse.json({ received: true, provisioned: true });
 }

@@ -19,6 +19,17 @@ import { clientIp, rateLimit } from '@/lib/rate-limit';
  * **La réponse ne promet pas de délai précis.** « Sous quelques heures » est
  * tenable ; « dans 2 minutes » ne l'est pas si le quota est saturé, et une
  * promesse ratée à la première interaction coûte plus cher que l'attente.
+ *
+ * **Route volontairement ouverte, sans contrôle d'abonnement.** C'est l'offre
+ * d'appel du site : « première zone gratuite, sans carte bancaire ». Exiger un
+ * abonnement ici supprimerait la promesse commerciale au lieu de la protéger.
+ * Ce qui borne l'abus n'est donc pas un droit mais une limite de débit
+ * (`rateLimit` ci-dessous) : le coût réel d'une zone, c'est le quota INSEE,
+ * pas un accès produit.
+ *
+ * La demande de zone **depuis l'espace pro** passe, elle, par
+ * `api/app/agent-zones`, qui exige la capacité `agent.prospecting` : un abonné
+ * « Système seul » ne peut pas se créer de zones illimitées depuis son compte.
  */
 
 export const dynamic = 'force-dynamic';

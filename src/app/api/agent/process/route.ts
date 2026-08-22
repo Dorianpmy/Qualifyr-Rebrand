@@ -14,6 +14,15 @@ import { SEGMENTS, countBySegment, scanZone, type Establishment } from '@/lib/ag
  *
  * **Protégée par un secret.** Sans lui, n'importe qui déclencherait des
  * analyses en boucle et ferait sauter le quota de la clé INSEE.
+ *
+ * **Pas de contrôle d'abonnement ici, et c'est délibéré.** Cette route ne
+ * répond à personne : elle est appelée par le planificateur avec un secret
+ * partagé, et traite une file de zones déjà enregistrées. Le droit de créer
+ * une zone se vérifie **à l'entrée**, dans `api/app/agent-zones` (capacité
+ * `agent.prospecting`) — une zone présente dans la file a donc déjà été
+ * autorisée. Refaire ce contrôle ici bloquerait aussi les zones gratuites
+ * demandées depuis le site vitrine par des visiteurs sans compte, qui sont
+ * précisément l'offre d'appel.
  */
 
 export const dynamic = 'force-dynamic';

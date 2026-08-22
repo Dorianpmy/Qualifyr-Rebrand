@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { requestZone } from '@/lib/agent/zones';
+import { isGuardFailure, requireCapability } from '@/lib/billing/guard';
 import { getDetailerForOwner } from '@/lib/detailing/dashboard';
-import { getSessionUser } from '@/lib/detailing/session';
 
 /**
  * Demande de zone depuis l'espace pro.
@@ -21,10 +21,13 @@ const bodySchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const user = await getSessionUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Non connecté.' }, { status: 401 });
-  }
+  /* `requireCapability` remplace la vérification de session seule : elle
+     vérifie l'authentification **et** que l'abonnement inclut la prospection.
+     Sans elle, un abonné « Système seul » créerait des zones d'agent qu'il
+     n'a pas payées, simplement en appelant cette URL. */
+  const guard = await requireCapability('agent.prospecting');
+  if (isGuardFailure(guard)) return guard.response;
+  const { user } = guard;
 
   const detailer = await getDetailerForOwner(user.id);
   if (!detailer) {

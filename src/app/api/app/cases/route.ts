@@ -1,13 +1,15 @@
 import { NextResponse } from 'next/server';
+import { isGuardFailure, requireCapability } from '@/lib/billing/guard';
 import { getDetailerForOwner } from '@/lib/detailing/dashboard';
 import { createCase } from '@/lib/detailing/cases';
-import { getSessionUser } from '@/lib/detailing/session';
 
 export async function POST(request: Request) {
-  const user = await getSessionUser();
-  if (!user) {
-    return NextResponse.json({ ok: false, message: 'Non connecté.' }, { status: 401 });
-  }
+  /* Contrôle d'accès serveur : authentification **et** droit lié à
+     l'abonnement. C'est le seul contrôle qui protège — masquer le
+     module dans l'interface n'empêche pas d'appeler cette URL. */
+  const guard = await requireCapability('gallery');
+  if (isGuardFailure(guard)) return guard.response;
+  const { user } = guard;
 
   const detailer = await getDetailerForOwner(user.id);
   if (!detailer) {

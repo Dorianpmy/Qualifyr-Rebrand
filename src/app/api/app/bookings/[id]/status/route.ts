@@ -3,17 +3,19 @@ import {
   getDetailerForOwner,
   updateBookingStatus,
 } from '@/lib/detailing/dashboard';
-import { getSessionUser } from '@/lib/detailing/session';
+import { isGuardFailure, requireCapability } from '@/lib/billing/guard';
 import type { BookingStatus } from '@/lib/detailing/types';
 
 export async function POST(
   request: Request,
   context: { params: Promise<{ id: string }> },
 ) {
-  const user = await getSessionUser();
-  if (!user) {
-    return NextResponse.json({ ok: false, message: 'Non authentifié.' }, { status: 401 });
-  }
+  /* Contrôle d'accès serveur : authentification **et** droit lié à
+     l'abonnement. C'est le seul contrôle qui protège — masquer le
+     module dans l'interface n'empêche pas d'appeler cette URL. */
+  const guard = await requireCapability('dashboard');
+  if (isGuardFailure(guard)) return guard.response;
+  const { user } = guard;
 
   const detailer = await getDetailerForOwner(user.id);
   if (!detailer) {

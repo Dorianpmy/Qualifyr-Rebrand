@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
+import { isGuardFailure, requireCapability } from '@/lib/billing/guard';
 import { getDetailerForOwner } from '@/lib/detailing/dashboard';
 import { saveCatalogue, type CataloguePatch } from '@/lib/detailing/pricing-admin';
-import { getSessionUser } from '@/lib/detailing/session';
 
 /**
  * Enregistrement du catalogue d'un professionnel.
@@ -11,10 +11,12 @@ import { getSessionUser } from '@/lib/detailing/session';
  * pourrait réécrire les tarifs d'un concurrent en changeant un identifiant.
  */
 export async function POST(request: Request) {
-  const user = await getSessionUser();
-  if (!user) {
-    return NextResponse.json({ ok: false, message: 'Non connecté.' }, { status: 401 });
-  }
+  /* Contrôle d'accès serveur : authentification **et** droit lié à
+     l'abonnement. C'est le seul contrôle qui protège — masquer le
+     module dans l'interface n'empêche pas d'appeler cette URL. */
+  const guard = await requireCapability('services');
+  if (isGuardFailure(guard)) return guard.response;
+  const { user } = guard;
 
   const detailer = await getDetailerForOwner(user.id);
   if (!detailer) {

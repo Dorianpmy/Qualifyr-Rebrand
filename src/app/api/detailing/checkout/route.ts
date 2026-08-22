@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { detailerHasCapability } from '@/lib/billing/guard';
 import { getServiceSupabaseClient } from '@/lib/detailing/supabase-server';
 import { createDepositCheckout } from '@/lib/detailing/stripe';
 import { profileFor } from '@/lib/detailing/locale';
@@ -43,6 +44,29 @@ export async function POST(request: Request) {
 
   if (error || !booking) {
     return NextResponse.json({ error: 'Réservation introuvable.' }, { status: 404 });
+  }
+
+  /*
+   * Le droit d'encaisser appartient au professionnel, pas à l'appelant.
+   *
+   * Cette route est publique : c'est le client final qui l'appelle, sans
+   * session. Le contrôle porte donc sur l'abonnement du propriétaire de la
+   * fiche. Sans lui, un professionnel abonné « Agent seul » encaisserait des
+   * acomptes qu'il n'a pas payés — il lui suffirait de faire réserver
+   * quelqu'un sur sa page publique.
+   *
+   * Message neutre et 403 : un client final n'a pas à savoir dans quel
+   * abonnement se trouve le professionnel.
+   */
+  const allowed = await detailerHasCapability(
+    String(booking.detailer_id),
+    'payments.deposit',
+  );
+  if (!allowed) {
+    return NextResponse.json(
+      { error: 'Le paiement en ligne n’est pas disponible pour ce professionnel.' },
+      { status: 403 },
+    );
   }
 
   // Une réservation déjà payée ou annulée ne doit pas rouvrir un paiement :

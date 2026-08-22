@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { detailerHasCapability } from '@/lib/billing/guard';
 import { sendAbandonedBookingEmail } from '@/lib/detailing/email';
 import { formatMoney, profileFor } from '@/lib/detailing/locale';
 import { getServiceSupabaseClient } from '@/lib/detailing/supabase-server';
@@ -64,10 +65,24 @@ export async function POST(request: Request) {
       .eq('id', row.detailer_id)
       .single();
 
-    // Sans page publiée ou sans paiement en ligne actif, aucun lien à
-    // proposer. Marquée quand même : sinon relue à chaque passage, sans
-    // jamais aboutir.
-    if (!detailer?.slug || !detailer.stripe_charges_enabled) {
+    /*
+     * Trois raisons de ne pas relancer, traitées ensemble : pas de page
+     * publiée, pas de paiement en ligne actif, ou un abonnement qui n'inclut
+     * pas la relance.
+     *
+     * Le contrôle d'abonnement se fait ici, ligne par ligne, plutôt qu'à
+     * l'entrée de la route : celle-ci est appelée par le planificateur avec
+     * un secret partagé, sans utilisateur — il n'y a donc personne dont
+     * vérifier les droits en tête de fonction. Ce qu'il faut vérifier, c'est
+     * le droit du professionnel **propriétaire de chaque réservation**.
+     *
+     * Marquée quand même : sinon relue à chaque passage, sans jamais aboutir.
+     */
+    const recoveryAllowed = detailer
+      ? await detailerHasCapability(String(row.detailer_id), 'booking.recovery')
+      : false;
+
+    if (!detailer?.slug || !detailer.stripe_charges_enabled || !recoveryAllowed) {
       await supabase
         .from('detailer_bookings')
         .update({ abandon_reminder_sent_at: new Date().toISOString() })
