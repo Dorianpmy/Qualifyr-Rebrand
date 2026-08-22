@@ -33,29 +33,52 @@ export const company = {
   /** Nom commercial. Seule information de marque confirmée. */
   tradeName: 'Qualifyr Agence',
 
-  /** Raison sociale exacte, telle qu'immatriculée. */
-  legalName: null as string | null,
+  /**
+   * Raison sociale exacte. Un entrepreneur individuel n'a pas de raison
+   * sociale distincte de son état civil — vérifié le 22/08/2026 auprès du
+   * registre officiel (recherche-entreprises.api.gouv.fr, source Sirene/RNE)
+   * sur le SIRET 999 132 921 00019.
+   */
+  legalName: 'Dorian Poumay' as string | null,
 
-  /** Forme juridique : micro-entreprise, SASU, SARL… */
-  legalForm: null as string | null,
+  /**
+   * Forme juridique. Confirmée par Dorian et par le registre officiel
+   * (`complements.est_entrepreneur_individuel: true`, SIRET créé le
+   * 29/12/2025).
+   */
+  legalForm: 'Entrepreneur individuel (micro-entreprise)' as string | null,
 
-  /** Capital social, si la forme juridique en comporte un. */
+  /** Capital social, si la forme juridique en comporte un. Sans objet en EI. */
   shareCapital: null as string | null,
 
-  /** SIREN ou SIRET. */
-  registrationNumber: null as string | null,
+  /**
+   * SIREN ou SIRET. Vérifié le 22/08/2026 auprès du registre officiel —
+   * établissement actif (`etat_administratif: "A"`).
+   */
+  registrationNumber: '999 132 921 00019' as string | null,
 
-  /** Ville du greffe et numéro RCS, le cas échéant. */
+  /** Ville du greffe et numéro RCS, le cas échéant. Sans objet en EI. */
   registry: null as string | null,
 
-  /** Numéro de TVA intracommunautaire, ou mention de franchise en base. */
+  /**
+   * Numéro de TVA intracommunautaire, ou mention de franchise en base.
+   * **Encore à confirmer par Dorian** : le registre officiel ne renvoie
+   * aucun numéro de TVA (`tva: null`), cohérent avec la franchise en base —
+   * le régime par défaut d'une micro-entreprise créée fin décembre 2025 —
+   * mais ce n'est pas une certitude tant qu'il ne l'a pas confirmé
+   * explicitement. Ne rien afficher tant que ce champ reste `null`.
+   */
   vatNumber: null as string | null,
 
-  /** Adresse du siège. */
-  address: null as string | null,
+  /**
+   * Adresse du siège. Vérifiée le 22/08/2026 auprès du registre officiel.
+   */
+  address: '12 Impasse du Couvent, Bâtiment Villa 1, Étage 1, 84170 Monteux' as
+    | string
+    | null,
 
   /** Directeur de la publication. */
-  publicationDirector: null as string | null,
+  publicationDirector: 'Dorian Poumay' as string | null,
 
   /** Adresse e-mail de contact publiée. */
   email: null as string | null,
