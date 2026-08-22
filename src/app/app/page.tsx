@@ -72,7 +72,14 @@ export default async function AppHomePage({
   const detailer = await getDetailerForOwner(user.id);
   if (!detailer) {
     return (
-      <div className={styles.loginShell}>
+      /* `data-app="login"` (22/08/2026, signalé sur capture d'écran : bouton
+         "Déconnexion" en laiton). Cet écran réutilise `.loginShell` (même
+         carte que `/app/login`) mais n'avait aucun `data-app` : sans lui,
+         `globals.css` lui impose ses couleurs de bouton de l'ancienne charte,
+         et le `app-ghost` déjà posé sur le bouton plus bas n'a aucune règle
+         à laquelle s'accrocher (`[data-app='login'] .app-ghost` dans
+         tailwind.css). Même mécanisme que `/app/login`. */
+      <div className={styles.loginShell} data-app="login">
         <div className={styles.unlinked}>
           <h1 className={styles.title}>Compte non lié</h1>
           <p className={styles.subtitle}>
@@ -159,7 +166,14 @@ export default async function AppHomePage({
             <Link
               key={filter.key}
               href={filter.key === 'all' ? '/app' : `/app?status=${filter.key}`}
-              className={`${styles.filter ?? ''} ${status === filter.key ? styles.filterActive ?? '' : ''}`.trim()}
+              /* `app-filter-active` (22/08/2026) : `styles.filterActive`
+                 seul perdait déjà contre le reset `[data-app='dashboard'] a`
+                 de tailwind.css (règle calquée + importante, qu'une classe de
+                 module CSS non calquée ne peut pas battre, quelle que soit sa
+                 spécificité) — la pastille sélectionnée ne se distinguait pas
+                 des autres. Voir `[data-app='dashboard'] .app-filter-active`
+                 dans tailwind.css pour la vraie couleur. */
+              className={`${styles.filter ?? ''} ${status === filter.key ? `${styles.filterActive ?? ''} app-filter-active` : ''}`.trim()}
             >
               {filter.label}
             </Link>

@@ -52,6 +52,13 @@ export function StatusActions({
             key={action.status}
             type="button"
             data-primary={action.primary ? 'true' : undefined}
+            /* `app-primary`/`app-ghost` (22/08/2026) : ce bouton n'avait
+               aucune classe, seul `.actions button[data-primary='true']`
+               (app.module.css, non calqué) le stylait — perdu d'avance contre
+               le reset `[data-app='dashboard'] button` (calqué, important),
+               qui gagne quelle que soit la spécificité en face. Sans classe
+               de secours, "Confirmer" etc. étaient transparents, invisibles. */
+            className={action.primary ? 'app-primary' : 'app-ghost'}
             disabled={pending !== null}
             onClick={() => update(action.status)}
           >

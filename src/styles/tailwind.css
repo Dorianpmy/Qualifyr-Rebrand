@@ -687,22 +687,30 @@
 }
 
 /* ---------------------------------------------------------------------------
-   Dashboard professionnel.
+   Dashboard professionnel + connexion pro.
 
-   Le dashboard ne porte pas `data-theme="dark"` : cet attribut déclenche un
-   reset qui neutralise fond et bordures des conteneurs, ce qui aplatirait ses
-   cartes de réservation et son éditeur de prestations, tous stylés en CSS
-   Modules sans `!important`.
+   Ni le dashboard ni l'écran de connexion (`/app/login`, et l'écran « Compte
+   non lié » de `/app`) ne portent `data-theme="dark"` : cet attribut
+   déclenche un reset qui neutralise fond et bordures des conteneurs, ce qui
+   aplatirait les cartes de réservation et l'éditeur de prestations, tous
+   stylés en CSS Modules sans `!important` — et, plus sournois encore, il vide
+   aussi tout `<button>`/`<a>` sans classe `.cta-solid` ni `bg-*`
+   (`[data-theme='dark'] button:not(.cta-solid):not([class*='bg-'])` plus bas
+   dans ce fichier), ce qui a rendu "Se connecter" et "Déconnexion" invisibles
+   le temps que cette page porte cet attribut par erreur (22/08/2026).
 
-   Il subit en revanche `globals.css` de plein fouet — d'où les liens, les
-   pastilles de filtre et le bouton de déconnexion en vert de marque. On
-   neutralise donc précisément ce que l'ancienne charte impose aux liens et aux
-   boutons, sous `[data-app]`, et les modules CSS du dashboard reprennent la
-   main derrière.
+   Ces deux familles d'écran subissent en revanche `globals.css` de plein
+   fouet — d'où les liens, les pastilles de filtre et le bouton de
+   déconnexion en vert/laiton de l'ancienne charte. On neutralise donc
+   précisément ce que l'ancienne charte impose aux liens et aux boutons, sous
+   `[data-app]`, et les classes `.app-primary`/`.app-ghost` (posées
+   explicitement dans le JSX) reprennent la main derrière — `login` et
+   `dashboard` partagent la même palette, un professionnel ne doit pas voir
+   deux produits selon l'écran.
 --------------------------------------------------------------------------- */
 @layer utilities {
-  [data-app='dashboard'] a,
-  [data-app='dashboard'] button {
+  :is([data-app='dashboard'], [data-app='login']) a,
+  :is([data-app='dashboard'], [data-app='login']) button {
     background: none !important;
     background-color: transparent !important;
     background-image: none !important;
@@ -716,9 +724,9 @@
     font-weight: inherit !important;
   }
 
-  /* Le bouton d'action du dashboard reprend la main : blanc plein, comme sur
-     le site. C'est le seul élément plein de chaque écran. */
-  [data-app='dashboard'] .app-primary {
+  /* Le bouton d'action reprend la main : blanc plein, comme sur le site.
+     C'est le seul élément plein de chaque écran. */
+  :is([data-app='dashboard'], [data-app='login']) .app-primary {
     background-color: #ffffff !important;
     color: #0e0e0f !important;
     border: 0 !important;
@@ -729,7 +737,7 @@
     min-height: 40px !important;
   }
 
-  [data-app='dashboard'] .app-ghost {
+  :is([data-app='dashboard'], [data-app='login']) .app-ghost {
     border: 1px solid var(--color-hairline-strong) !important;
     border-radius: 10px !important;
     padding: 0.55rem 1rem !important;
@@ -738,8 +746,17 @@
     min-height: 40px !important;
   }
 
-  [data-app='dashboard'] .app-ghost:hover {
+  :is([data-app='dashboard'], [data-app='login']) .app-ghost:hover {
     color: var(--color-primary) !important;
+  }
+
+  /* Pastille de filtre sélectionnée (liste des réservations) : même paire
+     fond blanc / texte encre que `.app-primary`, en pilule plutôt qu'en
+     rectangle puisqu'elle partage sa forme avec les pastilles inactives. */
+  [data-app='dashboard'] .app-filter-active {
+    background-color: #ffffff !important;
+    color: #0e0e0f !important;
+    border-color: #ffffff !important;
   }
 
   [data-app] :focus-visible {

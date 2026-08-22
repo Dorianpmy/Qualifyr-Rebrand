@@ -127,7 +127,14 @@ export function PaymentSetup() {
             type="button"
             onClick={open}
             disabled={opening || state.phase === 'loading'}
-            className={`${styles.btnPrimary} ${styles.paymentCta}`}
+            /* `app-primary` (22/08/2026) : seul bouton `.btnPrimary` du
+               dashboard sans cette classe — tous les autres la posent déjà
+               à côté (voir `[data-app='dashboard'] .app-primary` dans
+               tailwind.css). Sans elle, le reset `[data-app='dashboard']
+               button` (calqué, important) gagne contre `.btnPrimary` (non
+               calqué), quelle que soit sa spécificité : bouton transparent,
+               invisible. */
+            className={`app-primary ${styles.btnPrimary} ${styles.paymentCta}`}
           >
             {opening
               ? 'Ouverture…'
