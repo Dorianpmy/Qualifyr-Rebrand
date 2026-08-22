@@ -221,17 +221,46 @@ export function AppShell({
             Sur desktop, `.navItemFab` s'efface et redevient une ligne de menu
             normale — le relief n'a de sens que dans une pilule flottante en
             bas d'un écran de téléphone.
+
+            **Le cas du slug vide est traité, et c'était un vrai lien mort**
+            (corrigé le 22/08/2026). Sept écrans passent `detailerSlug=""` :
+            ce sont les états où le compte existe mais n'a pas encore de fiche
+            professionnelle — abonnement inactif, module verrouillé, profil
+            non créé. Le gabarit produisait alors `/reservation/`, une adresse
+            qui n'existe pas, et le bouton le plus visible du produit envoyait
+            sur une page d'erreur.
+
+            Un bouton désactivé plutôt qu'un lien de repli : l'envoyer vers ses
+            réglages serait une autre destination que celle annoncée, et un
+            bouton qui fait autre chose que ce qu'il dit se paie plus cher
+            qu'un bouton momentanément inerte. `title` explique ce qui manque,
+            et `aria-disabled` le dit aux lecteurs d'écran sans retirer
+            l'élément de la barre — sa disparition décalerait les quatre autres
+            onglets d'un écran à l'autre.
           */}
-          <Link
-            href={`/reservation/${detailerSlug}`}
-            className={`${styles.navItem} ${styles.navItemFab} app-tab app-tab-fab`}
-            target="_blank"
-            aria-label="Ouvrir ma page de réservation"
-          >
-            <QualifyrMark className={styles.navFabMark} />
-            {clientPageIcon}
-            <span className={styles.navLabel}>Page client</span>
-          </Link>
+          {detailerSlug ? (
+            <Link
+              href={`/reservation/${detailerSlug}`}
+              className={`${styles.navItem} ${styles.navItemFab} app-tab app-tab-fab`}
+              target="_blank"
+              aria-label="Ouvrir ma page de réservation"
+            >
+              <QualifyrMark className={styles.navFabMark} />
+              {clientPageIcon}
+              <span className={styles.navLabel}>Page client</span>
+            </Link>
+          ) : (
+            <span
+              className={`${styles.navItem} ${styles.navItemFab} ${styles.navItemFabIdle} app-tab app-tab-fab`}
+              aria-disabled="true"
+              title="Votre page de réservation sera accessible ici une fois votre fiche professionnelle créée."
+              aria-label="Page de réservation indisponible : fiche professionnelle non créée"
+            >
+              <QualifyrMark className={styles.navFabMark} />
+              {clientPageIcon}
+              <span className={styles.navLabel}>Page client</span>
+            </span>
+          )}
 
           {tabsAfterFab.map(renderTab)}
         </nav>

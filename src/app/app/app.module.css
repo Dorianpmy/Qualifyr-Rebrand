@@ -357,12 +357,44 @@
     transform: scale(0.92);
   }
 
+  /* État inerte : le compte n'a pas encore de fiche professionnelle, donc pas
+     de page de réservation à ouvrir (22/08/2026 — le bouton produisait
+     jusque-là un lien vers `/reservation/`, qui n'existe pas).
+
+     Le bouton garde sa place et sa forme : le retirer décalerait les quatre
+     autres onglets entre deux écrans du même produit, ce qui est plus
+     déroutant qu'un bouton visiblement en attente. Il perd en revanche tout
+     ce qui appelle le doigt — le liseré clair, la lueur, la réaction au
+     toucher. `cursor: default` et l'opacité disent la même chose que
+     `aria-disabled` dit aux lecteurs d'écran. */
+  .navItemFabIdle {
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow:
+      0 8px 20px rgba(0, 0, 0, 0.55),
+      0 0 0 5px rgba(16, 18, 20, 0.9);
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  .navItemFabIdle:active {
+    transform: none;
+  }
+
   /* Le libellé reste dans le DOM (nom accessible porté par `aria-label` sur
      le lien) mais disparaît visuellement : un texte dans un cercle de cette
      taille se serait chevauché avec le symbole. */
   .navItemFab .navLabel {
     display: none;
   }
+}
+
+/* Le même état inerte sur ordinateur, où `.navItemFab` redevient une ligne de
+   menu ordinaire : la règle ci-dessus vit dans la requête média du téléphone
+   et ne s'y applique donc pas. Sans elle, l'entrée « Page client » aurait
+   l'air cliquable dans le menu latéral alors qu'elle ne l'est pas. */
+.navItemFabIdle {
+  opacity: 0.45;
+  cursor: default;
 }
 
 .navLogoutMobile {
