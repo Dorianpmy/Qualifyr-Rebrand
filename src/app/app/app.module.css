@@ -397,8 +397,12 @@
   padding: 0.5rem 1rem;
   border-radius: 10px;
   border: none;
-  background: var(--color-primary);
-  color: #fff;
+  /* Corrigé le 22/08/2026 — même erreur que `.btn` plus haut dans ce
+     fichier : `--color-primary` est le texte quasi blanc du site, pas une
+     couleur d'action ; posé en fond avec `color: #fff`, ce bouton était
+     blanc sur blanc. Fond blanc + texte encre, comme `.app-primary`. */
+  background: #ffffff;
+  color: #0e0e0f;
   font-size: 0.8rem;
   font-weight: 600;
   text-decoration: none;
@@ -510,9 +514,12 @@
 }
 
 .filterActive {
-  background: var(--color-primary);
-  color: #fff;
-  border-color: var(--color-primary);
+  /* Corrigé le 22/08/2026 — même erreur que `.btn`/`.btnPrimary` : fond
+     blanc + texte encre plutôt que `--color-primary` (texte quasi blanc) en
+     fond avec du texte blanc, illisible. */
+  background: #ffffff;
+  color: #0e0e0f;
+  border-color: #ffffff;
   font-weight: 600;
 }
 
@@ -772,12 +779,27 @@
   padding: 0.8rem 1rem;
   border: none;
   border-radius: 10px;
-  background: var(--color-primary);
-  color: #fff;
+  /* Corrigé le 22/08/2026 (signalé sur capture d'écran, boutons "Se
+     connecter"/"Recevoir un lien magique" en vert). `--color-primary` est le
+     jeton de *texte* principal du site (quasi blanc, `#f5f7fa` — voir
+     `tailwind.css`), pas une couleur d'action : posé en fond avec un texte
+     `#fff`, ce bouton était blanc sur blanc, illisible, avant même la
+     surcharge verte de l'ancienne charte que `data-theme="dark"` neutralise
+     désormais sur cette page (voir le commentaire dans login/page.tsx). Fond
+     blanc plein + texte encre : exactement le même couple que `.app-primary`
+     un peu plus bas dans ce fichier (bouton d'action du tableau de bord) et
+     que le bouton plein de `CtaSection`/`SubscribeButton` sur le reste du
+     site — le seul élément plein de chaque écran, jamais de vert. */
+  background: #ffffff;
+  color: #0e0e0f;
   font-weight: 600;
   cursor: pointer;
   font-size: 0.95rem;
   min-height: 2.85rem;
+}
+
+.btn:hover:not(:disabled) {
+  background: #f0f0f0;
 }
 
 .btn:disabled {
@@ -882,9 +904,12 @@
 }
 
 .actions button[data-primary='true'] {
-  background: var(--color-primary);
-  color: #fff;
-  border-color: var(--color-primary);
+  /* Corrigé le 22/08/2026 — même erreur que `.btn`/`.btnPrimary`/
+     `.filterActive` : fond blanc + texte encre plutôt que `--color-primary`
+     (texte quasi blanc) en fond avec du texte blanc, illisible. */
+  background: #ffffff;
+  color: #0e0e0f;
+  border-color: #ffffff;
   font-weight: 600;
 }
 

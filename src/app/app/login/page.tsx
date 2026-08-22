@@ -33,7 +33,18 @@ const reminders = [
 
 export default function AppLoginPage() {
   return (
-    <div className={styles.loginShell} data-app="login">
+    /* `data-theme="dark"` (22/08/2026, signalé sur capture d'écran : les
+       boutons "Se connecter" / "Recevoir un lien magique" s'affichaient en
+       vert plein au lieu du style sombre à contour dégradé que définit déjà
+       `app.module.css` — mêmes jetons `--accent-1/2/3` que le reste du site).
+       Cet écran n'a qu'un wrapper `data-app="login"`, sans marqueur de
+       thème : `globals.css` traite donc toute page qui l'utilise comme une
+       page de l'ancienne charte claire et lui impose ses couleurs de bouton
+       (`body:not(:has(main [data-theme='dark'])) button`, voir ce fichier).
+       Même cause et même correctif que `BookingFlow.tsx` ce même jour : poser
+       l'attribut ici neutralise tout le bloc d'un coup plutôt que de contrer
+       chacune de ses règles une par une. */
+    <div className={styles.loginShell} data-app="login" data-theme="dark">
       <div className={styles.loginBox}>
         <p className={styles.loginEyebrow}>Espace professionnel — nettoyage automobile</p>
         <h1>Le tableau de bord de votre activité.</h1>
