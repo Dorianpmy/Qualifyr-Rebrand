@@ -1,5 +1,8 @@
-/* Nouveau lockup Qualifyr : l'image ne porte que l'alpha du dessin. La couleur
-   reste contextuelle afin de conserver une version charbon et une version ivoire. */
+/* Nouveau lockup Qualifyr (22/08/2026) : mot-symbole bulle 3D de Dorian,
+   réduit à son alpha — la couleur d'origine (blanc/glacé) était illisible
+   sur le fond crème du header, donc seule la silhouette des lettres est
+   conservée ici, recolorée en charbon ou en ivoire selon le contexte,
+   exactement comme l'ancien lockup. */
 
 .logo {
   display: inline-block;
@@ -11,10 +14,10 @@
 .lockup {
   display: block;
   inline-size: 100%;
-  aspect-ratio: 1650 / 341;
+  aspect-ratio: 1200 / 268;
   background-color: currentColor;
-  -webkit-mask: url('/images/brand/qualifyr-lockup.png') center / contain no-repeat;
-  mask: url('/images/brand/qualifyr-lockup.png') center / contain no-repeat;
+  -webkit-mask: url('/images/brand/qualifyr-lockup.png?v=2') center / contain no-repeat;
+  mask: url('/images/brand/qualifyr-lockup.png?v=2') center / contain no-repeat;
 }
 
 .large {
