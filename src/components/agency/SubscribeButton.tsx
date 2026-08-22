@@ -1,20 +1,19 @@
 'use client';
 
 import type { CSSProperties } from 'react';
-import { useState } from 'react';
-import { trackEvent } from '@/lib/analytics';
+import { useCheckout } from '@/lib/billing/use-checkout';
 
 /**
  * Déclenche un vrai paiement Stripe pour l'un des trois abonnements SaaS.
  *
- * **Bouton secondaire, pas remplacement du CTA principal.** Les CTA
- * principaux des cartes de tarifs (« Analyser ma zone », « Tester le tunnel
- * client », « Voir le tableau de bord ») sont des essais gratuits, sans
- * carte bancaire — c'est écrit juste en dessous de chacun. Un prospect qui
- * clique dessus s'attend à essayer, pas à payer : y brancher un paiement
- * direct romprait cette promesse au premier clic. Ce bouton vit à côté,
- * pour le prospect déjà convaincu qui veut s'abonner sans repasser par
- * l'essai.
+ * **Bouton principal des cartes de tarifs depuis le 22/08/2026.** Jusque-là,
+ * les CTA principaux des cartes (« Analyser ma zone », « Tester le tunnel
+ * client », « Voir le tableau de bord ») étaient des essais gratuits, et ce
+ * composant vivait en petit lien secondaire en dessous. Dorian l'a testé et
+ * signalé directement : ces boutons ne menaient qu'à des ancres de la même
+ * page, jamais à un paiement — voir la note en tête de `DarkPricing.tsx` et
+ * `PricingTable.tsx` pour la nouvelle hiérarchie (ce bouton plein, l'essai
+ * gratuit en lien discret en dessous).
  *
  * **Pourquoi un composant à part plutôt qu'un `<Link>`.** Un lien classique
  * ne peut pointer que vers une URL connue à l'avance ; l'URL de paiement
@@ -38,37 +37,13 @@ export function SubscribeButton({
   readonly className?: string | undefined;
   readonly style?: CSSProperties | undefined;
 }) {
-  const [state, setState] = useState<'idle' | 'loading' | 'error'>('idle');
-
-  async function handleClick() {
-    setState('loading');
-    trackEvent('subscribe_button_clicked', { ctaId: `${plan}-${cadence}` });
-    try {
-      const response = await fetch('/api/billing/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan, cadence }),
-      });
-      const data = (await response.json()) as { url?: string; error?: string };
-
-      if (!response.ok || !data.url) {
-        setState('error');
-        return;
-      }
-
-      // Redirection pleine page, pas `router.push` : la destination est le
-      // domaine de Stripe, pas une route interne au site.
-      window.location.href = data.url;
-    } catch {
-      setState('error');
-    }
-  }
+  const { state, start } = useCheckout(plan, cadence);
 
   return (
     <div>
       <button
         type="button"
-        onClick={handleClick}
+        onClick={start}
         disabled={state === 'loading'}
         className={
           className ??

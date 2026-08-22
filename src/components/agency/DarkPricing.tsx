@@ -38,6 +38,18 @@ import { SubscribeButton } from './SubscribeButton';
  * `className`. La carte du milieu reste noire — exactement comme la carte
  * « Pro » de la référence — et redéclare les jetons sombres pour elle-même,
  * ce qui l'empêche d'hériter du clair fixé plus haut.
+ *
+ * **Hiérarchie des boutons inversée le 22/08/2026 (retour direct de
+ * Dorian).** Le bouton principal de chaque carte menait à une ancre de la
+ * même page (démo, formulaire de zone gratuit) ; seul un petit lien
+ * `SubscribeButton` en dessous ouvrait un vrai paiement Stripe — Dorian l'a
+ * remarqué en testant lui-même : « ces boutons ne redirigent vers rien
+ * hormis mon site, il faut une page paiement ». `SubscribeButton` est
+ * maintenant le bouton plein de chaque carte (mène directement à Stripe),
+ * et l'ancienne action principale (`plan.ctaLabel`/`ctaHref` — essai
+ * gratuit ou démo, sans carte bancaire) devient le lien discret en dessous,
+ * à côté de `plan.note`, pour que la promesse « gratuit » reste juste à côté
+ * de l'action qui l'honore plutôt que sous le bouton de paiement.
  */
 
 /* Palette claire de ce bloc. Mêmes tons que `MobilePlanCard` dans
@@ -93,6 +105,8 @@ type Plan = {
   readonly items: readonly string[];
   readonly ctaLabel: string;
   readonly ctaHref: string;
+  /** Libellé du bouton de paiement direct — voir `SubscribeButton`. */
+  readonly subscribeLabel: string;
   readonly note: string;
   /** Contour dégradé et mention. Une seule carte le porte. */
   readonly featured?: boolean;
@@ -127,6 +141,7 @@ const plans: readonly Plan[] = [
     ],
     ctaLabel: 'Analyser ma zone',
     ctaHref: '#agent-title',
+    subscribeLabel: 'S’abonner à l’Agent seul',
     note: 'Première zone gratuite, sans carte bancaire.',
   },
   {
@@ -147,6 +162,7 @@ const plans: readonly Plan[] = [
     ],
     ctaLabel: 'Tester le tunnel client',
     ctaHref: '#demo-title',
+    subscribeLabel: 'S’abonner au Pack complet',
     note: 'Démo complète, sans inscription.',
     featured: true,
   },
@@ -168,6 +184,7 @@ const plans: readonly Plan[] = [
     ],
     ctaLabel: 'Voir le tableau de bord',
     ctaHref: '#demo-title',
+    subscribeLabel: 'S’abonner au Système seul',
     note: 'Sans engagement, résiliable en un clic.',
   },
 ];
@@ -328,38 +345,40 @@ function PlanCard({ plan, annual }: { plan: Plan; annual: boolean }) {
         ))}
       </ul>
 
-      <Link
-        href={plan.ctaHref}
-        data-analytics-event="pricing_cta_clicked"
-        data-cta-id={plan.id}
+      {/* Bouton plein : mène directement à Stripe (voir `SubscribeButton`
+          et la note en tête de fichier sur l'inversion du 22/08/2026). */}
+      <SubscribeButton
+        plan={plan.billingPlan}
+        cadence={annual ? 'annual' : 'monthly'}
+        label={plan.subscribeLabel}
         className={
           plan.featured
-            ? 'cta-solid accent-glow inline-flex min-h-[44px] items-center justify-center rounded-full bg-white px-5 text-center text-[0.875rem] font-semibold text-ink no-underline transition-colors duration-150 hover:bg-white/90'
-            : 'inline-flex min-h-[44px] items-center justify-center rounded-full px-5 text-center text-[0.875rem] font-semibold !text-primary no-underline transition-colors duration-150 hover:bg-black/[0.04]'
+            ? 'cta-solid accent-glow inline-flex min-h-[44px] w-full items-center justify-center rounded-full bg-white px-5 text-center text-[0.875rem] font-semibold text-ink no-underline transition-colors duration-150 hover:not-disabled:bg-white/90 disabled:cursor-not-allowed disabled:opacity-70'
+            : 'inline-flex min-h-[44px] w-full items-center justify-center rounded-full px-5 text-center text-[0.875rem] font-semibold !text-primary no-underline transition-colors duration-150 hover:not-disabled:bg-black/[0.04] disabled:cursor-not-allowed disabled:opacity-70'
         }
         style={plan.featured ? undefined : { border: `1px solid ${LIGHT_CARD_BORDER_STRONG}` }}
-      >
-        {plan.ctaLabel}
-      </Link>
+      />
 
-      <p className="mt-3 text-center text-[0.75rem] leading-[1.4] text-faint" style={dark(DARK_TEXT_FAINT)}>
-        {plan.note}
-      </p>
-
-      {/* Bouton secondaire, discret et sans encadré : pour le prospect déjà
-          convaincu qui veut payer maintenant plutôt que de repasser par
-          l'essai gratuit du CTA principal. Voir la note en tête de
-          `SubscribeButton.tsx`. */}
-      <p className="mt-2 text-center">
-        <SubscribeButton
-          plan={plan.billingPlan}
-          cadence={annual ? 'annual' : 'monthly'}
-          className="text-[0.75rem] underline underline-offset-4 transition-colors duration-150 disabled:opacity-60"
+      {/* Lien discret : l'ancien bouton principal (essai gratuit ou démo,
+          sans carte bancaire) — la promesse de `plan.note` reste juste à
+          côté de l'action qui la tient. */}
+      <p className="mt-3 text-center">
+        <Link
+          href={plan.ctaHref}
+          data-analytics-event="pricing_cta_clicked"
+          data-cta-id={plan.id}
+          className="text-[0.8125rem] font-medium underline underline-offset-4 transition-colors duration-150"
           style={{
             color: plan.featured ? DARK_TEXT_FAINT : LIGHT_ACCENT_TEXT,
             textDecorationColor: plan.featured ? 'rgba(255,255,255,0.25)' : 'rgba(31,111,92,0.35)',
           }}
-        />
+        >
+          {plan.ctaLabel}
+        </Link>
+      </p>
+
+      <p className="mt-1.5 text-center text-[0.75rem] leading-[1.4] text-faint" style={dark(DARK_TEXT_FAINT)}>
+        {plan.note}
       </p>
     </div>
   );

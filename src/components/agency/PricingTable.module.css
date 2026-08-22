@@ -96,30 +96,45 @@
   content: '—';
 }
 
-.link {
+/* Bloc d'actions collé en bas de carte (voir OfferCard, 22/08/2026) : que la
+   carte ait un bouton de paiement ou seulement un lien, l'ensemble reste
+   aligné d'une carte à l'autre. */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
   margin-block-start: auto;
   padding-block-start: var(--space-4);
+}
+
+/* Bouton de paiement direct — action principale depuis le 22/08/2026 (avant,
+   seul un petit lien texte l'ouvrait ; voir la note en tête de
+   `PricingTable.tsx`). Pleine largeur pour occuper la même place que
+   l'ancien bouton plein. */
+.subscribeButton {
+  width: 100%;
+}
+
+.checkoutError {
+  color: var(--text-secondary);
+  font-size: var(--text-xs);
+}
+
+.checkoutError a {
+  text-decoration: underline;
+}
+
+.featured .checkoutError {
+  color: var(--text-inverse-secondary);
+}
+
+/* Lien vers l'essai gratuit / la démo — action secondaire depuis le
+   22/08/2026, sous le bouton de paiement plutôt qu'au-dessus. */
+.link {
   color: var(--color-copper-deep);
   font-size: var(--text-sm);
   font-weight: var(--weight-semibold);
-}
-
-/* Ligne du bouton « S'abonner directement » — sous le CTA d'essai gratuit,
-   jamais au même niveau visuel : c'est une porte secondaire, pas une
-   alternative à égalité. */
-.subscribeRow {
-  margin-block-start: var(--space-2);
-}
-
-.subscribeLink {
-  color: var(--text-secondary);
-  font-size: var(--text-xs);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.featured .subscribeLink {
-  color: var(--text-inverse-secondary);
+  text-align: center;
 }
 
 .note {

@@ -3,8 +3,9 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { formatMoney, roundUpToTen, swissPriceFactor, type PricingRegion } from '@/lib/offer-configurator';
+import { useCheckout } from '@/lib/billing/use-checkout';
 import type { Route } from '@/types';
-import { SubscribeButton } from './SubscribeButton';
+import { Button } from '@/components/ui/Button';
 import styles from './PricingTable.module.css';
 
 type Offer = {
@@ -19,10 +20,11 @@ type Offer = {
   readonly href: Route;
   readonly linkLabel: string;
   readonly featured?: boolean;
-  /** Présent uniquement sur les 3 offres SaaS : fait apparaître le bouton
-      « S'abonner directement » (voir `SubscribeButton.tsx`). Les 2 offres
-      d'agence, vendues sur devis, n'ont pas d'équivalent en paiement direct. */
+  /** Présent uniquement sur les 3 offres SaaS : fait apparaître le bouton de
+      paiement direct (voir `useCheckout`). Les 2 offres d'agence, vendues sur
+      devis, n'ont pas d'équivalent en paiement direct. */
   readonly billingPlan?: 'agent' | 'complet' | 'systeme';
+  readonly subscribeLabel?: string;
 };
 
 /**
@@ -51,12 +53,16 @@ const offers: readonly Offer[] = [
     items: [
       'Il travaille toutes vos communes, pas seulement la vôtre',
       'Il vise les entreprises qui entretiennent vraiment : loueurs, VTC, concessions, flottes',
-      'Il répond au premier message',
+      // Corrigé le 22/08/2026 — même correction que DarkPricing.tsx :
+      // « Il répond au premier message » décrivait une prise de contact
+      // automatisée avec les prospects qui n'existe nulle part dans le code.
+      'Chaque chiffre vient du répertoire officiel Sirene',
       'Un rapport de secteur par e-mail',
     ],
     href: '/nettoyage-automobile',
     linkLabel: 'Analyser ma zone',
     billingPlan: 'agent',
+    subscribeLabel: 'S’abonner à l’Agent seul',
   },
   {
     kicker: 'SaaS · Pack complet',
@@ -76,6 +82,7 @@ const offers: readonly Offer[] = [
     linkLabel: 'Voir la démo',
     featured: true,
     billingPlan: 'complet',
+    subscribeLabel: 'S’abonner au Pack complet',
   },
   {
     kicker: 'SaaS · Système seul',
@@ -94,6 +101,7 @@ const offers: readonly Offer[] = [
     href: '/nettoyage-automobile',
     linkLabel: 'Voir le tableau de bord',
     billingPlan: 'systeme',
+    subscribeLabel: 'S’abonner au Système seul',
   },
   {
     kicker: 'Agence · Vitrine',
@@ -138,6 +146,75 @@ function convert(amount: number, region: PricingRegion, convertible: boolean) {
   return roundUpToTen(amount * swissPriceFactor);
 }
 
+/**
+ * Une carte par offre — extrait du corps de `PricingTable` le 22/08/2026 pour
+ * pouvoir appeler `useCheckout` : les règles des hooks React interdisent de
+ * l'appeler à l'intérieur du `.map()` d'un tableau, mais l'autorisent bien
+ * dans un composant appelé une fois par offre.
+ */
+function OfferCard({ offer, region }: { readonly offer: Offer; readonly region: PricingRegion }) {
+  // Appelé même pour les offres sans `billingPlan` (agence, sur devis) —
+  // sans effet tant que le bouton de paiement n'est pas rendu plus bas,
+  // et ça évite d'appeler le hook de façon conditionnelle.
+  const checkout = useCheckout(offer.billingPlan ?? 'agent', 'monthly');
+
+  return (
+    <article className={offer.featured ? `${styles.offer} ${styles.featured}` : styles.offer}>
+      <p className={styles.kicker}>{offer.kicker}</p>
+      <h2>{offer.title}</h2>
+
+      <p className={styles.price}>
+        {offer.to
+          ? `${formatMoney(convert(offer.from, region, offer.convertible), offer.convertible ? region : 'euro')} – ${formatMoney(convert(offer.to, region, offer.convertible), offer.convertible ? region : 'euro')}`
+          : formatMoney(offer.from, 'euro')}
+        <span>{offer.cadence}</span>
+      </p>
+
+      <p className={styles.audience}>{offer.audience}</p>
+
+      <ul className={styles.list}>
+        {offer.items.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+
+      {/* `.actions` porte le `margin-block-start: auto` : que la carte ait un
+          bouton de paiement ou seulement un lien (offres d'agence, sur
+          devis), le bloc reste collé en bas et les cartes restent alignées. */}
+      <div className={styles.actions}>
+        {/* Bouton plein : mène directement à Stripe. Voir la note en tête de
+            `DarkPricing.tsx` (22/08/2026) — même inversion de hiérarchie ici :
+            Dorian a signalé que ces boutons ne menaient qu'à des pages
+            internes, jamais à un paiement. Les 2 offres d'agence (sur devis)
+            n'ont pas d'équivalent : elles gardent seulement le lien. */}
+        {offer.billingPlan ? (
+          <>
+            <Button
+              variant={offer.featured ? 'inverse' : 'primary'}
+              onClick={checkout.start}
+              loading={checkout.state === 'loading'}
+              loadingLabel="Ouverture du paiement…"
+              className={styles.subscribeButton}
+            >
+              {offer.subscribeLabel ?? 'S’abonner'}
+            </Button>
+            {checkout.state === 'error' ? (
+              <p className={styles.checkoutError}>
+                Le paiement n’a pas pu s’ouvrir. Réessayez, ou{' '}
+                <Link href="/contact">écrivez-nous</Link>.
+              </p>
+            ) : null}
+          </>
+        ) : null}
+
+        <Link className={styles.link} href={offer.href}>
+          {offer.linkLabel}
+        </Link>
+      </div>
+    </article>
+  );
+}
+
 export function PricingTable() {
   const [region, setRegion] = useState<PricingRegion>('euro');
 
@@ -160,42 +237,7 @@ export function PricingTable() {
     <>
       <div className={styles.offers}>
         {offers.map((offer) => (
-          <article
-            key={`${offer.kicker}-${offer.title}`}
-            className={offer.featured ? `${styles.offer} ${styles.featured}` : styles.offer}
-          >
-            <p className={styles.kicker}>{offer.kicker}</p>
-            <h2>{offer.title}</h2>
-
-            <p className={styles.price}>
-              {offer.to
-                ? `${formatMoney(convert(offer.from, region, offer.convertible), offer.convertible ? region : 'euro')} – ${formatMoney(convert(offer.to, region, offer.convertible), offer.convertible ? region : 'euro')}`
-                : formatMoney(offer.from, 'euro')}
-              <span>{offer.cadence}</span>
-            </p>
-
-            <p className={styles.audience}>{offer.audience}</p>
-
-            <ul className={styles.list}>
-              {offer.items.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-
-            <Link className={styles.link} href={offer.href}>
-              {offer.linkLabel}
-            </Link>
-
-            {offer.billingPlan ? (
-              <p className={styles.subscribeRow}>
-                <SubscribeButton
-                  plan={offer.billingPlan}
-                  cadence="monthly"
-                  className={styles.subscribeLink}
-                />
-              </p>
-            ) : null}
-          </article>
+          <OfferCard key={`${offer.kicker}-${offer.title}`} offer={offer} region={region} />
         ))}
       </div>
 
