@@ -1,6 +1,7 @@
 import type { z } from 'zod';
 import { availableChannels } from '@/content/contact';
 import { isProduction, siteUrl } from '@/lib/env';
+import { clientIp, rateLimit } from '@/lib/rate-limit';
 import { fieldErrors, MIN_ELAPSED_MS, type FieldErrors } from '@/lib/validation';
 import { acknowledgement } from './templates';
 import { resolveTransport } from './transport';
@@ -17,48 +18,11 @@ export type SubmissionOutcome = {
   readonly body: Record<string, unknown>;
 };
 
-/* ------------------------------------------------------------------ */
-/* Limitation de débit                                                 */
-/* ------------------------------------------------------------------ */
-
-const WINDOW_MS = 10 * 60 * 1000;
-const MAX_PER_WINDOW = 5;
-const hits = new Map<string, number[]>();
-
-/**
- * Limitation de débit en mémoire, par adresse IP.
- *
- * Suffisant pour un site vitrine, et volontairement simple. **Limite connue :**
- * la mémoire n'est pas partagée entre instances et se vide à chaque démarrage à
- * froid. Ce n'est pas une protection anti-abus sérieuse — c'est un garde-fou.
- */
-export function rateLimit(ip: string): boolean {
-  const now = Date.now();
-  const previous = (hits.get(ip) ?? []).filter((time) => now - time < WINDOW_MS);
-
-  if (previous.length >= MAX_PER_WINDOW) {
-    hits.set(ip, previous);
-    return false;
-  }
-
-  previous.push(now);
-  hits.set(ip, previous);
-
-  // Purge opportuniste : la table ne doit pas croître indéfiniment.
-  if (hits.size > 500) {
-    for (const [key, times] of hits) {
-      if (times.every((time) => now - time >= WINDOW_MS)) hits.delete(key);
-    }
-  }
-
-  return true;
-}
-
-export function clientIp(request: Request): string {
-  const forwarded = request.headers.get('x-forwarded-for');
-  const first = forwarded?.split(',')[0]?.trim();
-  return first || request.headers.get('x-real-ip') || 'inconnue';
-}
+// `rateLimit`/`clientIp` déménagés dans `@/lib/rate-limit` (22/08/2026) : le
+// même garde-fou sert maintenant aussi `/api/app/login-password` et
+// `/api/agent/scan`, pas seulement les formulaires e-mail. Réexportés ici
+// pour ne pas casser d'éventuels autres imports de ce module.
+export { clientIp, rateLimit };
 
 /* ------------------------------------------------------------------ */
 /* Journalisation                                                      */
