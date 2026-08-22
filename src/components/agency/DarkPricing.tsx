@@ -124,10 +124,17 @@ const plans: readonly Plan[] = [
     kicker: 'Agent seul',
     title: 'On vient vous chercher des clients',
     monthly: 17,
+    /* Réécrit le 22/08/2026 (audit d'avant mise en production). « L'agent va
+       démarcher votre secteur » annonçait une prise de contact sortante :
+       l'agent n'envoie jamais rien à un prospect, le seul e-mail part vers le
+       professionnel. C'est donc lui qui démarche, sur la base de la liste. */
     pitch:
-      'Votre semaine a des trous et le téléphone ne sonne pas. L’agent va démarcher votre secteur pendant que vous êtes sur un véhicule.',
+      'Votre semaine a des trous et le téléphone ne sonne pas. L’agent recense les entreprises de votre secteur à appeler, pendant que vous êtes sur un véhicule.',
     items: [
-      'Il travaille toutes vos communes, pas seulement la vôtre',
+      /* « Toutes vos communes » : faux. `nearbyPostalCodes()` prend le code
+         postal ±1, soit trois codes postaux, et ignore explicitement le rayon
+         en kilomètres (`void radiusKm`). */
+      'Il couvre les codes postaux voisins de votre zone, pas seulement le vôtre',
       'Il vise les entreprises qui entretiennent vraiment : loueurs, VTC, concessions, flottes',
       // Corrigé le 22/08/2026 (phase 4 de l'audit growth marketing) :
       // « Il répond au premier message — vous récupérez la conversation »
@@ -154,9 +161,15 @@ const plans: readonly Plan[] = [
     pitch:
       'Trouver un client ne sert à rien s’il annule la veille. Ici les rendez-vous arrivent seuls et l’acompte est déjà encaissé quand vous ouvrez l’agenda.',
     items: [
-      'Tout l’agent d’acquisition, sur toutes vos communes',
+      'Tout l’agent de recensement, sur les codes postaux voisins de votre zone',
       'Tout le système de réservation et sa facturation',
-      'Les rendez-vous trouvés par l’agent atterrissent dans le même agenda',
+      /* « Les rendez-vous trouvés par l'agent atterrissent dans le même
+         agenda » : retiré le 22/08/2026. L'agent n'écrit que dans
+         `agent_prospects` ; aucun code ne relie cette table à
+         `detailer_bookings`, et il ne crée donc aucune réservation. Remplacé
+         par ce que le professionnel obtient réellement des deux produits
+         réunis. */
+      'Le rapport de secteur d’un côté, les réservations de l’autre, sur le même compte',
       'Un seul abonnement, une seule facture, un seul écran',
       'Vos questions passent devant les autres',
     ],

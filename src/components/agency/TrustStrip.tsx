@@ -28,8 +28,11 @@
 
 const points = [
   {
-    label: 'Vous n’avez plus à démarcher',
-    detail: 'Un agent travaille votre secteur pendant que vous lavez des véhicules.',
+    /* « Vous n'avez plus à démarcher » : faux — l'agent produit la liste, le
+       professionnel passe les appels. Corrigé le 22/08/2026 (audit d'avant
+       mise en production). */
+    label: 'Vous ne cherchez plus qui appeler',
+    detail: 'Un agent recense les entreprises de votre secteur pendant que vous lavez.',
   },
   {
     label: 'Vous arrêtez les devis du soir',

@@ -33,8 +33,13 @@ const pillars = {
   items: [
     {
       number: '01',
-      title: 'Agent de prospection',
-      body: 'Il démarche votre secteur pendant que vous travaillez, répond aux premières questions et ne vous transmet que les demandes qui méritent votre temps.',
+      title: 'Agent de recensement',
+      /* Corrigé le 22/08/2026 (audit d'avant mise en production) : « il
+         démarche », « répond aux premières questions » et « ne vous transmet
+         que les demandes qui méritent votre temps » décrivaient trois
+         capacités inexistantes — aucun envoi sortant, aucun modèle de
+         langage, aucun tri qualitatif. */
+      body: 'Il interroge le répertoire officiel Sirene sur les codes postaux voisins du vôtre, retient les entreprises qui ont des véhicules à entretenir, les classe par activité et vous envoie la liste par e-mail.',
     },
     {
       number: '02',

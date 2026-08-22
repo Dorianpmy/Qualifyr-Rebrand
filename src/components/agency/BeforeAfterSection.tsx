@@ -104,8 +104,11 @@ const rows: readonly Row[] = [
     ),
     beforeTitle: 'Prospection remise à plus tard',
     beforeBody: 'Trouver de nouveaux clients attend « quand j’aurai le temps » — donc n’arrive jamais.',
-    afterTitle: 'Un agent qui prospecte pour vous',
-    afterBody: 'Il travaille votre zone pendant que vous lavez.',
+    /* « Un agent qui prospecte pour vous » laissait entendre une prise de
+       contact déléguée. Corrigé le 22/08/2026 : l'agent produit la liste,
+       l'appel reste au professionnel. */
+    afterTitle: 'La liste est prête quand vous l’êtes',
+    afterBody: 'L’agent recense votre zone pendant que vous lavez. Vous n’avez plus qu’à appeler.',
   },
 ];
 

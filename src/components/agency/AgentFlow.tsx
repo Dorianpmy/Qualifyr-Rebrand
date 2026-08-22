@@ -117,20 +117,35 @@ function Node({
   );
 }
 
+/*
+ * Réécrit le 22/08/2026, après l'audit d'avant mise en production
+ * (`docs/11-audit-pre-production.md`).
+ *
+ * Les trois libellés décrivaient un agent qui n'existe pas : « Les curieux
+ * s'arrêtent là » supposait un filtrage de conversations, et « Chaque refus
+ * lui apprend qui vous fait perdre du temps » un apprentissage automatique.
+ * Aucun des deux n'est implémenté nulle part — l'agent interroge le
+ * répertoire Sirene, classe par code NAF, et envoie un rapport.
+ *
+ * Les trois étapes ci-dessous sont donc les trois étapes réelles du
+ * traitement, dans l'ordre où `api/agent/process/route.ts` les exécute :
+ * recherche (`scanZone`), classement (`countBySegment`), enregistrement
+ * (`insert` dans `agent_prospects`).
+ */
 const workers = [
   {
-    name: 'Agent Prospection',
-    body: 'Loueurs, VTC, concessions, flottes d’entreprise — dans votre rayon.',
+    name: 'Recherche',
+    body: 'Le répertoire officiel Sirene, sur les codes postaux voisins du vôtre.',
     tint: orbTints.sable,
   },
   {
-    name: 'Agent Filtrage',
-    body: 'Les curieux s’arrêtent là. Ceux qui restent acceptent votre tarif.',
+    name: 'Classement',
+    body: 'Loueurs, VTC, concessions, flottes — triés par activité déclarée.',
     tint: orbTints.duo,
   },
   {
-    name: 'Agent Mémoire',
-    body: 'Chaque refus lui apprend qui vous fait perdre du temps.',
+    name: 'Rapport',
+    body: 'Le décompte par segment et des exemples, envoyés par e-mail.',
     tint: orbTints.celadon,
   },
 ] as const;
@@ -180,14 +195,19 @@ export function AgentFlow() {
   return (
     <Section labelledBy="agent-title" className="border-y border-hairline py-24">
       <div className="mx-auto max-w-[52rem] text-center">
+        {/* « quelqu'un remplit votre agenda » / « vous voyez les rendez-vous
+            arriver » : retiré le 22/08/2026. L'agent ne crée aucune
+            réservation — il n'écrit que dans `agent_prospects`, jamais dans
+            `detailer_bookings`, et aucun code ne relie les deux tables.
+            Le titre décrit désormais ce qu'il produit vraiment. */}
         <h2 id="agent-title" className="mb-4 text-[clamp(1.9rem,4vw,2.9rem)] font-bold leading-[1.1] tracking-[-0.03em] text-primary">
           Pendant que vous lavez,
           <br />
-          quelqu’un remplit votre agenda.
+          quelqu’un recense votre secteur.
         </h2>
         <p className="mx-auto mb-16 max-w-[34rem] text-[1.0625rem] leading-[1.65] text-muted">
-          Un agent travaille votre secteur en continu. Vous ne le voyez jamais — vous voyez
-          seulement les rendez-vous arriver.
+          L’agent liste les entreprises de votre zone qui ont des véhicules à entretenir, les
+          classe par activité, et vous envoie la liste par e-mail. À vous de les appeler.
         </p>
 
         {/* Le schéma : une entrée, trois agents, un résultat. Les connecteurs
@@ -238,18 +258,26 @@ export function AgentFlow() {
 
           <Fork reversed />
 
-          {/* Le résultat est nommé et situé : « un créneau réservé » ne dit pas
-              où il atterrit. Le professionnel doit comprendre qu'il n'a rien à
-              recopier — la réservation arrive déjà dans son espace. */}
+          {/* Le résultat réel du traitement.
+
+              Ce nœud montrait « Créneau réservé — 289 € — Acompte encaissé » :
+              le schéma laissait donc croire que l'agent aboutissait à une
+              réservation payée. C'est faux, et c'était la représentation la
+              plus trompeuse du site. Ce que produit réellement
+              `api/agent/process/route.ts`, c'est un e-mail contenant un
+              décompte par segment et quelques exemples nominatifs — voir
+              `reportHtml()`. C'est ce qui est décrit ici. */}
           <Node variant="node-result" className="w-full max-w-[30rem]">
             <div className="flex items-start gap-3.5">
               <Orb tint={orbTints.qualifyr} size="2.25rem" />
               <div className="min-w-0 flex-1">
                 <div className="flex items-baseline justify-between gap-3">
-                  <p className="text-[0.9375rem] font-semibold text-primary">Créneau réservé</p>
-                  <p className="text-[1.0625rem] font-bold tabular-nums text-primary">289 €</p>
+                  <p className="text-[0.9375rem] font-semibold text-primary">Rapport de secteur</p>
+                  <p className="text-[1.0625rem] font-bold tabular-nums text-primary">par e-mail</p>
                 </div>
-                <p className="mt-0.5 text-[0.875rem] text-muted">Berline · Complet · Mardi 14 h</p>
+                <p className="mt-0.5 text-[0.875rem] text-muted">
+                  Le décompte par segment, et des exemples nominatifs
+                </p>
 
                 <div className="mt-3.5 flex items-center gap-2 border-t border-hairline pt-3">
                   <span
@@ -258,8 +286,7 @@ export function AgentFlow() {
                     style={{ background: 'var(--accent-2)' }}
                   />
                   <p className="text-[0.8125rem] text-faint">
-                    Acompte encaissé — dans votre espace{' '}
-                    <span className="text-muted">app.qualifyragence.com</span>
+                    Source : répertoire <span className="text-muted">Sirene</span> de l’INSEE
                   </p>
                 </div>
               </div>

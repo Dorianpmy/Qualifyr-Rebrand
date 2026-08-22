@@ -81,7 +81,14 @@ export default function HomePage() {
          * réelles à la place, en gardant le même rythme et le même argument
          * « plus de soirées perdues ».
          */
-        subtitle="Qualifyr démarche votre secteur, affiche un prix ferme et filtre les curieux — pour recevoir plus de demandes de lavage sans y passer vos soirées."
+        /*
+         * « démarche votre secteur » et « filtre les curieux » retirés le
+         * 22/08/2026 (audit d'avant mise en production) : l'agent n'envoie
+         * jamais rien à un prospect, et rien ne filtre de demande entrante.
+         * Les trois éléments annoncés sont désormais les trois qui existent
+         * réellement — recensement, prix ferme, acompte.
+         */
+        subtitle="Qualifyr recense les entreprises de votre secteur à appeler, affiche un prix ferme à vos clients et encaisse l’acompte au clic — pour arrêter d’y passer vos soirées."
         /*
          * CTA : « Tester Qualifyr gratuitement → » demandé, flèche retirée
          * du texte — le bouton porte déjà une flèche SVG animée au survol

@@ -74,7 +74,7 @@ export default async function ProspectionPage() {
           <div>
             <h1 className={styles.title}>Prospection</h1>
             <p className={styles.subtitle}>
-              Votre agent démarche votre secteur pendant que vous lavez.
+              L’agent recense les entreprises de votre secteur. À vous de les appeler.
             </p>
           </div>
         </div>

@@ -196,50 +196,66 @@ export function AgentGrid() {
 
         {/* Deuxième rangée, proportions inversées — la grille respire au lieu
             d'empiler deux rangées identiques. */}
+        {/* Remplace « Il répond avant vous » (22/08/2026, audit d'avant mise
+            en production).
+
+            Cette cellule montrait l'agent répondant seul à un client, prix et
+            créneaux à l'appui. Rien de tel n'existe : aucun message n'est
+            jamais envoyé à un tiers, et aucun modèle de langage n'est appelé
+            nulle part dans le projet. Le seul e-mail qui part va **au
+            professionnel**, et contient ce que montre désormais cette
+            cellule — le décompte par segment de `reportHtml()`. */}
         <Cell
-          title="Il répond avant vous"
-          body="Le premier message part sans vous. Celui qui cherchait juste un prix l’obtient ; celui qui veut réserver arrive dans votre agenda."
+          title="Ce que vous recevez"
+          body="Un e-mail avec le décompte par type d’entreprise, et des exemples nominatifs à appeler. C’est vous qui prenez contact."
         >
-          <div className="grid gap-2.5">
-            <div className="max-w-[85%] rounded-2xl rounded-bl-md border border-white/[0.07] bg-white/[0.03] px-3.5 py-2.5 text-[0.8125rem] leading-[1.45] text-muted">
-              « C’est combien pour une Clio ? »
-            </div>
-            <div className="flex items-start gap-2 self-end">
-              <GlowFrame className="max-w-[88%] px-3.5 py-2.5">
-                <p className="text-[0.8125rem] leading-[1.45] text-primary">
-                  Citadine, formule complète : 149 €, 3 h. Voici les créneaux libres cette
-                  semaine.
-                </p>
-              </GlowFrame>
-              <Orb tint={orbTints.qualifyr} size="1.5rem" />
-            </div>
+          <div className="grid gap-2">
+            {[
+              { label: 'Loueurs de véhicules', count: 12 },
+              { label: 'VTC et taxis', count: 31 },
+              { label: 'Concessions et garages', count: 18 },
+            ].map((line) => (
+              <div
+                key={line.label}
+                className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.07] bg-white/[0.015] px-3.5 py-3"
+              >
+                <span className="text-[0.8125rem] text-muted">{line.label}</span>
+                <span className="text-[0.9375rem] font-bold tabular-nums text-primary">
+                  {line.count}
+                </span>
+              </div>
+            ))}
           </div>
         </Cell>
 
+        {/* Remplace « Il apprend votre terrain » (22/08/2026, audit d'avant
+            mise en production).
+
+            Aucun mécanisme de rétroaction n'existe : l'agent ne reçoit jamais
+            le résultat d'un appel, et rien dans le code ne modifie son
+            comportement d'une analyse à l'autre. Promettre un apprentissage
+            était la promesse la plus difficile à tenir de toute la page.
+
+            Ce qui est vrai, et vérifiable, c'est la traçabilité : chaque
+            établissement est conservé avec son SIRET, son code d'activité et
+            sa base légale (`agent_prospects`, migration 010). C'est ce que
+            décrit cette cellule — un argument de sérieux plutôt qu'une
+            promesse d'intelligence. */}
         <Cell
           className="lg:col-span-2"
-          title="Il apprend votre terrain"
-          body="Chaque refus lui apprend quelque chose : le quartier où personne ne réserve, la formule qu’on vous demande sans jamais confirmer, l’heure qui ne se remplit pas."
+          title="Chaque ligne est vérifiable"
+          body="Nom, SIRET, code d’activité, commune : tout vient du répertoire officiel. Vous pouvez recompter vous-même."
         >
           <div className="grid gap-2 sm:grid-cols-3">
             {[
-              { note: 'Les devis du dimanche ne se confirment presque jamais.', on: true },
-              { note: 'Le rayon au-delà de 12 km coûte plus qu’il ne rapporte.', on: true },
-              { note: 'La formule express intéresse surtout les VTC.', on: false },
-            ].map((item) =>
-              item.on ? (
-                <GlowFrame key={item.note} className="p-3.5">
-                  <p className="text-[0.8125rem] leading-[1.5] text-muted">{item.note}</p>
-                </GlowFrame>
-              ) : (
-                <div
-                  key={item.note}
-                  className="rounded-xl border border-white/[0.07] bg-white/[0.015] p-3.5"
-                >
-                  <p className="text-[0.8125rem] leading-[1.5] text-faint">{item.note}</p>
-                </div>
-              ),
-            )}
+              'Le nom et le SIRET de chaque établissement.',
+              'Le code d’activité qui a servi au classement.',
+              'La commune et le code postal d’implantation.',
+            ].map((note) => (
+              <GlowFrame key={note} className="p-3.5">
+                <p className="text-[0.8125rem] leading-[1.5] text-muted">{note}</p>
+              </GlowFrame>
+            ))}
           </div>
         </Cell>
       </div>

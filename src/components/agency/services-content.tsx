@@ -15,9 +15,17 @@ import { GlowCard, Orb, type Service } from './ServiceTabs';
 export const services: readonly Service[] = [
   {
     id: 'agent',
-    tab: 'L’agent IA',
-    title: 'Il démarche votre secteur pendant que vous polissez.',
-    body: 'Vous donnez un rayon et un type de clientèle. L’agent travaille en continu, répond aux premières questions, et ne vous transmet que ce qui mérite votre temps.',
+    /* Corrigé le 22/08/2026 (audit d'avant mise en production). Trois
+       affirmations fausses tenaient en deux phrases : « il démarche »
+       (aucun message ne part jamais vers un prospect), « répond aux premières
+       questions » (aucun modèle de langage n'est appelé dans le projet), et
+       « ne vous transmet que ce qui mérite votre temps » (aucun tri
+       qualitatif — le classement se fait sur le code d'activité déclaré).
+       « L'agent IA » devient « L'agent » : rien ici ne relève de
+       l'intelligence artificielle. */
+    tab: 'L’agent',
+    title: 'Il recense votre secteur pendant que vous polissez.',
+    body: 'Vous donnez un code postal. L’agent interroge le répertoire officiel Sirene, retient les entreprises qui ont des véhicules à entretenir, les classe par activité et vous envoie la liste par e-mail.',
     visual: (
       <div className="grid gap-3">
         <GlowCard>

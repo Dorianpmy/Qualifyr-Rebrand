@@ -24,10 +24,24 @@ type Row = {
   readonly saas: Cell;
 };
 
+/*
+ * Corrigé le 22/08/2026 (audit d'avant mise en production,
+ * `docs/11-audit-pre-production.md`).
+ *
+ * Deux lignes ne correspondaient pas au produit : « Toutes vos communes »
+ * (l'agent couvre trois codes postaux, le rayon en kilomètres étant reçu puis
+ * ignoré) et « Rendez-vous trouvés par l'agent dans le même agenda » (l'agent
+ * ne crée aucune réservation — il n'écrit que dans `agent_prospects`).
+ *
+ * Ce tableau est aussi la référence commerciale des droits par abonnement :
+ * `tests/entitlements.test.ts` vérifie qu'il reste aligné sur la matrice
+ * technique de `lib/billing/entitlements.ts`. Modifier une ligne ici sans
+ * modifier la matrice fait échouer les tests, volontairement.
+ */
 const rows: readonly Row[] = [
   {
-    label: 'Agent de prospection',
-    hint: 'Toutes vos communes, pas seulement la vôtre',
+    label: 'Agent de recensement',
+    hint: 'Les codes postaux voisins de votre zone',
     agent: true,
     complet: true,
     saas: false,
@@ -70,7 +84,8 @@ const rows: readonly Row[] = [
     saas: true,
   },
   {
-    label: 'Rendez-vous trouvés par l’agent dans le même agenda',
+    label: 'Agent et réservations sur le même compte',
+    hint: 'Deux produits, un seul abonnement — les données restent séparées',
     agent: false,
     complet: true,
     saas: false,
