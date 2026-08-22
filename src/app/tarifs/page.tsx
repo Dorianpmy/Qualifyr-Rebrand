@@ -1,111 +1,101 @@
 import type { Metadata } from 'next';
-import { BookingButton } from '@/components/agency/BookingButton';
-import { PricingTable } from '@/components/agency/PricingTable';
-import { Container } from '@/components/layout/Container';
-import { Section } from '@/components/layout/Section';
+import { DarkAgencyOffers } from '@/components/agency/DarkAgencyOffers';
+import { DarkFooter } from '@/components/agency/DarkFooter';
+import { DarkHeader } from '@/components/agency/DarkHeader';
+import { DarkPricing } from '@/components/agency/DarkPricing';
+import { CardsSection, CtaSection, SectionHead } from '@/components/agency/DarkVerticalPage';
+import { Section } from '@/components/agency/Section';
 import { JsonLd } from '@/components/seo/JsonLd';
-import { ButtonLink } from '@/components/ui/Button';
-import { Eyebrow } from '@/components/ui/Eyebrow';
 import { buildMetadata } from '@/lib/metadata';
-import { webPage } from '@/lib/structured-data';
-import styles from './page.module.css';
+import { breadcrumbList, webPage } from '@/lib/structured-data';
 
 export const metadata: Metadata = buildMetadata('/tarifs');
 
 /**
- * Tarifs affichés.
+ * Tarifs — refonte à la charte sombre (22/08/2026).
  *
- * Des fourchettes, pas des prix fermes : un site dépend du nombre de pages,
- * des contenus disponibles et du parcours attendu. L'objectif n'est pas d'être
- * exact, il est d'être **filtrant** — que celui dont le budget ne correspond
- * pas le sache avant de remplir un formulaire, et que celui pour qui c'est
- * accessible cesse d'hésiter.
+ * **Cette page était restée sur l'ancienne charte claire.** Toutes les autres
+ * pages produit (`/`, `/fonctionnalites`, `/nettoyage-automobile`) sont
+ * passées au SaaS-first dark theme lors du repositionnement ; `/tarifs`
+ * utilisait encore `Section`/`Container` de `components/layout` et
+ * `PricingTable` (fond clair, boutons de l'ancienne identité). Signalé par
+ * Dorian : « la page qualifyragence.com/tarifs n'est pas du tout modifié et
+ * est tjs sur copier sur mon ancienne DA — refonte moi cette page aussi ».
+ *
+ * **Rien n'est inventé.** Les trois offres SaaS viennent de `DarkPricing`
+ * (déjà utilisé sur `/`, `/fonctionnalites`, `/nettoyage-automobile` —
+ * composant partagé, pas dupliqué ici) ; les deux offres de site one-shot
+ * viennent de `DarkAgencyOffers`, copie mot pour mot de ce qu'affichait
+ * `PricingTable.tsx` sur cette même page, seulement remise en forme sombre.
+ * Les trois facteurs de prix du site reprennent le texte exact de l'ancienne
+ * page.
  */
+const factors = {
+  eyebrow: 'Pour le site, en plus du logiciel',
+  title: 'Ce qui fait varier le prix d’un site.',
+  lead: 'Le logiciel a un prix fixe, affiché ci-dessus. Un site sur mesure dépend de trois choses.',
+  items: [
+    {
+      number: '01',
+      title: 'Les contenus',
+      body: 'Textes et photographies existants font baisser le budget. Tout rédiger et organiser depuis zéro le fait monter.',
+    },
+    {
+      number: '02',
+      title: 'Le nombre de pages',
+      body: 'Une page métier bien construite vaut mieux que six pages creuses — nous le disons quand c’est le cas.',
+    },
+    {
+      number: '03',
+      title: 'Le parcours de demande',
+      body: 'Un formulaire simple ou un parcours qui qualifie, oriente et prépare l’échange ne demandent pas le même travail.',
+    },
+  ],
+} as const;
+
 export default function PricingPage() {
   return (
-    <>
+    <div data-theme="dark" className="bg-ink">
       <JsonLd data={webPage('/tarifs')} />
+      <JsonLd
+        data={breadcrumbList([
+          { name: 'Accueil', path: '/' },
+          { name: 'Tarifs', path: '/tarifs' },
+        ])}
+      />
 
-      <Section ruled>
-        <Container>
-          <div className={styles.intro}>
-            <div>
-              <Eyebrow>Tarifs</Eyebrow>
-              <h1>Ce que ça coûte, avant de nous parler.</h1>
-            </div>
-            <div className={styles.introCopy}>
-              <p>
-                Des fourchettes honnêtes plutôt qu’un devis à rallonge. Le prix exact dépend du
-                nombre de pages, des contenus que vous avez déjà et du parcours souhaité — mais
-                vous saurez tout de suite si nous sommes dans vos moyens.
-              </p>
-              <ul aria-label="Repères">
-                <li>Prix affichés</li>
-                <li>Devis sous 48 h</li>
-                <li>Sans engagement</li>
-              </ul>
-            </div>
-          </div>
-        </Container>
+      <DarkHeader />
+
+      <Section className="pb-4 pt-24 sm:pt-32">
+        <SectionHead
+          eyebrow="Tarifs"
+          title="Ce que ça coûte, avant de nous parler."
+          lead="Le logiciel se loue au mois, prix affiché, sans devis. Le site vitrine ou le parcours de demande, vendus à part, dépendent de votre projet — mais vous saurez tout de suite si c’est dans vos moyens."
+        />
       </Section>
 
-      <Section surface="sunken" ruled>
-        <Container>
-          <PricingTable />
-        </Container>
-      </Section>
+      <DarkPricing />
 
-      <Section ruled>
-        <Container>
-          <div className={styles.block}>
-            <h2>Ce qui fait varier le prix.</h2>
-            <ol className={styles.factors}>
-              <li>
-                <strong>Les contenus</strong>
-                <span>
-                  Textes et photographies existants font baisser le budget. Tout rédiger et
-                  organiser depuis zéro le fait monter.
-                </span>
-              </li>
-              <li>
-                <strong>Le nombre de pages</strong>
-                <span>
-                  Une page métier bien construite vaut mieux que six pages creuses — nous le disons
-                  quand c’est le cas.
-                </span>
-              </li>
-              <li>
-                <strong>Le parcours de demande</strong>
-                <span>
-                  Un formulaire simple ou un parcours qui qualifie, oriente et prépare l’échange ne
-                  demandent pas le même travail.
-                </span>
-              </li>
-            </ol>
-          </div>
-        </Container>
-      </Section>
+      <DarkAgencyOffers />
 
-      <Section surface="sunken">
-        <Container>
-          <div className={styles.final}>
-            <div>
-              <Eyebrow>La suite</Eyebrow>
-              <h2>Un chiffre précis, sous 48 heures.</h2>
-              <p>
-                Contactez-nous et décrivez votre situation en quelques lignes. Vous recevez
-                ensuite une proposition chiffrée, sans relance commerciale.
-              </p>
-            </div>
-            <div className={styles.finalActions}>
-              <ButtonLink href="/contact" ctaId="pricing_diagnostic">Nous contacter</ButtonLink>
-              <BookingButton ctaId="pricing_booking" variant="secondary">
-                Réserver une analyse de parcours
-              </BookingButton>
-            </div>
-          </div>
-        </Container>
-      </Section>
-    </>
+      <CardsSection
+        id="factors-title"
+        eyebrow={factors.eyebrow}
+        title={factors.title}
+        lead={factors.lead}
+        items={factors.items}
+        className="border-t border-hairline"
+      />
+
+      <CtaSection
+        eyebrow="La suite"
+        title="Un chiffre précis, sous 48 heures."
+        body="Décrivez votre situation en quelques lignes. Vous recevez une proposition chiffrée, sans relance commerciale."
+        primary={{ href: '/contact', label: 'Nous contacter' }}
+        secondary={{ href: '/nettoyage-automobile', label: 'Voir la démo du logiciel' }}
+      />
+
+      <DarkFooter />
+    </div>
   );
 }

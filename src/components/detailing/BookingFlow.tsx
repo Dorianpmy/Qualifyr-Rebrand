@@ -475,7 +475,12 @@ export function BookingFlow({
 
   if (phase === 'done' && bookingSummary) {
     return (
-      <section className={styles.confirmation} data-app="booking" aria-labelledby="booking-confirmation-title">
+      <section
+        className={styles.confirmation}
+        data-app="booking"
+        data-theme="dark"
+        aria-labelledby="booking-confirmation-title"
+      >
         <p className={styles.eyebrow}>{demo ? 'Démonstration terminée' : 'Demande envoyée'}</p>
         <h1 ref={headingRef} tabIndex={-1} id="booking-confirmation-title">
           {demo
@@ -527,7 +532,16 @@ export function BookingFlow({
   }
 
   return (
-    <div className={styles.flow} data-app="booking">
+    /* `data-theme="dark"` (22/08/2026, signalé sur capture d'écran : le bouton
+       "Continuer" s'affichait en laiton `#b08a52` au lieu du blanc voulu par
+       ce fichier, `--accent: #ffffff`). Ce tunnel (`/embed/[slug]`,
+       `/reservation/[slug]`) n'a pas de wrapper `main` avec cet attribut —
+       `globals.css` traite donc toute page qui l'utilise comme une page de
+       l'ancienne charte claire, et lui impose ses boutons couleur marque
+       (`body:not(:has(main [data-theme='dark'])) button`, voir ce fichier).
+       Poser l'attribut ici neutralise tout ce bloc d'un coup, plutôt que de
+       contrer chacune de ses règles une par une. */
+    <div className={styles.flow} data-app="booking" data-theme="dark">
       <aside className={styles.context} data-surface="inverse">
         <p className={styles.eyebrow}>{detailer.name}</p>
         <p className={styles.contextStep}>
