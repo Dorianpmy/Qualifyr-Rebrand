@@ -179,3 +179,112 @@ describe('garde-fous du code', () => {
     expect(outreach).toContain("in('zone_id', zoneIds)");
   });
 });
+
+describe('réservation avant envoi', () => {
+  const ROOT = process.cwd();
+  const route = readFileSync(join(ROOT, 'src/app/api/agent/outreach/route.ts'), 'utf-8');
+  const migration = readFileSync(
+    join(ROOT, 'supabase/migrations/019_hermes_messages_pending.sql'),
+    'utf-8',
+  );
+
+  /*
+   * Le défaut corrigé : la ligne `hermes_messages` n'était écrite qu'après
+   * le retour de Resend. Un processus tué entre l'envoi confirmé et cette
+   * écriture laissait `remainingQuota` sous-compter la journée et
+   * `agent_prospects.contacted_at` vide — le prospect redevenait candidat et
+   * recevait un second message. La réservation en `pending`, avant l'appel à
+   * Resend, ferme ce trou : l'index unique (campaign_id, prospect_id) de la
+   * migration 016 devient un verrou atomique.
+   */
+
+  it('réserve la ligne hermes_messages avant tout appel à Resend', () => {
+    const reserve = route.indexOf("status: 'pending'");
+    const send = route.indexOf('resend.emails.send');
+    expect(reserve).toBeGreaterThanOrEqual(0);
+    expect(reserve).toBeLessThan(send);
+  });
+
+  it('pose contacted_at à la réservation, avant l’envoi — pas après', () => {
+    const contacted = route.indexOf("update({ contacted_at: new Date().toISOString() })");
+    const send = route.indexOf('resend.emails.send');
+    expect(contacted).toBeGreaterThanOrEqual(0);
+    expect(contacted).toBeLessThan(send);
+  });
+
+  it('la vérification de suppression reste avant la réservation', () => {
+    // Le test existant verrouille déjà isSuppressed avant l'envoi ; celui-ci
+    // verrouille qu'aucun engagement (réservation comprise) ne précède la
+    // vérification.
+    const suppressionCheck = route.indexOf('isSuppressed(candidate.email)');
+    const reserve = route.indexOf("status: 'pending'");
+    expect(suppressionCheck).toBeGreaterThanOrEqual(0);
+    expect(suppressionCheck).toBeLessThan(reserve);
+  });
+
+  it('traite un conflit d’unicité comme une réservation déjà prise, jamais comme une erreur à retenter', () => {
+    expect(route).toContain("reserveError.code === '23505'");
+  });
+
+  it('n’envoie pas si la réservation échoue, connue ou non', () => {
+    // Les deux branches de `reserveError` doivent aboutir à `continue` sans
+    // jamais atteindre `resend.emails.send` — une réservation qu'on ne peut
+    // pas écrire est une trace qu'on ne pourra pas produire.
+    const reserveErrorBlock = route.slice(
+      route.indexOf('if (reserveError)'),
+      route.indexOf('// 4. Sort le prospect'),
+    );
+    expect(reserveErrorBlock).not.toContain('resend.emails.send');
+    expect((reserveErrorBlock.match(/continue;/g) ?? []).length).toBe(2);
+  });
+
+  it('ne relit ni ne rejoue jamais une ligne pending existante', () => {
+    // Une ligne `pending` signifie « on ne sait pas si le message est
+    // parti » : la rejouer réintroduirait le double envoi que la réservation
+    // ferme. La seule requête qui filtre sur ce statut est le diagnostic
+    // (`head: true` — un décompte, jamais des lignes récupérées pour être
+    // retraitées) ; aucune autre ne doit exister.
+    const matches = [...route.matchAll(/\.eq\(\s*['"]status['"],\s*['"]pending['"]\s*\)/g)];
+    expect(matches).toHaveLength(1);
+
+    const [match] = matches;
+    const index = match!.index!;
+    const context = route.slice(Math.max(0, index - 150), index);
+    expect(context).toContain('head: true');
+  });
+
+  it('inspecte le retour d’erreur de chacune des quatre écritures', () => {
+    // Réservation, contacted_at, et les deux finalisations (failed / sent) :
+    // plus un seul insert ou update sans lecture de `error`.
+    expect(route).toContain('error: reserveError');
+    expect(route).toContain('error: contactedError');
+    expect(route).toContain('error: failUpdateError');
+    expect(route).toContain('error: sentUpdateError');
+    expect(route).toContain('if (contactedError)');
+    expect(route).toContain('if (failUpdateError)');
+    expect(route).toContain('if (sentUpdateError)');
+  });
+
+  it('surface le nombre de réservations orphelines de plus d’une heure', () => {
+    // Une ligne `pending` ancienne n'est jamais rejouée automatiquement,
+    // mais son décompte doit rester visible : c'est la seule façon
+    // d'apprendre qu'un passage a été tué en route autrement que par un
+    // client.
+    expect(route).toContain('stalePendingCount');
+    expect(route).toContain("eq('status', 'pending')");
+  });
+
+  it('migration 019 : le défaut de statut devient pending, jamais sent', () => {
+    // Un défaut `sent` sur une table qui sert de preuve d'envoi est un piège
+    // en soi : l'insertion la plus distraite doit produire l'état le plus
+    // prudent.
+    expect(migration).toContain("alter column status set default 'pending'");
+    expect(migration).toMatch(
+      /check \(status in \('pending', 'sent', 'failed', 'bounced', 'complained'\)\)/,
+    );
+  });
+
+  it('migration 019 est idempotente', () => {
+    expect(migration).toContain('drop constraint if exists hermes_messages_status_known');
+  });
+});

@@ -36,10 +36,34 @@ import {
  * boucle, l'appel au fournisseur et l'écriture du journal — si une règle
  * métier apparaît dans ce fichier, c'est qu'elle est au mauvais endroit.
  *
- * Elle ne rattrape pas les échecs. Un message qui n'est pas parti est
- * journalisé en `failed` et le prospect reste contactable ; c'est le passage
- * suivant qui réessaiera. Une file de reprise ajouterait un état de plus pour
- * un gain nul à ce volume.
+ * ## Pourquoi la réservation précède l'envoi
+ *
+ * Avant, la ligne `hermes_messages` n'était écrite qu'après le retour de
+ * l'appel à Resend — `sent` en cas de succès, `failed` en cas d'erreur
+ * propre. Si le processus était tué entre l'envoi confirmé par Resend et
+ * cette écriture, aucune ligne n'existait : `remainingQuota` (qui compte les
+ * lignes sur 24 h, voir `outreach.ts`) sous-comptait la journée et rendait du
+ * quota qui n'aurait pas dû l'être, et `agent_prospects.contacted_at`
+ * restait vide — le prospect redevenait candidat au passage suivant, et
+ * recevait un second message de démarchage. C'est le scénario qui déclenche
+ * un signalement, et un signalement porte sur le domaine d'expédition, donc
+ * sur tous les comptes.
+ *
+ * La ligne `hermes_messages` est désormais réservée en `pending` **avant**
+ * l'appel à Resend, puis finalisée en `sent`/`failed`. L'index unique
+ * `(campaign_id, prospect_id)` (migration 016) devient alors un verrou
+ * atomique plutôt qu'une garantie a posteriori : un conflit d'insertion
+ * signifie que ce prospect est déjà réservé par un passage précédent ou
+ * concurrent, et l'envoi n'a pas lieu. `agent_prospects.contacted_at` est
+ * posé à la réservation, pas après l'envoi — un échec après réservation
+ * (propre ou processus tué) retire donc le prospect de la file pour de bon.
+ * Perdre un prospect est sans conséquence pour Hermès ; le solliciter deux
+ * fois brûle le domaine de tous les comptes. Voir la migration 019.
+ *
+ * **Une ligne `pending` n'est jamais reprise automatiquement.** Elle signifie
+ * « on ne sait pas si le message est parti » : la rejouer réintroduirait
+ * exactement le double envoi que ce mécanisme ferme. Ne pas « réparer » les
+ * lignes `pending` anciennes en les repassant en file — c'est délibéré.
  */
 
 export const dynamic = 'force-dynamic';
@@ -54,6 +78,29 @@ export const maxDuration = 60;
  * n'enverrait pas quinze messages en huit secondes.
  */
 const BATCH_SIZE = 5;
+
+/**
+ * Diagnostic des réservations orphelines.
+ *
+ * Une ligne `pending` de plus d'une heure signale un processus tué en plein
+ * envoi (voir le commentaire d'en-tête) — jamais rejouée automatiquement,
+ * mais son décompte doit rester visible : c'est la seule façon de
+ * s'apercevoir que des passages meurent en route autrement qu'en l'apprenant
+ * d'un client.
+ */
+const STALE_PENDING_THRESHOLD_MS = 60 * 60 * 1000;
+
+async function countStalePending(
+  supabase: NonNullable<ReturnType<typeof getServiceSupabaseClient>>,
+): Promise<number> {
+  const threshold = new Date(Date.now() - STALE_PENDING_THRESHOLD_MS).toISOString();
+  const { count } = await supabase
+    .from('hermes_messages')
+    .select('id', { count: 'exact', head: true })
+    .eq('status', 'pending')
+    .lt('sent_at', threshold);
+  return count ?? 0;
+}
 
 export async function POST(request: Request) {
   const secret = process.env['CRON_SECRET'];
@@ -85,6 +132,8 @@ export async function POST(request: Request) {
     );
   }
 
+  const stalePendingCount = await countStalePending(supabase);
+
   // La campagne la moins récemment servie. `updated_at` est touché à chaque
   // passage, ce qui fait tourner les comptes sans table de file d'attente.
   const { data: rows, error } = await supabase
@@ -99,7 +148,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'lecture des campagnes impossible' }, { status: 500 });
   }
   if (!rows || rows.length === 0) {
-    return NextResponse.json({ processed: 0, reason: 'aucune campagne active' });
+    return NextResponse.json({ processed: 0, reason: 'aucune campagne active', stalePendingCount });
   }
 
   const campaign: Campaign = toCampaign(rows[0] as unknown as CampaignRow);
@@ -114,14 +163,24 @@ export async function POST(request: Request) {
       .update({ updated_at: new Date().toISOString() })
       .eq('id', campaign.id);
 
-    return NextResponse.json({ processed: 0, campaign: campaign.id, skipped: allowed.reason });
+    return NextResponse.json({
+      processed: 0,
+      campaign: campaign.id,
+      skipped: allowed.reason,
+      stalePendingCount,
+    });
   }
 
   // L'e-mail du compte définit le périmètre des prospects joignables.
   const { data: userData } = await supabase.auth.admin.getUserById(campaign.ownerId);
   const ownerEmail = userData?.user?.email;
   if (!ownerEmail) {
-    return NextResponse.json({ processed: 0, campaign: campaign.id, skipped: 'compte introuvable' });
+    return NextResponse.json({
+      processed: 0,
+      campaign: campaign.id,
+      skipped: 'compte introuvable',
+      stalePendingCount,
+    });
   }
 
   const quota = await remainingQuota(campaign);
@@ -132,8 +191,9 @@ export async function POST(request: Request) {
   let skipped = 0;
 
   for (const candidate of candidates) {
-    // Dernière barrière, juste avant l'envoi : quelqu'un a pu se désinscrire
-    // depuis la constitution de la file.
+    // 1. Dernière barrière, juste avant tout engagement (réservation
+    // comprise) : quelqu'un a pu se désinscrire depuis la constitution de la
+    // file.
     if (await isSuppressed(candidate.email)) {
       await supabase
         .from('agent_prospects')
@@ -143,9 +203,73 @@ export async function POST(request: Request) {
       continue;
     }
 
+    // 2. Le corps doit être connu pour être journalisé dès la réservation.
     const unsubscribeUrl = unsubscribeUrlFor(candidate.unsubscribeToken);
     const message = composeMessage(campaign, candidate, unsubscribeUrl);
 
+    // 3. Réservation : verrou atomique sur (campaign_id, prospect_id).
+    // `sent_at` (défaut `now()`) marque ici l'instant de la tentative, pas
+    // celui d'un envoi confirmé — voir le commentaire d'en-tête et la
+    // migration 019. Jamais retouché à la finalisation, pour que
+    // `remainingQuota` continue de fermer le quota sur les tentatives.
+    const { data: reserved, error: reserveError } = await supabase
+      .from('hermes_messages')
+      .insert({
+        campaign_id: campaign.id,
+        prospect_id: candidate.prospectId,
+        to_email: candidate.email,
+        subject: message.subject,
+        body: message.text,
+        status: 'pending',
+        provider_id: null,
+      })
+      .select('id')
+      .single();
+
+    if (reserveError) {
+      if (reserveError.code === '23505') {
+        // Déjà réservé par un passage précédent ou concurrent : ne jamais
+        // retenter un envoi déjà réservé, même si on ignore son issue.
+        skipped += 1;
+        continue;
+      }
+      // Une réservation qu'on ne peut pas écrire est une trace qu'on ne
+      // pourra pas produire — même règle que le quota illisible : on
+      // n'envoie pas.
+      console.error(
+        '[agent/outreach] réservation impossible',
+        candidate.prospectId,
+        reserveError.message,
+      );
+      skipped += 1;
+      continue;
+    }
+
+    // 4. Sort le prospect de `nextCandidates` dès maintenant, pas après
+    // l'envoi — voir le commentaire d'en-tête.
+    const { error: contactedError } = await supabase
+      .from('agent_prospects')
+      .update({ contacted_at: new Date().toISOString() })
+      .eq('id', candidate.prospectId);
+
+    if (contactedError) {
+      console.error(
+        '[agent/outreach] marquage contacted_at impossible',
+        candidate.prospectId,
+        contactedError.message,
+      );
+      const { error: failError } = await supabase
+        .from('hermes_messages')
+        .update({ status: 'failed', error: contactedError.message.slice(0, 500) })
+        .eq('id', reserved.id);
+      if (failError) {
+        console.error('[agent/outreach] finalisation failed impossible', reserved.id, failError.message);
+      }
+      skipped += 1;
+      continue;
+    }
+
+    // 5. L'envoi.
     const { data: result, error: sendError } = await resend.emails.send({
       from,
       to: candidate.email,
@@ -168,16 +292,19 @@ export async function POST(request: Request) {
       },
     });
 
+    // 6. Finalisation de la ligne réservée.
     if (sendError) {
-      await supabase.from('hermes_messages').insert({
-        campaign_id: campaign.id,
-        prospect_id: candidate.prospectId,
-        to_email: candidate.email,
-        subject: message.subject,
-        body: message.text,
-        status: 'failed',
-        error: sendError.message.slice(0, 500),
-      });
+      const { error: failUpdateError } = await supabase
+        .from('hermes_messages')
+        .update({ status: 'failed', error: sendError.message.slice(0, 500) })
+        .eq('id', reserved.id);
+      if (failUpdateError) {
+        console.error(
+          '[agent/outreach] finalisation failed impossible',
+          reserved.id,
+          failUpdateError.message,
+        );
+      }
 
       // Une adresse rejetée définitivement par le fournisseur ne doit plus
       // jamais être tentée : réessayer dégrade la réputation d'envoi.
@@ -187,20 +314,17 @@ export async function POST(request: Request) {
       continue;
     }
 
-    await supabase.from('hermes_messages').insert({
-      campaign_id: campaign.id,
-      prospect_id: candidate.prospectId,
-      to_email: candidate.email,
-      subject: message.subject,
-      body: message.text,
-      status: 'sent',
-      provider_id: result?.id ?? null,
-    });
-
-    await supabase
-      .from('agent_prospects')
-      .update({ contacted_at: new Date().toISOString() })
-      .eq('id', candidate.prospectId);
+    const { error: sentUpdateError } = await supabase
+      .from('hermes_messages')
+      .update({ status: 'sent', provider_id: result?.id ?? null })
+      .eq('id', reserved.id);
+    if (sentUpdateError) {
+      console.error(
+        '[agent/outreach] finalisation sent impossible',
+        reserved.id,
+        sentUpdateError.message,
+      );
+    }
 
     sent += 1;
   }
@@ -210,5 +334,5 @@ export async function POST(request: Request) {
     .update({ updated_at: new Date().toISOString() })
     .eq('id', campaign.id);
 
-  return NextResponse.json({ processed: sent, skipped, campaign: campaign.id });
+  return NextResponse.json({ processed: sent, skipped, campaign: campaign.id, stalePendingCount });
 }
