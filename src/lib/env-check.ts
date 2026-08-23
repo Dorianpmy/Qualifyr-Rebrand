@@ -112,6 +112,28 @@ export const REQUIRED_ENV: readonly EnvRequirement[] = [
     consequence: 'les e-mails partent d’un domaine de test et finissent en indésirables',
     requiredInDev: false,
   },
+  {
+    /*
+     * Adresse d'expédition d'Hermès. Elle doit pointer vers un **sous-domaine
+     * dédié** (`contact.qualifyragence.com`), distinct de celui des factures
+     * et des confirmations de réservation.
+     *
+     * La raison n'est pas cosmétique : la réputation d'expéditeur se calcule
+     * par domaine. Si la prospection fait chuter celle du domaine principal,
+     * ce ne sont pas seulement les messages de démarchage qui tombent en
+     * indésirables — ce sont les confirmations de rendez-vous et les factures
+     * de tous les professionnels. Deux domaines, deux réputations : l'une peut
+     * brûler sans emporter l'autre.
+     *
+     * Son absence n'est pas un repli sur `BOOKING_FROM_EMAIL` : la route
+     * refuse d'envoyer, car ce repli serait exactement la contamination qu'on
+     * cherche à éviter.
+     */
+    name: 'HERMES_FROM_EMAIL',
+    consequence:
+      'la prospection Hermès n’envoie rien — aucun repli sur le domaine transactionnel, pour ne pas exposer sa réputation',
+    requiredInDev: false,
+  },
 ];
 
 export type EnvCheckResult = {

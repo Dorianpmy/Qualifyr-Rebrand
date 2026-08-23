@@ -27,94 +27,10 @@ import { getServiceSupabaseClient } from '@/lib/detailing/supabase-server';
  * dans l'appelant : c'est ici qu'elles sont testables sans réseau.
  */
 
-/** Ce qu'il faut pour envoyer un message à un prospect. */
-export type OutreachCandidate = {
-  readonly prospectId: string;
-  readonly email: string;
-  readonly businessName: string;
-  readonly city: string | null;
-  readonly unsubscribeToken: string;
-};
+export type { Campaign, OutreachCandidate } from './outreach-message';
+export { composeMessage, fillTemplate } from './outreach-message';
 
-export type Campaign = {
-  readonly id: string;
-  readonly ownerId: string;
-  readonly senderName: string;
-  readonly replyToEmail: string;
-  readonly subject: string;
-  readonly body: string;
-  readonly dailyQuota: number;
-  readonly pausedAt: string | null;
-  readonly suspendedAt: string | null;
-};
-
-/**
- * Remplit le gabarit du professionnel.
- *
- * **Deux variables, pas davantage.** Un gabarit riche produit des phrases
- * bancales — « Bonjour {{prenom_dirigeant}} » donne « Bonjour  » dès que la
- * donnée manque, et personne ne relit trois cents messages pour s'en
- * apercevoir. Ici, une variable sans valeur est remplacée par une formulation
- * qui reste correcte en français.
- *
- * La substitution est faite sur des chaînes littérales et non par expression
- * régulière construite dynamiquement : le corps vient du professionnel, et une
- * expression bâtie à partir de ses données serait une porte ouverte.
- */
-export function fillTemplate(
-  template: string,
-  values: { businessName: string; city: string | null },
-): string {
-  return template
-    .split('{{entreprise}}')
-    .join(values.businessName)
-    .split('{{ville}}')
-    .join(values.city ?? 'votre secteur');
-}
-
-/**
- * Compose le message final.
- *
- * **Le bloc de pied de page n'est pas négociable et n'est pas modifiable par
- * le professionnel.** Il porte trois obligations : dire qui écrit, dire d'où
- * vient l'adresse (article 14 du RGPD — les données ont été collectées
- * indirectement, auprès du répertoire des entreprises et du site public), et
- * permettre de s'opposer en un clic.
- *
- * Le laisser à la main du professionnel reviendrait à parier que trois cents
- * artisans le rédigeront correctement. Il est donc ajouté ici, après son
- * texte, hors de sa portée.
- */
-export function composeMessage(
-  campaign: Campaign,
-  candidate: OutreachCandidate,
-  unsubscribeUrl: string,
-): { subject: string; text: string } {
-  const body = fillTemplate(campaign.body, {
-    businessName: candidate.businessName,
-    city: candidate.city,
-  });
-
-  const footer = [
-    '',
-    '—',
-    `${campaign.senderName}`,
-    '',
-    'Vous recevez ce message parce que votre établissement figure au répertoire',
-    'public des entreprises et que cette adresse est publiée sur votre site.',
-    'Aucune autre donnée vous concernant n’est conservée.',
-    '',
-    `Ne plus recevoir de message : ${unsubscribeUrl}`,
-  ].join('\n');
-
-  return {
-    subject: fillTemplate(campaign.subject, {
-      businessName: candidate.businessName,
-      city: candidate.city,
-    }),
-    text: `${body}\n${footer}`,
-  };
-}
+import type { Campaign, OutreachCandidate } from './outreach-message';
 
 /**
  * Combien de messages cette campagne peut-elle encore envoyer aujourd'hui ?
@@ -249,4 +165,145 @@ export async function unsubscribeByToken(
   if (prospect.email) await suppress(prospect.email, 'unsubscribed');
 
   return { ok: true, businessName: prospect.name };
+}
+
+/* ------------------------------------------------------------------ */
+/* Le moteur                                                           */
+/* ------------------------------------------------------------------ */
+
+import { canAccess } from '@/lib/billing/entitlements';
+import { getEntitlement } from '@/lib/billing/subscription';
+import { productionUrl } from '@/content/site';
+
+/** Ligne de `hermes_campaigns` telle qu'elle sort de la base. */
+export type CampaignRow = {
+  id: string;
+  owner_id: string;
+  sender_name: string;
+  reply_to_email: string;
+  subject: string;
+  body: string;
+  daily_quota: number;
+  paused_at: string | null;
+  suspended_at: string | null;
+};
+
+export function toCampaign(row: CampaignRow): Campaign {
+  return {
+    id: row.id,
+    ownerId: row.owner_id,
+    senderName: row.sender_name,
+    replyToEmail: row.reply_to_email,
+    subject: row.subject,
+    body: row.body,
+    dailyQuota: row.daily_quota,
+    pausedAt: row.paused_at,
+    suspendedAt: row.suspended_at,
+  };
+}
+
+/**
+ * Cette campagne a-t-elle le droit d'envoyer, maintenant ?
+ *
+ * **L'abonnement est revérifié à chaque passage, jamais mis en cache.** Une
+ * résiliation doit arrêter les envois dans l'heure, pas au prochain
+ * redéploiement — et un compte qui continue de prospecter après avoir cessé de
+ * payer est le genre de chose qu'on ne découvre que par une réclamation.
+ *
+ * Renvoie la raison du refus plutôt qu'un booléen : elle est journalisée, et
+ * sans elle un envoi qui ne part pas est indébogable.
+ */
+export async function campaignCanSend(
+  campaign: Campaign,
+): Promise<{ ok: true } | { ok: false; reason: string }> {
+  if (campaign.suspendedAt) return { ok: false, reason: 'suspendue' };
+  if (campaign.pausedAt) return { ok: false, reason: 'en pause' };
+
+  const entitlement = await getEntitlement(campaign.ownerId);
+  if (!canAccess(entitlement, 'agent.prospecting')) {
+    return { ok: false, reason: 'abonnement sans la capacité agent.prospecting' };
+  }
+
+  const remaining = await remainingQuota(campaign);
+  if (remaining <= 0) return { ok: false, reason: 'quota quotidien atteint' };
+
+  return { ok: true };
+}
+
+/**
+ * Les prospects que cette campagne peut encore contacter.
+ *
+ * **Le filtrage par propriétaire se fait en deux temps, et il est le point
+ * critique de cette fonction.** Une première version interrogeait
+ * `agent_prospects` sans restriction : elle aurait fait écrire la campagne de
+ * Marc aux entreprises recensées par Julien. Le typage l'a révélé — le
+ * paramètre `campaign` n'était utilisé nulle part — mais c'est le genre de
+ * défaut qui ne se voit pas à la lecture et qui se découvre par une plainte.
+ *
+ * Le rattachement passe par l'e-mail et non par `detailer_id` : une zone
+ * demandée depuis le site vitrine, avant toute inscription, n'a pas encore de
+ * `detailer_id`. C'est déjà la clé qu'emploie `claimZonesForDetailer`.
+ *
+ * L'ordre est celui de la création, pour que deux passages successifs ne
+ * reprennent pas les mêmes lignes en en laissant d'autres indéfiniment de
+ * côté.
+ *
+ * La liste de suppression n'est **pas** filtrée ici : elle l'est juste avant
+ * l'envoi. Entre la constitution de la file et le dernier message, quelqu'un a
+ * pu se désinscrire.
+ */
+export async function nextCandidates(
+  /* La campagne n'est volontairement pas un paramètre : le périmètre est
+     défini par l'e-mail du compte, et un argument non utilisé donnerait
+     l'illusion d'un filtrage qui n'existe pas — c'est exactement ce qui a
+     produit la fuite corrigée ici. */
+  ownerEmail: string,
+  limit: number,
+): Promise<readonly OutreachCandidate[]> {
+  const supabase = getServiceSupabaseClient();
+  if (!supabase) return [];
+
+  // 1. Les zones de ce compte, et elles seules.
+  const { data: zones, error: zonesError } = await supabase
+    .from('agent_zones')
+    .select('id')
+    .ilike('email', ownerEmail);
+
+  if (zonesError || !zones || zones.length === 0) return [];
+
+  const zoneIds = (zones as readonly { id: string }[]).map((z) => z.id);
+
+  // 2. Les prospects de ces zones, contactables.
+  const { data, error } = await supabase
+    .from('agent_prospects')
+    .select('id, name, city, email, unsubscribe_token')
+    .in('zone_id', zoneIds)
+    .not('email', 'is', null)
+    .is('contacted_at', null)
+    .is('opted_out_at', null)
+    .order('created_at', { ascending: true })
+    .limit(limit);
+
+  if (error || !data) return [];
+
+  return (
+    data as unknown as readonly {
+      id: string;
+      name: string;
+      city: string | null;
+      email: string;
+      unsubscribe_token: string;
+    }[]
+  ).map((row) => ({
+    prospectId: row.id,
+    email: row.email,
+    businessName: row.name,
+    city: row.city,
+    unsubscribeToken: row.unsubscribe_token,
+  }));
+}
+
+/** Adresse publique de désinscription pour un jeton donné. */
+export function unsubscribeUrlFor(token: string): string {
+  return `${productionUrl}/desinscription/${token}`;
 }
