@@ -16,7 +16,12 @@ export const heroMoments = [
 
 /**
  * Bandeau produit SaaS sur la home (mis en avant).
- * Lien vers app.qualifyragence.com — DA produit séparée de l’agence.
+ *
+ * **Liens en chemins relatifs, pas en URL absolues vers `app.`.** Le
+ * sous-domaine existe et mène au bon endroit, mais par une redirection 301 :
+ * un lien absolu ferait donc payer un aller-retour réseau à chaque visiteur,
+ * pour aboutir exactement ici. Les chemins relatifs vont droit au but et
+ * restent justes si le domaine change un jour.
  */
 export const saasHome = {
   eyebrow: 'Outil laveurs auto · France & Suisse',
@@ -39,11 +44,11 @@ export const saasHome = {
   ],
   primaryCta: {
     label: 'Voir l’outil laveurs auto',
-    href: 'https://app.qualifyragence.com/reservation/demo',
+    href: '/reservation/demo',
   },
   secondaryCta: {
     label: 'Espace pro',
-    href: 'https://app.qualifyragence.com/app/login',
+    href: '/app/login',
   },
 } as const;
 

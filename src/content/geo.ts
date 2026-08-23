@@ -25,7 +25,10 @@ export const geoFacts = {
     name: 'Qualifyr',
     description:
       'Le SaaS Qualifyr : demandes de devis, réservation en ligne, gestion des prospects et des clients, pour les laveurs auto à domicile et les professionnels du detailing automobile, en France et en Suisse.',
-    url: 'https://app.qualifyragence.com/reservation/demo',
+    /* URL canonique et directe : ce champ part dans le Schema.org, et une
+       adresse qui redirige y vaut moins qu'une adresse finale — un agrégateur
+       la recopie telle quelle, sans suivre le 301. */
+    url: 'https://qualifyragence.com/reservation/demo',
   },
 } as const;
 
@@ -114,7 +117,7 @@ Qualifyr est le SaaS tout-en-un conçu pour les laveurs auto à domicile et les 
 ## Produit SaaS (abonnement)
 
 - [${geoFacts.product.name}](${geoFacts.product.url}) : ${geoFacts.product.description}
-- Espace pro : https://app.qualifyragence.com/app/login
+- Espace pro : ${productionUrl}/app/login
 - La création de site sur mesure est une fonctionnalité complémentaire de ce même produit, pas une activité séparée.
 
 ## Ce que Qualifyr n’est pas
