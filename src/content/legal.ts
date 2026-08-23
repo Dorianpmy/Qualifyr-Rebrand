@@ -57,6 +57,13 @@ export const privacySections: readonly PrivacySection[] = [
          réponse sans avoir à écrire. */
       'Prospection : lorsqu’un professionnel abonné analyse une zone, nous recensons les entreprises qui s’y trouvent à partir du répertoire public des entreprises (INSEE — Sirene), et nous relevons l’adresse électronique publiée sur leur site lorsqu’elle existe. Aucune adresse n’est devinée ni achetée à un tiers.',
       'Ces informations concernent des établissements, pas des particuliers. Elles servent uniquement à permettre au professionnel abonné de les contacter au sujet de son activité. Il est l’expéditeur de ces messages ; nous les acheminons pour son compte.',
+      /* Ajouté le 24/08/2026 avec le classement par pertinence. Pour une
+         entreprise individuelle, la raison sociale est le nom d'une personne
+         (fréquent chez les VTC et les petits garages) : dire « aucune donnée
+         personnelle » serait donc faux. Ce qui est vrai et vérifiable, c'est
+         la liste exacte des champs transmis — jamais l'e-mail, jamais le
+         jeton de désinscription. */
+      'Lorsqu’un professionnel décrit son activité, un modèle de langage (Mistral) classe les entreprises recensées de sa zone par pertinence pour cette activité. Il reçoit uniquement les données publiques du répertoire des entreprises : raison sociale, code d’activité, ville, tranche d’effectif. Jamais l’adresse e-mail, jamais le jeton de désinscription. Il ne rédige aucun message et ne décide d’aucun envoi.',
       'Chaque message comporte un lien de désengagement. L’utiliser retire l’adresse pour l’ensemble des professionnels utilisant le service, et non pour le seul expéditeur du message reçu.',
       'Lorsqu’un lien de campagne est utilisé, le stockage de session peut aussi conserver la source, le support, le nom de campagne, le domaine référent et la page d’entrée. Ces éléments ne contiennent aucune coordonnée et sont joints à une demande uniquement pour comprendre son origine.',
       'L’adresse de la page depuis laquelle le formulaire a été envoyé est jointe au message, afin de savoir dans quel contexte vous nous avez écrit.',
@@ -119,6 +126,7 @@ export const privacySections: readonly PrivacySection[] = [
     title: 'Prestataires techniques',
     paragraphs: [
       'Netlify assure l’hébergement et la distribution du site. Dans ce cadre, Netlify traite les informations techniques nécessaires à la réception et à la sécurisation des requêtes, et fournit au site le code pays utilisé pour la présélection tarifaire.',
+      'Mistral AI traite les données décrites ci-dessus (raison sociale, code d’activité, ville, tranche d’effectif) pour classer par pertinence les entreprises recensées, lorsqu’un professionnel abonné a décrit son activité. Il ne reçoit jamais d’adresse e-mail ni de jeton de désinscription, et ne rédige ni n’envoie aucun message.',
       'Tout nouveau prestataire traitant des données sera nommé ici avec la raison de son intervention.',
     ],
   },

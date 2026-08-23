@@ -80,6 +80,7 @@ export const estimationOffers: readonly Offer[] = [
     included: [
       'Recensement des entreprises d’une zone à partir du répertoire officiel',
       'Un rapport de secteur envoyé par e-mail',
+      'Entreprises classées par pertinence pour votre activité, à l’aide d’un modèle de langage',
       'Hermès écrit à ces entreprises pour vous, à votre nom',
     ],
     excluded: [

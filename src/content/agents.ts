@@ -57,6 +57,7 @@ export const agents: readonly Agent[] = [
     steps: [
       'Recenser les entreprises',
       'Analyser une zone',
+      'Classer par pertinence',
       'Écrire le premier message',
       'Vous transmettre les réponses',
     ],

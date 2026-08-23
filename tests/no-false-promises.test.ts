@@ -36,8 +36,15 @@ const FORBIDDEN: readonly {
     why: 'nearbyPostalCodes() couvre le code postal ±1, et ignore le rayon en km',
   },
   {
+    /*
+     * Reste interdit après le 24/08/2026, même si un modèle de langage
+     * (Mistral) est désormais appelé : il classe les entreprises recensées
+     * par pertinence, il ne rédige rien et ne décide d'aucun envoi
+     * (`lib/agent/relevance.ts`). « Agent IA » promettrait davantage que ça.
+     * La formulation sanctionnée est verrouillée juste en dessous.
+     */
     pattern: /l['’]agent IA|agent d['’]intelligence artificielle/i,
-    why: 'aucun modèle de langage n’est appelé dans le projet',
+    why: 'Hermès n’est pas un agent IA : le modèle ne fait que classer, il ne rédige ni ne décide d’un envoi',
   },
   {
     pattern: /chaque refus lui apprend|il apprend votre terrain/i,
@@ -127,6 +134,33 @@ describe('les promesses retirées ne reviennent pas', () => {
       }
 
       expect(hits, hits.join('\n')).toEqual([]);
+    });
+  }
+});
+
+/*
+ * Ajouté le 24/08/2026 avec le classement par pertinence. Le motif interdit
+ * ci-dessus verrouille ce qu'on n'a pas le droit d'écrire ; celui-ci
+ * verrouille ce qu'on doit écrire à la place, partout où la capacité est
+ * décrite — sans lui, rien n'empêcherait une reformulation de dériver vers
+ * « agent IA » sans jamais toucher le motif interdit.
+ */
+describe('le classement par pertinence est décrit avec la formulation sanctionnée', () => {
+  const files = [
+    'src/content/estimation-offers.ts',
+    'src/content/legal.ts',
+    'src/components/app/HermesSettings.tsx',
+  ];
+
+  for (const relative of files) {
+    it(`${relative} mentionne la pertinence et le modèle de langage, jamais « agent IA »`, () => {
+      const content = readFileSync(join(process.cwd(), relative), 'utf-8');
+      expect(content, `${relative} ne mentionne pas le classement par pertinence`).toMatch(
+        /pertinence/i,
+      );
+      expect(content, `${relative} ne mentionne pas le modèle de langage`).toMatch(
+        /modèle de langage/i,
+      );
     });
   }
 });

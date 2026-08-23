@@ -166,6 +166,12 @@ export const REQUIRED_ENV: readonly EnvRequirement[] = [
       'la prospection Hermès n’envoie rien — aucun repli sur le domaine transactionnel, pour ne pas exposer sa réputation',
     requiredInDev: false,
   },
+  {
+    name: 'MISTRAL_API_KEY',
+    consequence:
+      'le classement par pertinence ne s’applique pas, la file reste dans son ordre d’origine',
+    requiredInDev: false,
+  },
 ];
 
 export type EnvCheckResult = {

@@ -80,7 +80,9 @@ export default async function HermesPage() {
   const { data: campaignRow } = supabase
     ? await supabase
         .from('hermes_campaigns')
-        .select('sender_name, reply_to_email, subject, body, daily_quota, paused_at')
+        .select(
+          'sender_name, reply_to_email, subject, body, daily_quota, activity_description, paused_at',
+        )
         .eq('owner_id', user.id)
         .maybeSingle()
     : { data: null };
@@ -91,6 +93,7 @@ export default async function HermesPage() {
     subject: string;
     body: string;
     daily_quota: number;
+    activity_description: string | null;
     paused_at: string | null;
   } | null;
 
@@ -135,6 +138,7 @@ export default async function HermesPage() {
                 subject: row.subject,
                 body: row.body,
                 dailyQuota: row.daily_quota,
+                activityDescription: row.activity_description,
                 paused: row.paused_at !== null,
               }
             : null

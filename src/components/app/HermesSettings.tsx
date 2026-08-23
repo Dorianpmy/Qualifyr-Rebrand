@@ -33,6 +33,7 @@ type Props = {
     readonly subject: string;
     readonly body: string;
     readonly dailyQuota: number;
+    readonly activityDescription: string | null;
     readonly paused: boolean;
   } | null;
   /** Adresse du compte, proposée par défaut comme adresse de réponse. */
@@ -55,6 +56,7 @@ export function HermesSettings({ initial, accountEmail, availableProspects }: Pr
   const [subject, setSubject] = useState(initial?.subject ?? 'Entretien de vos véhicules');
   const [body, setBody] = useState(initial?.body ?? DEFAULT_BODY);
   const [dailyQuota, setDailyQuota] = useState(initial?.dailyQuota ?? 15);
+  const [activityDescription, setActivityDescription] = useState(initial?.activityDescription ?? '');
   const [acceptsTerms, setAcceptsTerms] = useState(initial !== null);
   const [paused, setPaused] = useState(initial?.paused ?? false);
 
@@ -98,7 +100,15 @@ export function HermesSettings({ initial, accountEmail, availableProspects }: Pr
     const response = await fetch('/api/app/hermes', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ senderName, replyToEmail, subject, body, dailyQuota, acceptsTerms }),
+      body: JSON.stringify({
+        senderName,
+        replyToEmail,
+        subject,
+        body,
+        dailyQuota,
+        activityDescription,
+        acceptsTerms,
+      }),
     });
 
     if (!response.ok) {
@@ -203,6 +213,20 @@ export function HermesSettings({ initial, accountEmail, availableProspects }: Pr
             Écrivez <code>{'{{entreprise}}'}</code> pour insérer le nom de l’entreprise, et{' '}
             <code>{'{{ville}}'}</code> pour la ville. Un message court et concret obtient plus de
             réponses qu’une présentation complète.
+          </small>
+        </label>
+
+        <label>
+          <span>Votre activité en une phrase (facultatif)</span>
+          <input
+            value={activityDescription}
+            onChange={(e) => setActivityDescription(e.target.value)}
+            placeholder="Lavage de flottes de véhicules utilitaires"
+            maxLength={500}
+          />
+          <small>
+            Sert à classer les entreprises recensées par pertinence pour votre activité, à l’aide
+            d’un modèle de langage. Sans cette phrase, elles restent dans leur ordre de recensement.
           </small>
         </label>
 

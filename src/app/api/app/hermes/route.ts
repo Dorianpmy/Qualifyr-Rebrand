@@ -42,6 +42,20 @@ const campaignSchema = z.object({
     .min(50, 'Le message est trop court pour être crédible.')
     .max(4000, 'Le message est trop long.'),
   dailyQuota: z.coerce.number().int().min(1).max(40),
+  /*
+   * Facultatif : sans elle, pas de classement par pertinence
+   * (`/api/agent/relevance`), la file reste dans son ordre d'origine. Le
+   * champ vide est distinct du champ non renseigné — `''` est normalisé en
+   * `null` pour que la contrainte de la migration 020
+   * (`activity_description is null or char_length(...) <= 500`) et
+   * `nextCandidates` (tri `nulls last`) voient la même absence.
+   */
+  activityDescription: z
+    .string()
+    .trim()
+    .max(500, 'Décrivez votre activité en une phrase, plus courte.')
+    .optional()
+    .transform((value) => (value ? value : null)),
   /* Acceptation explicite. Sans elle, pas de campagne : c'est le moment où le
      professionnel reconnaît être l'expéditeur des messages. */
   acceptsTerms: z.literal(true, {
@@ -63,7 +77,9 @@ export async function GET() {
 
   const { data } = await supabase
     .from('hermes_campaigns')
-    .select('sender_name, reply_to_email, subject, body, daily_quota, paused_at, suspended_at')
+    .select(
+      'sender_name, reply_to_email, subject, body, daily_quota, activity_description, paused_at, suspended_at',
+    )
     .eq('owner_id', guard.user.id)
     .maybeSingle();
 
@@ -125,6 +141,7 @@ export async function PUT(request: Request) {
     subject: parsed.data.subject,
     body: parsed.data.body,
     daily_quota: parsed.data.dailyQuota,
+    activity_description: parsed.data.activityDescription,
     // Posée par le serveur, jamais reçue du client.
     terms_accepted_at: new Date().toISOString(),
   };

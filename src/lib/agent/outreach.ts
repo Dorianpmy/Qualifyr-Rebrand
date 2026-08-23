@@ -274,6 +274,14 @@ export async function nextCandidates(
   const zoneIds = (zones as readonly { id: string }[]).map((z) => z.id);
 
   // 2. Les prospects de ces zones, contactables.
+  //
+  // Tri par pertinence d'abord (voir `lib/agent/relevance.ts`), par
+  // ancienneté ensuite. `nullsFirst: false` est nécessaire : sur un tri
+  // DESC, Postgres met les NULL en tête par défaut — sans cette précision,
+  // tous les prospects jamais notés passeraient devant les notés, l'inverse
+  // de ce qui est demandé. Un prospect jamais noté (`relevance_score` nul)
+  // reste candidat comme les autres, seulement en dernier : le score
+  // ordonne, il n'exclut jamais.
   const { data, error } = await supabase
     .from('agent_prospects')
     .select('id, name, city, email, unsubscribe_token')
@@ -281,6 +289,7 @@ export async function nextCandidates(
     .not('email', 'is', null)
     .is('contacted_at', null)
     .is('opted_out_at', null)
+    .order('relevance_score', { ascending: false, nullsFirst: false })
     .order('created_at', { ascending: true })
     .limit(limit);
 

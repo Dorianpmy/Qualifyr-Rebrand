@@ -62,8 +62,14 @@ qu'elle liste ne sont pas des préférences de style :
    d'opposition) n'est **jamais modifiable** par le client.
 5. Les prospects sont filtrés par le périmètre du compte, via `agent_zones`.
 
-Hermès n'est **pas une IA** : aucun modèle de langage n'est appelé. Ne jamais
-l'écrire — `tests/no-false-promises.test.ts` l'interdit.
+Hermès n'est **pas un agent IA**. Depuis le 24/08/2026, un modèle de langage
+(Mistral) classe les entreprises recensées par pertinence pour l'activité du
+professionnel (`lib/agent/relevance.ts`) — **c'est la seule chose qu'il
+fait** : il ne rédige aucun message, ne décide d'aucun envoi. « Les
+entreprises sont classées par pertinence à l'aide d'un modèle de langage »
+est une description honnête ; « agent IA » / « intelligence artificielle »
+reste interdit, et le reste précisément parce que ce serait une promesse que
+le code ne tient pas — `tests/no-false-promises.test.ts` l'interdit toujours.
 
 ## Fin de phase — obligatoire, dans l'ordre, jusqu'au vert
 
