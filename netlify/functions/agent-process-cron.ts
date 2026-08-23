@@ -7,9 +7,15 @@
  * (`/api/agent/process`), qui fait tout le travail. La séparer ainsi évite
  * de dupliquer le traitement dans deux runtimes différents.
  *
- * Toutes les quinze minutes : une analyse dure une à deux minutes à cause du
- * quota Sirene, et prend une zone à la fois — ce rythme vide la file sans la
- * saturer.
+ * Toutes les quinze minutes, une zone à la fois. Une analyse tient dans la
+ * limite de 60 s de `/api/agent/process` (`maxDuration`) avec de la marge :
+ * jusqu'à trois codes postaux (`nearbyPostalCodes`) × quatre segments
+ * (`SEGMENTS`) = douze appels Sirene au maximum, chacun suivi d'une pause
+ * fixe de 1,5 s pour tenir le quota — 18 s de pause garantie, plus la latence
+ * réelle des appels, pour un total d'environ vingt secondes. (Corrigé le
+ * 24/08/2026 : ce commentaire annonçait « une à deux minutes », en
+ * contradiction avec le commentaire de la route elle-même — la mesure
+ * ci-dessus vient du calcul, pas d'une estimation.)
  */
 export default async function agentProcessCron() {
   const base = process.env.URL ?? 'https://qualifyragence.com';

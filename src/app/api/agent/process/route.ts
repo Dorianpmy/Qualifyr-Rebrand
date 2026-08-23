@@ -9,22 +9,27 @@ import { buildReportErrorMessage, nextReportState } from '@/lib/agent/report-ret
  * Traitement différé des zones en attente.
  *
  * Appelée par le planificateur, toutes les quinze minutes. Deux files
- * distinctes à chaque passage, traitées l'une après l'autre plutôt que de se
- * disputer le même unique passage :
+ * distinctes à chaque passage :
  *
- * 1. **Un lot de renvois de rapport** (`rapport_en_attente`) — l'analyse a
- *    déjà abouti, seul l'envoi a échoué. Coût : une requête HTTP vers Resend
- *    par zone, rien de plus.
- * 2. **Une zone à analyser** (`en_attente`) — le traitement complet
- *    d'aujourd'hui : quota Sirene, une à deux minutes.
+ * 1. **Une zone à analyser** (`en_attente`) — quota Sirene, environ vingt
+ *    secondes (voir le calcul sur `maxDuration` plus bas). Traitée en
+ *    premier : c'est le travail qui coûte et qui ne se rejoue pas.
+ * 2. **Un lot de renvois de rapport** (`rapport_en_attente`) — l'analyse a
+ *    déjà abouti, seul l'envoi a échoué. Traité ensuite : une requête HTTP
+ *    vers Resend par zone, rien de plus, et rejouable sans perte au passage
+ *    suivant si ce passage manque de temps.
  *
- * **Pourquoi séparé.** Pendant une panne de configuration (`BOOKING_FROM_EMAIL`
- * absente, par exemple), des zones s'accumulent en `rapport_en_attente`. Si
- * elles partageaient la même file qu'`en_attente`, triée par ancienneté,
- * elles passeraient toujours en premier — et plus aucune nouvelle zone ne
- * serait jamais analysée tant que la configuration resterait cassée. Deux
- * files distinctes, un lot de chacune à chaque passage : l'incident sur
- * l'envoi n'affame jamais l'analyse.
+ * **Pourquoi cet ordre, et pourquoi il ne réintroduit pas la famine
+ * corrigée précédemment.** La famine venait de fusionner les deux files en
+ * une seule requête triée par ancienneté : les renvois, plus anciens par
+ * construction, passaient alors toujours avant les nouvelles zones, qui
+ * n'étaient plus jamais analysées pendant une panne de configuration. Ici,
+ * les deux files restent séparées et **toutes deux traitées dans le même
+ * passage** — seul l'ordre à l'intérieur d'un même passage change. Si ce
+ * passage manque de temps, c'est le lot de renvois qui est écourté, jamais
+ * l'analyse : un renvoi écourté attend simplement le passage suivant, sans
+ * perte, alors qu'une analyse écourtée aurait gâché du quota Sirene pour
+ * rien.
  *
  * **Protégée par un secret.** Sans lui, n'importe qui déclencherait des
  * analyses en boucle et ferait sauter le quota de la clé INSEE.
@@ -45,11 +50,16 @@ export const dynamic = 'force-dynamic';
  * d'hébergement. Déclarer 300 sans le forfait correspondant fait échouer le
  * déploiement, ou coupe la fonction en plein traitement sans message clair.
  *
- * Le budget est donc tenu en amont : trois codes postaux maximum par zone et
- * une pause de 1,5 seconde entre deux appels — soit environ vingt secondes de
- * traitement pour quatre segments, avec de la marge pour la latence. Le lot
- * de renvois (dix appels HTTP simples vers Resend, quelques secondes au
- * total) tient largement dans la marge restante.
+ * **Budget réel de l'analyse, calculé et non estimé** (corrigé le 24/08/2026 —
+ * le commentaire de `netlify/functions/agent-process-cron.ts` annonçait « une
+ * à deux minutes », en contradiction avec celui-ci ; c'est ce fichier qui
+ * était juste). `nearbyPostalCodes` rend au plus trois codes postaux,
+ * `SEGMENTS` en compte quatre : douze appels Sirene au maximum, chacun suivi
+ * d'une pause fixe de 1,5 s pour tenir le quota (`scanZone`, dans
+ * `lib/agent/sirene.ts`) — 18 secondes de pause garantie, plus la latence
+ * réelle des appels, pour un total d'environ vingt secondes. Le lot de
+ * renvois (dix appels HTTP simples vers Resend, sans pause imposée) tient
+ * largement dans la marge restante.
  */
 export const maxDuration = 60;
 
@@ -60,6 +70,27 @@ export const maxDuration = 60;
  * limiter à un par passage comme l'analyse.
  */
 const REPORT_RETRY_BATCH = 10;
+
+/**
+ * Durée du bail posé sur une zone en cours de traitement (`locked_at`).
+ *
+ * **Pourquoi un bail.** `en_cours` est marqué avant de traiter une zone pour
+ * qu'un passage qui chevaucherait le précédent ne la reprenne pas — mais rien
+ * ne relit jamais `en_cours` après coup. Si le processus est tué en plein
+ * traitement (dépassement de `maxDuration`, redéploiement, incident de la
+ * plateforme), la zone y reste pour toujours : ni la file d'analyse
+ * (`en_attente`), ni la file de renvoi (`rapport_en_attente`) ne la revoit,
+ * et `requestZone` (`lib/agent/zones.ts`) traite `en_cours` comme une
+ * demande déjà en cours — un visiteur qui redemande la même zone se voit
+ * refusé au profit d'une zone morte.
+ *
+ * **Dix minutes.** Largement au-dessus des 60 secondes de `maxDuration` :
+ * aucun risque de reprendre une requête réellement encore en cours, même si
+ * la limite réelle de la plateforme diffère de ce que ce fichier suppose.
+ * Largement sous les quinze minutes du cron : une zone tuée est reprise au
+ * passage suivant, jamais laissée traîner un tour de plus.
+ */
+const MAX_LOCK_MS = 10 * 60 * 1000;
 
 /**
  * Codes postaux couverts par le rayon.
@@ -175,6 +206,13 @@ function reportHtml(input: {
  * mécanisme corrige, pas quelque chose à réintroduire ici. Hors production,
  * le repli reste utile pour dérouler le parcours sans configuration, même
  * principe que `resolveTransport()` dans `lib/email/transport.ts`.
+ *
+ * **Risque résiduel accepté.** Si le processus est tué juste après que
+ * Resend a confirmé l'envoi mais avant l'écriture du résultat, une reprise
+ * (bail expiré ou passage suivant) retente l'envoi : un rapport peut partir
+ * deux fois. Borné à un envoi superflu vers le professionnel qui l'a
+ * demandé, jamais une boucle — accepté plutôt que de complexifier avec une
+ * confirmation en deux temps pour ce volume.
  */
 async function attemptReportSend(input: {
   readonly total: number;
@@ -225,13 +263,174 @@ export async function POST(request: Request) {
   }
 
   const now = new Date();
+  const lockThreshold = new Date(now.getTime() - MAX_LOCK_MS).toISOString();
 
-  // --- 1. Renvois en attente, par lot -------------------------------------
+  // --- 1. Une zone à analyser, avant les renvois ---------------------------
+
+  let zoneResult = await supabase
+    .from('agent_zones')
+    .select('id, email, postal_code, radius_km')
+    .eq('status', 'en_attente')
+    .order('created_at', { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (!zoneResult.data) {
+    /*
+     * Rien en attente : une zone dont le bail a expiré (processus tué en
+     * plein traitement) est reprise ici. Deux requêtes plates plutôt qu'un
+     * .or() imbriqué sur deux colonnes différentes — chaque motif est déjà
+     * éprouvé ailleurs dans ce dépôt, une syntaxe PostgREST imbriquée ne
+     * l'est pas, et ne peut pas être vérifiée sans base réelle.
+     */
+    zoneResult = await supabase
+      .from('agent_zones')
+      .select('id, email, postal_code, radius_km')
+      .eq('status', 'en_cours')
+      .lt('locked_at', lockThreshold)
+      .order('locked_at', { ascending: true })
+      .limit(1)
+      .maybeSingle();
+  }
+
+  const zone = zoneResult.data;
+
+  let scanError = false;
+  let scanPayload: Record<string, unknown> = { processed: 0 };
+
+  if (zone) {
+    // Marquée en cours **avant** l'analyse, bail posé : si deux passages du
+    // planificateur se chevauchent, le second ne reprend pas la même zone ;
+    // si celui-ci est tué, le bail expire et un passage ultérieur la reprend.
+    await supabase
+      .from('agent_zones')
+      .update({ status: 'en_cours', locked_at: now.toISOString() })
+      .eq('id', zone.id);
+
+    try {
+      const { establishments, errors } = await scanZone({
+        postalCodes: nearbyPostalCodes(zone.postal_code as string, Number(zone.radius_km)),
+        perSegment: 20,
+      });
+
+      // Diagnostic temporaire : les erreurs par segment n'étaient nulle part
+      // visibles avant ce log — seul leur nombre remontait dans la réponse HTTP.
+      if (errors.length > 0) {
+        console.error('[agent/process] erreurs partielles', zone.id, errors);
+      }
+
+      const counts = countBySegment(establishments);
+      const total = establishments.length;
+
+      if (total > 0) {
+        /*
+         * Garde anti-doublon. Une zone reprise après expiration de son bail
+         * peut déjà avoir ses établissements en base — le processus précédent
+         * a pu être tué après cette insertion mais avant l'écriture finale du
+         * statut. Réinsérer percuterait la contrainte unique (zone_id,
+         * siret), ferait échouer la zone, et recommencerait au passage
+         * suivant : une boucle qui reconsomme du quota Sirene à chaque
+         * tentative, plus difficile à repérer qu'un simple blocage puisque
+         * rien ne s'arrête ni ne le signale.
+         */
+        const { count: alreadyInserted } = await supabase
+          .from('agent_prospects')
+          .select('id', { count: 'exact', head: true })
+          .eq('zone_id', zone.id);
+
+        if (!alreadyInserted) {
+          await supabase.from('agent_prospects').insert(
+            establishments.map((item) => ({
+              zone_id: zone.id,
+              siret: item.siret,
+              name: item.name,
+              naf_code: item.nafCode,
+              segment: item.segment,
+              address: item.address,
+              postal_code: item.postalCode,
+              city: item.city,
+              workforce_range: item.workforceRange,
+              source: 'sirene',
+              legal_basis: 'interet_legitime',
+            })),
+          );
+        }
+      }
+
+      // --- Rapport ------------------------------------------------------------
+
+      const { reportSent, sendFailureReason } = await attemptReportSend({
+        total,
+        email: zone.email as string,
+        postalCode: zone.postal_code as string,
+        counts,
+        samples: establishments,
+      });
+
+      const outcome = nextReportState({
+        total,
+        reportSent,
+        previousAttempts: 0,
+        previousFirstFailedAt: null,
+        now,
+      });
+
+      await supabase
+        .from('agent_zones')
+        .update({
+          status: outcome.status,
+          segments: counts,
+          processed_at: now.toISOString(),
+          report_attempts: outcome.reportAttempts,
+          report_first_failed_at: outcome.reportFirstFailedAt,
+          report_sent_at: reportSent ? now.toISOString() : null,
+          locked_at: null,
+          error_message: buildReportErrorMessage({
+            scanErrors: errors,
+            sendFailureReason,
+            capped: outcome.status === 'echec',
+            attempts: outcome.reportAttempts,
+          }),
+        })
+        .eq('id', zone.id);
+
+      scanPayload = {
+        processed: 1,
+        found: total,
+        reportSent,
+        status: outcome.status,
+        partialErrors: errors.length,
+      };
+    } catch (cause) {
+      /*
+       * La zone repasse en attente plutôt qu'en échec définitif : la cause la
+       * plus probable est un quota dépassé ou une coupure réseau, deux
+       * situations qui se résolvent au passage suivant.
+       */
+      await supabase
+        .from('agent_zones')
+        .update({
+          status: 'en_attente',
+          locked_at: null,
+          error_message: cause instanceof Error ? cause.message : 'inconnue',
+        })
+        .eq('id', zone.id);
+
+      console.error('[agent/process] échec', zone.id, cause);
+      scanError = true;
+    }
+  }
+
+  // --- 2. Un lot de renvois en attente --------------------------------------
+  //
+  // Traité même si l'analyse ci-dessus a échoué : un incident sur l'analyse
+  // ne doit pas retarder des renvois qui n'ont rien à voir avec lui.
 
   const { data: pendingReports } = await supabase
     .from('agent_zones')
     .select('id, email, postal_code, segments, report_attempts, report_first_failed_at')
     .eq('status', 'rapport_en_attente')
+    .or(`locked_at.is.null,locked_at.lt.${lockThreshold}`)
     .order('report_first_failed_at', { ascending: true })
     .limit(REPORT_RETRY_BATCH);
 
@@ -239,12 +438,13 @@ export async function POST(request: Request) {
   let reportsResolved = 0;
 
   if (pendingReports && pendingReports.length > 0) {
-    // Marquées en cours avant traitement, comme la zone d'analyse plus bas :
-    // si deux passages du planificateur se chevauchent, le second ne reprend
-    // pas le même lot.
+    // Les renvois ne transitent jamais par `en_cours` : ce statut ne dirait
+    // plus, à la reprise, de quelle file une zone récupérée venait. Le bail
+    // se pose ici sans changer le statut — `rapport_en_attente` reste
+    // `rapport_en_attente` pendant le traitement.
     await supabase
       .from('agent_zones')
-      .update({ status: 'en_cours' })
+      .update({ locked_at: now.toISOString() })
       .in(
         'id',
         pendingReports.map((z) => z.id),
@@ -289,6 +489,7 @@ export async function POST(request: Request) {
             report_attempts: outcome.reportAttempts,
             report_first_failed_at: outcome.reportFirstFailedAt,
             report_sent_at: reportSent ? now.toISOString() : null,
+            locked_at: null,
             error_message: buildReportErrorMessage({
               scanErrors: [],
               sendFailureReason,
@@ -302,129 +503,25 @@ export async function POST(request: Request) {
          * Panne d'infrastructure pendant ce passage (Supabase, réseau) plutôt
          * qu'un échec d'envoi caractérisé : on ne compte pas cette tentative
          * ni ne touche l'horloge — celle-ci mesure depuis quand l'*envoi*
-         * échoue, pas les aléas de ce passage précis. La zone reste
-         * `rapport_en_attente`, reprise au passage suivant.
+         * échoue, pas les aléas de ce passage précis. Le bail est relâché
+         * immédiatement, pas laissé expirer : la zone reste `rapport_en_attente`,
+         * reprise dès le passage suivant.
          */
         console.error('[agent/process] renvoi échoué', pending.id, cause);
         await supabase
           .from('agent_zones')
-          .update({ status: 'rapport_en_attente' })
+          .update({ status: 'rapport_en_attente', locked_at: null })
           .eq('id', pending.id);
       }
     }
   }
 
-  // --- 2. Une nouvelle zone à analyser -------------------------------------
-
-  const { data: zone } = await supabase
-    .from('agent_zones')
-    .select('id, email, postal_code, radius_km')
-    .eq('status', 'en_attente')
-    .order('created_at', { ascending: true })
-    .limit(1)
-    .maybeSingle();
-
-  if (!zone) {
-    return NextResponse.json({ processed: 0, reportsRetried, reportsResolved });
+  if (scanError) {
+    return NextResponse.json(
+      { error: 'Analyse impossible.', reportsRetried, reportsResolved },
+      { status: 500 },
+    );
   }
 
-  // Marquée en cours **avant** l'analyse : si deux passages du planificateur
-  // se chevauchent, le second ne reprend pas la même zone.
-  await supabase.from('agent_zones').update({ status: 'en_cours' }).eq('id', zone.id);
-
-  try {
-    const { establishments, errors } = await scanZone({
-      postalCodes: nearbyPostalCodes(zone.postal_code as string, Number(zone.radius_km)),
-      perSegment: 20,
-    });
-
-    // Diagnostic temporaire : les erreurs par segment n'étaient nulle part
-    // visibles avant ce log — seul leur nombre remontait dans la réponse HTTP.
-    if (errors.length > 0) {
-      console.error('[agent/process] erreurs partielles', zone.id, errors);
-    }
-
-    const counts = countBySegment(establishments);
-    const total = establishments.length;
-
-    if (total > 0) {
-      await supabase.from('agent_prospects').insert(
-        establishments.map((item) => ({
-          zone_id: zone.id,
-          siret: item.siret,
-          name: item.name,
-          naf_code: item.nafCode,
-          segment: item.segment,
-          address: item.address,
-          postal_code: item.postalCode,
-          city: item.city,
-          workforce_range: item.workforceRange,
-          source: 'sirene',
-          legal_basis: 'interet_legitime',
-        })),
-      );
-    }
-
-    // --- Rapport ------------------------------------------------------------
-
-    const { reportSent, sendFailureReason } = await attemptReportSend({
-      total,
-      email: zone.email as string,
-      postalCode: zone.postal_code as string,
-      counts,
-      samples: establishments,
-    });
-
-    const outcome = nextReportState({
-      total,
-      reportSent,
-      previousAttempts: 0,
-      previousFirstFailedAt: null,
-      now,
-    });
-
-    await supabase
-      .from('agent_zones')
-      .update({
-        status: outcome.status,
-        segments: counts,
-        processed_at: now.toISOString(),
-        report_attempts: outcome.reportAttempts,
-        report_first_failed_at: outcome.reportFirstFailedAt,
-        report_sent_at: reportSent ? now.toISOString() : null,
-        error_message: buildReportErrorMessage({
-          scanErrors: errors,
-          sendFailureReason,
-          capped: outcome.status === 'echec',
-          attempts: outcome.reportAttempts,
-        }),
-      })
-      .eq('id', zone.id);
-
-    return NextResponse.json({
-      processed: 1,
-      found: total,
-      reportSent,
-      status: outcome.status,
-      partialErrors: errors.length,
-      reportsRetried,
-      reportsResolved,
-    });
-  } catch (cause) {
-    /*
-     * La zone repasse en attente plutôt qu'en échec définitif : la cause la
-     * plus probable est un quota dépassé ou une coupure réseau, deux
-     * situations qui se résolvent au passage suivant.
-     */
-    await supabase
-      .from('agent_zones')
-      .update({
-        status: 'en_attente',
-        error_message: cause instanceof Error ? cause.message : 'inconnue',
-      })
-      .eq('id', zone.id);
-
-    console.error('[agent/process] échec', zone.id, cause);
-    return NextResponse.json({ error: 'Analyse impossible.' }, { status: 500 });
-  }
+  return NextResponse.json({ ...scanPayload, reportsRetried, reportsResolved });
 }
