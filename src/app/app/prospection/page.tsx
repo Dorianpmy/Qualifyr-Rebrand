@@ -28,6 +28,7 @@ const SEGMENT_LABELS: Record<string, string> = Object.fromEntries(
 const STATUS_LABELS: Record<string, string> = {
   en_attente: 'En attente',
   en_cours: 'Analyse en cours',
+  rapport_en_attente: 'Rapport en attente d’envoi',
   termine: 'Terminé',
   echec: 'Échec',
 };
@@ -35,7 +36,7 @@ const STATUS_LABELS: Record<string, string> = {
 function badgeClass(status: string): string {
   const base = styles.badge ?? '';
   if (status === 'termine') return `${base} ${styles.badgeConfirme ?? ''}`.trim();
-  if (status === 'en_attente' || status === 'en_cours') {
+  if (status === 'en_attente' || status === 'en_cours' || status === 'rapport_en_attente') {
     return `${base} ${styles.badgeAttente ?? ''}`.trim();
   }
   return `${base} ${styles.badgeAnnule ?? ''}`.trim();

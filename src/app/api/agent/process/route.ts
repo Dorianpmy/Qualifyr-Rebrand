@@ -1,16 +1,30 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { isProduction } from '@/lib/env';
 import { getServiceSupabaseClient } from '@/lib/detailing/supabase-server';
-import { SEGMENTS, countBySegment, scanZone, type Establishment } from '@/lib/agent/sirene';
+import { SEGMENTS, countBySegment, scanZone } from '@/lib/agent/sirene';
+import { buildReportErrorMessage, nextReportState } from '@/lib/agent/report-retry';
 
 /**
  * Traitement différé des zones en attente.
  *
- * Appelée par le planificateur, toutes les quinze minutes. Elle prend **une
- * zone à la fois** : une analyse dure une à deux minutes à cause du quota
- * Sirene, et la plupart des hébergeurs coupent une fonction au-delà de
- * quelques minutes. Une zone par passage tient dans tous les cas, et la file
- * se vide au rythme du planificateur.
+ * Appelée par le planificateur, toutes les quinze minutes. Deux files
+ * distinctes à chaque passage, traitées l'une après l'autre plutôt que de se
+ * disputer le même unique passage :
+ *
+ * 1. **Un lot de renvois de rapport** (`rapport_en_attente`) — l'analyse a
+ *    déjà abouti, seul l'envoi a échoué. Coût : une requête HTTP vers Resend
+ *    par zone, rien de plus.
+ * 2. **Une zone à analyser** (`en_attente`) — le traitement complet
+ *    d'aujourd'hui : quota Sirene, une à deux minutes.
+ *
+ * **Pourquoi séparé.** Pendant une panne de configuration (`BOOKING_FROM_EMAIL`
+ * absente, par exemple), des zones s'accumulent en `rapport_en_attente`. Si
+ * elles partageaient la même file qu'`en_attente`, triée par ancienneté,
+ * elles passeraient toujours en premier — et plus aucune nouvelle zone ne
+ * serait jamais analysée tant que la configuration resterait cassée. Deux
+ * files distinctes, un lot de chacune à chaque passage : l'incident sur
+ * l'envoi n'affame jamais l'analyse.
  *
  * **Protégée par un secret.** Sans lui, n'importe qui déclencherait des
  * analyses en boucle et ferait sauter le quota de la clé INSEE.
@@ -33,9 +47,19 @@ export const dynamic = 'force-dynamic';
  *
  * Le budget est donc tenu en amont : trois codes postaux maximum par zone et
  * une pause de 1,5 seconde entre deux appels — soit environ vingt secondes de
- * traitement pour quatre segments, avec de la marge pour la latence.
+ * traitement pour quatre segments, avec de la marge pour la latence. Le lot
+ * de renvois (dix appels HTTP simples vers Resend, quelques secondes au
+ * total) tient largement dans la marge restante.
  */
 export const maxDuration = 60;
+
+/**
+ * Zones dont le rapport reste à (re)tenter, traitées par lot à chaque
+ * passage plutôt qu'une par une : contrairement à l'analyse, un renvoi ne
+ * consomme aucun quota externe partagé (Sirene) — rien ne justifie de le
+ * limiter à un par passage comme l'analyse.
+ */
+const REPORT_RETRY_BATCH = 10;
 
 /**
  * Codes postaux couverts par le rayon.
@@ -68,11 +92,21 @@ function nearbyPostalCodes(postalCode: string, radiusKm: number): readonly strin
   return codes;
 }
 
+/** Tout ce dont `reportHtml` a besoin d'un établissement — jamais le type
+ *  `Establishment` complet : sur un renvoi, ces valeurs viennent d'une
+ *  relecture d'`agent_prospects` (`name`, `city` seulement), et fabriquer de
+ *  faux `siret`/`nafCode`/… pour satisfaire un type plus large inventerait
+ *  une donnée que personne n'a. */
+type ReportSample = {
+  readonly name: string;
+  readonly city: string | null;
+};
+
 function reportHtml(input: {
   readonly postalCode: string;
   readonly counts: Record<string, number>;
   readonly total: number;
-  readonly samples: readonly Establishment[];
+  readonly samples: readonly ReportSample[];
 }): string {
   const rows = SEGMENTS.filter((segment) => (input.counts[segment.key] ?? 0) > 0)
     .map(
@@ -128,6 +162,57 @@ function reportHtml(input: {
 </div>`;
 }
 
+/**
+ * Tente l'envoi du rapport d'une zone dont le total est déjà connu — depuis
+ * un scan qui vient d'aboutir, ou depuis une relecture d'`agent_prospects`
+ * sur un renvoi.
+ *
+ * **Pas de repli en production, ni pour `RESEND_API_KEY` ni pour
+ * `BOOKING_FROM_EMAIL`.** `onboarding@resend.dev` accepte l'envoi sans
+ * erreur mais ne livre qu'au propriétaire du compte Resend : le
+ * professionnel qui a demandé cette analyse ne recevrait jamais rien, sans
+ * qu'aucune erreur ne le signale nulle part — c'est le défaut que ce
+ * mécanisme corrige, pas quelque chose à réintroduire ici. Hors production,
+ * le repli reste utile pour dérouler le parcours sans configuration, même
+ * principe que `resolveTransport()` dans `lib/email/transport.ts`.
+ */
+async function attemptReportSend(input: {
+  readonly total: number;
+  readonly email: string;
+  readonly postalCode: string;
+  readonly counts: Record<string, number>;
+  readonly samples: readonly ReportSample[];
+}): Promise<{ readonly reportSent: boolean; readonly sendFailureReason: string | null }> {
+  if (input.total === 0) return { reportSent: false, sendFailureReason: null };
+
+  const apiKey = process.env.RESEND_API_KEY;
+  const from =
+    process.env.BOOKING_FROM_EMAIL ?? (!isProduction() ? 'Qualifyr <onboarding@resend.dev>' : null);
+
+  if (!apiKey) return { reportSent: false, sendFailureReason: 'RESEND_API_KEY manquante' };
+  if (!from) return { reportSent: false, sendFailureReason: 'BOOKING_FROM_EMAIL manquante en production' };
+
+  const resend = new Resend(apiKey);
+  const { error } = await resend.emails.send({
+    from,
+    to: input.email,
+    subject: `${input.total} professionnels autour du ${input.postalCode}`,
+    html: reportHtml({
+      postalCode: input.postalCode,
+      counts: input.counts,
+      total: input.total,
+      samples: input.samples,
+    }),
+  });
+
+  if (error) {
+    console.error('[agent/process] envoi du rapport', error);
+    return { reportSent: false, sendFailureReason: `échec Resend : ${error.message}` };
+  }
+
+  return { reportSent: true, sendFailureReason: null };
+}
+
 export async function POST(request: Request) {
   const secret = process.env.CRON_SECRET;
   if (!secret || request.headers.get('authorization') !== `Bearer ${secret}`) {
@@ -139,6 +224,98 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Base indisponible.' }, { status: 503 });
   }
 
+  const now = new Date();
+
+  // --- 1. Renvois en attente, par lot -------------------------------------
+
+  const { data: pendingReports } = await supabase
+    .from('agent_zones')
+    .select('id, email, postal_code, segments, report_attempts, report_first_failed_at')
+    .eq('status', 'rapport_en_attente')
+    .order('report_first_failed_at', { ascending: true })
+    .limit(REPORT_RETRY_BATCH);
+
+  let reportsRetried = 0;
+  let reportsResolved = 0;
+
+  if (pendingReports && pendingReports.length > 0) {
+    // Marquées en cours avant traitement, comme la zone d'analyse plus bas :
+    // si deux passages du planificateur se chevauchent, le second ne reprend
+    // pas le même lot.
+    await supabase
+      .from('agent_zones')
+      .update({ status: 'en_cours' })
+      .in(
+        'id',
+        pendingReports.map((z) => z.id),
+      );
+
+    for (const pending of pendingReports) {
+      reportsRetried += 1;
+
+      try {
+        const counts = (pending.segments as Record<string, number> | null) ?? {};
+        const { data: prospects, count } = await supabase
+          .from('agent_prospects')
+          .select('name, city', { count: 'exact' })
+          .eq('zone_id', pending.id)
+          .limit(8);
+
+        const total = count ?? 0;
+        const samples = (prospects ?? []) as ReportSample[];
+
+        const { reportSent, sendFailureReason } = await attemptReportSend({
+          total,
+          email: pending.email as string,
+          postalCode: pending.postal_code as string,
+          counts,
+          samples,
+        });
+
+        const outcome = nextReportState({
+          total,
+          reportSent,
+          previousAttempts: pending.report_attempts as number,
+          previousFirstFailedAt: pending.report_first_failed_at as string | null,
+          now,
+        });
+
+        if (outcome.status === 'termine') reportsResolved += 1;
+
+        await supabase
+          .from('agent_zones')
+          .update({
+            status: outcome.status,
+            report_attempts: outcome.reportAttempts,
+            report_first_failed_at: outcome.reportFirstFailedAt,
+            report_sent_at: reportSent ? now.toISOString() : null,
+            error_message: buildReportErrorMessage({
+              scanErrors: [],
+              sendFailureReason,
+              capped: outcome.status === 'echec',
+              attempts: outcome.reportAttempts,
+            }),
+          })
+          .eq('id', pending.id);
+      } catch (cause) {
+        /*
+         * Panne d'infrastructure pendant ce passage (Supabase, réseau) plutôt
+         * qu'un échec d'envoi caractérisé : on ne compte pas cette tentative
+         * ni ne touche l'horloge — celle-ci mesure depuis quand l'*envoi*
+         * échoue, pas les aléas de ce passage précis. La zone reste
+         * `rapport_en_attente`, reprise au passage suivant.
+         */
+        console.error('[agent/process] renvoi échoué', pending.id, cause);
+        await supabase
+          .from('agent_zones')
+          .update({ status: 'rapport_en_attente' })
+          .eq('id', pending.id);
+      }
+    }
+  }
+
+  // --- 2. Une nouvelle zone à analyser -------------------------------------
+
   const { data: zone } = await supabase
     .from('agent_zones')
     .select('id, email, postal_code, radius_km')
@@ -147,7 +324,9 @@ export async function POST(request: Request) {
     .limit(1)
     .maybeSingle();
 
-  if (!zone) return NextResponse.json({ processed: 0 });
+  if (!zone) {
+    return NextResponse.json({ processed: 0, reportsRetried, reportsResolved });
+  }
 
   // Marquée en cours **avant** l'analyse : si deux passages du planificateur
   // se chevauchent, le second ne reprend pas la même zone.
@@ -166,8 +345,9 @@ export async function POST(request: Request) {
     }
 
     const counts = countBySegment(establishments);
+    const total = establishments.length;
 
-    if (establishments.length > 0) {
+    if (total > 0) {
       await supabase.from('agent_prospects').insert(
         establishments.map((item) => ({
           zone_id: zone.id,
@@ -187,42 +367,48 @@ export async function POST(request: Request) {
 
     // --- Rapport ------------------------------------------------------------
 
-    let reportSent = false;
-    const apiKey = process.env.RESEND_API_KEY;
+    const { reportSent, sendFailureReason } = await attemptReportSend({
+      total,
+      email: zone.email as string,
+      postalCode: zone.postal_code as string,
+      counts,
+      samples: establishments,
+    });
 
-    if (apiKey && establishments.length > 0) {
-      const resend = new Resend(apiKey);
-      const { error } = await resend.emails.send({
-        from: process.env.BOOKING_FROM_EMAIL ?? 'Qualifyr <onboarding@resend.dev>',
-        to: zone.email as string,
-        subject: `${establishments.length} professionnels autour du ${zone.postal_code}`,
-        html: reportHtml({
-          postalCode: zone.postal_code as string,
-          counts,
-          total: establishments.length,
-          samples: establishments,
-        }),
-      });
-      reportSent = !error;
-      if (error) console.error('[agent/process] envoi du rapport', error);
-    }
+    const outcome = nextReportState({
+      total,
+      reportSent,
+      previousAttempts: 0,
+      previousFirstFailedAt: null,
+      now,
+    });
 
     await supabase
       .from('agent_zones')
       .update({
-        status: 'termine',
+        status: outcome.status,
         segments: counts,
-        processed_at: new Date().toISOString(),
-        report_sent_at: reportSent ? new Date().toISOString() : null,
-        error_message: errors.length > 0 ? errors.slice(0, 5).join(' | ') : null,
+        processed_at: now.toISOString(),
+        report_attempts: outcome.reportAttempts,
+        report_first_failed_at: outcome.reportFirstFailedAt,
+        report_sent_at: reportSent ? now.toISOString() : null,
+        error_message: buildReportErrorMessage({
+          scanErrors: errors,
+          sendFailureReason,
+          capped: outcome.status === 'echec',
+          attempts: outcome.reportAttempts,
+        }),
       })
       .eq('id', zone.id);
 
     return NextResponse.json({
       processed: 1,
-      found: establishments.length,
+      found: total,
       reportSent,
+      status: outcome.status,
       partialErrors: errors.length,
+      reportsRetried,
+      reportsResolved,
     });
   } catch (cause) {
     /*
