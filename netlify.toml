@@ -9,3 +9,49 @@
 [context.branch-deploy.environment]
   NEXT_PUBLIC_SITE_INDEXABLE = "false"
   NEXT_PUBLIC_SITE_URL = "https://qualifyragence.com"
+
+# ---------------------------------------------------------------------------
+# app.qualifyragence.com — porte d'entrée de l'espace pro.
+#
+# Le sous-domaine est un alias du même site : sans redirection, il servirait
+# le site vitrine en entier sous une seconde adresse. Deux conséquences, l'une
+# visible et l'autre non : le professionnel qui tape « app. » tombe sur la page
+# d'accueil commerciale au lieu de sa connexion, et Google indexe deux fois le
+# même contenu.
+#
+# La redirection renvoie donc systématiquement vers le domaine principal, en
+# conservant le chemin : app.qualifyragence.com/hermes mène à
+# qualifyragence.com/app/hermes. Un lien partagé continue de fonctionner.
+#
+# `force = true` est nécessaire : sans lui, Netlify sert d'abord la page
+# existante et n'applique la règle que sur un 404.
+#
+# Ces règles rendent inopérante la branche `app.qualifyragence.com` de
+# `src/middleware.ts`, qui redirigeait vers le même hôte. Le middleware est
+# conservé tel quel pour l'instant — il ne nuit pas et couvre encore l'ancien
+# hôte de préproduction.
+# ---------------------------------------------------------------------------
+
+[[redirects]]
+  from = "https://app.qualifyragence.com/"
+  to = "https://qualifyragence.com/app/login"
+  status = 301
+  force = true
+
+# Première : les liens déjà publiés portent le chemin complet
+# (`content/home.ts` et `content/geo.ts` pointent vers
+# app.qualifyragence.com/app/login). Sans cette règle, la suivante préfixerait
+# une seconde fois et produirait /app/app/login — une 404 sur le lien le plus
+# cliqué du site. L'ordre de ce fichier est significatif : la première règle
+# qui correspond l'emporte.
+[[redirects]]
+  from = "https://app.qualifyragence.com/app/*"
+  to = "https://qualifyragence.com/app/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://app.qualifyragence.com/*"
+  to = "https://qualifyragence.com/app/:splat"
+  status = 301
+  force = true
