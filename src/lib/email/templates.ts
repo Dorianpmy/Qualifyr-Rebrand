@@ -1,4 +1,4 @@
-import type { ContactData } from '@/lib/validation';
+import type { ContactData, EstimationData } from '@/lib/validation';
 import type { AttributionData, AttributionTouch } from '@/lib/attribution';
 
 /**
@@ -78,6 +78,50 @@ export function contactNotification(data: ContactData, receivedAt: Date) {
 
   return {
     subject: `Contact — ${data.fullName}`,
+    text,
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/* Demande d'estimation                                                */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Notification d'une estimation terminée.
+ *
+ * **La recommandation figure dans l'objet.** Dorian traite ces demandes depuis
+ * son téléphone : l'offre retenue est l'information qui décide s'il rappelle
+ * tout de suite ou en fin de journée, elle doit être lisible sans ouvrir le
+ * message.
+ *
+ * Les réponses arrivent déjà mises en forme par le client — une ligne par
+ * question, libellés en toutes lettres et non identifiants techniques. Les
+ * relire côté serveur pour les reformater dupliquerait la table des libellés,
+ * avec la divergence assurée le jour où l'un des deux change.
+ */
+export function estimationNotification(data: EstimationData, receivedAt: Date) {
+  const text = [
+    block('Demande d’estimation', [
+      line('Recommandation', data.recommendation),
+      line('Reçue le', formatDate(receivedAt)),
+      line('Page d’origine', data.pageUrl),
+    ]),
+    block('Coordonnées', [
+      line('Prénom', data.firstName),
+      line('Nom / entreprise', data.lastName),
+      line('E-mail', data.email),
+      line('Téléphone', data.phone),
+      line('Activité', data.businessName),
+      line('Zone', data.area),
+    ]),
+    block('Réponses', [data.answers]),
+    attributionBlock(data.attribution, data.pageUrl),
+  ]
+    .filter(Boolean)
+    .join('\n');
+
+  return {
+    subject: `Estimation — ${data.recommendation} — ${data.firstName} ${data.lastName}`,
     text,
   };
 }

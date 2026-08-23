@@ -44,7 +44,10 @@ function log(form: string, outcome: string, detail?: string) {
 /* ------------------------------------------------------------------ */
 
 type Handled<T> = {
-  readonly kind: 'contact';
+  /* `'estimation'` ajouté le 22/08/2026. Le type reste fermé plutôt que
+     d'accepter `string` : il sert à préfixer les journaux, et une valeur
+     libre y ferait entrer des chaînes non maîtrisées. */
+  readonly kind: 'contact' | 'estimation';
   readonly schema: z.ZodType<T, unknown>;
   readonly notification: (data: T, receivedAt: Date) => { subject: string; text: string };
   readonly identity: (data: T) => { fullName: string; email: string };

@@ -43,6 +43,13 @@ export const privacySections: readonly PrivacySection[] = [
     paragraphs: [
       'Lorsque vous nous contactez, les données collectées sont celles que vous saisissez volontairement dans le formulaire de contact du site.',
       'Formulaire de contact : prénom et nom, adresse e-mail, entreprise si vous la renseignez, message.',
+      /* Ajouté le 22/08/2026 avec le nouveau parcours d'estimation. Cette page
+         ne transmettait rien jusque-là ; elle collecte désormais des données
+         personnelles, ce que la politique doit énoncer avant que la première
+         demande n'arrive — et non après. La liste correspond exactement au
+         schéma `estimationSchema` de `lib/validation.ts`. */
+      'Formulaire d’estimation : prénom, nom ou nom de l’entreprise, adresse e-mail, téléphone si vous le renseignez, nom de l’activité si vous le renseignez, ville ou zone d’intervention, ainsi que les réponses que vous avez données et l’offre qui vous a été recommandée.',
+      'Le parcours d’estimation calcule sa recommandation sur votre appareil. Rien ne nous est transmis tant que vous ne demandez pas à la recevoir par e-mail.',
       'Lorsqu’un lien de campagne est utilisé, le stockage de session peut aussi conserver la source, le support, le nom de campagne, le domaine référent et la page d’entrée. Ces éléments ne contiennent aucune coordonnée et sont joints à une demande uniquement pour comprendre son origine.',
       'L’adresse de la page depuis laquelle le formulaire a été envoyé est jointe au message, afin de savoir dans quel contexte vous nous avez écrit.',
       'Pour présélectionner la devise du configurateur, l’hébergeur déduit uniquement le code du pays à partir de la connexion. L’adresse IP n’est ni transmise au code applicatif de Qualifyr, ni enregistrée par le site pour cette fonction.',
@@ -78,8 +85,8 @@ export const privacySections: readonly PrivacySection[] = [
     id: 'conservation',
     title: 'Combien de temps',
     paragraphs: [
-      'La durée de conservation des échanges n’est pas encore arrêtée. Elle sera précisée ici avant la mise en ligne du site.',
-      'Nous préférons le reconnaître plutôt qu’annoncer une durée que nous ne tiendrions pas. Dans l’intervalle, vous pouvez demander la suppression de vos données à tout moment.',
+      'La durée de conservation des échanges n’est pas encore arrêtée.',
+      'Nous préférons le reconnaître plutôt qu’annoncer une durée que nous ne tiendrions pas. Dans l’intervalle, vous pouvez demander la suppression de vos données à tout moment, et nous y donnons suite.',
     ],
   },
   {

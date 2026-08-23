@@ -140,6 +140,38 @@ export const contactSchema = z.object({
 
 export type ContactData = z.output<typeof contactSchema>;
 
+/**
+ * Demande d'estimation.
+ *
+ * **Les réponses sont transmises telles quelles, en texte.** Le serveur ne
+ * recalcule pas la recommandation : elle est déjà affichée au prospect, et un
+ * second calcul côté serveur pourrait diverger du premier — Dorian recevrait
+ * alors une offre différente de celle que le visiteur a vue à l'écran. C'est
+ * le résultat montré qui fait foi pour la conversation qui suit.
+ *
+ * `phone` est facultatif : l'imposer coûterait des demandes sans rien
+ * garantir, un numéro saisi de force étant souvent faux.
+ *
+ * Les longueurs maximales sont hautes mais présentes : elles protègent contre
+ * un envoi massif, sans rejeter un nom d'entreprise à rallonge.
+ */
+export const estimationSchema = z.object({
+  firstName: text(1, 80, 'Indiquez votre prénom.'),
+  lastName: text(1, 120, 'Indiquez votre nom ou celui de votre entreprise.'),
+  email,
+  phone: optionalText(30).optional().default(''),
+  businessName: optionalText(120).optional().default(''),
+  area: text(2, 120, 'Indiquez votre ville ou votre zone d’intervention.'),
+  /** Offre recommandée, telle qu'affichée au prospect. */
+  recommendation: text(2, 80, 'Recommandation manquante.'),
+  /** Réponses mises en forme lisible, une par ligne. */
+  answers: text(2, 4000, 'Réponses manquantes.'),
+  consent,
+  ...antiSpam,
+});
+
+export type EstimationData = z.output<typeof estimationSchema>;
+
 /** Erreurs par champ, forme consommée telle quelle par les formulaires. */
 export type FieldErrors = Record<string, string>;
 

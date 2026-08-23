@@ -49,8 +49,13 @@ describe('architecture commerciale', () => {
     expect(homepage).not.toContain('id="laboratoire"');
   });
 
-  it('publie une route estimation canonique qui réutilise le configurateur', () => {
-    expect(estimation).toContain('<OfferConfigurator showIntro={false} />');
+  it('publie une route estimation canonique qui rend le parcours', () => {
+    /* `<OfferConfigurator />` remplacé par `<EstimationWizard />` le
+       22/08/2026 : la page ne chiffre plus une prestation d'agence par
+       options cochées, elle recommande une offre nommée au terme de huit
+       questions. Le test continue de vérifier qu'un composant est bien rendu
+       — sans quoi la page pourrait se vider sans que rien ne le signale. */
+    expect(estimation).toContain('<EstimationWizard />');
     expect(pageMeta['/estimation'].title).toBe('Estimation budget site laveur auto — Qualifyr');
     expect(pageMeta['/estimation'].description).toBe(
       'Orientation claire et fourchette de budget indicative en quelques minutes, avant le premier échange.',

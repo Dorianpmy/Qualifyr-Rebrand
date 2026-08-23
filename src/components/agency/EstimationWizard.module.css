@@ -1,0 +1,498 @@
+/* ---------------------------------------------------------------------------
+   Parcours d'estimation.
+
+   **Les couleurs sont écrites en `var()` sur les jetons de la charte sombre**,
+   jamais en dur : cette page porte `.estimation-page`, qui redéfinit une
+   partie des jetons pour son propre contexte. Une valeur littérale ici
+   cesserait de suivre.
+
+   **Les cibles tactiles font 48 px au minimum.** Neuf écrans de choix se
+   parcourent au pouce, souvent debout ; une option de 36 px se rate une fois
+   sur trois et fait repartir en arrière.
+--------------------------------------------------------------------------- */
+
+.wizard {
+  --field-radius: 12px;
+
+  max-inline-size: 42rem;
+  margin-inline: auto;
+}
+
+/* ---- Progression ------------------------------------------------------ */
+
+.progressHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-block-end: 0.75rem;
+}
+
+.stepCount {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+}
+
+.back {
+  min-block-size: 44px;
+  padding: 0 0.75rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-muted);
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: color 150ms ease;
+}
+
+.back:hover {
+  color: var(--color-primary);
+}
+
+.progressTrack {
+  block-size: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.progressFill {
+  display: block;
+  block-size: 100%;
+  border-radius: 999px;
+  background: var(--color-primary);
+  /* La transition porte sur la largeur : c'est le seul mouvement de la page
+     qui informe réellement — il montre le chemin restant. */
+  transition: inline-size 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---- Scène ------------------------------------------------------------ */
+
+/* `key={step}` sur le conteneur force un remontage à chaque étape, donc
+   rejoue l'animation. Une transition d'opacité seule, sans glissement : sur
+   neuf écrans consécutifs, un mouvement latéral fatigue. */
+.stage {
+  padding-block-start: 2.5rem;
+  animation: stage-in 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes stage-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage {
+    animation: none;
+  }
+
+  .progressFill {
+    transition: none;
+  }
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+}
+
+.question {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.35rem, 3.5vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  color: var(--color-primary);
+}
+
+/* Le titre reçoit le focus au changement d'étape ; l'anneau du navigateur y
+   serait un bruit visuel permanent, alors que le focus est ici programmatique
+   et non le résultat d'une action de l'utilisateur. */
+.question:focus {
+  outline: none;
+}
+
+.help {
+  margin: 0 0 1.75rem;
+  font-size: 0.9375rem;
+  color: var(--color-muted);
+}
+
+/* ---- Choix ------------------------------------------------------------ */
+
+.choices {
+  display: grid;
+  gap: 0.6rem;
+  margin-block-end: 2rem;
+}
+
+.choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  min-block-size: 48px;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--field-radius);
+  background: transparent;
+  color: var(--color-muted);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.choice:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  color: var(--color-primary);
+}
+
+.choiceSelected {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-primary);
+}
+
+/* La pastille indique l'état sans dépendre de la couleur seule : elle se
+   remplit. Un daltonien lit le remplissage, pas la teinte. */
+.choiceMark {
+  flex: none;
+  inline-size: 1.05rem;
+  block-size: 1.05rem;
+  margin-block-start: 0.15rem;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.choiceSelected .choiceMark {
+  border-color: var(--color-primary);
+  box-shadow: inset 0 0 0 4px var(--color-primary);
+}
+
+.choiceLabel {
+  display: block;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
+.choiceHint {
+  display: block;
+  margin-block-start: 0.3rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--color-faint);
+}
+
+/* ---- Champ libre ------------------------------------------------------ */
+
+.freeText {
+  display: grid;
+  gap: 0.5rem;
+  margin-block-end: 2rem;
+  font-size: 0.8125rem;
+  color: var(--color-faint);
+}
+
+.freeText input,
+.fields input {
+  min-block-size: 48px;
+  padding: 0 0.9rem;
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--field-radius);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--color-primary);
+  /* 16 px minimum : en dessous, iOS agrandit la page à la mise au point du
+     champ et ne la réduit jamais. */
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.freeText input:focus-visible,
+.fields input:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.85);
+  outline-offset: 2px;
+}
+
+/* ---- Actions ---------------------------------------------------------- */
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.primary {
+  min-block-size: 48px;
+  padding: 0 1.6rem;
+  border: 0;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #0e0e0f;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 150ms ease;
+}
+
+.primary:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.secondaryLink {
+  font-size: 0.9375rem;
+  color: var(--color-muted);
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.2);
+  text-underline-offset: 4px;
+}
+
+.hint {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-faint);
+}
+
+/* ---- Résultat --------------------------------------------------------- */
+
+.rationale {
+  margin: 0 0 2rem;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--color-muted);
+}
+
+.offerCard {
+  padding: 1.5rem;
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: 16px;
+}
+
+.price {
+  margin: 0 0 0.4rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-primary);
+}
+
+.audience {
+  margin: 0 0 1.75rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--color-muted);
+}
+
+.listTitle {
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+}
+
+.included,
+.excluded {
+  margin: 0 0 1.75rem;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.6rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.included li,
+.excluded li {
+  display: flex;
+  gap: 0.7rem;
+  color: var(--color-muted);
+}
+
+.included li::before,
+.excluded li::before {
+  flex: none;
+  inline-size: 1rem;
+  color: var(--color-faint);
+}
+
+/* Une coche et un tiret plutôt que deux couleurs : la distinction reste
+   lisible en noir et blanc, et la charte réserve la couleur aux agents. */
+.included li::before {
+  content: '✓';
+}
+
+.excluded li::before {
+  content: '—';
+}
+
+.excluded {
+  margin-block-end: 0;
+}
+
+.excluded li {
+  color: var(--color-faint);
+}
+
+.companion {
+  margin-block-start: 1rem;
+  padding: 1.15rem 1.35rem;
+  border: 1px solid var(--color-hairline);
+  border-radius: 14px;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--color-muted);
+}
+
+.companion p {
+  margin: 0;
+}
+
+.companionTitle {
+  margin-block-end: 0.4rem !important;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+}
+
+.disclaimer {
+  margin: 1.5rem 0 2.5rem;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--color-faint);
+}
+
+/* ---- Contact ---------------------------------------------------------- */
+
+.contact {
+  padding-block-start: 2rem;
+  border-block-start: 1px solid var(--color-hairline);
+}
+
+.contactTitle {
+  margin: 0 0 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--color-primary);
+}
+
+.contactLead {
+  margin: 0 0 1.75rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--color-muted);
+}
+
+.fields {
+  display: grid;
+  gap: 1rem;
+  margin-block-end: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .fields {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.fields label {
+  display: grid;
+  gap: 0.45rem;
+  font-size: 0.8125rem;
+  color: var(--color-faint);
+}
+
+.fields label em {
+  font-style: normal;
+  opacity: 0.7;
+}
+
+/* Le champ piège est retiré du flux sans `display: none` : certains robots
+   ignorent les champs masqués de cette façon, et le piège perdrait son
+   intérêt. */
+.trap {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-block-end: 1.5rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--color-muted);
+}
+
+.consent input {
+  flex: none;
+  inline-size: 1.15rem;
+  block-size: 1.15rem;
+  margin-block-start: 0.15rem;
+  accent-color: #ffffff;
+}
+
+.consent a {
+  color: var(--color-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.error {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(239, 143, 143, 0.4);
+  border-radius: var(--field-radius);
+  font-size: 0.875rem;
+  color: var(--color-danger, #ef8f8f);
+}
+
+.sent {
+  padding: 1.5rem;
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: 16px;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--color-muted);
+}
+
+.sent p {
+  margin: 0 0 0.75rem;
+}
+
+.sentTitle {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
