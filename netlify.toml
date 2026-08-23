@@ -38,20 +38,14 @@
   status = 301
   force = true
 
-# Première : les liens déjà publiés portent le chemin complet
-# (`content/home.ts` et `content/geo.ts` pointent vers
-# app.qualifyragence.com/app/login). Sans cette règle, la suivante préfixerait
-# une seconde fois et produirait /app/app/login — une 404 sur le lien le plus
-# cliqué du site. L'ordre de ce fichier est significatif : la première règle
-# qui correspond l'emporte.
-[[redirects]]
-  from = "https://app.qualifyragence.com/app/*"
-  to = "https://qualifyragence.com/app/:splat"
-  status = 301
-  force = true
-
+# Tout le reste part vers le **même chemin** sur le domaine principal, sans
+# préfixe ajouté. Une première version préfixait par `/app/`, ce qui paraissait
+# logique et cassait deux liens publiés : `/app/login` devenait `/app/app/login`,
+# et surtout `/reservation/demo` — la page de démonstration mise en avant sur la
+# page d'accueil — devenait `/app/reservation/demo`, qui n'existe pas. Les
+# routes de réservation vivent à la racine, pas sous `/app/`.
 [[redirects]]
   from = "https://app.qualifyragence.com/*"
-  to = "https://qualifyragence.com/app/:splat"
+  to = "https://qualifyragence.com/:splat"
   status = 301
   force = true
