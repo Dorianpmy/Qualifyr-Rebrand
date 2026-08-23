@@ -42,14 +42,6 @@ export function resendApiKey(): string | null {
 }
 
 /**
- * Expéditeur Resend.
- * Sans domaine vérifié : onboarding@resend.dev
- */
-export function bookingFromEmail(): string {
-  return read('BOOKING_FROM_EMAIL') ?? 'Qualifyr <onboarding@resend.dev>';
-}
-
-/**
  * Email de secours pour notifier le detailer (tests / demo)
  * si la fiche detailer n'a pas d'email.
  */
