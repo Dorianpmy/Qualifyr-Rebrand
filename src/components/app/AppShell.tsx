@@ -124,6 +124,7 @@ export function AppShell({
     | 'factures'
     | 'cases'
     | 'prospection'
+    | 'hermes'
     | 'abonnement';
   children: ReactNode;
 }) {
@@ -145,6 +146,12 @@ export function AppShell({
 
   const tabsAfterFab = [
     { key: 'tarifs', href: '/app/prestations', label: 'Prestations', icon: icons.tarifs, desktopOnly: false },
+    /* Hermès, en `desktopOnly` : la barre mobile est pleine à cinq
+       emplacements, et configurer une campagne — écrire un message, relire un
+       aperçu — n'est pas quelque chose qu'on fait entre deux véhicules. Le
+       tableau de bord y renvoie, comme pour « Avant/Après » et
+       « Factures ». */
+    { key: 'hermes', href: '/app/hermes', label: 'Hermès', icon: icons.prospection, desktopOnly: true },
     { key: 'cases', href: '/app/cases', label: 'Avant/Après', icon: icons.cases, desktopOnly: true },
     { key: 'factures', href: '/app/invoices', label: 'Factures', icon: icons.factures, desktopOnly: true },
     /* L'abonnement n'est pas un module quotidien : il se consulte rarement,

@@ -1637,3 +1637,135 @@
     width: 100%;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Hermès — écran de réglages (22/08/2026).
+
+   Les classes réutilisent `.kpi`, `.kpiLabel` et `.kpiValue` déjà présents
+   plus haut : l'en-tête d'état d'Hermès doit se lire exactement comme les
+   autres compteurs du tableau de bord, sinon il devient un objet à part que le
+   professionnel apprend une seconde fois.
+--------------------------------------------------------------------------- */
+
+.hermesSection {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.hermesKpis {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+}
+
+.hermesForm {
+  display: grid;
+  gap: 1.5rem;
+  max-width: 42rem;
+}
+
+.hermesForm label {
+  display: grid;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: rgba(250, 250, 250, 0.7);
+}
+
+.hermesForm input[type='text'],
+.hermesForm input[type='email'],
+.hermesForm input:not([type]),
+.hermesForm textarea {
+  padding: 0.7rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid var(--color-hairline-strong);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--color-primary);
+  /* 16 px : en dessous, iOS agrandit la page à la mise au point du champ. */
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.hermesForm textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.hermesForm small {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: rgba(250, 250, 250, 0.45);
+}
+
+.hermesForm code {
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.7rem;
+}
+
+/* L'aperçu se distingue visuellement du formulaire : ce n'est pas un champ à
+   remplir mais un résultat à lire. Le contour légèrement plus marqué et le
+   fond en retrait le disent sans avoir à l'écrire. */
+.hermesPreview {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border-radius: 14px;
+  border: 1px solid var(--color-hairline-strong);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.hermesPreviewSubject {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.hermesPreviewBody {
+  margin: 0;
+  /* `pre-wrap` conserve les sauts de ligne du professionnel — c'est ainsi que
+     le message partira — tout en repliant les lignes trop longues, sans quoi
+     l'aperçu déborderait sur téléphone. */
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  color: rgba(250, 250, 250, 0.75);
+}
+
+.hermesConsent {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: rgba(250, 250, 250, 0.8);
+}
+
+.hermesConsent input {
+  flex: none;
+  inline-size: 1.15rem;
+  block-size: 1.15rem;
+  margin-block-start: 0.15rem;
+  accent-color: #ffffff;
+}
+
+.hermesError,
+.hermesSuccess {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+}
+
+.hermesError {
+  border: 1px solid rgba(239, 143, 143, 0.4);
+  color: #ef8f8f;
+}
+
+.hermesSuccess {
+  border: 1px solid var(--color-hairline-strong);
+  color: var(--color-primary);
+}
