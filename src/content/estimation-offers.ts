@@ -74,14 +74,16 @@ export const estimationOffers: readonly Offer[] = [
     id: 'agent',
     name: 'Agent de recensement',
     audience:
-      'Vous cherchez de nouveaux clients professionnels et vous manquez de pistes à contacter.',
+      'Vous cherchez de nouveaux clients professionnels et vous n’avez pas le temps de démarcher.',
     monthly: 9,
     oneOff: null,
     included: [
       'Recensement des entreprises d’une zone à partir du répertoire officiel',
       'Un rapport de secteur envoyé par e-mail',
+      'Hermès écrit à ces entreprises pour vous, à votre nom',
     ],
     excluded: [
+      'Hermès envoie le premier message ; les relances et les appels restent à faire',
       'Pas de page de réservation en ligne',
       'Pas d’encaissement d’acompte',
       'Pas de planning ni de facturation',

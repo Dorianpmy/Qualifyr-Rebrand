@@ -58,6 +58,13 @@ const offers: readonly Offer[] = [
       // automatisée avec les prospects qui n'existe nulle part dans le code.
       'Chaque chiffre vient du répertoire officiel Sirene',
       'Un rapport de secteur par e-mail',
+      /* Ajouté le 22/08/2026 : Hermès envoie réellement. C'est l'argument le
+         plus fort de cette offre, et il n'était écrit nulle part. La
+         formulation dit ce qui se passe — un premier message, à votre nom —
+         sans promettre ce qui vient après : relancer et conclure restent au
+         professionnel. */
+      'Hermès écrit à ces entreprises pour vous, à votre nom',
+      'Vous recevez les réponses directement, vous décidez de la suite',
     ],
     href: '/nettoyage-automobile',
     linkLabel: 'Analyser ma zone',

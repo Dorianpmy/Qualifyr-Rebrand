@@ -95,6 +95,31 @@ export const termsSections: readonly TermsSection[] = [
     ],
   },
   {
+    /*
+     * Section ajoutée le 22/08/2026 avec Hermès.
+     *
+     * **C'est l'article le plus important des présentes conditions**, parce
+     * que c'est le seul où le client engage sa responsabilité vis-à-vis de
+     * tiers qui n'ont rien demandé. Sans lui, la question « qui répond d'un
+     * message reçu par une entreprise ? » n'aurait pas de réponse écrite — et
+     * la réponse par défaut serait l'éditeur, puisque c'est son infrastructure
+     * qui envoie.
+     *
+     * Il dit trois choses, dans cet ordre : qui est l'expéditeur, ce que
+     * l'éditeur impose quoi qu'il arrive, et ce qui entraîne la coupure.
+     */
+    id: 'prospection',
+    title: 'Prospection automatisée',
+    paragraphs: [
+      'Le client peut activer une fonction de prospection qui adresse des messages électroniques, en son nom, aux entreprises recensées dans ses zones d’analyse. Il en définit le contenu, l’expéditeur affiché et l’adresse de réponse.',
+      'Le client est l’expéditeur de ces messages et en assume le contenu. L’éditeur agit comme sous-traitant au sens de l’article 28 du règlement général sur la protection des données : il traite les données pour le compte du client, sur ses instructions, et ne les utilise à aucune autre fin.',
+      'L’éditeur ajoute automatiquement à chaque message, sans possibilité de retrait par le client, l’identité de l’expéditeur, l’origine des données de contact et un lien de désengagement fonctionnel. Une entreprise qui se désengage cesse d’être contactée par l’ensemble des clients du service, et non par le seul expéditeur du message reçu.',
+      'Le client s’interdit d’utiliser cette fonction pour adresser des contenus sans rapport avec son activité, trompeurs, ou destinés à des personnes physiques agissant en dehors de leur activité professionnelle.',
+      'Un volume quotidien maximal est appliqué à chaque compte. L’éditeur peut suspendre la fonction, sans préavis, en cas de signalement d’abus, de taux de rejet anormal ou d’atteinte à la réputation d’expédition du service. La suspension ne donne lieu à aucun remboursement au prorata lorsqu’elle résulte d’un manquement du client.',
+      'Aucun résultat n’est garanti : le nombre de réponses obtenues dépend du contenu rédigé par le client, de son marché et de sa zone.',
+    ],
+  },
+  {
     id: 'disponibilite',
     title: 'Disponibilité et limites',
     paragraphs: [

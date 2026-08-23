@@ -50,6 +50,14 @@ export const privacySections: readonly PrivacySection[] = [
          schéma `estimationSchema` de `lib/validation.ts`. */
       'Formulaire d’estimation : prénom, nom ou nom de l’entreprise, adresse e-mail, téléphone si vous le renseignez, nom de l’activité si vous le renseignez, ville ou zone d’intervention, ainsi que les réponses que vous avez données et l’offre qui vous a été recommandée.',
       'Le parcours d’estimation calcule sa recommandation sur votre appareil. Rien ne nous est transmis tant que vous ne demandez pas à la recevoir par e-mail.',
+      /* Ajouté le 22/08/2026 avec Hermès. Cette page est lue par deux publics
+         désormais : les visiteurs du site, et les entreprises qui reçoivent un
+         message de prospection et viennent chercher d'où vient leur adresse.
+         Le second public arrive avec une question précise, et doit trouver la
+         réponse sans avoir à écrire. */
+      'Prospection : lorsqu’un professionnel abonné analyse une zone, nous recensons les entreprises qui s’y trouvent à partir du répertoire public des entreprises (INSEE — Sirene), et nous relevons l’adresse électronique publiée sur leur site lorsqu’elle existe. Aucune adresse n’est devinée ni achetée à un tiers.',
+      'Ces informations concernent des établissements, pas des particuliers. Elles servent uniquement à permettre au professionnel abonné de les contacter au sujet de son activité. Il est l’expéditeur de ces messages ; nous les acheminons pour son compte.',
+      'Chaque message comporte un lien de désengagement. L’utiliser retire l’adresse pour l’ensemble des professionnels utilisant le service, et non pour le seul expéditeur du message reçu.',
       'Lorsqu’un lien de campagne est utilisé, le stockage de session peut aussi conserver la source, le support, le nom de campagne, le domaine référent et la page d’entrée. Ces éléments ne contiennent aucune coordonnée et sont joints à une demande uniquement pour comprendre son origine.',
       'L’adresse de la page depuis laquelle le formulaire a été envoyé est jointe au message, afin de savoir dans quel contexte vous nous avez écrit.',
       'Pour présélectionner la devise du configurateur, l’hébergeur déduit uniquement le code du pays à partir de la connexion. L’adresse IP n’est ni transmise au code applicatif de Qualifyr, ni enregistrée par le site pour cette fonction.',

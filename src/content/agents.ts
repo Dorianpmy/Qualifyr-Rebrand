@@ -53,12 +53,12 @@ export const agents: readonly Agent[] = [
     label: 'Agent de recensement',
     shortLabel: 'Recensement',
     summary:
-      'Recense les entreprises d’une zone à partir du répertoire officiel et vous envoie la liste.',
+      'Recense les entreprises d’une zone, puis leur écrit en votre nom. Vous recevez les réponses.',
     steps: [
       'Recenser les entreprises',
       'Analyser une zone',
-      'Repérer les prospects',
-      'Envoyer un rapport',
+      'Écrire le premier message',
+      'Vous transmettre les réponses',
     ],
     color: '#b8e3c5',
     token: '--color-acquisition',

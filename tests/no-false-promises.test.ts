@@ -44,12 +44,28 @@ const FORBIDDEN: readonly {
     why: 'aucun mécanisme de rétroaction n’existe',
   },
   {
-    pattern: /le premier message part sans vous|il répond avant vous/i,
-    why: 'aucun message n’est jamais envoyé à un prospect',
+    /*
+     * `le premier message part sans vous` a été **retiré** de cette liste le
+     * 22/08/2026 : c'est devenu vrai. Hermès envoie réellement, en différé,
+     * au nom du professionnel (voir `lib/agent/outreach.ts`).
+     *
+     * `il répond avant vous` reste interdit, et la nuance est importante :
+     * Hermès envoie un premier message sortant, il ne répond à rien. Aucun
+     * traitement des réponses n'existe — elles arrivent directement chez le
+     * professionnel, par `replyTo`.
+     */
+    pattern: /il répond avant vous|répond automatiquement aux réponses/i,
+    why: 'Hermès envoie un premier message ; aucune réponse entrante n’est traitée',
   },
   {
-    pattern: /vous n['’]avez plus à démarcher/i,
-    why: 'l’agent produit la liste ; les appels restent à passer',
+    /*
+     * Conservé, et la nuance vaut d'être dite : Hermès écrit, mais tout ce qui
+     * suit — relancer, appeler, négocier, se déplacer — reste au
+     * professionnel. « Vous n'avez plus à démarcher » promettrait que le
+     * travail commercial disparaît, ce qui est faux.
+     */
+    pattern: /vous n['’]avez plus à démarcher|plus rien à faire/i,
+    why: 'Hermès envoie le premier message ; les relances et les appels restent à faire',
   },
 ];
 
