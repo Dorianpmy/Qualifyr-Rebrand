@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { isProduction } from '@/lib/env';
 import { vehicleSizeCopy, scopeCopy, soilingCopy, optionCopy } from '@/components/detailing/content';
 import type { LocationMode, OptionKey, Scope, SoilingLevel, VehicleSize } from './types';
 
@@ -45,8 +46,32 @@ function getResend(): Resend | null {
   return new Resend(key);
 }
 
-function fromAddress(): string {
-  return readEnv('BOOKING_FROM_EMAIL') ?? 'Qualifyr <onboarding@resend.dev>';
+/**
+ * Adresse d'expédition Resend.
+ *
+ * **Aucun repli en production.** `onboarding@resend.dev` accepte l'envoi —
+ * Resend ne renvoie aucune erreur — mais ce domaine partagé ne livre qu'au
+ * propriétaire du compte Resend : un client qui vient de réserver ne
+ * recevrait jamais sa confirmation, sans qu'aucune erreur ne le signale
+ * nulle part. `null` oblige l'appelant à refuser explicitement l'envoi,
+ * exactement comme `getResend()` le fait déjà pour une clé API absente.
+ * Hors production, le repli reste utile pour dérouler le parcours sans
+ * configuration — même principe que `resolveTransport()` dans
+ * `lib/email/transport.ts`.
+ */
+function fromAddress(): string | null {
+  const configured = readEnv('BOOKING_FROM_EMAIL');
+  if (configured) return configured;
+  return isProduction() ? null : 'Qualifyr <onboarding@resend.dev>';
+}
+
+/** Résout l'adresse d'expédition, ou journalise et refuse l'envoi. */
+function requireFromAddress(context: string): string | null {
+  const from = fromAddress();
+  if (!from) {
+    console.error(`[booking-email] BOOKING_FROM_EMAIL manquante — envoi ${context} refusé`);
+  }
+  return from;
 }
 
 export type BookingEmailPayload = {
@@ -154,6 +179,8 @@ function htmlBody(title: string, intro: string, payload: BookingEmailPayload, ou
 export async function sendClientBookingEmail(payload: BookingEmailPayload): Promise<boolean> {
   const resend = getResend();
   if (!resend) return false;
+  const from = requireFromAddress('client');
+  if (!from) return false;
 
   const title = 'Demande enregistrée';
   const intro = `Votre demande de réservation avec ${payload.detailerName} a bien été enregistrée.`;
@@ -161,7 +188,7 @@ export async function sendClientBookingEmail(payload: BookingEmailPayload): Prom
 
   try {
     const { error } = await resend.emails.send({
-      from: fromAddress(),
+      from,
       to: payload.clientEmail,
       subject: `Demande enregistrée — ${payload.detailerName}`,
       text: textBody(title, intro, payload, outro),
@@ -181,6 +208,8 @@ export async function sendClientBookingEmail(payload: BookingEmailPayload): Prom
 export async function sendDetailerBookingEmail(payload: BookingEmailPayload): Promise<boolean> {
   const resend = getResend();
   if (!resend) return false;
+  const from = requireFromAddress('detailer');
+  if (!from) return false;
 
   const to = payload.detailerEmail?.trim() || readEnv('BOOKING_NOTIFY_EMAIL') || null;
   if (!to) {
@@ -194,7 +223,7 @@ export async function sendDetailerBookingEmail(payload: BookingEmailPayload): Pr
 
   try {
     const { error } = await resend.emails.send({
-      from: fromAddress(),
+      from,
       to,
       subject: `Nouvelle réservation — ${formatSlot(payload.slotStart)}`,
       text: textBody(title, intro, payload, outro),
@@ -239,6 +268,8 @@ export async function sendAbandonedBookingEmail(
 ): Promise<boolean> {
   const resend = getResend();
   if (!resend) return false;
+  const from = requireFromAddress('relance');
+  if (!from) return false;
 
   const subject = `Votre créneau avec ${payload.detailerName} est encore disponible`;
   const text = [
@@ -278,7 +309,7 @@ export async function sendAbandonedBookingEmail(
 
   try {
     const { error } = await resend.emails.send({
-      from: fromAddress(),
+      from,
       to: payload.clientEmail,
       subject,
       text,
