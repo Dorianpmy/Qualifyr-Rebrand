@@ -252,7 +252,7 @@ export function DarkHeader() {
         <div className="flex items-center gap-3">
           <Link
             href={primaryCta.href}
-            className="hidden cta-solid accent-glow min-h-[40px] items-center rounded-full bg-white px-4 text-[0.875rem] font-semibold text-ink no-underline lg:inline-flex"
+            className="hidden cta-solid cta-beam accent-glow min-h-[40px] items-center rounded-full bg-white px-4 text-[0.875rem] font-semibold text-ink no-underline lg:inline-flex"
             onClick={closeMenu}
           >
             {primaryCta.label}

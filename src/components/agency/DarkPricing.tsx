@@ -371,7 +371,7 @@ function PlanCard({ plan, annual }: { plan: Plan; annual: boolean }) {
         label={plan.subscribeLabel}
         className={
           plan.featured
-            ? 'cta-solid accent-glow inline-flex min-h-[44px] w-full items-center justify-center rounded-full bg-white px-5 text-center text-[0.875rem] font-semibold text-ink no-underline transition-colors duration-150 hover:not-disabled:bg-white/90 disabled:cursor-not-allowed disabled:opacity-70'
+            ? 'cta-solid cta-beam accent-glow inline-flex min-h-[44px] w-full items-center justify-center rounded-full bg-white px-5 text-center text-[0.875rem] font-semibold text-ink no-underline transition-colors duration-150 hover:not-disabled:bg-white/90 disabled:cursor-not-allowed disabled:opacity-70'
             : 'inline-flex min-h-[44px] w-full items-center justify-center rounded-full px-5 text-center text-[0.875rem] font-semibold !text-primary no-underline transition-colors duration-150 hover:not-disabled:bg-black/[0.04] disabled:cursor-not-allowed disabled:opacity-70'
         }
         style={plan.featured ? undefined : { border: `1px solid ${LIGHT_CARD_BORDER_STRONG}` }}

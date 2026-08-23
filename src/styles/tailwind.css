@@ -1645,3 +1645,137 @@
     }
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Faisceau lumineux sur les appels à l'action principaux (22/08/2026).
+
+   Inspiré du « border beam » de Motiq, dont Dorian a fourni le code — mais
+   réécrit, et il faut dire pourquoi plutôt que de le copier en silence :
+
+   1. **Le composant d'origine est un panneau, pas un bouton.** Il enveloppe
+      son contenu dans trois `<div>` et un `<style>` injecté par instance. Sur
+      dix boutons répartis dans sept pages, cela ferait dix feuilles de style
+      dupliquées et trente éléments de plus dans le document.
+   2. **Il anime en JavaScript**, une `requestAnimationFrame` par instance, qui
+      écrit une propriété personnalisée à chaque image. Dix boucles tournant en
+      permanence sur un téléphone, c'est de la batterie pour un ornement.
+      `@property` permet au navigateur d'interpoler l'angle lui-même, sur le
+      compositeur, sans une ligne de script.
+   3. **Il apporte sa propre palette** (`--motiq-accent` bleu, `--motiq-
+      signature` corail). La charte d'ici réserve la couleur à l'identification
+      des agents ; un bouton n'est pas un agent. Le faisceau reprend donc les
+      accents de contour déjà employés par `.node-hero` et `.glow-border` —
+      même vocabulaire visuel, aucune teinte nouvelle.
+   4. Il exigeait `clsx` et `tailwind-merge`, deux dépendances de production
+      pour concaténer des chaînes.
+
+   Ce qui est conservé, parce que c'est la bonne idée du composant : le dégradé
+   conique tourne, et un masque à deux couches en `exclude` ne garde que
+   l'anneau. Le masque de luminance en SVG est évité pour la même raison que
+   l'original l'évite — il est silencieusement ignoré par Chromium.
+
+   `@property` est indispensable ici : sans lui, un angle en propriété
+   personnalisée est une simple chaîne, et une chaîne ne s'interpole pas. Le
+   dégradé sauterait d'une valeur à l'autre au lieu de tourner. Le repli pour
+   les navigateurs sans `@property` est l'absence d'animation, pas un défaut de
+   rendu : l'anneau reste, figé sur son angle initial.
+--------------------------------------------------------------------------- */
+@property --qualifyr-beam-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@layer utilities {
+  @keyframes qualifyr-beam-orbit {
+    to {
+      --qualifyr-beam-angle: 360deg;
+    }
+  }
+
+  .cta-beam {
+    position: relative;
+    /* Le pseudo-élément est peint sous le bouton (`z-index: -1`) ; sans
+       contexte d'empilement propre, il passerait sous le fond de la section. */
+    isolation: isolate;
+  }
+
+  .cta-beam::before {
+    content: '';
+    position: absolute;
+    /* Déborde de 2 px pour que l'anneau entoure le bouton au lieu de mordre
+       dessus — le fond blanc du bouton le recouvrirait sinon. */
+    inset: -2px;
+    border-radius: inherit;
+    padding: 2px;
+    z-index: -1;
+    pointer-events: none;
+
+    /* La comète : une queue qui monte, une tête vive, puis rien. Le passage
+       par `transparent` en fin de course est net et non progressif, sinon la
+       queue rejoindrait la tête et l'anneau paraîtrait plein. */
+    background: conic-gradient(
+      from var(--qualifyr-beam-angle),
+      transparent 0deg,
+      color-mix(in srgb, var(--accent-1) 30%, transparent) 40deg,
+      var(--accent-1) 72deg,
+      var(--accent-3) 96deg,
+      transparent 130deg,
+      transparent 360deg
+    );
+
+    /* Deux couches de masque : la boîte de contenu et la boîte entière. Leur
+       exclusion ne laisse que la bande de `padding`, c'est-à-dire l'anneau.
+       Le préfixe `-webkit-` reste nécessaire pour Safari. */
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+
+    animation: qualifyr-beam-orbit 5.5s linear infinite;
+    opacity: 0.85;
+    transition:
+      opacity 200ms ease,
+      filter 200ms ease;
+  }
+
+  /* Le halo diffus, posé derrière l'anneau. Deux `::before`/`::after` de plus
+     que le strict nécessaire coûteraient un élément supplémentaire par bouton ;
+     un `filter: drop-shadow` sur l'anneau donne le même résultat en une
+     déclaration, et il suit la forme du masque. */
+  .cta-beam::before {
+    filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent-1) 45%, transparent));
+  }
+
+  /* Au survol, le faisceau gagne en présence — pas en vitesse. Accélérer une
+     animation CSS en cours change sa durée sans changer sa phase : le dégradé
+     ferait un saut visible au moment précis où l'œil est dessus. L'original
+     évite ce saut avec un ressort en JavaScript ; ici, un gain de luminosité
+     dit la même chose sans boucle d'animation. */
+  .cta-beam:hover::before,
+  .cta-beam:focus-visible::before {
+    opacity: 1;
+    filter: drop-shadow(0 0 10px color-mix(in srgb, var(--accent-1) 65%, transparent));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cta-beam::before {
+      animation: none;
+      /* Angle figé choisi pour que la comète tombe sur un bord visible plutôt
+         que sur un coin, où elle se lirait comme un défaut d'affichage. */
+      --qualifyr-beam-angle: 300deg;
+    }
+  }
+
+  /* En contraste forcé, les couleurs système remplacent tout : l'anneau
+     deviendrait un aplat opaque autour du bouton. */
+  @media (forced-colors: active) {
+    .cta-beam::before {
+      display: none;
+    }
+  }
+}
