@@ -108,8 +108,40 @@ export const REQUIRED_ENV: readonly EnvRequirement[] = [
     requiredInDev: false,
   },
   {
+    /*
+     * Le repli `onboarding@resend.dev` n'est pas seulement mauvais pour la
+     * réputation : ce domaine partagé ne livre qu'à l'adresse du compte
+     * Resend. Sans cette variable, aucun rapport de secteur ni aucune
+     * confirmation de réservation n'atteint son destinataire.
+     */
     name: 'BOOKING_FROM_EMAIL',
-    consequence: 'les e-mails partent d’un domaine de test et finissent en indésirables',
+    consequence:
+      'repli sur un domaine de test qui ne livre qu’au propriétaire du compte Resend : les rapports et confirmations n’arrivent chez personne',
+    requiredInDev: false,
+  },
+  {
+    /*
+     * Les trois variables ci-dessous manquaient à ce recensement, et c'est
+     * précisément pour cela que leur absence en production est passée
+     * inaperçue jusqu'au 22/08/2026 : `npm run check:env` répondait « tout
+     * va bien » alors que les formulaires répondaient 503 depuis la mise en
+     * ligne. Un contrôle incomplet est plus dangereux qu'un contrôle absent,
+     * parce qu'on lui fait confiance.
+     */
+    name: 'CONTACT_TO_EMAIL',
+    consequence: 'les formulaires de contact et d’estimation répondent 503 : aucun message ne vous parvient',
+    requiredInDev: false,
+  },
+  {
+    name: 'CONTACT_FROM_EMAIL',
+    consequence:
+      'même effet, plus la perte silencieuse des confirmations de demande de zone et des relances d’abonnement',
+    requiredInDev: false,
+  },
+  {
+    name: 'RESEND_WEBHOOK_SECRET',
+    consequence:
+      'aucun rebond ni aucune plainte n’alimente la liste de suppression : Hermès continue d’écrire à des adresses mortes',
     requiredInDev: false,
   },
   {
