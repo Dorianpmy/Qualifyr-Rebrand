@@ -12,7 +12,20 @@ export default function robots(): MetadataRoute.Robots {
     };
   }
 
-  const disallow = ['/api/', '/design-system', '/go/', '/app/', '/reservation/'];
+  /* `/desinscription/` ajouté le 22/08/2026 avec la prospection sortante.
+     Chaque adresse de cette famille contient un jeton unique lié à un
+     destinataire ; les laisser explorer reviendrait à faire désinscrire des
+     gens par un robot d'indexation, et à exposer les jetons dans un index
+     public. La page porte déjà `noindex`, mais un `Disallow` empêche la
+     visite elle-même, ce que `noindex` ne fait pas. */
+  const disallow = [
+    '/api/',
+    '/design-system',
+    '/go/',
+    '/app/',
+    '/reservation/',
+    '/desinscription/',
+  ];
 
   return {
     rules: [
