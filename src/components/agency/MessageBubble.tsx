@@ -38,12 +38,34 @@ type MessageBubbleProps = {
    * largeur).
    */
   readonly position?: 'absolute' | 'static';
+  /**
+   * Rang d'arrivée dans le fil, à partir de 0.
+   *
+   * Déclenche l'animation « impact » (voir `.bubble-impact` dans
+   * `tailwind.css`) et décale son départ : les messages se posent l'un après
+   * l'autre, comme dans une conversation. Sans cette valeur, aucune animation
+   * — la bulle reste utilisable telle quelle ailleurs sur le site.
+   */
+  readonly order?: number;
 };
 
-export function MessageBubble({ text, style, compact = false, position = 'absolute' }: MessageBubbleProps) {
+/** Écart entre deux arrivées, en millisecondes. */
+const IMPACT_STAGGER = 140;
+
+export function MessageBubble({
+  text,
+  style,
+  compact = false,
+  position = 'absolute',
+  order,
+}: MessageBubbleProps) {
+  const animated = typeof order === 'number';
+
   return (
     <span
-      className={`${position === 'absolute' ? 'absolute' : 'relative'} font-medium leading-[1.35] ${
+      className={`${position === 'absolute' ? 'absolute' : 'relative'} ${
+        animated ? 'bubble-impact' : ''
+      } font-medium leading-[1.35] ${
         compact
           ? 'max-w-[8.5rem] px-3 py-1.5 text-[0.75rem] sm:max-w-[9.5rem] sm:px-3.5 sm:py-2 sm:text-[0.8125rem]'
           : 'max-w-[9.5rem] px-3.5 py-2 text-[0.8125rem] sm:max-w-[11rem] sm:px-4 sm:py-2.5 sm:text-[0.875rem]'
@@ -54,6 +76,12 @@ export function MessageBubble({ text, style, compact = false, position = 'absolu
         background: '#1683F8',
         color: '#FFFFFF',
         boxShadow: '0 4px 14px rgba(22, 131, 248, 0.22)',
+        /* Le délai passe par une variable CSS plutôt que par
+           `animationDelay` : la règle `.bubble-impact` doit pouvoir redéfinir
+           toute l'animation sous `prefers-reduced-motion`, ce qu'un
+           `animationDelay` en ligne empêcherait — un style en ligne bat
+           toujours une feuille non `!important`. */
+        ...(animated ? { ['--bubble-delay' as string]: `${order * IMPACT_STAGGER}ms` } : {}),
       }}
     >
       {text}

@@ -242,6 +242,36 @@
   gap: 1rem;
 }
 
+/* Barre d'action collée en bas de la fenêtre.
+
+   Sans elle, le bouton « Continuer » se trouvait après sept options de 48 px :
+   il sortait de l'écran, y compris sur un ordinateur portable. Le visiteur
+   devait deviner qu'il existait, puis défiler pour l'atteindre — à chacune des
+   huit étapes.
+
+   `sticky` et non `fixed` : la barre reste dans le flux, donc elle ne recouvre
+   jamais la dernière option et ne demande aucune compensation de padding.
+   Le dégradé sous le bouton évite que le texte des options ne passe
+   « derrière » le bouton en défilant, ce qui se lirait comme un défaut de
+   rendu ; il s'arrête au bord pour ne pas dessiner une bande visible.
+
+   `env(safe-area-inset-bottom)` tient compte de la barre de geste des iPhone
+   récents : sans lui, le bouton se retrouve dessous et devient difficile à
+   viser. */
+.actionsSticky {
+  position: sticky;
+  inset-block-end: 0;
+  margin-block-start: 0.5rem;
+  padding-block: 1.25rem;
+  padding-block-end: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--color-ink, #0e0e0f) 35%,
+    var(--color-ink, #0e0e0f)
+  );
+}
+
 .primary {
   min-block-size: 48px;
   padding: 0 1.6rem;

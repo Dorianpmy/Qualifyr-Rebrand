@@ -113,6 +113,10 @@ export function DarkHero({
             <MessageBubble
               key={text}
               text={text}
+              /* Le rang déclenche l'arrivée « impact » et l'échelonne : les
+                 bulles se posent l'une après l'autre, comme des messages qui
+                 arrivent. Toutes ensemble, elles se liraient comme un bloc. */
+              order={index}
               compact={index === 1 || index === 2 || index === 3}
               style={{
                 ...heroCloudPositions[index % heroCloudPositions.length],

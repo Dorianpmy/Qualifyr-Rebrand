@@ -220,7 +220,19 @@ export function EstimationWizard() {
       <div className={styles.stage} key={step}>
         {question ? (
           <>
-            <h2 className={styles.question} tabIndex={-1} ref={headingRef}>
+            {/* `text-[...]` n'est pas décoratif : c'est ce qui rend au titre la
+                maîtrise de sa taille. `tailwind.css` impose
+                `[data-theme='dark'] h2:not([class*='text-'])` à 2,6 rem, et
+                cette règle battait le `clamp` du module — le titre sortait à
+                42 px au lieu de 28, tenait sur trois lignes, et poussait le
+                bouton « Continuer » sous le pli. L'exclusion `[class*='text-']`
+                est le mécanisme prévu par cette règle pour laisser un
+                composant décider ; encore fallait-il l'utiliser. */}
+            <h2
+              className={`${styles.question} text-[clamp(1.35rem,3.5vw,1.75rem)]`}
+              tabIndex={-1}
+              ref={headingRef}
+            >
               {question.title}
             </h2>
             {question.help ? <p className={styles.help}>{question.help}</p> : null}
@@ -261,14 +273,20 @@ export function EstimationWizard() {
               </label>
             ) : null}
 
-            <div className={styles.actions}>
+            {/* Barre collante plutôt qu'un bouton en fin de flux. Avec sept
+                options, le bouton tombait hors de l'écran sur un portable comme
+                sur un ordinateur : il fallait deviner qu'il existait puis
+                défiler pour l'atteindre, à chacune des huit étapes. Collé en
+                bas, il est toujours là — c'est la convention des formulaires
+                en plusieurs étapes, et elle vaut ici plus qu'ailleurs. */}
+            <div className={`${styles.actions} ${styles.actionsSticky}`}>
               <button
                 type="button"
                 className={styles.primary}
                 disabled={!canContinue}
                 onClick={() => goTo(step + 1)}
               >
-                Continuer
+                {step === questions.length - 1 ? 'Voir ma recommandation' : 'Continuer'}
               </button>
               {!canContinue ? (
                 <p className={styles.hint}>Choisissez au moins une réponse pour continuer.</p>
@@ -280,7 +298,11 @@ export function EstimationWizard() {
         {isResultStep ? (
           <>
             <p className={styles.eyebrow}>Votre recommandation</p>
-            <h2 className={styles.question} tabIndex={-1} ref={headingRef}>
+            <h2
+              className={`${styles.question} text-[clamp(1.35rem,3.5vw,1.75rem)]`}
+              tabIndex={-1}
+              ref={headingRef}
+            >
               {offer.name}
             </h2>
 

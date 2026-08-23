@@ -1574,3 +1574,74 @@
     outline-offset: 2px !important;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Bulles de message — arrivée « impact » (22/08/2026).
+
+   Reprend l'effet d'envoi d'iMessage : la bulle surgit petite, dépasse
+   légèrement sa taille finale, puis se pose. C'est ce dépassement — l'
+   « overshoot » — qui fait tout le caractère ; une simple montée d'opacité
+   donnerait une apparition molle, sans le sentiment que le message vient
+   d'arriver.
+
+   **Trois détails font la différence avec une animation générique :**
+
+   1. Le départ à `0.72` et non `0` : partir de rien produit un « pop » de
+      dessin animé. iMessage part d'une bulle déjà lisible et la projette.
+   2. L'`overshoot` culmine à `1.06`, pas davantage. Au-delà, la bulle se
+      déforme visiblement et l'effet devient un rebond de jouet.
+   3. Le léger décalage vertical (`8px` vers le haut) donne la direction : le
+      message monte vers sa place, comme dans un fil de conversation.
+
+   `cubic-bezier(0.34, 1.56, 0.64, 1)` est une courbe à dépassement — son
+   troisième point de contrôle passe au-dessus de 1, ce qui produit
+   mécaniquement le rebond sans avoir à l'écrire en images clés.
+
+   **Le décalage entre bulles est porté par `--bubble-delay`**, posé en ligne
+   par le composant : les messages arrivent l'un après l'autre, ce qui est la
+   seule façon de faire lire un fil de conversation. Tous en même temps se
+   lisent comme un bloc, pas comme des messages.
+
+   `backwards` maintient l'état initial pendant le délai — sans lui, les
+   bulles en attente s'afficheraient à taille pleine puis sauteraient.
+--------------------------------------------------------------------------- */
+@layer utilities {
+  @keyframes qualifyr-bubble-impact {
+    0% {
+      opacity: 0;
+      transform: translateY(8px) scale(0.72);
+    }
+    55% {
+      opacity: 1;
+      transform: translateY(0) scale(1.06);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .bubble-impact {
+    animation: qualifyr-bubble-impact 520ms cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+    animation-delay: var(--bubble-delay, 0ms);
+  }
+
+  /* Le mouvement disparaît, l'apparition reste : supprimer l'animation
+     entièrement laisserait les bulles invisibles, `backwards` maintenant
+     l'image de départ. Un fondu court remplit le contrat sans déplacement. */
+  @media (prefers-reduced-motion: reduce) {
+    .bubble-impact {
+      animation: qualifyr-bubble-fade 200ms ease-out backwards;
+      animation-delay: var(--bubble-delay, 0ms);
+    }
+  }
+
+  @keyframes qualifyr-bubble-fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
