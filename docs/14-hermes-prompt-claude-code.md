@@ -47,7 +47,8 @@ production.
 `unsubscribe_token`, `opted_out_at`, `contacted_at`, `replied_at`, `source`,
 `legal_basis`. La migration 021 (24/08/2026, voir plus bas) y ajoute
 `email_source` et `enrichment_attempts`, et ajoute `enrichment_attempted_at`
-à `agent_zones`.
+à `agent_zones`. La migration 022 (24/08/2026, voir plus bas) ajoute deux
+tables séparées : `agent_imported_prospects` et `agent_import_attestations`.
 
 **Code**
 
@@ -64,7 +65,10 @@ production.
 | `src/lib/agent/company-match.ts` | Rapprochement de noms Sirene/OSM, fonction pure et testée. |
 | `src/lib/agent/postal-codes.ts` | `nearbyPostalCodes`, partagé entre `/api/agent/process` et `/api/agent/enrich`. |
 | `src/app/api/agent/enrich/route.ts` | Route planifiée de l'enrichissement, son propre cron (`agent-enrich-cron.ts`, 30 min). |
-| `tests/hermes-outreach.test.ts`, `tests/osm-enrich.test.ts`, `tests/company-match.test.ts` | Tests Hermès et enrichissement. |
+| `src/lib/agent/import-prospects.ts` | Import de listes (24/08/2026) : validation ligne par ligne, plafonds, attestation, insertion, consultation, suppression. |
+| `src/app/api/app/hermes/import/route.ts` | `GET` / `POST` / `DELETE` des listes importées. |
+| `src/components/app/ImportProspects.tsx` | Formulaire d'import, attestation affichée en toutes lettres, liste et suppression. |
+| `tests/hermes-outreach.test.ts`, `tests/osm-enrich.test.ts`, `tests/company-match.test.ts`, `tests/import-prospects.test.ts` | Tests Hermès et enrichissement. |
 
 **Textes** — article « Prospection automatisée » dans `content/terms.ts`,
 collecte décrite dans `content/legal.ts`, offre « Agent seul » réécrite dans
@@ -149,6 +153,48 @@ d'envoi) — même raisonnement que pour `/api/agent/relevance`.
   passages et non en âge écoulé** — à la différence du renvoi de rapport
   (`report-retry.ts`). Voir la migration 021 pour pourquoi cette différence
   est délibérée.
+
+## Import de listes (ajouté le 24/08/2026)
+
+**Pourquoi.** Le recensement automatique ne couvre que la France, et
+l'enrichissement OSM que deux segments sur quatre (voir plus haut) : un
+professionnel qui connaît déjà les transporteurs ou les flottes de sa région
+— ou qui exerce en Suisse, jamais recensée — n'avait aucun moyen de les
+apporter. `src/lib/agent/import-prospects.ts` ouvre cette voie.
+
+**Deux tables, deux régimes de suppression, et c'est le point à ne jamais
+inverser.** `agent_imported_prospects` porte des données personnelles de
+tiers : effaçables à la demande, une route `DELETE` existe pour ça.
+`agent_import_attestations` est la preuve d'un engagement contractuel : **elle
+ne doit jamais être supprimée par une route applicative**, même quand plus une
+seule adresse de l'import qu'elle couvrait n'existe. Un professionnel qui
+supprime sa liste après une réclamation ne doit pas effacer au passage la
+preuve qu'il avait certifié en connaître l'origine. La contrainte
+`on delete restrict` de la migration 022 protège contre une régression future,
+pas contre un usage prévu — aucun code de ce dépôt ne doit jamais tenter de
+supprimer une ligne de cette table.
+
+**L'attestation est écrite par le serveur, jamais reçue du client.** Le
+client envoie `attestationAccepted: true` ; c'est
+`IMPORT_ATTESTATION_TEXT` (la formulation exacte, pas un résumé) que le
+serveur stocke — même principe que `terms_accepted_at` dans
+`api/app/hermes/route.ts`. Exigée à **chaque** import, jamais une fois pour
+toutes.
+
+**Périmètre par `owner_id`, pas par zone ni par e-mail.** Une liste importée
+n'a pas de zone à réconcilier : elle est toujours créée par un compte
+authentifié. `nextCandidates` (`outreach.ts`) fusionne ce second bassin avec
+celui des prospects recensés avant le tri et le dédoublonnage — un prospect
+importé passe par exactement les mêmes barrières qu'un prospect recensé
+(suppression globale, quota, dédoublonnage par adresse), aucune ne lui est
+propre.
+
+**Deux plafonds, vérifiés côté serveur avant d'écrire quoi que ce soit** :
+`MAX_IMPORT_SIZE` (500 adresses par import) et
+`MAX_TOTAL_IMPORTED_PROSPECTS` (2 000 par compte, tous imports cumulés).
+Aucun téléphone n'est collecté sur ces listes — Hermès n'appelle personne, et
+le rapport de secteur qui justifie ce champ pour les prospects recensés ne
+les concerne pas.
 
 ## Ce qui reste à faire
 

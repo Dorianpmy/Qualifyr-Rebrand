@@ -113,13 +113,39 @@ describe('message envoyé', () => {
     expect(osmMessage.text).not.toMatch(/publiée sur votre site/);
   });
 
-  it('les deux formulations d’origine sont mutuellement exclusives', () => {
+  it('dit d’où vient l’adresse — cas fournie par l’expéditeur sur une liste importée', () => {
+    /*
+     * Ajouté le 24/08/2026 avec l'import de listes (migration 022). Ni
+     * « répertoire public des entreprises » ni « publiée sur votre site »
+     * ne seraient vrais ici : Qualifyr n'a jamais collecté cette adresse,
+     * ni recensé cet établissement — la liste vient entièrement de
+     * l'expéditeur. C'est exactement ce que la phrase doit dire, sans se
+     * rabattre sur une formulation générique par commodité.
+     */
+    const importMessage = composeMessage(CAMPAIGN, { ...CANDIDATE, emailSource: 'fourni_par_expediteur' }, url);
+    expect(importMessage.text).toMatch(/indiquée comme prospect par l.expéditeur/);
+    expect(importMessage.text).toMatch(/Qualifyr n.a jamais collecté cette adresse/);
+    expect(importMessage.text).not.toMatch(/répertoire\s+public des entreprises/);
+    expect(importMessage.text).not.toMatch(/publiée sur votre site/);
+    expect(importMessage.text).not.toMatch(/OpenStreetMap/);
+  });
+
+  it('les trois formulations d’origine sont mutuellement exclusives', () => {
     const siteWeb = composeMessage(CAMPAIGN, { ...CANDIDATE, emailSource: 'site_web' }, url);
     const osmTag = composeMessage(CAMPAIGN, { ...CANDIDATE, emailSource: 'osm_tag' }, url);
+    const imported = composeMessage(CAMPAIGN, { ...CANDIDATE, emailSource: 'fourni_par_expediteur' }, url);
+
     expect(siteWeb.text).toMatch(/publiée sur votre site/);
     expect(siteWeb.text).not.toMatch(/OpenStreetMap/);
+    expect(siteWeb.text).not.toMatch(/indiquée comme prospect/);
+
     expect(osmTag.text).toMatch(/OpenStreetMap/);
     expect(osmTag.text).not.toMatch(/publiée sur votre site/);
+    expect(osmTag.text).not.toMatch(/indiquée comme prospect/);
+
+    expect(imported.text).toMatch(/indiquée comme prospect/);
+    expect(imported.text).not.toMatch(/publiée sur votre site/);
+    expect(imported.text).not.toMatch(/OpenStreetMap/);
   });
 
   it('identifie l’expéditeur par son nom', () => {
@@ -220,6 +246,22 @@ describe('garde-fous du code', () => {
     expect(outreach, 'lecture ratée des envois passés doit interdire, pas autoriser').toMatch(
       /if \(sentError\) return \[\];/,
     );
+  });
+
+  it('restreint les prospects importés au périmètre du compte, par owner_id et non par e-mail', () => {
+    /*
+     * Ajouté le 24/08/2026 avec l'import de listes (migration 022).
+     * `agent_imported_prospects` n'est jamais scopée par `agent_zones` ni
+     * par `ownerEmail` : c'est un second bassin, avec son propre filtre.
+     * Même classe de risque que la fuite déjà corrigée une fois sur
+     * `agent_prospects` — vérifiée séparément, sur sa propre requête.
+     */
+    const importedBlockStart = outreach.indexOf("from('agent_imported_prospects')");
+    expect(importedBlockStart).toBeGreaterThanOrEqual(0);
+
+    const importedBlock = outreach.slice(importedBlockStart, importedBlockStart + 300);
+    expect(importedBlock).toContain("eq('owner_id', ownerId)");
+    expect(importedBlock).not.toContain('ownerEmail');
   });
 });
 

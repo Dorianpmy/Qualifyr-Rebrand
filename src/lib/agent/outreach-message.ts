@@ -14,11 +14,13 @@
  */
 
 /**
- * D'où vient `email` — voir migration 021. `osm_tag` : porté directement par
- * OpenStreetMap. `site_web` : relevé par Qualifyr sur le site officiel que
- * OpenStreetMap indique.
+ * D'où vient `email`. `osm_tag` (migration 021) : porté directement par
+ * OpenStreetMap. `site_web` (migration 021) : relevé par Qualifyr sur le
+ * site officiel que OpenStreetMap indique. `fourni_par_expediteur`
+ * (migration 022) : une liste que le professionnel a lui-même importée —
+ * Qualifyr n'a jamais collecté cette adresse, voir `originSentence`.
  */
-export type EmailSource = 'osm_tag' | 'site_web';
+export type EmailSource = 'osm_tag' | 'site_web' | 'fourni_par_expediteur';
 
 /** Ce qu'il faut pour envoyer un message à un prospect. */
 export type OutreachCandidate = {
@@ -75,11 +77,20 @@ export function fillTemplate(
  * données d'OpenStreetMap — Qualifyr n'a jamais visité le site du prospect
  * pour cette adresse, même si un contributeur OSM l'y a peut-être recopiée à
  * l'origine. Dire « publiée sur votre site » dans ce cas serait faux.
+ *
+ * `fourni_par_expediteur` : la liste vient entièrement de l'expéditeur — ni
+ * répertoire d'entreprises, ni relevé par Qualifyr. Dire l'un ou l'autre
+ * serait faux dans les deux sens : Qualifyr n'a jamais collecté cette
+ * adresse, c'est précisément ce que la phrase doit dire.
  */
 function originSentence(source: EmailSource): string {
-  return source === 'osm_tag'
-    ? 'Vous recevez ce message parce que votre établissement figure au répertoire public des entreprises et que cette adresse figure dans les données cartographiques publiques d’OpenStreetMap.'
-    : 'Vous recevez ce message parce que votre établissement figure au répertoire public des entreprises et que cette adresse est publiée sur votre site.';
+  if (source === 'osm_tag') {
+    return 'Vous recevez ce message parce que votre établissement figure au répertoire public des entreprises et que cette adresse figure dans les données cartographiques publiques d’OpenStreetMap.';
+  }
+  if (source === 'fourni_par_expediteur') {
+    return 'Vous recevez ce message parce que votre entreprise a été indiquée comme prospect par l’expéditeur de ce message. Qualifyr n’a jamais collecté cette adresse : elle lui a été transmise directement par l’expéditeur.';
+  }
+  return 'Vous recevez ce message parce que votre établissement figure au répertoire public des entreprises et que cette adresse est publiée sur votre site.';
 }
 
 /**
@@ -87,10 +98,10 @@ function originSentence(source: EmailSource): string {
  *
  * **Le bloc de pied de page n'est pas négociable et n'est pas modifiable par
  * le professionnel.** Il porte trois obligations : dire qui écrit, dire d'où
- * vient l'adresse (article 14 du RGPD — les données ont été collectées
- * indirectement, auprès du répertoire des entreprises et, selon le cas, du
- * site public du destinataire ou d'OpenStreetMap), et permettre de s'opposer
- * en un clic.
+ * vient l'adresse (article 14 du RGPD — collectée indirectement, auprès du
+ * répertoire des entreprises et, selon le cas, du site public du
+ * destinataire, d'OpenStreetMap, ou fournie directement par l'expéditeur sur
+ * une liste importée), et permettre de s'opposer en un clic.
  *
  * Le laisser à la main du professionnel reviendrait à parier que trois cents
  * artisans le rédigeront correctement. Il est donc ajouté ici, après son

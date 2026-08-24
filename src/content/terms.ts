@@ -116,6 +116,17 @@ export const termsSections: readonly TermsSection[] = [
       'Le client peut activer une fonction de prospection qui adresse des messages électroniques, en son nom, aux entreprises recensées dans ses zones d’analyse. Il en définit le contenu, l’expéditeur affiché et l’adresse de réponse.',
       'Le client est l’expéditeur de ces messages et en assume le contenu. L’éditeur agit comme sous-traitant au sens de l’article 28 du règlement général sur la protection des données : il traite les données pour le compte du client, sur ses instructions, et ne les utilise à aucune autre fin.',
       /*
+       * Ajouté le 24/08/2026 avec l'import de listes. Le recensement
+       * automatique ne couvre que la France, et seulement deux segments sur
+       * quatre par OpenStreetMap : un client qui connaît déjà des
+       * entreprises hors de ce périmètre doit pouvoir les apporter
+       * lui-même. Le partage de responsabilité y est le même que pour le
+       * reste de cet article (le client responsable de traitement,
+       * l'éditeur sous-traitant) — seule l'origine de la donnée change, et
+       * c'est précisément ce que l'attestation rend vérifiable après coup.
+       */
+      'Le client peut également importer sa propre liste d’entreprises à démarcher. Sur cette liste, l’éditeur n’a jamais collecté la moindre adresse : à chaque import, le client certifie l’avoir obtenue licitement, qu’elle ne concerne que des entreprises, et il répond des réclamations relatives à son origine. Une taille maximale par import et un plafond par compte s’appliquent, communiqués dans l’espace professionnel.',
+      /*
        * Ajouté le 24/08/2026 : sans cette phrase, cet article et la
        * politique de confidentialité auraient décrit deux réalités
        * différentes dès l'introduction du classement par pertinence — la

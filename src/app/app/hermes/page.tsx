@@ -1,9 +1,16 @@
 import { AppShell } from '@/components/app/AppShell';
 import { HermesSettings } from '@/components/app/HermesSettings';
+import { ImportProspects } from '@/components/app/ImportProspects';
 import { LockedModule } from '@/components/app/LockedModule';
 import { pageAccess } from '@/lib/billing/page-guard';
 import { getDetailerForOwner } from '@/lib/detailing/dashboard';
 import { getServiceSupabaseClient } from '@/lib/detailing/supabase-server';
+import {
+  IMPORT_ATTESTATION_TEXT,
+  MAX_IMPORT_SIZE,
+  countContactableImportedProspects,
+  listImportedProspects,
+} from '@/lib/agent/import-prospects';
 
 /**
  * Hermès — l'écran où le professionnel active la prospection.
@@ -28,32 +35,38 @@ import { getServiceSupabaseClient } from '@/lib/detailing/supabase-server';
 export const dynamic = 'force-dynamic';
 
 /**
- * Combien d'entreprises recensées ce compte peut-il encore contacter ?
+ * Combien d'entreprises ce compte peut-il encore contacter ?
  *
- * Même périmètre que `nextCandidates` : les zones du compte, retrouvées par
- * e-mail. Le chiffre affiché doit correspondre à ce que le moteur enverra
- * réellement — un décompte plus large ferait attendre des envois qui
- * n'arriveraient jamais.
+ * **Deux bassins, même périmètre que `nextCandidates`** (migration 022) :
+ * les prospects recensés dans les zones du compte (retrouvées par e-mail) et
+ * les prospects importés (scopés par `owner_id`). Le chiffre affiché doit
+ * correspondre à ce que le moteur enverra réellement — un décompte plus
+ * large ferait attendre des envois qui n'arriveraient jamais.
  */
-async function countAvailableProspects(ownerEmail: string): Promise<number> {
+async function countAvailableProspects(ownerEmail: string, ownerId: string): Promise<number> {
   const supabase = getServiceSupabaseClient();
   if (!supabase) return 0;
 
   const { data: zones } = await supabase.from('agent_zones').select('id').ilike('email', ownerEmail);
-  if (!zones || zones.length === 0) return 0;
 
-  const { count } = await supabase
-    .from('agent_prospects')
-    .select('id', { count: 'exact', head: true })
-    .in(
-      'zone_id',
-      (zones as readonly { id: string }[]).map((z) => z.id),
-    )
-    .not('email', 'is', null)
-    .is('contacted_at', null)
-    .is('opted_out_at', null);
+  let recensed = 0;
+  if (zones && zones.length > 0) {
+    const { count } = await supabase
+      .from('agent_prospects')
+      .select('id', { count: 'exact', head: true })
+      .in(
+        'zone_id',
+        (zones as readonly { id: string }[]).map((z) => z.id),
+      )
+      .not('email', 'is', null)
+      .is('contacted_at', null)
+      .is('opted_out_at', null);
+    recensed = count ?? 0;
+  }
 
-  return count ?? 0;
+  const imported = await countContactableImportedProspects(supabase, ownerId);
+
+  return recensed + imported;
 }
 
 export default async function HermesPage() {
@@ -97,12 +110,17 @@ export default async function HermesPage() {
     paused_at: string | null;
   } | null;
 
-  const availableProspects = await countAvailableProspects(user.email);
+  const availableProspects = await countAvailableProspects(user.email, user.id);
 
   /* La fiche detailer est facultative : un abonné « Agent seul » n'en a pas.
      `AppShell` sait déjà traiter un slug vide — le bouton « Page client »
      devient inerte plutôt que de mener à une adresse inexistante. */
   const detailer = await getDetailerForOwner(user.id);
+
+  const supabaseForImports = getServiceSupabaseClient();
+  const importedProspects = supabaseForImports
+    ? await listImportedProspects(supabaseForImports, user.id)
+    : [];
 
   return (
     <AppShell
@@ -124,8 +142,8 @@ export default async function HermesPage() {
            qui n'aura aucun effet. Le professionnel repartirait sinon en
            croyant Hermès actif. */
         <p className="mb-6 rounded-2xl border border-hairline px-4 py-3.5 text-[0.875rem] leading-[1.6] text-muted">
-          Aucune entreprise à contacter pour l’instant. Analysez d’abord une zone : Hermès
-          écrira aux établissements qu’elle contient.
+          Aucune entreprise à contacter pour l’instant. Analysez d’abord une zone, ou importez
+          une liste que vous connaissez déjà.
         </p>
       ) : null}
 
@@ -145,6 +163,12 @@ export default async function HermesPage() {
         }
         accountEmail={user.email}
         availableProspects={availableProspects}
+      />
+
+      <ImportProspects
+        initialProspects={importedProspects}
+        attestationText={IMPORT_ATTESTATION_TEXT}
+        maxImportSize={MAX_IMPORT_SIZE}
       />
     </AppShell>
   );

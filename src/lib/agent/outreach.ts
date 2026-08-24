@@ -279,19 +279,49 @@ const CANDIDATE_POOL_MAX = 300;
  * reste en base avec son e-mail, il n'est simplement pas candidat cette fois.
  * L'index unique `(campaign_id, prospect_id)` de `hermes_messages` protège le
  * prospect, pas l'adresse — il ne remplace pas ce contrôle.
+ *
+ * **Deux bassins fusionnés (migration 022) : prospects recensés
+ * (`agent_prospects`, scopés par zone, retrouvée par e-mail — voir plus haut)
+ * et prospects importés (`agent_imported_prospects`, scopés directement par
+ * `owner_id`, sans passer par une zone).** Le second bassin utilise un filtre
+ * différent et c'est délibéré : une liste importée n'a jamais de zone à
+ * réconcilier, `owner_id` est l'identifiant stable du compte authentifié qui
+ * l'a téléversée. Les deux bassins sont fusionnés puis triés une seule fois
+ * (pertinence d'abord, ancienneté ensuite) avant le dédoublonnage ci-dessus,
+ * qui s'applique alors identiquement aux deux : un prospect importé passe par
+ * les mêmes barrières qu'un prospect recensé, aucune ne lui est propre.
  */
+
+/** Forme commune aux deux bassins (zones recensées, liste importée), le
+ *  temps de les fusionner et de les trier ensemble — voir `nextCandidates`. */
+type PoolRow = {
+  readonly id: string;
+  readonly name: string;
+  readonly city: string | null;
+  readonly email: string;
+  readonly emailSource: EmailSource | null;
+  readonly unsubscribeToken: string;
+  readonly relevanceScore: number | null;
+  readonly createdAt: string;
+};
+
 export async function nextCandidates(
   ownerEmail: string,
-  /* Utilisé uniquement pour retrouver les adresses déjà contactées par
-     *cette* campagne (dédoublonnage ci-dessous) — jamais pour définir le
-     périmètre des prospects visibles, qui reste `ownerEmail` seul. Ne pas
-     l'utiliser pour un filtre supplémentaire sans relire le commentaire
-     ci-dessus sur la fuite que ce paramètre a déjà causée une fois. */
+  /* Utilisé pour le bassin des listes importées (`agent_imported_prospects`,
+     scopées par `owner_id`, pas par e-mail — voir `import-prospects.ts`) et
+     pour retrouver les adresses déjà contactées par *cette* campagne
+     (dédoublonnage ci-dessous). Jamais pour élargir le périmètre des
+     prospects *recensés*, qui reste `ownerEmail` seul via `agent_zones`. Ne
+     pas réutiliser ce paramètre pour un filtre supplémentaire sans relire le
+     commentaire ci-dessus sur la fuite que `campaign` a déjà causée une fois. */
+  ownerId: string,
   campaignId: string,
   limit: number,
 ): Promise<readonly OutreachCandidate[]> {
   const supabase = getServiceSupabaseClient();
   if (!supabase) return [];
+
+  const poolSize = Math.min(limit * CANDIDATE_POOL_MULTIPLIER, CANDIDATE_POOL_MAX);
 
   // 1. Les zones de ce compte, et elles seules.
   const { data: zones, error: zonesError } = await supabase
@@ -299,12 +329,11 @@ export async function nextCandidates(
     .select('id')
     .ilike('email', ownerEmail);
 
-  if (zonesError || !zones || zones.length === 0) return [];
+  if (zonesError) return [];
 
-  const zoneIds = (zones as readonly { id: string }[]).map((z) => z.id);
+  const zoneIds = (zones ?? []).map((z) => z.id as string);
 
-  // 2. Les prospects de ces zones, contactables — un bassin plus large que
-  // `limit`, réduit ensuite par le dédoublonnage d'adresse.
+  // 2. Les prospects recensés de ces zones, contactables.
   //
   // Tri par pertinence d'abord (voir `lib/agent/relevance.ts`), par
   // ancienneté ensuite. `nullsFirst: false` est nécessaire : sur un tri
@@ -313,28 +342,87 @@ export async function nextCandidates(
   // de ce qui est demandé. Un prospect jamais noté (`relevance_score` nul)
   // reste candidat comme les autres, seulement en dernier : le score
   // ordonne, il n'exclut jamais.
-  const poolSize = Math.min(limit * CANDIDATE_POOL_MULTIPLIER, CANDIDATE_POOL_MAX);
-  const { data: pool, error } = await supabase
-    .from('agent_prospects')
-    .select('id, name, city, email, email_source, unsubscribe_token')
-    .in('zone_id', zoneIds)
-    .not('email', 'is', null)
+  const recensedPool: PoolRow[] = [];
+  if (zoneIds.length > 0) {
+    const { data: pool, error } = await supabase
+      .from('agent_prospects')
+      .select('id, name, city, email, email_source, unsubscribe_token, relevance_score, created_at')
+      .in('zone_id', zoneIds)
+      .not('email', 'is', null)
+      .is('contacted_at', null)
+      .is('opted_out_at', null)
+      .order('relevance_score', { ascending: false, nullsFirst: false })
+      .order('created_at', { ascending: true })
+      .limit(poolSize);
+
+    if (error) return [];
+
+    for (const row of (pool ?? []) as unknown as readonly {
+      id: string;
+      name: string;
+      city: string | null;
+      email: string;
+      email_source: EmailSource | null;
+      unsubscribe_token: string;
+      relevance_score: number | null;
+      created_at: string;
+    }[]) {
+      recensedPool.push({
+        id: row.id,
+        name: row.name,
+        city: row.city,
+        email: row.email,
+        emailSource: row.email_source,
+        unsubscribeToken: row.unsubscribe_token,
+        relevanceScore: row.relevance_score,
+        createdAt: row.created_at,
+      });
+    }
+  }
+
+  // 2 bis. Les prospects importés par ce compte (`import-prospects.ts`),
+  // contactables — scopés par `owner_id`, jamais par e-mail : c'est
+  // l'assertion à vérifier en premier si une fuite entre comptes est un jour
+  // suspectée sur ce bassin.
+  const { data: importedRows, error: importedError } = await supabase
+    .from('agent_imported_prospects')
+    .select('id, name, email, unsubscribe_token, created_at')
+    .eq('owner_id', ownerId)
     .is('contacted_at', null)
     .is('opted_out_at', null)
-    .order('relevance_score', { ascending: false, nullsFirst: false })
     .order('created_at', { ascending: true })
     .limit(poolSize);
 
-  if (error || !pool || pool.length === 0) return [];
+  if (importedError) return [];
 
-  const rows = pool as unknown as readonly {
+  const importedPool: PoolRow[] = ((importedRows ?? []) as unknown as readonly {
     id: string;
     name: string;
-    city: string | null;
     email: string;
-    email_source: EmailSource | null;
     unsubscribe_token: string;
-  }[];
+    created_at: string;
+  }[]).map((row) => ({
+    id: row.id,
+    name: row.name,
+    city: null,
+    email: row.email,
+    emailSource: 'fourni_par_expediteur' as EmailSource,
+    unsubscribeToken: row.unsubscribe_token,
+    relevanceScore: null, // jamais noté : se comporte comme un prospect recensé jamais scoré, aucun traitement de faveur
+    createdAt: row.created_at,
+  }));
+
+  if (recensedPool.length === 0 && importedPool.length === 0) return [];
+
+  // Fusion des deux bassins, puis un seul tri : un prospect importé se place
+  // exactement comme un prospect recensé jamais noté (relevance_score nul) —
+  // par ancienneté, jamais en tête ni en systématique dernier recours.
+  const rows = [...recensedPool, ...importedPool].sort((a, b) => {
+    const scoreA = a.relevanceScore ?? -1;
+    const scoreB = b.relevanceScore ?? -1;
+    if (scoreA !== scoreB) return scoreB - scoreA;
+    return a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0;
+  });
 
   // 3. Adresses déjà contactées par cette campagne — sur n'importe quel
   // prospect, pas seulement celui du lot. `to_email` est dupliqué dans
@@ -370,11 +458,13 @@ export async function nextCandidates(
     const email = row.email.trim().toLowerCase();
     if (usedEmails.has(email)) continue; // déjà contacté par cette campagne, ou déjà pris plus haut dans ce lot
 
-    if (!row.email_source) {
-      // Ne devrait jamais arriver — email et email_source sont écrits
-      // ensemble (voir la migration 021). Le genre d'impossibilité qui finit
-      // par se produire après une reprise manuelle en base ; sans ce log,
-      // personne ne le verrait jamais.
+    if (!row.emailSource) {
+      // Ne devrait jamais arriver pour un prospect recensé — email et
+      // email_source sont écrits ensemble (voir la migration 021) ; un
+      // prospect importé porte toujours `fourni_par_expediteur`, fixé en
+      // base (migration 022). Le genre d'impossibilité qui finit par se
+      // produire après une reprise manuelle en base ; sans ce log, personne
+      // ne le verrait jamais.
       console.warn('[agent/outreach] email sans email_source, prospect sauté', row.id);
       continue;
     }
@@ -383,10 +473,10 @@ export async function nextCandidates(
     candidates.push({
       prospectId: row.id,
       email: row.email,
-      emailSource: row.email_source,
+      emailSource: row.emailSource,
       businessName: row.name,
       city: row.city,
-      unsubscribeToken: row.unsubscribe_token,
+      unsubscribeToken: row.unsubscribeToken,
     });
   }
 
