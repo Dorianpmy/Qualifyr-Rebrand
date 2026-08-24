@@ -4,161 +4,275 @@
 dépôt, et il ne contient **aucune valeur**. `.env`, `.env.local` et `.env.*.local` sont
 ignorés par Git.
 
+**Comment lire ce document.** Trois provenances, marquées à chaque fois :
+
+- **[dépôt]** — vérifiable directement dans le code au moment de la rédaction (24/08/2026) :
+  `src/lib/env-check.ts`, `.env.example`, les appels `process.env` eux-mêmes.
+- **[Dorian, 24/08/2026]** — confirmé par le propriétaire du projet, non vérifiable depuis le
+  dépôt : ce document n'a accès ni à Netlify, ni à Resend, ni à Supabase.
+- **[à vérifier]** — ni l'un ni l'autre. Un état à constater avant de s'y fier, pas une
+  hypothèse à traiter comme acquise.
+
+Ce dernier chantier de mise à jour (24/08/2026) fait suite à un incident réel : trois
+variables (`CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`, `RESEND_WEBHOOK_SECRET`) manquaient au
+recensement `REQUIRED_ENV` pendant que la production tournait sans elles, sans qu'aucun
+contrôle ne le signale — voir `src/lib/env-check.ts` et le commit `8d61b4c`. Un document qui
+affirme un état non constaté produit exactement ce genre d'incident.
+
 ---
 
-## 1. Tableau récapitulatif
+## 1. Recensement complet — `REQUIRED_ENV` **[dépôt]**
 
-| Variable | Obligatoire | Secret | Où la poser | Sans elle |
-|---|---|---|---|---|
-| `RESEND_API_KEY` | oui, pour l'envoi | **oui** | Netlify + `.env.local` | Envoi impossible |
-| `CONTACT_TO_EMAIL` | oui, pour l'envoi | non | Netlify + `.env.local` | Envoi impossible |
-| `CONTACT_FROM_EMAIL` | oui, pour l'envoi | non | Netlify + `.env.local` | Envoi impossible |
-| `NEXT_PUBLIC_SITE_URL` | non | **non — publique** | Netlify | Repli `https://qualifyragence.com` |
-| `NEXT_PUBLIC_SITE_INDEXABLE` | oui en production finale | **non — publique** | Netlify Production uniquement | Site et sitemap maintenus hors index |
-| `NEXT_PUBLIC_QUALIFYR_BOOKING_URL` | non | **non — publique** | Netlify + `.env.local` | Boutons vers Contact |
-| `NEXT_PUBLIC_QUALIFYR_WHATSAPP_NUMBER` | non | **non — publique** | Netlify + `.env.local` | Résumé affiché sans lien WhatsApp |
-| `GOOGLE_SITE_VERIFICATION` | non | non | Production + `.env.local` | Aucune balise de validation Search Console |
+`npm run check:env` (`scripts/check-env.mjs`) lit `src/lib/env-check.ts` et vérifie la seule
+**présence** de chaque variable — jamais sa valeur, pour qu'aucun secret ne puisse fuir par
+ses messages. 21 variables recensées à ce jour.
+
+| Variable | Requise en dev | Sans elle |
+|---|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | oui | Aucune connexion possible : l'espace pro est inutilisable |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | oui | La connexion par lien magique échoue sans message |
+| `SUPABASE_SERVICE_ROLE_KEY` | oui | Le webhook ne peut rien écrire ; tous les droits sont refusés, y compris aux abonnés légitimes |
+| `STRIPE_SECRET_KEY` | non | Aucun abonnement ne peut être souscrit |
+| `STRIPE_BILLING_WEBHOOK_SECRET` | non | Le webhook répond 503 : un client paie, Stripe encaisse, aucun droit n'est accordé |
+| `STRIPE_WEBHOOK_SECRET` | non | Les acomptes payés ne sont jamais confirmés |
+| `STRIPE_PRICE_AGENT_MONTHLY` | non | L'offre Agent seul en mensuel n'est pas souscriptible |
+| `STRIPE_PRICE_AGENT_ANNUAL` | non | L'offre Agent seul en annuel n'est pas souscriptible |
+| `STRIPE_PRICE_SYSTEME_MONTHLY` | non | L'offre Système seul en mensuel n'est pas souscriptible |
+| `STRIPE_PRICE_SYSTEME_ANNUAL` | non | L'offre Système seul en annuel n'est pas souscriptible |
+| `STRIPE_PRICE_COMPLET_MONTHLY` | non | L'offre Pack complet en mensuel n'est pas souscriptible |
+| `STRIPE_PRICE_COMPLET_ANNUAL` | non | L'offre Pack complet en annuel n'est pas souscriptible |
+| `CRON_SECRET` | non | Aucune tâche planifiée ne s'exécute : ni analyse, ni relance, ni avis, ni prospection |
+| `INSEE_API_KEY` | non | Aucune analyse de secteur n'aboutit |
+| `RESEND_API_KEY` | non | L'analyse aboutit mais aucun rapport n'est envoyé |
+| `BOOKING_FROM_EMAIL` | non | Repli sur un domaine de test Resend qui ne livre qu'au propriétaire du compte : rapports et confirmations n'arrivent chez personne |
+| `CONTACT_TO_EMAIL` | non | Formulaires de contact et d'estimation en 503 |
+| `CONTACT_FROM_EMAIL` | non | Même effet, plus la perte silencieuse des confirmations de zone et des relances d'abonnement |
+| `RESEND_WEBHOOK_SECRET` | non | Aucun rebond ni plainte n'alimente la liste de suppression Hermès |
+| `HERMES_FROM_EMAIL` | non | La prospection Hermès n'envoie rien — aucun repli sur le domaine transactionnel |
+| `MISTRAL_API_KEY` | non | Le classement des prospects par pertinence ne s'applique pas ; ordre d'origine conservé |
+
+Pour le détail de chaque variable — dans quels cas précis un repli silencieux serait
+dangereux, pourquoi certaines n'en ont délibérément aucun — lire les commentaires en tête de
+chaque entrée dans `src/lib/env-check.ts` : c'est la source, ce tableau n'en est qu'un miroir.
+
+**Variables publiques, hors `REQUIRED_ENV`** (préfixe `NEXT_PUBLIC_`, jamais un secret) :
+`NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SITE_INDEXABLE`, `NEXT_PUBLIC_QUALIFYR_BOOKING_URL`,
+`NEXT_PUBLIC_QUALIFYR_WHATSAPP_NUMBER`, `GOOGLE_SITE_VERIFICATION`, `WHATSAPP_TOKEN`,
+`WHATSAPP_PHONE_NUMBER_ID` — non bloquantes, chacune dégrade une fonctionnalité secondaire
+sans elle. Détail en section 4.
 
 **Aucune variable secrète ne porte le préfixe `NEXT_PUBLIC_`.** Ce préfixe expose la valeur
-au navigateur : il est réservé à l'URL du site, qui est publique par nature.
+au navigateur.
 
 ---
 
-## 2. Détail
+## 2. État en production **[Dorian, 24/08/2026, sauf mention contraire]**
 
-### `RESEND_API_KEY` — **secret**
+Dorian confirme que les six variables suivantes sont posées en production :
 
-Clé API du service d'envoi. À générer sur https://resend.com/api-keys.
-Forme : commence par `re_`.
+| Variable | Confirmée posée |
+|---|---|
+| `RESEND_API_KEY` | oui |
+| `CONTACT_FROM_EMAIL` | oui |
+| `CONTACT_TO_EMAIL` | oui |
+| `BOOKING_FROM_EMAIL` | oui |
+| `HERMES_FROM_EMAIL` | oui |
+| `RESEND_WEBHOOK_SECRET` | oui |
 
-Une clé restreinte à l'envoi suffit — inutile de donner les droits de lecture ou
-d'administration du domaine.
+**Les 15 autres variables de `REQUIRED_ENV` — Supabase (×3), Stripe (×8), `CRON_SECRET`,
+`INSEE_API_KEY`, `MISTRAL_API_KEY` — n'ont pas été confirmées posées dans ce cadrage.** Le
+site dépend visiblement de Supabase et Stripe pour fonctionner (espace pro accessible,
+abonnements proposés), ce qui les rend probables — mais « probable » n'est pas « confirmé »,
+et ce document ne transforme pas l'un en l'autre. **[à vérifier]** : lister ces 15 variables
+dans Netlify (Site configuration → Environment variables) et confirmer chacune.
 
-> **Si cette clé fuite**, la révoquer immédiatement chez Resend et en générer une nouvelle.
-> Une clé exposée permet d'envoyer des e-mails **depuis votre domaine**.
+### Domaines d'envoi Resend
 
-### `CONTACT_TO_EMAIL`
+Deux domaines distincts existent chez Resend, à des fins différentes — le principe (deux
+domaines, deux réputations, l'un ne doit jamais contaminer l'autre) est documenté dans le
+code, voir `HERMES_FROM_EMAIL` dans `src/lib/env-check.ts` :
 
-Adresse qui reçoit les demandes. Une adresse simple, sans nom d'affichage.
+- `contact.qualifyragence.com` — expédition Hermès (`HERMES_FROM_EMAIL`). Nom du sous-domaine
+  **[dépôt]** : cité dans `src/lib/env-check.ts`, `src/app/api/agent/outreach/route.ts` et
+  `docs/14-hermes-prompt-claude-code.md` comme le sous-domaine attendu ; son existence
+  effective chez Resend et la validité de ses enregistrements DNS (SPF, DKIM, DMARC) sont
+  **[Dorian, 24/08/2026]**.
+- `notifications.qualifyragence.com` — transactionnel (`BOOKING_FROM_EMAIL`,
+  `CONTACT_FROM_EMAIL`). Nom **[Dorian, 24/08/2026]** uniquement : aucune trace de ce
+  sous-domaine précis dans le dépôt, qui ne code que le nom de variable, jamais la valeur.
 
-```
-bonjour@votre-domaine.tld
-```
-
-### `CONTACT_FROM_EMAIL`
-
-Adresse d'expédition. Un nom d'affichage est accepté.
-
-```
-Qualifyr Agence <bonjour@qualifyragence.com>
-```
-
-**Le domaine doit être vérifié chez Resend**, sinon l'envoi est refusé. La vérification passe
-par des enregistrements DNS (SPF, DKIM) à ajouter chez le registrar.
-
-Ne pas utiliser une adresse Gmail ou Outlook comme expéditeur : ces domaines n'autorisent pas
-l'envoi par un tiers, et les messages partiraient en indésirables.
-
-### `NEXT_PUBLIC_SITE_URL` — publique
-
-URL canonique, sans barre oblique finale.
-
-```
-https://qualifyragence.com
-```
-
-Sert aux liens absolus des e-mails, à `metadataBase`, aux `canonical`, au `sitemap.xml` et
-aux données structurées. Sans elle, le repli est `https://qualifyragence.com` — donc rien à
-poser tant que le domaine final ne change pas.
-
-Sur un aperçu Netlify, elle reste définie sur le domaine final : les `canonical` ne doivent
-jamais désigner une URL temporaire de preview. L'aperçu reste simultanément en `noindex`.
-
-### `NEXT_PUBLIC_SITE_INDEXABLE` — publique
-
-Interrupteur de sécurité SEO. La valeur exacte `true` autorise l'indexation et remplit le
-sitemap. Toute autre valeur maintient `noindex`, bloque les robots et renvoie un sitemap vide.
-
-Cette variable ne doit être ajoutée qu'à l'environnement **Production**, après validation du
-domaine canonique, des informations légales et des formulaires. Elle ne doit jamais être
-configurée sur une preview.
-
-### `GOOGLE_SITE_VERIFICATION`
-
-Jeton fourni par Google Search Console pour valider la propriété du site avec une balise
-HTML. Le renseigner sans le préfixe `google-site-verification=`. Lorsqu'il est absent, aucune
-balise vide n'est générée. Cette variable ne remplace pas la validation DNS d'une propriété
-de domaine et sa valeur n'est jamais affichée dans l'interface.
+**[à vérifier]** : que les deux domaines sont bien vérifiés chez Resend (DNS propagés, statut
+« Verified », pas seulement créés) — un domaine créé mais non vérifié fait échouer l'envoi
+silencieusement côté Resend.
 
 ---
 
-### Canaux commerciaux publics
+## 3. Détail par variable
 
-`NEXT_PUBLIC_QUALIFYR_BOOKING_URL` accepte uniquement une URL HTTPS vers le calendrier
-commercial de Qualifyr. Pour Google Calendar, utiliser l’URL d’intégration de la page de
-rendez-vous terminée par `?gv=true`. `NEXT_PUBLIC_QUALIFYR_WHATSAPP_NUMBER` contient le numéro WhatsApp
-au format international, chiffres uniquement. Ces valeurs sont publiques par nature.
+### Supabase — **[dépôt]** pour le rôle, **[à vérifier]** pour la présence en production
 
-Si elles manquent ou sont invalides, le site ne génère aucun lien cassé : la réservation
-renvoie vers Contact et le diagnostic conserve son canal d'envoi serveur.
+- `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` — publiques par construction
+  (préfixe `NEXT_PUBLIC_`), mais **pas dans le tableau des variables publiques** de la
+  section 1 : elles sont dans `REQUIRED_ENV` avec `requiredInDev: true`, donc bloquantes même
+  en local.
+- `SUPABASE_SERVICE_ROLE_KEY` — **secrète**, contourne les politiques RLS. Ne jamais
+  l'exposer côté client ; `src/lib/detailing/supabase-server.ts` est le seul point qui la lit.
 
-Sur `/diagnostic`, l'envoi sécurisé vers `POST /api/diagnostic` est toujours l'action finale
-principale. Le numéro WhatsApp sert uniquement à construire une URL `wa.me` après une réussite
-réelle ou comme repli manuel explicitement présenté après un échec. Il ne remplace jamais
-l'endpoint et aucune demande n'est envoyée à WhatsApp en arrière-plan. Les CTA WhatsApp directs
-utilisent, eux, un message court sans réponses de diagnostic. L'URL de réservation reste
-secondaire et est entièrement masquée lorsqu'elle est absente.
+### Stripe — **[dépôt]** pour le rôle, **[à vérifier]** pour la présence en production
+
+`STRIPE_SECRET_KEY` (secrète) et `STRIPE_BILLING_WEBHOOK_SECRET` /
+`STRIPE_WEBHOOK_SECRET` (secrètes, deux webhooks distincts — abonnements Qualifyr d'un côté,
+acomptes clients des professionnels via Stripe Connect de l'autre, voir
+`src/lib/billing/stripe.ts` et `src/lib/detailing/stripe.ts`). Les six `STRIPE_PRICE_*`
+attendent chacune un identifiant de Price Stripe (`price_...`) — détail complet, y compris
+les montants attendus, dans `docs/15-etude-extension-verticale.md` si renseigné, sinon à
+établir séparément.
+
+### `CRON_SECRET` — **[dépôt]** pour le rôle, **[Dorian]** pour hermes-outreach-cron uniquement
+
+Secret partagé entre les cinq fonctions planifiées Netlify (`netlify/functions/*.ts`) et les
+routes qu'elles appellent : `agent-process-cron`, `booking-recovery-cron`,
+`review-dispatch-cron`, `hermes-outreach-cron`, `agent-relevance-cron`. Sans lui, chaque route
+répond `401` et la fonction planifiée elle-même répond `500` sans jamais journaliser le
+secret — voir le commentaire d'en-tête de chaque fichier `netlify/functions/*-cron.ts`.
+
+Dorian confirme que `hermes-outreach-cron` tourne sur Netlify **[Dorian, 24/08/2026]**. Les
+quatre autres fonctions planifiées sont présentes dans le dépôt mais leur exécution effective
+en production n'a pas été confirmée dans ce cadrage — **[à vérifier]** : Netlify → Functions →
+onglet Scheduled, pour chacune des cinq.
+
+### `INSEE_API_KEY`
+
+Clé de l'API Sirene de l'INSEE, pour le recensement d'entreprises (`lib/agent/sirene.ts`).
+
+### `RESEND_API_KEY`
+
+Partagée entre tous les usages Resend du projet (formulaires, réservations, Hermès, webhook).
+Une seule clé, à portée d'envoi uniquement — inutile de lui donner les droits de lecture ou
+d'administration de domaine.
+
+> **Si cette clé fuite**, la révoquer immédiatement chez Resend. Une clé exposée permet
+> d'envoyer depuis les deux domaines vérifiés.
+
+### `CONTACT_TO_EMAIL` / `CONTACT_FROM_EMAIL`
+
+Les trois variables `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL` vont ensemble —
+`emailEnv()` (`src/lib/env.ts`) ne renvoie une configuration que si les trois sont présentes.
+Une seule manquante suffit à considérer l'envoi comme non configuré. Voir la section 5 pour le
+comportement exact selon l'environnement.
+
+### `BOOKING_FROM_EMAIL`
+
+Expéditeur des e-mails de réservation (confirmation client, notification professionnel,
+relance de panier abandonné — `src/lib/detailing/email.ts`). **Aucun repli en production** :
+si absente, ces trois fonctions d'envoi refusent explicitement plutôt que de retomber sur le
+domaine de test Resend (`onboarding@resend.dev`), qui accepte l'envoi sans erreur mais ne
+livre qu'au propriétaire du compte Resend — un faux succès. Repli conservé hors production
+uniquement, pour dérouler le parcours sans configuration.
+
+### `HERMES_FROM_EMAIL`
+
+Expédition Hermès, sur `contact.qualifyragence.com` — voir section 2. Distincte de
+`BOOKING_FROM_EMAIL` sans aucune exception : un repli de l'une vers l'autre contaminerait la
+réputation du domaine transactionnel avec celle de la prospection.
+
+### `RESEND_WEBHOOK_SECRET`
+
+Vérifie la signature Svix des événements Resend (`email.bounced`, `email.complained`) reçus
+sur `/api/agent/outreach/webhook`. Sans elle, aucun rebond ni plainte n'alimente
+`hermes_suppressions` : Hermès continue d'écrire à des adresses mortes jusqu'à ce que l'erreur
+de l'envoi lui-même le laisse deviner.
+
+### `MISTRAL_API_KEY`
+
+Classement des prospects Hermès par pertinence (`lib/agent/relevance.ts`), calculé une fois
+par zone, jamais dans la route d'envoi. Absente : la file reste dans son ordre d'origine, rien
+ne bloque — voir `CLAUDE.md`, section Hermès, garde-fou 3.
 
 ---
 
-## 3. Les trois variables d'e-mail vont ensemble
+## 4. Variables publiques (hors `REQUIRED_ENV`)
 
-`emailEnv()` ne renvoie une configuration que si **les trois** sont présentes et non vides.
-Une seule manquante suffit à considérer l'envoi comme non configuré.
+### `NEXT_PUBLIC_SITE_URL`
+
+URL canonique, sans barre oblique finale. Sans elle, repli sur `https://qualifyragence.com`
+(`src/lib/env.ts`, `siteUrl()`) — le vrai domaine de production, pas une valeur de test.
+`netlify.toml` la fixe explicitement à `https://qualifyragence.com` dans les trois contextes
+(`production`, `deploy-preview`, `branch-deploy`) **[dépôt]**.
+
+### `NEXT_PUBLIC_SITE_INDEXABLE`
+
+Interrupteur SEO. `netlify.toml` la fixe à `"true"` pour le contexte **production** et
+`"false"` pour `deploy-preview` et `branch-deploy` **[dépôt]**. Vérifié directement contre le
+site en production le 24/08/2026 : `robots.txt` autorise l'indexation (pas de blocage
+global), et `sitemap.xml` contient 30 URL (17 pages déclarées dans `pageMeta` plus les articles
+de blog) **[vérifié en production, 24/08/2026]** — cohérent avec un contexte de déploiement
+production actif.
+
+### `GOOGLE_SITE_VERIFICATION`, `NEXT_PUBLIC_QUALIFYR_BOOKING_URL`,
+### `NEXT_PUBLIC_QUALIFYR_WHATSAPP_NUMBER`, `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`
+
+Chacune dégrade une fonctionnalité secondaire sans casser le reste — détail dans
+`.env.example`, en commentaire au-dessus de chaque ligne.
+
+---
+
+## 5. Les trois variables d'e-mail « contact » vont ensemble
 
 | Situation | Comportement |
 |---|---|
 | Les trois présentes | Resend. Notification à Qualifyr + accusé de réception. |
 | Incomplet, **hors production** | Transport console : l'e-mail est écrit dans le terminal avec la liste des variables manquantes. Aucun accusé de réception. |
-| Incomplet, **en production** | Réponse `503` : « Votre message n'a pas été transmis. » **Jamais de faux succès.** Aucun détail technique exposé au visiteur. |
+| Incomplet, **en production** | Réponse `503`. Jamais de faux succès. |
 
-C'est un choix de conception : mieux vaut dire franchement qu'on ne peut pas envoyer que
-laisser croire qu'un message est parti.
+Mieux vaut dire franchement qu'on ne peut pas envoyer que laisser croire qu'un message est
+parti — c'est le même principe qui gouverne `BOOKING_FROM_EMAIL` et `HERMES_FROM_EMAIL` : voir
+`src/lib/email/transport.ts` (`resolveTransport()`) pour l'implémentation de référence, reprise
+telle quelle par les deux autres.
 
 ---
 
-## 4. En développement
+## 6. En développement
 
 ```bash
 cp .env.example .env.local
 ```
 
-Puis renseigner, ou laisser vide. **Sans clé, tout fonctionne quand même** : les formulaires
-se remplissent, se valident, et l'e-mail complet s'affiche dans le terminal du serveur avec
-la liste des variables manquantes. Le parcours est déroulable de bout en bout sans compte
-Resend.
+Puis renseigner, au minimum, les trois variables `requiredInDev: true`
+(`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`) —
+sans elles, l'espace pro est inutilisable même en local. Tout le reste peut rester vide : les
+formulaires se remplissent, se valident, et l'e-mail complet s'affiche dans le terminal avec la
+liste des variables manquantes.
+
+```bash
+npm run check:env
+```
+
+Lance le contrôle explicite — jamais bloquant au démarrage, volontairement (voir l'en-tête de
+`src/lib/env-check.ts`).
 
 ---
 
-## 5. En production, sur Netlify
+## 7. En production, sur Netlify
 
-Site configuration → Environment variables. Les variables secrètes ne sont ajoutées à la
-preview que si un test réel d'envoi est explicitement autorisé. La variable
-`NEXT_PUBLIC_SITE_INDEXABLE=true` est réservée au contexte **Production**.
+Site configuration → Environment variables. Après ajout ou modification : **redéployer** — les
+variables sont lues au démarrage, pas à chaud. `NEXT_PUBLIC_SITE_INDEXABLE=true` est réservée
+au contexte **Production** (déjà le cas dans `netlify.toml`, section 4).
 
-Après ajout ou modification : **redéployer**. Les variables sont lues au démarrage, pas à
-chaud.
+**[à vérifier]** : lancer `npm run check:env` avec les vraies variables de production (en
+local, via une copie des valeurs Netlify dans `.env.local` temporaire, jamais commitée) pour
+confirmer les 15 variables non encore listées en section 2.
 
 ---
 
-## 6. Vérifier qu'aucun secret n'a été commité
+## 8. Vérifier qu'aucun secret n'a été commité
 
 ```bash
 # Le dépôt ne doit contenir que .env.example
 git ls-files | grep -E '^\.env'
 
-# Aucune clé Resend dans l'historique
-git log -p --all | grep -nE 're_[A-Za-z0-9]{20,}'
+# Aucune clé Resend, Stripe ou Supabase dans l'historique
+git log -p --all | grep -nE 're_[A-Za-z0-9]{20,}|sk_(live|test)_[A-Za-z0-9]{20,}|whsec_[A-Za-z0-9]{20,}'
 
 # Aucune valeur dans .env.example
 grep -E '=.+' .env.example
@@ -166,21 +280,16 @@ grep -E '=.+' .env.example
 
 Les trois doivent être vides, à l'exception de `.env.example` dans la première.
 
-**Si une clé a été commitée** : la révoquer chez Resend d'abord, en générer une nouvelle, puis
-seulement nettoyer l'historique. Retirer un secret de l'historique ne le rend pas inoffensif —
-il a pu être lu.
+**Si une clé a été commitée** : la révoquer chez le fournisseur d'abord, en générer une
+nouvelle, puis seulement nettoyer l'historique. Retirer un secret de l'historique ne le rend
+pas inoffensif — il a pu être lu.
 
 ---
 
-## 7. Variables volontairement absentes
+## 9. Ce qui n'existe plus dans ce document
 
-| Ce qui n'existe pas | Pourquoi |
-|---|---|
-| Base de données | Aucun stockage. Les demandes transitent par e-mail. |
-| Mesure d'audience | Aucun outil installé. Donc aucune bannière de consentement. |
-| CAPTCHA | Champ piège et temps minimal suffisent aujourd'hui. |
-| CMS | Le contenu vit dans `src/content/`, versionné. |
-| Authentification | Aucun espace client en V1. |
-
-Si l'un de ces éléments est ajouté, il faudra mettre à jour `src/content/legal.ts`,
-`src/content/company.ts` et `docs/07` **dans le même commit** que le code.
+Une version antérieure de ce document listait « Base de données », « Authentification » et
+« CMS » comme volontairement absents. C'était vrai avant l'introduction de Supabase — ça ne
+l'est plus : Supabase porte la base (abonnements, zones, prospects, campagnes Hermès,
+réservations) et l'authentification de l'espace pro. Le contenu marketing continue de vivre
+dans `src/content/`, versionné, sans CMS.

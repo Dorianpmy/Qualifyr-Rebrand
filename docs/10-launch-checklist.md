@@ -1,106 +1,114 @@
 # 10 — Checklist de lancement
 
-## Diagnostic en cinq étapes — contrôle avant mise en ligne
+## Ce document décrivait une mise en ligne qui n'a pas encore eu lieu
 
-- [ ] Parcours complet testé au clavier et au toucher, de l'introduction à la vérification
-- [ ] Retour vers chaque étape depuis le résumé sans perte de réponse
-- [ ] Limites testées : trois origines de demandes, deux priorités
-- [ ] URL sans protocole normalisée et e-mail invalide refusé
-- [ ] Consentement obligatoire et politique de confidentialité accessible
-- [ ] Message WhatsApp relu sur un appareil réel, sans champ vide ni valeur technique
-- [ ] Envoi principal `POST /api/diagnostic` testé avec Resend, puis en configuration absente
-- [ ] Échec serveur affiché sans faux succès ; repli WhatsApp présenté comme non envoyé
-- [ ] Branches nettoyage automobile, conciergerie et autre service testées de bout en bout
-- [ ] Reprise et abandon d'une session inachevée testés sans restauration silencieuse
-- [ ] CTA diagnostic et CTA WhatsApp direct vérifiés comme deux actions distinctes
-- [ ] Bouton calendrier absent lorsque `NEXT_PUBLIC_QUALIFYR_BOOKING_URL` est vide
-- [ ] Données de session supprimées après un envoi réussi
+Ce n'est plus le cas. Le site est en production sur `https://qualifyragence.com`, indexable
+(vérifié le 24/08/2026 : `robots.txt` ouvert, `sitemap.xml` à 30 URL), avec un espace pro
+fonctionnel (`/app/...`, alias `app.qualifyragence.com`) porté par Supabase et Stripe. La
+checklist ci-dessous reste utile — comme liste de contrôle à revalider avant un changement
+significatif (nouvelle fonctionnalité, nouveau sous-traitant, changement de grille tarifaire)
+— mais elle ne décrit plus un état « avant bascule ». Réécrite le 24/08/2026 ; l'ancienne
+version tournait autour d'un parcours « Diagnostic » retiré du site depuis
+(`POST /api/diagnostic` répond `404`, voir `tests/submission.test.ts`) et remplacé par les
+parcours `/estimation` et `/contact`.
 
-À dérouler dans l'ordre. **Tant qu'un point bloquant n'est pas coché, le domaine ne se
-connecte pas.**
+**Provenance de chaque affirmation** : **[dépôt]** vérifiable dans le code, **[vérifié en
+production, 24/08/2026]** constaté en interrogeant le site public, **[Dorian, 24/08/2026]**
+confirmé par le propriétaire sans accès direct depuis ce document, **[à vérifier]** ni l'un ni
+l'autre. Détail complet des variables et de l'état de déploiement :
+`docs/11-variables-environnement.md` et `docs/14-production-deployment.md`.
 
-Légende : **BLOQUANT** = le site ne peut pas être public sans · **IMPORTANT** = à faire avant
-d'annoncer le site · **ENSUITE** = après la mise en ligne.
-
----
-
-## A. Informations légales — **BLOQUANT**
-
-L'article 6 de la LCEN impose l'identification de l'éditeur. Détail : `docs/07`.
-Tout se renseigne dans `src/content/company.ts`.
-
-- [ ] **Raison sociale** exacte → `legalName`
-- [ ] **Forme juridique** → `legalForm`
-- [ ] **SIREN ou SIRET** → `registrationNumber`
-- [ ] **Adresse du siège** → `address`
-- [ ] **Directeur de la publication** → `publicationDirector`
-- [ ] **Hébergeur** : raison sociale, adresse postale, contact → `hosting`
-- [ ] **TVA intracommunautaire** *ou* mention « TVA non applicable, art. 293 B du CGI »
-      → `vatNumber`. L'une des deux est obligatoire.
-- [ ] Capital social et RCS, si société → `shareCapital`, `registry`
-- [ ] `legalNoticeIsComplete()` renvoie `true`
-- [ ] **Durée de conservation** des demandes arrêtée → `retention.formSubmissions`
-- [ ] Relire `src/content/legal.ts` **en entier** : chaque phrase doit rester vraie
+Légende inchangée : **BLOQUANT** = ne doit pas rester faux longtemps · **IMPORTANT** = à
+soigner avant toute communication publique · **ENSUITE** = suivi continu.
 
 ---
 
-## B. Adresse e-mail — **BLOQUANT**
+## A. Informations légales — **[dépôt] techniquement complètes, un écart assumé**
 
-- [ ] Adresse professionnelle créée (par exemple sur le domaine)
-- [ ] Renseignée dans `company.email`
-- [ ] Renseignée dans `contact.email` avec son `href: mailto:`
-- [ ] Vérifier qu'elle apparaît bien dans le pied de page et sur `/contact`
-      (les blocs sont masqués tant qu'aucun canal n'existe)
+`legalNoticeIsComplete()` (`src/content/company.ts`) renvoie **`true`** au 24/08/2026 : raison
+sociale, forme juridique, SIRET, adresse, directeur de publication, hébergeur et e-mail sont
+tous renseignés. Ce n'était pas le cas dans une version antérieure de ce document — corrigé.
 
----
-
-## C. Fournisseur d'e-mail — **BLOQUANT**
-
-Sans ces trois variables, les formulaires répondent honnêtement qu'ils ne peuvent pas
-envoyer — ils ne prétendent jamais avoir transmis. Détail : `docs/11`.
-
-- [ ] Compte Resend créé
-- [ ] **Domaine `qualifyragence.com` vérifié chez Resend** (enregistrements DNS).
-      Sans domaine vérifié, l'envoi est refusé.
-- [ ] `RESEND_API_KEY` générée et posée dans Netlify
-- [ ] `CONTACT_TO_EMAIL` posée
-- [ ] `CONTACT_FROM_EMAIL` posée, sur le domaine vérifié
-- [ ] Aucune de ces valeurs n'est dans le dépôt — vérifier `git log -p | grep -i "re_"`
+- [x] Raison sociale, forme juridique, SIRET, directeur de publication, hébergeur, e-mail
+      renseignés dans `company.ts`
+- [x] `legalNoticeIsComplete()` renvoie `true`
+- [ ] **Écart assumé, pas un oubli** : `address` est renseignée mais retirée de l'affichage
+      public (`withheldFromPublicNotice`), le siège étant le domicile personnel de Dorian —
+      écart connu à l'article 6 de la LCEN, accepté le 22/08/2026. Solution durable :
+      domiciliation commerciale, puis retirer `'address'` de `withheldFromPublicNotice`.
+- [ ] Capital social et RCS : sans objet, entrepreneur individuel (`shareCapital`, `registry`
+      restent `null` à bon droit)
+- [ ] Durée de conservation des demandes (`retention.formSubmissions`) : toujours non arrêtée
+      — `src/content/legal.ts` le dit franchement plutôt que d'annoncer une durée fictive
+- [ ] Relire `src/content/legal.ts` en entier : chaque phrase doit rester vraie, notamment les
+      paragraphes ajoutés le 22/08/2026 (Hermès) et le 24/08/2026 (classement par pertinence)
 
 ---
 
-## D. Test réel des formulaires — **BLOQUANT**
+## B. Sous-traitants — **BLOQUANT, chantier en cours au 24/08/2026**
 
-Sur l'aperçu Netlify, avec les vraies clés uniquement si le test d'envoi est autorisé.
+`src/content/company.ts` exporte `processors`, lu dynamiquement par
+`/politique-de-confidentialite`. Un sous-traitant absent de cette liste alors qu'il traite
+réellement des données est une politique de confidentialité fausse par omission.
 
-- [ ] **Diagnostic** — envoi complet, e-mail bien reçu, `reply_to` correct
-- [ ] Diagnostic testé pour nettoyage automobile, detailing, conciergerie et « autre »
-- [ ] **Contact** — envoi complet, e-mail bien reçu
-- [ ] **Accusé de réception** reçu par l'expéditeur, texte relu
-- [ ] Envoi avec champs vides → erreurs par champ, focus sur le premier
-- [ ] Envoi avec e-mail invalide → message précis
-- [ ] Envoi sans consentement → refusé
-- [ ] Saisies **conservées** après une erreur
-- [ ] Double clic sur Envoyer → un seul e-mail
-- [ ] Confirmation affichée à la place du formulaire, sans redirection
-- [ ] Six envois d'affilée → le sixième est refusé (limitation de débit)
-- [ ] Vérifier les journaux Netlify : **aucune donnée personnelle**
+- [x] Netlify (hébergement) déclaré
+- [ ] Supabase (base de données, authentification) — **absent, à ajouter**
+- [ ] Resend (envoi d'e-mails, deux domaines) — **absent, à ajouter**
+- [ ] Stripe (paiement) — **absent, à ajouter**
+- [ ] Mistral (classement par pertinence Hermès) — absent, à ajouter dès que la fonctionnalité
+      est confirmée en production (migration `020` appliquée, `MISTRAL_API_KEY` posée)
+- [ ] Revoir la condition `processors.length <= 1` qui affiche le badge « Aucune revente » sur
+      la page confidentialité : elle deviendra fausse dès le premier sous-traitant ajouté
+      ci-dessus, alors que recourir à un sous-traitant RGPD n'est pas revendre des données
+
+---
+
+## C. Adresse e-mail et fournisseur — **[Dorian] partiellement confirmé**
+
+- [x] Compte Resend créé et clé posée **[Dorian, 24/08/2026]**
+- [ ] Domaine `contact.qualifyragence.com` (Hermès) vérifié chez Resend (DNS propagés,
+      statut « Verified ») — **[à vérifier]**, l'existence du sous-domaine est confirmée, sa
+      vérification DNS ne l'est pas explicitement
+- [ ] Domaine `notifications.qualifyragence.com` (transactionnel) vérifié chez Resend —
+      **[à vérifier]**, même remarque
+- [x] `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`, `BOOKING_FROM_EMAIL`,
+      `HERMES_FROM_EMAIL`, `RESEND_WEBHOOK_SECRET` posées dans Netlify **[Dorian, 24/08/2026]**
+- [ ] Aucune de ces valeurs dans le dépôt — `git log -p --all | grep -nE 're_[A-Za-z0-9]{20,}'`
+      doit rester vide
+
+---
+
+## D. Test réel des formulaires — **[à vérifier]**
+
+Le parcours `/diagnostic` a été retiré ; les parcours actuels sont `/estimation` (tunnel
+d'estimation, envoi conditionné à la configuration Resend) et `/contact`.
+
+- [ ] `/estimation` — envoi complet, e-mail bien reçu, offre recommandée cohérente
+- [ ] `/contact` — envoi complet, e-mail bien reçu, `reply_to` correct
+- [ ] Accusé de réception reçu par l'expéditeur, texte relu
+- [ ] Demande de zone (`/api/agent/scan` ou `/api/app/agent-zones`) — confirmation immédiate
+      envoyée, rapport de secteur reçu une fois l'analyse traitée
+- [ ] Réservation professionnelle de bout en bout — créneau, acompte Stripe Connect, e-mails
+      client et professionnel
+- [ ] Abonnement Qualifyr de bout en bout — checkout Stripe, webhook, droit accordé (voir
+      chantier Prices Stripe pour l'état des six `STRIPE_PRICE_*`)
+- [ ] Envoi avec champs vides → erreurs par champ
+- [ ] Double soumission → un seul e-mail / un seul enregistrement
 
 ---
 
 ## E. Validation des textes — **IMPORTANT**
 
-- [ ] Relire les 9 pages à voix haute
 - [ ] Vérifier que la promesse est identique partout, au mot près
-- [ ] Vérifier que les deux verticales officielles sont nommées clairement, sans troisième métier
-- [ ] Vérifier que « conciergerie » n'est pas réduit à la seule gestion Airbnb
+- [ ] Vérifier que les deux verticales officielles (nettoyage automobile/detailing,
+      conciergerie) restent nommées clairement
 - [ ] Vérifier qu'aucun projet ou résultat de conciergerie n'est présenté sans preuve réelle
-- [ ] Vérifier les réponses de la FAQ — chacune doit rester tenable
-- [ ] Vérifier l'étude de cas SW Carcleaning : **aucun résultat n'y figure**
-- [ ] Confirmer le nom de l'offre : « Le parcours Qualifyr »
-- [ ] Confirmer le libellé du CTA : « Parler de mon activité »
-- [ ] Trancher l'URL : `/politique-de-confidentialite` (actuelle) ou
-      `/politique-confidentialite`. **Renommable seulement avant la mise en ligne.**
+- [ ] Vérifier l'étude de cas SW Carcleaning : aucun résultat chiffré inventé
+- [ ] Vérifier que « agent IA » / « intelligence artificielle » n'apparaît nulle part, y
+      compris pour le classement par pertinence Hermès — `tests/no-false-promises.test.ts` le
+      verrouille automatiquement, mais une relecture humaine reste utile
+- [ ] Vérifier la cohérence de la grille tarifaire affichée avec celle des Prices Stripe —
+      chantier dédié, deux grilles coexistent au 24/08/2026 (`src/content/estimation-offers.ts`)
 
 ---
 
@@ -108,14 +116,9 @@ Sur l'aperçu Netlify, avec les vraies clés uniquement si le test d'envoi est a
 
 Détail et noms de fichiers attendus : `docs/06`.
 
-- [ ] **Autorisation écrite** de SW Carcleaning pour le nom et les visuels
-- [ ] Logo SW Carcleaning → `plate.logo` dans `sw-car-cleaning.ts`
-- [ ] Captures d'écran → tableau `gallery` (la section apparaît toute seule)
-- [ ] Photographies du métier
-- [ ] **Un texte alternatif écrit à la main pour chaque image** — le typage l'impose,
-      une image sans `alt` fait échouer le build
-- [x] Logo Qualifyr intégré → en-tête, menu, footer, favicon, icônes du manifest et Open Graph
-- [ ] Image de partage à refaire si le logo change → `public/images/og/`
+- [ ] Autorisation écrite de SW Carcleaning pour le nom et les visuels
+- [ ] Un texte alternatif écrit à la main pour chaque image
+- [x] Logo Qualifyr intégré — en-tête, menu, footer, favicon, icônes du manifest et Open Graph
 
 ---
 
@@ -123,73 +126,47 @@ Détail et noms de fichiers attendus : `docs/06`.
 
 Sur appareils réels, pas seulement en simulateur.
 
-- [ ] iPhone avec encoche : zones sûres en haut et en bas
 - [ ] Menu mobile : ouverture, fermeture, `Échap`, retour du focus
-- [ ] Défilement bloqué quand le menu est ouvert
-- [ ] Les deux formulaires remplis au pouce
-- [ ] Aucun zoom automatique à la mise au point d'un champ
+- [ ] Les parcours estimation, contact, réservation et espace pro remplis au pouce
 - [ ] Aucun défilement horizontal, à aucune largeur
-- [ ] Android, navigateur par défaut
 - [ ] « Réduire les animations » activé → tout est immédiatement visible
-- [ ] Contrôle aux 9 largeurs : 320, 375, 390, 430, 768, 1024, 1280, 1440, 1920
 
 ---
 
-## H. Sauvegarde de l'ancien site — **BLOQUANT avant bascule**
+## H. Sous-domaine `app.` — **[dépôt + vérifié en production]**
 
-À faire **avant** de toucher au domaine. C'est la seule étape irréversible.
-
-- [ ] Sauvegarde complète des fichiers de l'ancien site
-- [ ] Export de la base de données, s'il y en a une
-- [ ] **Inventaire des URL indexées** — Search Console, ou `site:qualifyragence.com`
-- [ ] **Plan de redirections 301** ancienne URL → nouvelle
-- [ ] Capture des positions actuelles dans les résultats de recherche
-- [ ] Sauvegarde de la configuration DNS actuelle
-- [ ] **Ne pas supprimer l'ancien déploiement** : il reste le plan de repli
+- [x] `app.qualifyragence.com/` redirige (301) vers `qualifyragence.com/app/login` — vérifié
+      directement le 24/08/2026
+- [x] `app.qualifyragence.com/*` redirige vers le même chemin sur le domaine principal —
+      `netlify.toml`
+- [ ] Un lien `app.qualifyragence.com/hermes` partagé mène bien à `/app/hermes` — à tester
+      manuellement, la règle de redirection le garantit en théorie
 
 ---
 
-## I. Domaine et mise en ligne — **BLOQUANT**
+## I. Domaine et indexation — **[dépôt + vérifié en production]**
 
-Dans cet ordre, sans en sauter.
-
-- [ ] Aperçu Netlify validé de bout en bout
-- [ ] Redirections 301 en place
-- [ ] `NEXT_PUBLIC_SITE_INDEXABLE=true` configuré en **Production uniquement**
-- [ ] Vérifier : `robots.txt` autorise, `sitemap.xml` contient les 9 URL,
-      les pages sont en `index, follow`
-- [ ] `NEXT_PUBLIC_SITE_URL` posée sur le domaine final
-- [x] Domaine déjà connecté au projet Netlify de production — ne pas modifier les DNS
-- [ ] HTTPS actif, certificat valide
-- [ ] Redirection `www` → apex, ou l'inverse — **une seule** version servie
-- [ ] `http` → `https`
-- [ ] Vérifier l'en-tête HSTS
+- [x] `NEXT_PUBLIC_SITE_INDEXABLE=true` en contexte production (`netlify.toml`)
+- [x] `robots.txt` autorise l'indexation, `sitemap.xml` contient 30 URL — vérifié le 24/08/2026
+- [x] Domaine connecté au projet Netlify de production
+- [ ] HTTPS actif, certificat valide — probable (le site répond en HTTPS), non vérifié
+      explicitement pour la validité du certificat
 - [ ] Sitemap soumis à la Search Console
-- [ ] Les 9 pages répondent 200, une URL inconnue répond 404
 
 ---
 
-## J. Après la mise en ligne — **ENSUITE**
+## J. Après chaque changement significatif — **ENSUITE**
 
 - [ ] Lighthouse mobile — noter les Core Web Vitals réels
-- [ ] Valider les données structurées (test des résultats enrichis)
-- [ ] Aperçu du partage sur WhatsApp, LinkedIn, iMessage
-- [ ] Vérifier l'absence de 404 en Search Console à J+7
-- [ ] Un envoi de formulaire par semaine, pour s'assurer que la clé est vivante
-- [ ] Envisager une Content-Security-Policy avec `nonce` (voir `docs/09`, §7.3)
-- [ ] Envisager une mesure d'audience sans cookie. **Si elle est ajoutée**, mettre à jour
-      `src/content/legal.ts`, `company.ts` (`tracking`) et `docs/07` **dans le même commit**
+- [ ] Un envoi de formulaire par semaine, pour s'assurer que les clés Resend sont vivantes
+- [ ] Un passage `npm run check:env` avant chaque déploiement de production
 
 ---
 
 ## K. Contrôles à relancer avant chaque mise en ligne
 
-- [ ] `/estimation` répond 200, possède une canonical propre et apparaît une seule fois dans le sitemap
-- [ ] L'accueil ne contient ni configurateur ni prix et ne charge qu'une iframe SW Car Cleaning
-- [ ] Les CTA calendrier, WhatsApp et estimation fonctionnent au clavier et sur mobile
-
 ```bash
-npm run test        # 77 tests
+npm run test         # 274 tests au 24/08/2026 — revérifier ce chiffre, il évolue
 npm run lint
 npm run typecheck
 npm run build
@@ -205,10 +182,5 @@ Les six doivent passer. Aucune mise en ligne avec l'une d'elles en échec.
 
 ## L. Plan de repli
 
-Si un problème apparaît après la bascule :
-
-1. Repointer le domaine vers l'ancien déploiement — **c'est pourquoi il ne doit pas être
-   supprimé**.
-2. Retirer `NEXT_PUBLIC_SITE_INDEXABLE` et redéployer, pour éviter l'indexation d'un site
-   cassé.
-3. Diagnostiquer sur l'aperçu, jamais en production.
+Documenté dans `docs/13-rollback-plan.md` — non revérifié dans ce cadrage. À relire avant
+tout changement de domaine ou de configuration DNS, ce que ce chantier n'a pas touché.
