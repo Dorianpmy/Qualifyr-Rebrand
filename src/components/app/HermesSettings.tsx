@@ -84,6 +84,7 @@ export function HermesSettings({ initial, accountEmail, availableProspects }: Pr
       {
         prospectId: 'preview',
         email: 'contact@exemple.fr',
+        emailSource: 'site_web',
         businessName: 'Garage Martin',
         city: 'Avignon',
         unsubscribeToken: 'exemple',

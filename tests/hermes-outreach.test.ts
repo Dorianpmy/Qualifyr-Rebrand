@@ -35,6 +35,7 @@ const CAMPAIGN: Campaign = {
 const CANDIDATE: OutreachCandidate = {
   prospectId: 'p1',
   email: 'contact@garage-durand.fr',
+  emailSource: 'site_web',
   businessName: 'Garage Durand',
   city: 'Avignon',
   unsubscribeToken: 'tok-123',
@@ -87,7 +88,7 @@ describe('message envoyé', () => {
     expect(message.text).toContain(url);
   });
 
-  it('dit d’où vient l’adresse', () => {
+  it('dit d’où vient l’adresse — cas relevée sur le site du prospect', () => {
     /*
      * Article 14 du RGPD : les données n'ont pas été obtenues auprès de la
      * personne, donc l'origine doit lui être communiquée. C'est une obligation,
@@ -95,6 +96,30 @@ describe('message envoyé', () => {
      */
     expect(message.text).toMatch(/répertoire\s+public des entreprises/);
     expect(message.text).toMatch(/publiée sur votre site/);
+  });
+
+  it('dit d’où vient l’adresse — cas portée directement par OpenStreetMap', () => {
+    /*
+     * Ajouté le 24/08/2026 avec l'enrichissement OSM (migration 021). Une
+     * adresse portée par le tag `email` d'OpenStreetMap n'a jamais été vue
+     * par Qualifyr sur le site du prospect — dire « publiée sur votre site »
+     * serait donc faux, même si un contributeur OSM l'y a peut-être recopiée
+     * à l'origine. La formulation doit changer avec la source, jamais rester
+     * générique par commodité.
+     */
+    const osmMessage = composeMessage(CAMPAIGN, { ...CANDIDATE, emailSource: 'osm_tag' }, url);
+    expect(osmMessage.text).toMatch(/répertoire\s+public des entreprises/);
+    expect(osmMessage.text).toMatch(/données cartographiques publiques d.OpenStreetMap/);
+    expect(osmMessage.text).not.toMatch(/publiée sur votre site/);
+  });
+
+  it('les deux formulations d’origine sont mutuellement exclusives', () => {
+    const siteWeb = composeMessage(CAMPAIGN, { ...CANDIDATE, emailSource: 'site_web' }, url);
+    const osmTag = composeMessage(CAMPAIGN, { ...CANDIDATE, emailSource: 'osm_tag' }, url);
+    expect(siteWeb.text).toMatch(/publiée sur votre site/);
+    expect(siteWeb.text).not.toMatch(/OpenStreetMap/);
+    expect(osmTag.text).toMatch(/OpenStreetMap/);
+    expect(osmTag.text).not.toMatch(/publiée sur votre site/);
   });
 
   it('identifie l’expéditeur par son nom', () => {
@@ -177,6 +202,24 @@ describe('garde-fous du code', () => {
     expect(outreach).toContain("from('agent_zones')");
     expect(outreach).toContain("ilike('email', ownerEmail)");
     expect(outreach).toContain("in('zone_id', zoneIds)");
+  });
+
+  it('ne renvoie jamais deux fois le même e-mail dans un même lot ni un e-mail déjà contacté par la campagne', () => {
+    /*
+     * Ajouté le 24/08/2026. Depuis l'enrichissement OSM, deux prospects
+     * distincts peuvent légitimement partager une adresse (une franchise,
+     * un groupe). Sans dédoublonnage ici, `nextCandidates` renverrait les
+     * deux et la boucle d'envoi (protégée seulement par l'unicité
+     * (campaign_id, prospect_id), pas par l'adresse) leur écrirait à tous
+     * les deux — deux messages identiques dans la même boîte le même jour,
+     * exactement le profil qui déclenche un signalement.
+     */
+    expect(outreach).toContain("from('hermes_messages')");
+    expect(outreach).toContain("eq('campaign_id', campaignId)");
+    expect(outreach).toContain('usedEmails.has(email)');
+    expect(outreach, 'lecture ratée des envois passés doit interdire, pas autoriser').toMatch(
+      /if \(sentError\) return \[\];/,
+    );
   });
 });
 

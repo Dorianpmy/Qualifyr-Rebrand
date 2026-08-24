@@ -184,7 +184,7 @@ export async function POST(request: Request) {
   }
 
   const quota = await remainingQuota(campaign);
-  const candidates = await nextCandidates(ownerEmail, Math.min(BATCH_SIZE, quota));
+  const candidates = await nextCandidates(ownerEmail, campaign.id, Math.min(BATCH_SIZE, quota));
 
   const resend = new Resend(apiKey);
   let sent = 0;

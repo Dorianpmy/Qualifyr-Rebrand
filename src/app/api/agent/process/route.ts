@@ -4,6 +4,7 @@ import { isProduction } from '@/lib/env';
 import { getServiceSupabaseClient } from '@/lib/detailing/supabase-server';
 import { SEGMENTS, countBySegment, scanZone } from '@/lib/agent/sirene';
 import { buildReportErrorMessage, nextReportState } from '@/lib/agent/report-retry';
+import { nearbyPostalCodes } from '@/lib/agent/postal-codes';
 
 /**
  * Traitement différé des zones en attente.
@@ -91,37 +92,6 @@ const REPORT_RETRY_BATCH = 10;
  * passage suivant, jamais laissée traîner un tour de plus.
  */
 const MAX_LOCK_MS = 10 * 60 * 1000;
-
-/**
- * Codes postaux couverts par le rayon.
- *
- * **Approximation assumée, et documentée dans le rapport.** Sirene cherche par
- * code postal, pas dans un cercle. Convertir un rayon en liste exacte de codes
- * postaux demanderait une base de contours communaux ; ici on prend le code
- * demandé et ses voisins immédiats par incrément numérique, ce qui couvre les
- * arrondissements d'une même ville et les communes limitrophes dans la plupart
- * des cas.
- *
- * Le rapport dit « autour du 69003 » et non « dans un rayon de 15 km
- * exactement » — la formulation doit refléter ce que la méthode fait vraiment.
- */
-function nearbyPostalCodes(postalCode: string, radiusKm: number): readonly string[] {
-  const base = Number(postalCode);
-  if (!Number.isFinite(base)) return [postalCode];
-
-  // Un seul voisin de chaque côté : trois codes postaux au total. Au-delà, le
-  // traitement dépasse la limite de durée des fonctions.
-  const spread = 1;
-  void radiusKm;
-  const codes: string[] = [];
-
-  for (let offset = -spread; offset <= spread; offset += 1) {
-    const candidate = base + offset;
-    if (candidate > 0) codes.push(String(candidate).padStart(postalCode.length, '0'));
-  }
-
-  return codes;
-}
 
 /** Tout ce dont `reportHtml` a besoin d'un établissement — jamais le type
  *  `Establishment` complet : sur un renvoi, ces valeurs viennent d'une

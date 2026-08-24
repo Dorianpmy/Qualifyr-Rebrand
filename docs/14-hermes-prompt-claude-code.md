@@ -45,20 +45,26 @@ production.
 
 `agent_prospects` (migration 010/013) contenait déjà `email`,
 `unsubscribe_token`, `opted_out_at`, `contacted_at`, `replied_at`, `source`,
-`legal_basis`.
+`legal_basis`. La migration 021 (24/08/2026, voir plus bas) y ajoute
+`email_source` et `enrichment_attempts`, et ajoute `enrichment_attempted_at`
+à `agent_zones`.
 
 **Code**
 
 | Fichier | Rôle |
 |---|---|
-| `src/lib/agent/outreach-message.ts` | Fonctions pures : `fillTemplate`, `composeMessage`. Sans `server-only`, donc testable et utilisable dans l'aperçu. |
-| `src/lib/agent/outreach.ts` | Quota, liste de suppression, désinscription, sélection des candidats, `campaignCanSend`. |
+| `src/lib/agent/outreach-message.ts` | Fonctions pures : `fillTemplate`, `composeMessage`. Sans `server-only`, donc testable et utilisable dans l'aperçu. Le pied de page varie selon `OutreachCandidate.emailSource` — voir plus bas. |
+| `src/lib/agent/outreach.ts` | Quota, liste de suppression, désinscription, sélection des candidats (`nextCandidates`, avec dédoublonnage d'adresse — voir plus bas), `campaignCanSend`. |
 | `src/app/api/agent/outreach/route.ts` | Route planifiée. Une campagne par passage, 5 messages à la fois. |
 | `src/app/api/app/hermes/route.ts` | `GET` / `PUT` / `PATCH` des réglages. |
 | `src/app/app/hermes/page.tsx` | Écran de configuration, protégé par `agent.prospecting`. |
 | `src/components/app/HermesSettings.tsx` | Formulaire + aperçu du message réel. |
 | `src/app/desinscription/[token]/page.tsx` | Désinscription en un clic. |
-| `tests/hermes-outreach.test.ts` | 15 tests. |
+| `src/lib/agent/osm-enrich.ts` | Enrichissement e-mail/téléphone par OpenStreetMap (24/08/2026) : requête Overpass, extraction sur site, liste noire, seuil de partage. |
+| `src/lib/agent/company-match.ts` | Rapprochement de noms Sirene/OSM, fonction pure et testée. |
+| `src/lib/agent/postal-codes.ts` | `nearbyPostalCodes`, partagé entre `/api/agent/process` et `/api/agent/enrich`. |
+| `src/app/api/agent/enrich/route.ts` | Route planifiée de l'enrichissement, son propre cron (`agent-enrich-cron.ts`, 30 min). |
+| `tests/hermes-outreach.test.ts`, `tests/osm-enrich.test.ts`, `tests/company-match.test.ts` | Tests Hermès et enrichissement. |
 
 **Textes** — article « Prospection automatisée » dans `content/terms.ts`,
 collecte décrite dans `content/legal.ts`, offre « Agent seul » réécrite dans
@@ -96,6 +102,54 @@ collecte décrite dans `content/legal.ts`, offre « Agent seul » réécrite dan
    écrit aux entreprises recensées par un autre. Trois assertions le
    verrouillent.
 
+## Enrichissement e-mail/téléphone (ajouté le 24/08/2026)
+
+**Le constat qui a déclenché ce travail : `agent_prospects.email` n'était
+jamais renseigné.** Sirene (le recensement) ne fournit ni e-mail ni
+téléphone — ce sont des registres d'entreprises, pas des annuaires de
+contact — et `nextCandidates` exige `email is not null`. Hermès, jusque-là,
+n'avait littéralement personne à qui écrire : les cinq mécanismes ci-dessus
+protégeaient un moteur dont la file d'entrée était vide par construction.
+
+**La source : OpenStreetMap**, gratuite et sans clé (choix de Dorian, couverture
+partielle assumée). `src/lib/agent/osm-enrich.ts` interroge Overpass — une
+requête par zone, jamais par entreprise, le débit d'Overpass ne le permettrait
+pas — puis `src/lib/agent/company-match.ts` rapproche les noms localement
+(normalisation, coefficient de Dice, containment ; le doute tranche contre le
+rapprochement). Deux segments seulement (`concessions`, `loueurs`) : `vtc`
+(taxi ≠ VTC en droit français, mauvais tag) et `flottes` (sièges
+d'entreprise, aucun tag OSM fiable) restent à 0 % par cette voie — une limite
+de la source, pas un défaut du rapprochement. Route dédiée
+`/api/agent/enrich`, son propre cron toutes les 30 minutes, jamais mêlée à
+`/api/agent/process` (budget Sirene) ni à `/api/agent/outreach` (décision
+d'envoi) — même raisonnement que pour `/api/agent/relevance`.
+
+**Trois points qu'une reprise doit connaître avant d'y toucher :**
+
+- **`email_source` (`'osm_tag' | 'site_web'`) n'est pas un détail technique,
+  c'est ce qui rend le pied de page honnête.** Une adresse portée directement
+  par le tag `email` d'OpenStreetMap n'a jamais été vue par Qualifyr sur le
+  site du prospect ; dire « publiée sur votre site » serait alors faux, même
+  si un contributeur OSM l'y a recopiée à l'origine. `composeMessage`
+  (`outreach-message.ts`) choisit la phrase d'origine selon cette colonne —
+  ne jamais la rendre optionnelle ni lui donner une valeur par défaut qui
+  masquerait la vraie source.
+- **`nextCandidates` dédoublonne par adresse, pas seulement par prospect.**
+  Une adresse peut être légitimement partagée (une franchise, un groupe —
+  voir `MAX_SHARED_EMAIL_ATTRIBUTIONS` dans `osm-enrich.ts`, qui refuse
+  seulement l'attribution au-delà d'une dizaine de SIRET distincts, pas entre
+  un et dix). L'unicité `(campaign_id, prospect_id)` de `hermes_messages` ne
+  suffit pas à empêcher deux messages identiques dans la même boîte le même
+  jour si deux prospects distincts la partagent — c'est le dédoublonnage
+  explicite dans `nextCandidates` (sur le lot en cours de constitution, et sur
+  l'historique `hermes_messages.to_email` de la campagne) qui l'empêche. Le
+  retirer réintroduirait exactement le profil d'envoi qui déclenche un
+  signalement.
+- **`enrichment_attempts` plafonne à 10 tentatives par prospect, en nombre de
+  passages et non en âge écoulé** — à la différence du renvoi de rapport
+  (`report-retry.ts`). Voir la migration 021 pour pourquoi cette différence
+  est délibérée.
+
 ## Ce qui reste à faire
 
 ### 1. Mise en production (à faire dans cet ordre)
@@ -123,9 +177,11 @@ collecte décrite dans `content/legal.ts`, offre « Agent seul » réécrite dan
   personne ne les lit.
 - **`replied_at` n'est jamais renseigné.** Il faudrait une boîte de réception
   surveillée ou un webhook, sinon le champ reste décoratif.
-- **`src/lib/agent/email-extract.ts` et `places.ts` ne sont pas suivis par
-  git.** Ils sont importés par le code d'enrichissement. À committer ou à
-  retirer — en l'état, un clone frais ne compile pas forcément.
+- ~~`src/lib/agent/email-extract.ts` et `places.ts` ne sont pas suivis par
+  git.`~~ Résolu le 24/08/2026 : ces deux fichiers n'avaient jamais été
+  branchés à rien (`agent_prospects.email` restait vide, voir la section
+  ci-dessous) et ont été supprimés comme code mort. L'enrichissement
+  existe désormais pour de vrai, committé, dans `src/lib/agent/osm-enrich.ts`.
 - **Tests d'intégration.** `remainingQuota`, `isSuppressed` et
   `campaignCanSend` sont vérifiés par lecture de code, faute de base
   PostgreSQL de test. À remplacer par de vrais tests dès qu'une base existe.

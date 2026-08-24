@@ -13,10 +13,18 @@
  * arguments.
  */
 
+/**
+ * D'où vient `email` — voir migration 021. `osm_tag` : porté directement par
+ * OpenStreetMap. `site_web` : relevé par Qualifyr sur le site officiel que
+ * OpenStreetMap indique.
+ */
+export type EmailSource = 'osm_tag' | 'site_web';
+
 /** Ce qu'il faut pour envoyer un message à un prospect. */
 export type OutreachCandidate = {
   readonly prospectId: string;
   readonly email: string;
+  readonly emailSource: EmailSource;
   readonly businessName: string;
   readonly city: string | null;
   readonly unsubscribeToken: string;
@@ -59,13 +67,30 @@ export function fillTemplate(
 }
 
 /**
+ * La phrase d'origine de l'adresse, selon sa source réelle — article 14 du
+ * RGPD : il faut communiquer l'origine véritable, pas une origine plausible.
+ *
+ * `site_web` : Qualifyr l'a lue elle-même sur le site du prospect, la phrase
+ * historique reste donc exacte. `osm_tag` : l'adresse vient directement des
+ * données d'OpenStreetMap — Qualifyr n'a jamais visité le site du prospect
+ * pour cette adresse, même si un contributeur OSM l'y a peut-être recopiée à
+ * l'origine. Dire « publiée sur votre site » dans ce cas serait faux.
+ */
+function originSentence(source: EmailSource): string {
+  return source === 'osm_tag'
+    ? 'Vous recevez ce message parce que votre établissement figure au répertoire public des entreprises et que cette adresse figure dans les données cartographiques publiques d’OpenStreetMap.'
+    : 'Vous recevez ce message parce que votre établissement figure au répertoire public des entreprises et que cette adresse est publiée sur votre site.';
+}
+
+/**
  * Compose le message final.
  *
  * **Le bloc de pied de page n'est pas négociable et n'est pas modifiable par
  * le professionnel.** Il porte trois obligations : dire qui écrit, dire d'où
  * vient l'adresse (article 14 du RGPD — les données ont été collectées
- * indirectement, auprès du répertoire des entreprises et du site public), et
- * permettre de s'opposer en un clic.
+ * indirectement, auprès du répertoire des entreprises et, selon le cas, du
+ * site public du destinataire ou d'OpenStreetMap), et permettre de s'opposer
+ * en un clic.
  *
  * Le laisser à la main du professionnel reviendrait à parier que trois cents
  * artisans le rédigeront correctement. Il est donc ajouté ici, après son
@@ -86,8 +111,7 @@ export function composeMessage(
     '—',
     `${campaign.senderName}`,
     '',
-    'Vous recevez ce message parce que votre établissement figure au répertoire',
-    'public des entreprises et que cette adresse est publiée sur votre site.',
+    originSentence(candidate.emailSource),
     'Aucune autre donnée vous concernant n’est conservée.',
     '',
     `Ne plus recevoir de message : ${unsubscribeUrl}`,

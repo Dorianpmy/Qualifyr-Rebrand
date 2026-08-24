@@ -27,10 +27,10 @@ import { getServiceSupabaseClient } from '@/lib/detailing/supabase-server';
  * dans l'appelant : c'est ici qu'elles sont testables sans réseau.
  */
 
-export type { Campaign, OutreachCandidate } from './outreach-message';
+export type { Campaign, EmailSource, OutreachCandidate } from './outreach-message';
 export { composeMessage, fillTemplate } from './outreach-message';
 
-import type { Campaign, OutreachCandidate } from './outreach-message';
+import type { Campaign, EmailSource, OutreachCandidate } from './outreach-message';
 
 /**
  * Combien de messages cette campagne peut-elle encore envoyer aujourd'hui ?
@@ -231,6 +231,21 @@ export async function campaignCanSend(
 }
 
 /**
+ * Combien de candidats potentiels examiner pour en retenir `limit`.
+ *
+ * **Pourquoi plus que `limit`.** Depuis l'enrichissement OSM, une même
+ * adresse peut légitimement être partagée par plusieurs prospects (une
+ * franchise, un groupe — voir `osm-enrich.ts`). Le dédoublonnage ci-dessous
+ * réduit alors le nombre de candidats utiles : sans marge, une zone où les
+ * premiers prospects du tri partagent tous la même adresse renverrait une
+ * file plus courte que demandé alors que d'autres prospects, plus loin dans
+ * l'ordre, auraient pu la compléter. Le facteur est généreux et le plafond
+ * absolu borne le coût dans le pire cas.
+ */
+const CANDIDATE_POOL_MULTIPLIER = 20;
+const CANDIDATE_POOL_MAX = 300;
+
+/**
  * Les prospects que cette campagne peut encore contacter.
  *
  * **Le filtrage par propriétaire se fait en deux temps, et il est le point
@@ -251,13 +266,28 @@ export async function campaignCanSend(
  * La liste de suppression n'est **pas** filtrée ici : elle l'est juste avant
  * l'envoi. Entre la constitution de la file et le dernier message, quelqu'un a
  * pu se désinscrire.
+ *
+ * **Dédoublonnage par adresse, ici, avant l'envoi.** Deux prospects distincts
+ * peuvent légitimement partager la même adresse (une franchise, un groupe —
+ * voir `MAX_SHARED_EMAIL_ATTRIBUTIONS` dans `osm-enrich.ts`, qui refuse
+ * seulement l'attribution au-delà d'une dizaine, pas entre un et dix). Le
+ * garder tel quel enverrait plusieurs messages identiques à la même boîte le
+ * même jour — exactement le profil qui déclenche un signalement, quel que
+ * soit le soin mis au reste. Une adresse déjà présente plus haut dans ce même
+ * lot, ou déjà contactée par **cette campagne** (sur n'importe lequel des
+ * prospects qui la portent, pas seulement celui-ci), est sautée : le prospect
+ * reste en base avec son e-mail, il n'est simplement pas candidat cette fois.
+ * L'index unique `(campaign_id, prospect_id)` de `hermes_messages` protège le
+ * prospect, pas l'adresse — il ne remplace pas ce contrôle.
  */
 export async function nextCandidates(
-  /* La campagne n'est volontairement pas un paramètre : le périmètre est
-     défini par l'e-mail du compte, et un argument non utilisé donnerait
-     l'illusion d'un filtrage qui n'existe pas — c'est exactement ce qui a
-     produit la fuite corrigée ici. */
   ownerEmail: string,
+  /* Utilisé uniquement pour retrouver les adresses déjà contactées par
+     *cette* campagne (dédoublonnage ci-dessous) — jamais pour définir le
+     périmètre des prospects visibles, qui reste `ownerEmail` seul. Ne pas
+     l'utiliser pour un filtre supplémentaire sans relire le commentaire
+     ci-dessus sur la fuite que ce paramètre a déjà causée une fois. */
+  campaignId: string,
   limit: number,
 ): Promise<readonly OutreachCandidate[]> {
   const supabase = getServiceSupabaseClient();
@@ -273,7 +303,8 @@ export async function nextCandidates(
 
   const zoneIds = (zones as readonly { id: string }[]).map((z) => z.id);
 
-  // 2. Les prospects de ces zones, contactables.
+  // 2. Les prospects de ces zones, contactables — un bassin plus large que
+  // `limit`, réduit ensuite par le dédoublonnage d'adresse.
   //
   // Tri par pertinence d'abord (voir `lib/agent/relevance.ts`), par
   // ancienneté ensuite. `nullsFirst: false` est nécessaire : sur un tri
@@ -282,34 +313,84 @@ export async function nextCandidates(
   // de ce qui est demandé. Un prospect jamais noté (`relevance_score` nul)
   // reste candidat comme les autres, seulement en dernier : le score
   // ordonne, il n'exclut jamais.
-  const { data, error } = await supabase
+  const poolSize = Math.min(limit * CANDIDATE_POOL_MULTIPLIER, CANDIDATE_POOL_MAX);
+  const { data: pool, error } = await supabase
     .from('agent_prospects')
-    .select('id, name, city, email, unsubscribe_token')
+    .select('id, name, city, email, email_source, unsubscribe_token')
     .in('zone_id', zoneIds)
     .not('email', 'is', null)
     .is('contacted_at', null)
     .is('opted_out_at', null)
     .order('relevance_score', { ascending: false, nullsFirst: false })
     .order('created_at', { ascending: true })
-    .limit(limit);
+    .limit(poolSize);
 
-  if (error || !data) return [];
+  if (error || !pool || pool.length === 0) return [];
 
-  return (
-    data as unknown as readonly {
-      id: string;
-      name: string;
-      city: string | null;
-      email: string;
-      unsubscribe_token: string;
-    }[]
-  ).map((row) => ({
-    prospectId: row.id,
-    email: row.email,
-    businessName: row.name,
-    city: row.city,
-    unsubscribeToken: row.unsubscribe_token,
-  }));
+  const rows = pool as unknown as readonly {
+    id: string;
+    name: string;
+    city: string | null;
+    email: string;
+    email_source: EmailSource | null;
+    unsubscribe_token: string;
+  }[];
+
+  // 3. Adresses déjà contactées par cette campagne — sur n'importe quel
+  // prospect, pas seulement celui du lot. `to_email` est dupliqué dans
+  // `hermes_messages` précisément pour rester exact indépendamment de
+  // `agent_prospects` (voir la migration 016) ; c'est cette copie qu'on lit.
+  //
+  // **Non bornée, à la différence du reste de ce moteur.** Toutes les autres
+  // lectures d'Hermès sont plafonnées (le lot ci-dessus, `REPORT_RETRY_BATCH`,
+  // `RELEVANCE_BATCH_SIZE`…) ; celle-ci lit l'historique complet de la
+  // campagne. Sans conséquence aujourd'hui — quarante messages par jour au
+  // plus, donc quelques milliers de lignes après un an — mais si un passage
+  // de cette route ralentit un jour sans changement évident ailleurs, c'est
+  // ici qu'il faut regarder en premier.
+  const { data: alreadySent, error: sentError } = await supabase
+    .from('hermes_messages')
+    .select('to_email')
+    .eq('campaign_id', campaignId);
+
+  // Vérification impossible ⇒ on ne peut pas garantir l'absence de doublon :
+  // même principe que `isSuppressed`, on ne prend pas le risque.
+  if (sentError) return [];
+
+  const usedEmails = new Set(
+    (alreadySent as readonly { to_email: string }[] | null ?? []).map((row) =>
+      row.to_email.trim().toLowerCase(),
+    ),
+  );
+
+  const candidates: OutreachCandidate[] = [];
+  for (const row of rows) {
+    if (candidates.length >= limit) break;
+
+    const email = row.email.trim().toLowerCase();
+    if (usedEmails.has(email)) continue; // déjà contacté par cette campagne, ou déjà pris plus haut dans ce lot
+
+    if (!row.email_source) {
+      // Ne devrait jamais arriver — email et email_source sont écrits
+      // ensemble (voir la migration 021). Le genre d'impossibilité qui finit
+      // par se produire après une reprise manuelle en base ; sans ce log,
+      // personne ne le verrait jamais.
+      console.warn('[agent/outreach] email sans email_source, prospect sauté', row.id);
+      continue;
+    }
+
+    usedEmails.add(email);
+    candidates.push({
+      prospectId: row.id,
+      email: row.email,
+      emailSource: row.email_source,
+      businessName: row.name,
+      city: row.city,
+      unsubscribeToken: row.unsubscribe_token,
+    });
+  }
+
+  return candidates;
 }
 
 /** Adresse publique de désinscription pour un jeton donné. */

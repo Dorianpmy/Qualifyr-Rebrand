@@ -54,8 +54,17 @@ export const privacySections: readonly PrivacySection[] = [
          désormais : les visiteurs du site, et les entreprises qui reçoivent un
          message de prospection et viennent chercher d'où vient leur adresse.
          Le second public arrive avec une question précise, et doit trouver la
-         réponse sans avoir à écrire. */
-      'Prospection : lorsqu’un professionnel abonné analyse une zone, nous recensons les entreprises qui s’y trouvent à partir du répertoire public des entreprises (INSEE — Sirene), et nous relevons l’adresse électronique publiée sur leur site lorsqu’elle existe. Aucune adresse n’est devinée ni achetée à un tiers.',
+         réponse sans avoir à écrire.
+         Révisé le 24/08/2026 : le recensement Sirene ne fournissait ni e-mail
+         ni téléphone, et la prospection n'avait donc littéralement personne à
+         contacter. L'e-mail vient désormais du rapprochement avec les données
+         cartographiques publiques d'OpenStreetMap — soit le tag qu'elles
+         portent directement, soit une adresse relevée par Qualifyr sur le
+         site que ces données indiquent, quand le tag ne suffit pas. Le
+         téléphone, quand OpenStreetMap le porte, est relevé pour la même
+         raison que le recensement lui-même : permettre au professionnel
+         abonné d'appeler l'entreprise, ce que l'offre « Agent » annonce. */
+      'Prospection : lorsqu’un professionnel abonné analyse une zone, nous recensons les entreprises qui s’y trouvent à partir du répertoire public des entreprises (INSEE — Sirene). Nous les rapprochons ensuite des données cartographiques publiques d’OpenStreetMap, pour relever, lorsqu’elles existent, une adresse électronique — portée directement par OpenStreetMap, ou relevée par nos soins sur le site officiel qu’il indique — et un numéro de téléphone, afin que le professionnel abonné puisse contacter directement l’entreprise. Aucune coordonnée n’est devinée ni achetée à un tiers.',
       'Ces informations concernent des établissements, pas des particuliers. Elles servent uniquement à permettre au professionnel abonné de les contacter au sujet de son activité. Il est l’expéditeur de ces messages ; nous les acheminons pour son compte.',
       /* Ajouté le 24/08/2026 avec le classement par pertinence. Pour une
          entreprise individuelle, la raison sociale est le nom d'une personne
