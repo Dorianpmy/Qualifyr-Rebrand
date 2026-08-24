@@ -5,7 +5,6 @@ Ce dossier décrit un système simple : attirer vers une page spécialisée, app
 ## Parcours public
 
 - Nettoyage automobile : `/nettoyage-automobile` → diagnostic prérempli.
-- Conciergerie : `/conciergerie` → diagnostic prérempli.
 - Preuve : `/realisations/sw-car-cleaning` → diagnostic ou estimation.
 - Qualification : `/diagnostic`.
 - Orientation budgétaire : `/estimation` (indicative, jamais présentée comme un devis).
@@ -22,7 +21,6 @@ Liens canoniques à utiliser dans les profils et les messages :
 | Profil TikTok | `https://qualifyragence.com/go/tiktok` | Diagnostic · `tiktok / organic / profil` |
 | Profil LinkedIn | `https://qualifyragence.com/go/linkedin` | Diagnostic · `linkedin / organic / profil` |
 | Prospection nettoyage automobile | `https://qualifyragence.com/go/prospection-nettoyage` | Page métier · `prospection / dm / nettoyage_auto` |
-| Prospection conciergerie | `https://qualifyragence.com/go/prospection-conciergerie` | Page métier · `prospection / dm / conciergerie` |
 | Preuve SW Car Cleaning | `https://qualifyragence.com/go/preuve-sw` | Étude de cas · `prospection / dm / preuve_sw` |
 | Partenaire ou prescripteur | `https://qualifyragence.com/go/partenaire` | Diagnostic · `partenaire / referral / partenaires` |
 
@@ -31,7 +29,7 @@ Ne jamais construire une variante libre de `/go/*` : tout nouveau lien doit d’
 ## Routine hebdomadaire
 
 1. Publier deux contenus utiles issus du backlog.
-2. Contacter cinq professionnels du nettoyage et cinq conciergeries par jour ouvré.
+2. Contacter cinq professionnels du nettoyage par jour ouvré.
 3. Envoyer la page spécialisée, puis la preuve SW uniquement si elle répond à la situation.
 4. Suivre les conversations qualifiées dans le modèle CSV.
 5. Revoir chaque vendredi les sources qui déclenchent de vraies conversations.

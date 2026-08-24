@@ -43,7 +43,6 @@ Optionnelle, lorsqu'une valeur officielle est disponible :
 
 - [x] HTTPS et page d'accueil : `200`
 - [x] Nettoyage automobile : `200`
-- [x] Conciergerie : `200`
 - [x] Étude de cas SW Car Cleaning : `200`
 - [x] Diagnostic : `200`
 - [x] Estimation : `200`

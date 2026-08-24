@@ -1,5 +1,10 @@
 # 03 — Direction artistique
 
+> **Note du 24/08/2026 :** certaines entrées ci-dessous décrivent le laboratoire et le
+> concept « Conciergerie » qu'il contenait — l'un et l'autre sont supprimés du site (la
+> verticale conciergerie est abandonnée définitivement). Ce journal n'est pas réécrit pour
+> autant : il documente les décisions prises à leur date, pas l'état actuel du produit.
+
 ## Diagnostic guidé — 1er août 2026
 
 Le diagnostic n'affiche plus l'ensemble de ses champs dans une longue fiche continue. Il

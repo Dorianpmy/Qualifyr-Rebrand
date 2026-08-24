@@ -17,7 +17,7 @@ Aucune décision de contenu/structure/design contre ces docs : on met à jour le
 
 ## Positionnement
 
-Qualifyr = site + parcours (trouvé, compris, choisi, réservé, avis, fidélisation) pour deux verticales : **nettoyage automobile mobile/detailing** et **conciergeries**, plus l'offre élargie de conception de sites/apps/SaaS sur mesure. Ce n'est **ni** une agence web généraliste, ni IA, ni no-code, ni un CRM/ERP, ni une agence pub, ni généraliste tous artisans. Pas de page « Solutions » listant d'autres métiers.
+Qualifyr = site + parcours (trouvé, compris, choisi, réservé, avis, fidélisation) pour une verticale unique : **nettoyage automobile mobile/detailing**, plus l'offre élargie de conception de sites/apps/SaaS sur mesure. Ce n'est **ni** une agence web généraliste, ni IA, ni no-code, ni un CRM/ERP, ni une agence pub, ni généraliste tous artisans. Pas de page « Solutions » listant d'autres métiers. La verticale conciergerie, testée du 27 juillet au 24 août 2026, est abandonnée définitivement.
 
 ## Vocabulaire interdit (copy, meta, alt, JSON-LD, OG)
 

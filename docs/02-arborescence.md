@@ -11,7 +11,6 @@ rubrique éditoriale et ses articles, sans modifier les pages commerciales exist
 /                          Accueil
 /creation-site-web         Création de site web
 /nettoyage-automobile      Expertise nettoyage automobile mobile et detailing
-/conciergerie              Expertise conciergeries
 /methode                   Méthode
 /realisations              Réalisations
 /a-propos                  À propos
@@ -66,9 +65,8 @@ les pages `/diagnostic/merci` et `/contact/merci` envisagées à la phase 0 ne s
 
 **Interdit en V1** : page « Solutions », page « Services » listant des métiers,
 page « Tarifs », page « Ressources », page « FAQ » autonome, landing pages sectorielles
-non validées. Les routes `/nettoyage-automobile` et `/conciergerie` sont les deux seules
-exceptions métier autorisées : elles correspondent exactement aux deux verticales
-officielles et ne créent pas une nouvelle offre.
+non validées. La route `/nettoyage-automobile` est la seule exception métier autorisée :
+elle correspond exactement à la verticale officielle et ne crée pas une nouvelle offre.
 La page `/creation-site-web` est une exception éditoriale validée : elle explique un service
 réel et renvoie vers une preuve réelle, sans ajouter de métier ni de promesse commerciale.
 Le journal est la seconde exception validée : il apporte des conseils éditoriaux utiles et
@@ -140,15 +138,6 @@ la zone d'intervention et la prise de rendez-vous.
 Structure courte : hero métier, trois freins, trois éléments construits, parcours adapté,
 réalisation réelle SW Carcleaning, méthode en quatre temps, FAQ métier et appel à l'action.
 La page ne présente aucun résultat chiffré ni élément client non fourni.
-
-### `/conciergerie` — Conciergeries
-
-Objectif : montrer comment Qualifyr rend un accompagnement plus lisible et une première
-demande plus précise et rassurante.
-
-Structure courte : hero métier, trois freins, trois éléments construits, parcours adapté,
-simulateur de revenus locatifs présenté en démonstration, méthode en quatre temps,
-FAQ métier et appel à l'action. Aucune démonstration n'est présentée comme une réalisation livrée.
 
 ### `/estimation` — Première estimation
 
@@ -270,7 +259,7 @@ Contenu :
    « Commencer ».
 2. Cinq étapes courtes :
    - **Votre activité** : métier, précision obligatoire pour « autre », entreprise, site
-     et précision facultative adaptée au nettoyage automobile ou à la conciergerie ;
+     et précision facultative adaptée au nettoyage automobile ;
    - **Votre situation actuelle** : situation principale, trois origines de demandes au
      maximum et frustration facultative ;
    - **Votre priorité** : deux objectifs au maximum et résultat souhaité facultatif ;

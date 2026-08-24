@@ -3,7 +3,6 @@ import type { NavItem } from '@/types';
 /**
  * Navigation du site.
  * Recentrée 100 % sur le nettoyage automobile / detailing.
- * La verticale conciergerie a été retirée.
  */
 
 /** Libellés courts des routes, pour le fil d'Ariane. */

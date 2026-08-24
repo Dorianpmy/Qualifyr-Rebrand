@@ -9,9 +9,6 @@ Statuts : `idée`, `à préparer`, `prêt`, `publié`. Aucun chiffre ni résulta
 | Quelles informations demander avant un detailing | Detailing | Demandes incomplètes | Véhicule, état, lieu, attente | `/nettoyage-automobile` | Faire le diagnostic | Parcours existant | idée |
 | Transformer des photos avant/après en preuve utile | Detailing | Images sans contexte | Légende, prestation, niveau de finition | `/realisations/sw-car-cleaning` | Voir la réalisation | SW Car Cleaning | idée |
 | Limiter les échanges avant un rendez-vous | Nettoyage auto | Aller-retour par message | Regrouper les choix utiles | `/nettoyage-automobile` | Estimer mon projet | SW Car Cleaning | idée |
-| Expliquer l’accompagnement d’une conciergerie | Conciergerie | Périmètre flou | Dire ce qui est inclus et non inclus | `/conciergerie` | Faire le diagnostic | Concept signalé | idée |
-| Qualifier une demande de séjour | Conciergerie | Brief incomplet | Besoin, dates, lieu, attentes | `/conciergerie` | Présenter mon activité | Concept signalé | idée |
-| Rassurer sans faux avis | Conciergerie | Manque de confiance | Processus, cadre et réponses concrètes | `/conciergerie` | Faire le diagnostic | Aucune preuve inventée | idée |
 | Choisir entre formulaire, WhatsApp et calendrier | Services | Mauvais point d’entrée | Un canal par intention | `/methode` | Faire le diagnostic | Parcours Qualifyr | idée |
 | Une page d’accueil doit-elle tout expliquer ? | Services | Page trop longue | Orienter vers les bonnes pages | `/creation-site-web` | Estimer mon projet | Architecture Qualifyr | idée |
 | Refonte ou amélioration progressive | Services | Décision trop binaire | Diagnostiquer les frictions d’abord | `/diagnostic` | Commencer | Diagnostic | idée |

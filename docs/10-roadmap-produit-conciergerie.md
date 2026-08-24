@@ -1,5 +1,13 @@
 # Roadmap produit — Outil conciergerie
 
+> **Archivé le 24/08/2026.** La verticale conciergerie est abandonnée
+> définitivement : le simulateur de revenus locatifs et tout le code associé
+> ont été retirés du dépôt (`RentalEstimator.tsx`, `components/estimate/`,
+> `lib/estimate/`, `lib/rental-estimate.ts`), et les anciennes routes
+> publiques redirigent vers l'accueil (voir `next.config.ts`). Ce document
+> n'est plus une feuille de route active — conservé tel quel, sans
+> correction, comme trace de la décision et de ce qui avait été envisagé.
+
 Note stratégique du 11/08/2026, à date où le SaaS (`app.qualifyragence.com`)
 et les notifications sont opérationnels de bout en bout.
 

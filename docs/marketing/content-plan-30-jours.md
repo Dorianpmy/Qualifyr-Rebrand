@@ -8,7 +8,6 @@ Quatre séries : `Offre lisible`, `Parcours sans friction`, `Preuve réelle`, `D
 | 4–6 | Parcours sans friction | Vidéo courte : 4 informations avant un rendez-vous | Diagnostic |
 | 7 | Terrain | Répondre aux questions reçues, noter les formulations | Backlog |
 | 8–10 | Preuve réelle | Décryptage factuel de SW Car Cleaning | Étude de cas |
-| 11–13 | Offre lisible | Post : expliquer le périmètre d’une conciergerie | Conciergerie |
 | 14 | Terrain | Revue des conversations qualifiées et des objections | KPI |
 | 15–17 | Décision de projet | Guide : estimation indicative ou diagnostic | Estimation |
 | 18–20 | Parcours sans friction | Carrousel : formulaire, WhatsApp ou calendrier | Méthode |

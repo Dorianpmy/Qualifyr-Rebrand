@@ -1,5 +1,10 @@
 # 09 — Changelog V1
 
+> **Note du 24/08/2026 :** certaines entrées ci-dessous mentionnent la verticale
+> conciergerie, abandonnée définitivement depuis. Ce changelog n'est pas réécrit pour
+> autant — il documente ce qui a réellement été fait, à la date où ça l'a été. Ces entrées
+> ne décrivent plus l'état actuel du produit.
+
 ## 1er août 2026 — refonte de `/diagnostic`
 
 - Remplacement du formulaire vertical par une introduction, cinq étapes courtes et un écran

@@ -100,9 +100,8 @@ d'estimation, envoi conditionné à la configuration Resend) et `/contact`.
 ## E. Validation des textes — **IMPORTANT**
 
 - [ ] Vérifier que la promesse est identique partout, au mot près
-- [ ] Vérifier que les deux verticales officielles (nettoyage automobile/detailing,
-      conciergerie) restent nommées clairement
-- [ ] Vérifier qu'aucun projet ou résultat de conciergerie n'est présenté sans preuve réelle
+- [ ] Vérifier que la verticale officielle (nettoyage automobile/detailing) reste nommée
+      clairement, seule
 - [ ] Vérifier l'étude de cas SW Carcleaning : aucun résultat chiffré inventé
 - [ ] Vérifier que « agent IA » / « intelligence artificielle » n'apparaît nulle part, y
       compris pour le classement par pertinence Hermès — `tests/no-false-promises.test.ts` le

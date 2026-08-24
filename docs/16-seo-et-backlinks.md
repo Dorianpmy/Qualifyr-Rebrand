@@ -3,8 +3,8 @@
 ## Objectif
 
 Positionner Qualifyr sur des recherches B2B précises liées à la création d'un site et d'un
-parcours client pour les entreprises de nettoyage automobile mobile, le detailing à domicile
-et les conciergeries. Aucun mot-clé sans rapport avec ces deux verticales n'est ciblé.
+parcours client pour les entreprises de nettoyage automobile mobile et le detailing à
+domicile. Aucun mot-clé sans rapport avec cette verticale n'est ciblé.
 
 ## Socle technique livré
 
@@ -31,9 +31,9 @@ Qualifyr n'achète pas de lots de liens et ne crée pas de faux annuaires.
 3. Demander aux futurs clients livrés de citer Qualifyr depuis leur page partenaires ou leurs
    mentions de réalisation, uniquement si cette attribution leur convient.
 4. Publier des études de cas réelles assez utiles pour être reprises par des associations,
-   médias ou communautés professionnelles du detailing et de la conciergerie.
+   médias ou communautés professionnelles du detailing.
 5. Rechercher des partenariats éditoriaux ciblés avec des organismes réellement fréquentés
-   par les deux verticales. Chaque contenu doit apporter une méthode ou un retour d'expérience,
+   par la verticale. Chaque contenu doit apporter une méthode ou un retour d'expérience,
    pas seulement un lien.
 
 ## Après la mise en production

@@ -10,8 +10,8 @@ import type { FaqItem } from './faq';
  * une fonctionnalité de la plateforme, jamais présentée ici comme l'activité
  * principale — voir `geoQna` ci-dessous (question 3) pour la formulation
  * exacte exigée sur ce point.
- * Source unique : lavage auto à domicile / detailing automobile — pas de
- * conciergerie, pas de secteur généraliste.
+ * Source unique : lavage auto à domicile / detailing automobile — aucun
+ * autre secteur.
  */
 export const geoFacts = {
   summary: homeSeo.description,
@@ -129,7 +129,6 @@ Qualifyr est le SaaS tout-en-un conçu pour les laveurs auto à domicile et les 
 ## Ce que Qualifyr n’est pas
 
 - Non. Qualifyr est exclusivement conçu pour les laveurs auto à domicile et les professionnels du detailing automobile — pas une agence généraliste multi-métiers.
-- Pas un outil de gestion de location courte durée / conciergerie Airbnb.
 - Pas un clone de logiciels detailing américains : focus acquisition et réservation FR/CH.
 
 ## Questions fréquentes (GEO)

@@ -9,7 +9,6 @@ export const revalidate = 3600;
  *
  * Tant que `site.indexable` vaut `false`, le sitemap est **vide**.
  * Ne contient que les pages publiques.
- * La verticale conciergerie (pages locales incluses) a été retirée.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   if (!site.indexable) return [];

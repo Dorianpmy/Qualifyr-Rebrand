@@ -275,15 +275,17 @@ Principes appliqués :
 - La préférence est ajoutée au message WhatsApp, mais les modalités définitives restent fixées
   par le devis et le contrat.
 
-### 2.6 Pages métier partagées — 1 août 2026
+### 2.6 Page métier — 1 août 2026, verticale conciergerie retirée depuis
 
-- Les routes `/nettoyage-automobile` et `/conciergerie` consomment un même composant serveur
-  `VerticalServicePage` alimenté par `src/content/verticals.ts`.
-- Le composant fixe la hiérarchie et l'accessibilité ; les textes, FAQ, étapes et preuves
-  restent des données typées et centralisées afin d'éviter deux pages copiées-collées.
+- La route `/nettoyage-automobile` consommait un composant serveur `VerticalServicePage`
+  alimenté par `src/content/verticals.ts`, pensé à l'origine pour être partagé avec une
+  seconde route `/conciergerie` — abandonnée définitivement depuis (voir
+  `docs/15-etude-extension-verticale.md`). Le composant `VerticalServicePage` n'est
+  aujourd'hui plus importé nulle part : la page automobile vit sur la charte « Dark
+  Minimalist » (voir `src/app/page.tsx`).
+- Le composant fixait la hiérarchie et l'accessibilité ; les textes, FAQ, étapes et preuves
+  restaient des données typées et centralisées afin d'éviter des pages copiées-collées.
 - La page automobile utilise uniquement la capture réelle déjà inventoriée de SW Carcleaning.
-  La page conciergerie rend une composition CSS abstraite et porte explicitement les mentions
-  « Exploration créative » et « Concept Qualifyr ».
 - Les routes sont ajoutées au type `Route`, aux métadonnées, au sitemap et aux liens internes.
   Aucun paquet, service tiers, formulaire ou calcul n'est ajouté.
 
@@ -641,11 +643,9 @@ Le contenu répond naturellement aux intentions visées, **sans répétition art
 | Intention | Page qui la sert |
 |---|---|
 | développer une activité de services | Accueil, À propos |
-| accompagnement pour conciergerie | Accueil, Méthode, À propos |
 | site pour lavage auto à domicile | Méthode §Construire, Réalisations |
 | prise de rendez-vous pour une activité de services | Méthode §Construire, FAQ |
 | réservation detailing automobile | Accueil §Parcours client, Offre |
-| qualification d'une demande de conciergerie | Accueil §Parcours client, Diagnostic |
 | parcours client lavage automobile | Accueil §Parcours client, Méthode |
 | visibilité locale nettoyage automobile | Accueil §Être trouvé, Méthode §Clarifier |
 

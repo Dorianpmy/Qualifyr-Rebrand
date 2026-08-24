@@ -1,5 +1,10 @@
 # Refonte copywriting & structure — Qualifyr
 
+> **Archivé le 24/08/2026.** Rédigé quand la conciergerie était la deuxième verticale
+> officielle ; elle est depuis abandonnée définitivement, et le repositionnement SaaS-first
+> du 17/08/2026 a de toute façon changé la structure et les textes décrits ici. Conservé tel
+> quel, sans correction, comme trace du plan proposé à l'époque — pas une référence à suivre.
+
 Plan d'action et textes prêts à copier-coller.
 Rédigé le 11/08/2026, à partir du contenu réel du dépôt.
 

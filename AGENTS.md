@@ -44,19 +44,17 @@ avec ces documents. Si un besoin nouveau apparaît, on met à jour le document c
 
 ## 2. Positionnement élargi validé
 
-Qualifyr Agence est spécialisée dans le développement de deux types d'entreprises :
+Qualifyr Agence est spécialisée dans le développement d'un type d'entreprise :
 
-- le **nettoyage automobile mobile et le detailing à domicile** ;
-- les **conciergeries**.
+- le **nettoyage automobile mobile et le detailing à domicile**.
 
-- Ces deux verticales restent des domaines d'expérience et des cas d'usage visibles.
+- Cette verticale reste un domaine d'expérience et un cas d'usage visible.
 - Depuis la validation du 27 juillet 2026, l'accueil présente aussi l'offre élargie de
   conception de sites web, d'applications et de SaaS sur mesure pour les entreprises.
 - Pas de page « Solutions » listant d'autres métiers.
 - Pas de mention « tous les artisans », « toutes les TPE », « tous secteurs ».
-- Le terme « conciergerie » reste large : voyage, séjour, organisation de services,
-  installation ou expatriation, gestion et coordination selon le contexte. Aucun service
-  précis n'est attribué à un client sans preuve réelle.
+- La verticale conciergerie, testée du 27 juillet au 24 août 2026, est abandonnée
+  définitivement : plus aucun code, route ou contenu ne s'y rapporte.
 
 ---
 

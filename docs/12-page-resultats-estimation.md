@@ -1,5 +1,10 @@
 # Page de résultats de l'estimation — structure
 
+> **Archivé le 24/08/2026.** Spécification pour le simulateur de revenus locatifs de la
+> verticale conciergerie, abandonnée définitivement. `rental-estimate.ts` et tout le code
+> qu'il décrit (`components/estimate/`, `lib/estimate/`) ont été retirés du dépôt. Conservé
+> tel quel, sans correction, comme trace de la décision de conception.
+
 Spécification pour l'outil d'acquisition (SaaS). Rédigée le 12/08/2026.
 
 **Contrainte fondatrice : aucune donnée inventée.** Le lecteur de cette page

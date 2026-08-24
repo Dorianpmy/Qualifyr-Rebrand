@@ -1,5 +1,11 @@
 # SaaS Nettoyage automobile & detailing — cahier des charges
 
+> **Note du 24/08/2026 :** ce cahier des charges est satisfait — le produit qu'il décrit
+> est construit et en service. Il a été rédigé en prenant « l'outil conciergerie » comme
+> précédent et modèle de conventions ; cette verticale est depuis abandonnée
+> définitivement. Les mentions ci-dessous ne sont pas corrigées : elles expliquent
+> pourquoi certains choix techniques ont été faits ainsi, pas l'état actuel du produit.
+
 Spécification produit et technique. Rédigée le 12/08/2026.
 
 Second produit de la gamme, après l'outil conciergerie. Même promesse : une

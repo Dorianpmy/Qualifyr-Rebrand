@@ -10,7 +10,6 @@ documentés ci-dessous.
 | Bio Instagram | `https://qualifyragence.com/go/instagram` | `/diagnostic` | `instagram` | `organic` | `profil` |
 | Profil LinkedIn | `https://qualifyragence.com/go/linkedin` | `/diagnostic` | `linkedin` | `organic` | `profil` |
 | Prospection nettoyage automobile | `https://qualifyragence.com/go/prospection-nettoyage` | `/nettoyage-automobile` | `prospection` | `dm` | `nettoyage_auto` |
-| Prospection conciergerie | `https://qualifyragence.com/go/prospection-conciergerie` | `/conciergerie` | `prospection` | `dm` | `conciergerie` |
 | Preuve SW Car Cleaning | `https://qualifyragence.com/go/preuve-sw` | `/realisations/sw-car-cleaning` | `prospection` | `dm` | `preuve_sw` |
 | Partenaires et recommandations | `https://qualifyragence.com/go/partenaire` | `/diagnostic` | `partenaire` | `referral` | `partenaires` |
 

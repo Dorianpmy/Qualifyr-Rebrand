@@ -30,15 +30,6 @@ export const practiceModeOptions = [
   { value: 'les-deux', label: 'Les deux' },
 ] as const satisfies readonly SelectOption[];
 
-/** Conservé pour compat serveur si une ancienne soumission arrive encore. */
-export const conciergeTypeOptions = [
-  { value: 'voyage-sejour', label: 'Voyage et séjour' },
-  { value: 'installation-expatriation', label: 'Installation / expatriation' },
-  { value: 'location-gestion', label: 'Location et gestion' },
-  { value: 'services-sur-mesure', label: 'Services sur mesure' },
-  { value: 'autre', label: 'Autre' },
-] as const satisfies readonly SelectOption[];
-
 export const siteSituationOptions = [
   { value: 'lancement', label: 'Je lance mon activité' },
   { value: 'sans-site', label: 'Je n’ai pas encore de site' },

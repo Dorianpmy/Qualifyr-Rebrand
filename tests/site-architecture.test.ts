@@ -140,12 +140,15 @@ describe('lisibilité pour les moteurs génératifs', () => {
     // précédente) : le résumé GEO ne doit plus la citer.
     expect(llms).not.toContain('SW Carcleaning');
     expect(llms).not.toContain('laboratoire');
-    // « conciergerie » reste présent une fois, dans l'espace négatif
-    // (« Qualifyr n'est PAS un outil de conciergerie ») — disqualifier
-    // explicitement ce secteur aide un lecteur automatique à ne pas
-    // mal classer Qualifyr. Ce qui compte est qu'il n'apparaisse jamais en
-    // dehors de cette phrase de négation.
-    expect(llms.match(/conciergerie/gi)?.length).toBe(1);
+    /*
+     * Verticale conciergerie abandonnée définitivement (24/08/2026) : même
+     * la phrase de négation (« Qualifyr n'est PAS un outil de conciergerie »)
+     * a été retirée. La garder aurait maintenu le mot dans un contenu conçu
+     * pour être ingéré par des assistants — l'association survit à
+     * l'intention qui l'a écrite, y compris dans un espace négatif. Plus
+     * aucune occurrence, sous aucune forme.
+     */
+    expect(llms.match(/concierg/gi)).toBeNull();
     expect(llms).toContain('SaaS');
   });
 

@@ -3,24 +3,26 @@
 Document de référence. Toute page, tout titre et tout composant du site doit pouvoir être
 justifié par ce document.
 
-## Décision commerciale du 1 août 2026 — pages métier
+## Décision commerciale du 1 août 2026 — page métier
 
-L'accueil conserve une promesse générale destinée aux entreprises de services. Deux pages
-commerciales courtes précisent ensuite l'accompagnement pour les deux verticales officielles :
+L'accueil conserve une promesse générale destinée aux entreprises de services. Une page
+commerciale courte précise ensuite l'accompagnement pour la verticale officielle :
 
-- `/nettoyage-automobile` pour le nettoyage automobile mobile et le detailing à domicile ;
-- `/conciergerie` pour les conciergeries.
+- `/nettoyage-automobile` pour le nettoyage automobile mobile et le detailing à domicile.
 
-Ces pages ne créent ni nouvelle offre ni troisième métier. Elles traduisent la même méthode
-dans le vocabulaire, les problèmes et le parcours propres à chaque activité. La page
-automobile s'appuie uniquement sur la réalisation réelle SW Carcleaning, sans résultat
-inventé. La page conciergerie s'appuie sur une exploration clairement signalée comme
-**Concept Qualifyr**, jamais comme un projet client.
+> **Note du 24/08/2026 :** cette section décrivait à l'origine deux pages, une par verticale
+> officielle (`/nettoyage-automobile` et `/conciergerie`). La verticale conciergerie est
+> abandonnée définitivement — code, page dédiée et route retirés, `/conciergerie` redirige
+> désormais vers l'accueil (voir `next.config.ts`). Le texte ci-dessous ne décrit plus que la
+> page qui subsiste.
 
-Chaque page reste volontairement courte : une promesse métier, les freins principaux, ce qui
-est construit, le parcours adapté, une preuve ou exploration honnête, la méthode, cinq
-questions fréquentes et un appel à l'action. Aucun tarif, délai, chiffre de performance ou
-témoignage n'est ajouté.
+Cette page ne crée ni nouvelle offre ni deuxième métier. Elle traduit la même méthode dans le
+vocabulaire, les problèmes et le parcours propres à l'activité. Elle s'appuie uniquement sur
+la réalisation réelle SW Carcleaning, sans résultat inventé.
+
+Elle reste volontairement courte : une promesse métier, les freins principaux, ce qui est
+construit, le parcours adapté, une preuve honnête, la méthode, cinq questions fréquentes et un
+appel à l'action. Aucun tarif, délai, chiffre de performance ou témoignage n'est ajouté.
 
 ## Décision éditoriale du 31 juillet 2026 — Journal Qualifyr
 
@@ -107,11 +109,13 @@ dédiée tant qu'aucune preuve de réalisation publique ne permet de les documen
 
 ## 1. Cible
 
-**Deux verticales officielles en V1** :
+**Une verticale officielle en V1** :
 
 - les dirigeants d'entreprises de nettoyage automobile mobile et les professionnels du
-  detailing à domicile ;
-- les conciergeries.
+  detailing à domicile.
+
+*(La conciergerie a été verticale officielle secondaire du 27 juillet au 24 août 2026, puis
+abandonnée définitivement — code, routes publiques et documents produit retirés.)*
 
 Profil type :
 
@@ -122,7 +126,7 @@ Profil type :
 - vend un savoir-faire manuel, un niveau de soin et une disponibilité ;
 - gère lui-même les appels, les messages, les rendez-vous et les déplacements.
 
-**Hors cible pour la V1** : toute troisième verticale non validée, les centres de lavage
+**Hors cible pour la V1** : toute deuxième verticale non validée, les centres de lavage
 fixes, les concessions et les flottes. Le site ne s'adresse ni à tous les artisans, ni à
 toutes les entreprises de services.
 
@@ -135,10 +139,8 @@ frein principal, parcours recommandé et prix complet. Aucun choix n'est présé
 recommandations ne montrent que les briques justifiées par les réponses et les options
 librement ajoutées par le visiteur.
 
-**Distinction critique** : le site s'adresse aux entreprises de ces deux verticales, jamais
-à leurs clients finaux. Le terme « conciergerie » ne se limite pas à la gestion Airbnb : il
-peut couvrir voyage, séjour, organisation de services, installation, expatriation, gestion
-ou coordination selon la réalité du client.
+**Distinction critique** : le site s'adresse aux entreprises de cette verticale, jamais à
+leurs clients finaux.
 
 ---
 
@@ -254,10 +256,9 @@ Règles d'usage :
 
 Ce qui distingue Qualifyr, à exprimer sans comparaison nominative et sans dénigrement :
 
-1. **Deux métiers précis.** Qualifyr travaille pour le nettoyage automobile mobile, le
-   detailing à domicile et les conciergeries. La méthode est commune ; le parcours est adapté
-   aux véhicules, zones et créneaux d'un côté, aux besoins, séjours et demandes
-   d'accompagnement de l'autre.
+1. **Un métier précis.** Qualifyr travaille pour le nettoyage automobile mobile et le
+   detailing à domicile. Le parcours est adapté aux véhicules, aux zones et aux créneaux de
+   cette activité.
 2. **Un parcours, pas un livrable isolé.** Le site n'est qu'un maillon. Ce qui est conçu, c'est
    l'enchaînement complet jusqu'au rendez-vous et jusqu'à l'avis.
 3. **Simplicité assumée.** Rien qui oblige à apprendre un nouvel outil ou à changer sa façon de
@@ -274,9 +275,8 @@ la modernité, l'originalité.
 
 Champ lexical du métier :
 
-nettoyage automobile mobile · detailing à domicile · conciergerie · voyage · séjour ·
-accompagnement · organisation · coordination · prestation · véhicule · besoin · zone
-d'intervention · destination · rendez-vous · créneau · acompte · confirmation · rappel · avis
+nettoyage automobile mobile · detailing à domicile · prestation · véhicule · besoin · zone
+d'intervention · rendez-vous · créneau · acompte · confirmation · rappel · avis
 
 Champ lexical Qualifyr :
 

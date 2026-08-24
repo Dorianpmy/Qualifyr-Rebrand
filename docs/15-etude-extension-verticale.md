@@ -4,6 +4,12 @@
 **Date :** 26 juillet 2026  
 **Périmètre :** six activités imposées, sans modification du positionnement public de Qualifyr Agence
 
+> **Archivé le 24/08/2026 :** la conciergerie, devenue deuxième verticale officielle le
+> 27 juillet 2026 (note ci-dessous), est depuis abandonnée définitivement — code, routes
+> publiques (redirigées vers l'accueil) et documents produit retirés. Qualifyr est de nouveau
+> exclusivement positionné sur le nettoyage automobile mobile / detailing, comme le concluait
+> déjà cette étude à l'origine. Conservée sans correction, comme trace des deux décisions.
+
 > **Transition décidée le 27 juillet 2026 :** cette étude reste l'analyse historique des six
 > activités expressément comparées. La conciergerie n'en faisait pas partie. Elle est ensuite
 > devenue la deuxième verticale officielle sur décision du porteur du projet ; les conclusions

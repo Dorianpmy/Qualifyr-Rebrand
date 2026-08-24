@@ -9,7 +9,7 @@ export const productionDomain = 'qualifyragence.com';
  * SaaS pour laveurs auto et detailing automobile, pas comme une agence de
  * création de sites. La création de site reste une fonctionnalité de la
  * plateforme, jamais l'activité principale affichée ici.
- * Zéro mention conciergerie / Airbnb / secteur généraliste.
+ * Zéro mention d'un autre secteur ou d'une activité généraliste.
  */
 export const homeSeo = {
   title: 'SaaS pour laveur auto et detailing automobile | Qualifyr',
