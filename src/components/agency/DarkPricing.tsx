@@ -119,8 +119,20 @@ type Plan = {
   readonly compareTo?: number;
 };
 
-/** Deux mois offerts, arrondis. Une seule déclaration pour toute la page. */
-const ANNUAL_DISCOUNT = 0.2;
+/**
+ * Deux mois offerts : on paie dix mois pour douze, soit un sixième de remise.
+ *
+ * **La valeur était 0.2 (20 %), ce qui ne correspondait ni au commentaire ni
+ * aux Prices Stripe.** Corrigé le 24/08/2026, quand les Prices ont été créés à
+ * 170, 490 et 590 € l'année. Avec 20 %, la page annonçait 39 €/mois pour le
+ * Système en annuel là où Stripe facture 490 € — soit 40,83 €/mois. Un prix
+ * affiché inférieur au prix prélevé n'est pas une approximation : c'est le
+ * client qui découvre l'écart sur son relevé.
+ *
+ * Toute modification ici doit correspondre aux montants annuels réellement
+ * créés dans Stripe.
+ */
+const ANNUAL_DISCOUNT = 1 / 6;
 
 const plans: readonly Plan[] = [
   {

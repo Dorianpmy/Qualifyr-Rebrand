@@ -29,6 +29,12 @@ export type Processor = {
   readonly location: string;
 };
 
+export type Mediator = {
+  readonly name: string;
+  /** Site internet ou adresse de saisine. */
+  readonly contact: string;
+};
+
 export const company = {
   /** Nom commercial. Seule information de marque confirmée. */
   tradeName: 'Qualifyr Agence',
@@ -180,6 +186,25 @@ export const processors: readonly Processor[] = [
       'France (siège, Paris) — hébergement annoncé prioritairement dans l’Union européenne, exceptions hors UE possibles selon la politique de confidentialité de Mistral',
   },
 ];
+
+/**
+ * Médiateur de la consommation.
+ *
+ * `null` tant que Dorian n'a pas souscrit d'adhésion payante auprès d'un
+ * médiateur agréé (liste officielle : economie.gouv.fr/mediation-conso,
+ * rubrique « médiateurs référencés ») — un choix qui lui appartient seul, et
+ * qui ne concerne d'ailleurs que les litiges avec un client agissant comme
+ * consommateur au sens du code de la consommation (une entreprise qui
+ * souscrit pour son activité n'en est pas un — voir `content/terms.ts`,
+ * section « objet », sur l'incertitude déjà signalée à ce sujet).
+ *
+ * La clause CGV correspondante (`content/terms.ts`) ne s'affiche que si ce
+ * champ est renseigné : citer un médiateur qui n'existe pas serait une
+ * fausse information juridique, pire que l'absence de clause.
+ *
+ * TODO_CONTENU_REEL : nom et coordonnées de saisine du médiateur choisi.
+ */
+export const mediator: Mediator | null = null;
 
 /**
  * Durées de conservation.

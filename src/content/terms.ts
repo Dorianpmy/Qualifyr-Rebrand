@@ -20,6 +20,8 @@
  * clients (professionnels au sens du code de la consommation ou non).
  */
 
+import { mediator } from '@/content/company';
+
 export type TermsSection = {
   readonly id: string;
   readonly title: string;
@@ -34,7 +36,7 @@ export type TermsSection = {
  * ce qui, sur un document contractuel, revient à mentir. À modifier
  * **manuellement**, et seulement quand une clause change.
  */
-export const termsUpdatedAt = '22 août 2026';
+export const termsUpdatedAt = '24 août 2026';
 
 export const termsIntro =
   'Les présentes conditions régissent la souscription et l’utilisation des abonnements Qualifyr. Elles sont acceptées au moment du paiement.';
@@ -162,4 +164,24 @@ export const termsSections: readonly TermsSection[] = [
       'Les présentes conditions sont soumises au droit français. À défaut d’accord amiable, le litige relève des juridictions compétentes.',
     ],
   },
+  /*
+   * Ajoutée le 24/08/2026, mais n'apparaît sur la page que si `mediator`
+   * (content/company.ts) est renseigné — voir le commentaire de ce champ.
+   * Une clause à moitié écrite, citant un médiateur qui n'existe pas, serait
+   * une fausse information juridique ; l'absence de clause, en attendant,
+   * ne l'est pas.
+   */
+  ...(mediator
+    ? [
+        {
+          id: 'mediation',
+          title: 'Médiation de la consommation',
+          paragraphs: [
+            'Conformément aux articles L. 616-1 et R. 616-1 du code de la consommation, un client agissant en qualité de consommateur peut recourir gratuitement à un médiateur de la consommation pour la résolution amiable d’un litige qui n’aurait pas abouti directement auprès de l’éditeur, dans les conditions prévues à l’article précédent.',
+            `Médiateur désigné : ${mediator.name}, saisissable à ${mediator.contact}.`,
+            'Cette voie de recours ne concerne que les litiges avec un client agissant comme consommateur au sens du code de la consommation ; elle est sans effet sur les relations avec un client agissant pour les besoins de son activité professionnelle.',
+          ],
+        },
+      ]
+    : []),
 ];

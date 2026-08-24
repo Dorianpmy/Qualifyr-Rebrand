@@ -164,10 +164,16 @@ export const questions: readonly Question[] = [
     multiple: false,
     required: true,
     choices: [
-      { id: 'moins-15', label: 'Moins de 15 € par mois' },
-      { id: '15-30', label: 'Entre 15 et 30 € par mois' },
-      { id: '30-50', label: 'Entre 30 et 50 € par mois' },
-      { id: 'plus-50', label: 'Plus de 50 € par mois' },
+      /* Paliers réalignés le 24/08/2026 sur la grille 17 / 49 / 59 €. Les
+         anciens (15, 30, 50) venaient de la grille 9 / 29 / 39 : « moins de
+         15 € » ne correspondait plus à aucune offre, et le visiteur qui le
+         choisissait recevait une recommandation au-dessus du budget qu'il
+         venait de déclarer, sans que rien ne le lui dise. Chaque palier doit
+         contenir au moins une offre. */
+      { id: 'moins-20', label: 'Moins de 20 € par mois' },
+      { id: '20-50', label: 'Entre 20 et 50 € par mois' },
+      { id: '50-80', label: 'Entre 50 et 80 € par mois' },
+      { id: 'plus-80', label: 'Plus de 80 € par mois' },
       { id: 'simple', label: 'Je préfère commencer au plus simple' },
     ],
   },
@@ -253,13 +259,15 @@ const WEIGHTS: Readonly<
 
 /** Budget mensuel déclaré → plafond en euros. `null` = pas de plafond. */
 const BUDGET_CEILING: Readonly<Record<string, number | null>> = {
-  'moins-15': 15,
-  '15-30': 30,
-  '30-50': 50,
-  'plus-50': null,
+  'moins-20': 20,
+  '20-50': 50,
+  '50-80': 80,
+  'plus-80': null,
   // « Commencer au plus simple » n'est pas un montant : c'est une préférence
-  // pour l'offre la plus légère, traitée comme un plafond bas.
-  simple: 15,
+  // pour l'offre la plus légère, traitée comme un plafond bas. 20 € plutôt
+  // que 15 : sous 17 €, plus aucune offre n'existe, et un plafond que rien
+  // ne peut satisfaire ne rétrograde vers rien du tout.
+  simple: 20,
 };
 
 function scoreOf(answers: Answers) {

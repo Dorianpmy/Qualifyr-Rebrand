@@ -3,24 +3,17 @@ import type { Plan } from '@/lib/billing/plans';
 /**
  * Les offres telles que la page Estimation les présente.
  *
- * ⚠️ **Cette grille est volontairement différente de celle du reste du site.**
- * Décision de Dorian, prise en connaissance de cause le 22/08/2026 : appliquer
- * les nouveaux prix ici seulement, et laisser `/tarifs`, `geo.ts` et
- * `FeatureComparisonTable` sur l'ancienne grille pour l'instant.
+ * **Grille unifiée le 24/08/2026.** Cette page affichait 9, 29 et 39 € quand
+ * le reste du site annonçait 17, 49 et 59 € — un visiteur qui passait d'ici à
+ * `/tarifs` voyait deux prix pour la même offre. L'écart était assumé comme
+ * temporaire depuis le 22/08 ; il cesse de l'être au moment où les Prices
+ * Stripe sont créés, puisque c'est désormais un montant affiché qui doit
+ * correspondre à un montant facturé.
  *
- * | Offre | Ici | Reste du site |
- * |---|---|---|
- * | Agent seul | 9 €/mois | 17 €/mois |
- * | Réservation seule | 29 €/mois | 49 €/mois |
- * | Agent + Réservation | 39 €/mois | 59 €/mois |
- * | Site vitrine | dès 490 € | 690 – 1 290 € |
- * | Site + réservation | dès 990 € | 1 490 – 2 490 € |
- *
- * **Conséquence à connaître :** un visiteur qui passe d'ici à `/tarifs` verra
- * deux prix pour la même offre. C'est un écart assumé et temporaire, pas un
- * oubli. `tests/estimation.test.ts` le documente sans le faire échouer, pour
- * qu'il reste visible ; le jour où la grille est unifiée, il suffira de
- * reporter ces valeurs dans `PricingTable`, `DarkPricing` et `geo.ts`.
+ * Les montants ci-dessous sont ceux des Prices Stripe : 17, 49 et 59 €
+ * mensuels. Toute modification ici doit s'accompagner de la création d'un
+ * nouveau Price — un montant Stripe est immuable, on ne le corrige pas, on le
+ * remplace.
  *
  * ---
  *
@@ -75,7 +68,7 @@ export const estimationOffers: readonly Offer[] = [
     name: 'Agent de recensement',
     audience:
       'Vous cherchez de nouveaux clients professionnels et vous n’avez pas le temps de démarcher.',
-    monthly: 9,
+    monthly: 17,
     oneOff: null,
     included: [
       'Recensement des entreprises d’une zone à partir du répertoire officiel',
@@ -97,7 +90,7 @@ export const estimationOffers: readonly Offer[] = [
     name: 'Système de réservation',
     audience:
       'Les demandes, vous les avez déjà. Ce sont les devis du soir et les créneaux perdus qui vous coûtent.',
-    monthly: 29,
+    monthly: 49,
     oneOff: null,
     included: [
       'Page de réservation en ligne à votre nom',
@@ -120,7 +113,7 @@ export const estimationOffers: readonly Offer[] = [
     name: 'Agent + Réservation',
     audience:
       'Vous voulez à la fois trouver des clients et éviter les rendez-vous non honorés.',
-    monthly: 39,
+    monthly: 59,
     oneOff: null,
     included: [
       'Tout l’agent de recensement',

@@ -26,7 +26,7 @@ const base: Answers = {
   priorities: [],
   scope: ['inconnu'],
   volume: ['10-30'],
-  budget: ['plus-50'],
+  budget: ['plus-80'],
   website: ['oui-ameliorer'],
 };
 
@@ -108,18 +108,20 @@ describe('recommandation', () => {
 
   it('rétrograde quand l’offre dépasse le budget déclaré', () => {
     /*
-     * Le pack est à 39 €. Avec un plafond à 15 €, on descend vers la moitié
+     * Le pack est à 59 €. Avec un plafond à 20 €, on descend vers la moitié
      * la plus utile — ici l'organisation domine, mais la réservation est à
-     * 29 €, donc hors budget elle aussi : c'est l'agent, à 9 €, qui reste.
+     * 49 €, donc hors budget elle aussi : c'est l'agent, à 17 €, qui reste.
+     *
+     * Montants et paliers réalignés le 24/08/2026 sur la grille 17/49/59.
      */
     const answers: Answers = {
       ...base,
       problems: ['volume-clients', 'annulations'],
       priorities: ['trouver', 'reserver'],
-      budget: ['moins-15'],
+      budget: ['moins-20'],
     };
 
-    expect(recommend({ ...answers, budget: ['plus-50'] }).offerId).toBe('pack');
+    expect(recommend({ ...answers, budget: ['plus-80'] }).offerId).toBe('pack');
     expect(recommend(answers).offerId).toBe('agent');
   });
 
@@ -130,7 +132,7 @@ describe('recommandation', () => {
       activity: ['flottes'],
       problems: ['volume-clients'],
       priorities: ['trouver'],
-      budget: ['plus-50'],
+      budget: ['plus-80'],
     });
 
     expect(result.offerId).toBe('agent');
