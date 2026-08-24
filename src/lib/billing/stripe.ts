@@ -131,6 +131,31 @@ export async function createSubscriptionCheckout(input: {
     'custom_fields[0][label][custom]': 'Raison sociale (si professionnel)',
     'custom_fields[0][type]': 'text',
     'custom_fields[0][optional]': 'true',
+    /*
+     * Essai de quatorze jours (24/08/2026).
+     *
+     * **Il rattrape une promesse qui existait déjà sans support technique.**
+     * `OfferConfigurator` annonçait « 14 jours d'essai gratuit inclus par
+     * défaut », et le contenu GEO parlait d'un essai gratuit, alors qu'aucune
+     * période d'essai n'était configurée : le Checkout prélevait
+     * immédiatement. Le paramètre existait donc dans le discours commercial,
+     * pas dans le code.
+     *
+     * **La carte reste demandée pendant l'essai, et ce n'est pas un oubli.**
+     * Stripe sait ouvrir un essai sans moyen de paiement
+     * (`payment_method_collection: 'if_required'`), mais l'abonnement s'arrête
+     * alors de lui-même au quatorzième jour, sans reconduction : il faudrait
+     * relancer chaque compte à la main. La carte est donc collectée, non
+     * débitée, et le professionnel peut résilier depuis son espace avant la
+     * fin. Aucun texte du site ne doit écrire « sans carte bancaire » à propos
+     * de cet essai — c'est l'analyse d'une première zone qui est sans carte,
+     * pas l'abonnement.
+     *
+     * Changer ce nombre suppose de changer aussi les mentions de
+     * `OfferConfigurator`, `content/geo.ts` et les CGV : trois endroits qui
+     * annoncent la même durée à un client.
+     */
+    'subscription_data[trial_period_days]': '14',
     ...(input.customerEmail ? { customer_email: input.customerEmail } : {}),
   }).toString();
 

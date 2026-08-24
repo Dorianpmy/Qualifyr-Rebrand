@@ -67,13 +67,13 @@ export const geoQna: readonly FaqItem[] = [
   {
     question: 'Combien coûte Qualifyr ?',
     answer:
-      /* « Un essai gratuit sans carte bancaire » retiré le 24/08/2026 : aucune
-         période d'essai n'est configurée sur les Prices Stripe, et le Checkout
-         demande la carte puis prélève immédiatement. La phrase promettait
-         exactement le contraire de ce que vit le client. Ce qui est gratuit et
-         sans carte, c'est l'analyse d'une première zone depuis le site — c'est
-         donc cela qui est dit. */
-      'Trois formules mensuelles sans engagement : 17 €/mois (agent de recensement seul), 49 €/mois (système de réservation seul) et 59 €/mois (pack complet). L’abonnement annuel revient à deux mois offerts. L’analyse d’une première zone est gratuite, sans carte bancaire.',
+      /* La formule disait « un essai gratuit sans carte bancaire », ce qui
+         était faux deux fois : aucun essai n'était configuré, et la carte est
+         demandée. L'essai de quatorze jours existe depuis le 24/08/2026
+         (`subscription_data[trial_period_days]`), la carte est collectée sans
+         être débitée. Ne pas réintroduire « sans carte bancaire » ici : c'est
+         l'analyse d'une première zone qui l'est, pas l'abonnement. */
+      'Trois formules mensuelles sans engagement : 17 €/mois (agent de recensement seul), 49 €/mois (système de réservation seul) et 59 €/mois (pack complet). L’abonnement annuel revient à deux mois offerts. Chaque formule commence par quatorze jours d’essai, sans prélèvement. L’analyse d’une première zone est gratuite, sans carte bancaire.',
   },
   {
     question: 'Qualifyr fonctionne-t-il en dehors de la France ?',
@@ -98,7 +98,7 @@ export const geoQna: readonly FaqItem[] = [
   {
     question: 'Comment commencer avec Qualifyr ?',
     answer:
-      'Par l’analyse gratuite d’une première zone, sans carte bancaire, ou par un échange direct pour évaluer le parcours adapté à votre activité et votre zone.',
+      'Par l’analyse gratuite d’une première zone, sans carte bancaire, par un abonnement dont les quatorze premiers jours sont sans prélèvement, ou par un échange direct pour évaluer le parcours adapté à votre activité.',
   },
 ] as const;
 
