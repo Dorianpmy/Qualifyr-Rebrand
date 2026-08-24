@@ -25,8 +25,13 @@ import { SubscribeButton } from './SubscribeButton';
  *
  * **L'annuel est proposé, pas imposé.** Il est sélectionné par défaut parce
  * qu'il est plus avantageux pour le visiteur, mais la bascule est visible et
- * le montant mensuel réel reste affiché dessous — pas de « 47 €/mois » en gros
- * avec « facturé 564 € » en gris clair.
+ * le montant réellement prélevé reste affiché dessous — pas de « 49 €/mois »
+ * en gros avec « facturé 590 € » en gris clair.
+ *
+ * **Les montants annuels sont déclarés, jamais calculés** (voir `Plan.annual`).
+ * Une remise en pourcentage appliquée puis arrondie ne retombe pas sur les
+ * montants réels des Prices Stripe, et la page annonçait 168, 468 et 564 €
+ * là où 170, 490 et 590 sont prélevés.
  *
  * **Fond clair, comme la référence envoyée.** Ce bloc rompt volontairement
  * avec le noir du reste du site — le sable de la charte, jamais un blanc
@@ -104,8 +109,23 @@ type Plan = {
   readonly billingPlan: 'agent' | 'complet' | 'systeme';
   readonly kicker: string;
   readonly title: string;
-  /** Tarif mensuel sans engagement, en euros. */
+  /** Tarif mensuel sans engagement, en euros. Miroir du Price Stripe mensuel. */
   readonly monthly: number;
+  /**
+   * Montant annuel réellement prélevé, en euros. Miroir du Price Stripe annuel.
+   *
+   * **Il est déclaré, pas calculé, et c'est le fond du sujet.** La page
+   * dérivait l'annuel du mensuel par un pourcentage, puis arrondissait : elle
+   * annonçait 168 € pour l'Agent quand Stripe en prélève 170, 564 € pour le
+   * Pack contre 590, 468 € pour le Système contre 490. Aucun pourcentage ne
+   * peut retomber juste sur trois montants arrondis à l'euro — le seul moyen
+   * d'afficher le bon prix est de le déclarer.
+   *
+   * Même règle que `lib/billing/stripe.ts` : le montant vit dans Stripe, le
+   * code n'en tient qu'une copie. Changer une valeur ici suppose d'avoir créé
+   * le Price correspondant.
+   */
+  readonly annual: number;
   readonly pitch: string;
   readonly items: readonly string[];
   readonly ctaLabel: string;
@@ -119,20 +139,7 @@ type Plan = {
   readonly compareTo?: number;
 };
 
-/**
- * Deux mois offerts : on paie dix mois pour douze, soit un sixième de remise.
- *
- * **La valeur était 0.2 (20 %), ce qui ne correspondait ni au commentaire ni
- * aux Prices Stripe.** Corrigé le 24/08/2026, quand les Prices ont été créés à
- * 170, 490 et 590 € l'année. Avec 20 %, la page annonçait 39 €/mois pour le
- * Système en annuel là où Stripe facture 490 € — soit 40,83 €/mois. Un prix
- * affiché inférieur au prix prélevé n'est pas une approximation : c'est le
- * client qui découvre l'écart sur son relevé.
- *
- * Toute modification ici doit correspondre aux montants annuels réellement
- * créés dans Stripe.
- */
-const ANNUAL_DISCOUNT = 1 / 6;
+
 
 const plans: readonly Plan[] = [
   {
@@ -141,6 +148,7 @@ const plans: readonly Plan[] = [
     kicker: 'Agent seul',
     title: 'On vient vous chercher des clients',
     monthly: 17,
+    annual: 170,
     /* Réécrit le 22/08/2026 (audit d'avant mise en production). « L'agent va
        démarcher votre secteur » annonçait une prise de contact sortante :
        l'agent n'envoie jamais rien à un prospect, le seul e-mail part vers le
@@ -174,6 +182,7 @@ const plans: readonly Plan[] = [
     kicker: 'Pack complet',
     title: 'On les trouve, et on les garde',
     monthly: 59,
+    annual: 590,
     compareTo: 66,
     pitch:
       'Trouver un client ne sert à rien s’il annule la veille. Ici les rendez-vous arrivent seuls et l’acompte est déjà encaissé quand vous ouvrez l’agenda.',
@@ -202,6 +211,7 @@ const plans: readonly Plan[] = [
     kicker: 'Système seul',
     title: 'On arrête de vous poser des lapins',
     monthly: 49,
+    annual: 490,
     pitch:
       'Les demandes, vous les avez. Ce sont les devis du soir, les relances et les créneaux bloqués pour rien qui vous coûtent vos semaines.',
     items: [
@@ -218,9 +228,16 @@ const plans: readonly Plan[] = [
     note: 'Sans engagement, résiliable en un clic.',
   },
 ];
-/** Mensuel équivalent d'un abonnement annuel, arrondi à l'euro. */
-function annualMonthly(monthly: number): number {
-  return Math.round(monthly * (1 - ANNUAL_DISCOUNT));
+/**
+ * Mensuel équivalent d'un abonnement annuel, arrondi à l'euro.
+ *
+ * Dérivé du montant annuel réel, et jamais l'inverse : c'est l'annuel qui est
+ * prélevé, donc lui qui fait foi. L'affichage mensuel n'est qu'une commodité
+ * de comparaison, et un euro d'arrondi y est sans conséquence — alors qu'un
+ * euro d'écart sur le montant débité, non.
+ */
+function annualMonthly(annual: number): number {
+  return Math.round(annual / 12);
 }
 
 function Check({ tinted }: { readonly tinted: boolean }) {
@@ -245,8 +262,8 @@ function Check({ tinted }: { readonly tinted: boolean }) {
  * règles non calquées, qui l'emportent sur toute la couche des utilitaires.
  */
 function PlanCard({ plan, annual }: { plan: Plan; annual: boolean }) {
-  const price = annual ? annualMonthly(plan.monthly) : plan.monthly;
-  const yearly = annualMonthly(plan.monthly) * 12;
+  const price = annual ? annualMonthly(plan.annual) : plan.monthly;
+  const yearly = plan.annual;
   const saved = plan.monthly * 12 - yearly;
 
   /*
@@ -469,7 +486,12 @@ export function DarkPricing() {
               className="period-option"
             >
               {option.label}
-              {option.value ? <span className="period-badge">−20 %</span> : null}
+              {/* « 2 mois offerts » plutôt que « −20 % » : la remise réelle est
+                  d'un sixième (dix mois payés sur douze), pas d'un cinquième —
+                  le badge annonçait donc un avantage supérieur à celui que
+                  Stripe applique. Et deux mois offerts se comprend sans calcul,
+                  là où un pourcentage oblige le lecteur à en faire un. */}
+              {option.value ? <span className="period-badge">2 mois offerts</span> : null}
             </button>
           ))}
         </div>
