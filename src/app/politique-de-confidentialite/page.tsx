@@ -20,12 +20,22 @@ export const metadata: Metadata = buildMetadata('/politique-de-confidentialite')
  * **Les neuf sections de `content/legal.ts` sont reprises telles quelles.**
  * Aucun paragraphe n'est réécrit : ce fichier met en forme, il ne rédige pas.
  *
- * **Le bandeau d'engagements n'est pas une promesse marketing.** Chacun de ses
- * trois points est une affirmation vérifiable dans le code, et non un argument
- * commercial : `tracking.cookies` est vide, `tracking.analytics` vaut `null`,
- * et `processors` ne liste que l'hébergeur. Ces valeurs sont lues ici plutôt
- * que recopiées, précisément pour que le jour où un outil de mesure sera
- * ajouté, le bandeau cesse de l'affirmer au lieu de mentir en silence.
+ * **Le bandeau d'engagements n'est pas une promesse marketing.** Deux de ses
+ * trois points sont une affirmation vérifiable dans le code, lue ici plutôt
+ * que recopiée : `tracking.cookies` est vide, `tracking.analytics` vaut
+ * `null`. Le jour où un outil de mesure sera ajouté, le bandeau cesse de
+ * l'affirmer au lieu de mentir en silence.
+ *
+ * **« Aucune revente » n'est plus indexé sur le nombre de prestataires.**
+ * Une version antérieure le masquait dès que `processors.length > 1` — un
+ * raccourci faux : recourir à un sous-traitant qui agit sur instruction,
+ * pour une finalité que Qualifyr fixe, n'est pas une revente ; c'est
+ * l'inverse d'une cession. Masquer l'affirmation à cause du nombre de
+ * sous-traitants aurait fait disparaître une phrase qui reste vraie.
+ * Affichée sans condition, avec un détail qui explique la distinction —
+ * sans quoi « Aucune revente » juste au-dessus de la liste des sous-traitants
+ * (section suivante) paraîtrait se contredire elle-même à qui ne fait pas la
+ * différence entre sous-traitance et cession.
  */
 export default function PolitiqueConfidentialitePage() {
   /*
@@ -45,9 +55,10 @@ export default function PolitiqueConfidentialitePage() {
       detail: 'Aucun outil de suivi n’est installé sur le site.',
     },
     {
-      shown: processors.length <= 1,
+      shown: true,
       label: 'Aucune revente',
-      detail: 'Vos données ne sont ni vendues, ni cédées à des tiers.',
+      detail:
+        'Chaque prestataire agit sur nos instructions, pour la finalité que nous fixons — sans droit d’usage propre sur vos données, et sans jamais les vendre.',
     },
   ].filter((item) => item.shown);
 
@@ -89,27 +100,41 @@ export default function PolitiqueConfidentialitePage() {
 
       <LegalSections
         sections={[
-          ...privacySections.map((section) => ({
-            id: section.id,
-            title: section.title,
-            paragraphs: section.paragraphs,
-            body: section.items ? (
-              <ul className="mt-3 grid gap-2">
-                {section.items.map((item) => (
-                  <li
-                    key={item}
-                    className="flex gap-2.5 text-[0.9375rem] leading-[1.6] text-muted"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="mt-[0.55rem] size-1 shrink-0 rounded-full bg-white/25"
-                    />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : undefined,
-          })),
+          ...privacySections.map((section) => {
+            /*
+             * `sous-traitants` est la seule section dont la liste ne vient
+             * pas de `section.items` : elle vient de `company.processors`,
+             * lu ici plutôt que recopié en prose — même principe que le
+             * bandeau d'engagements plus haut, pour que cette liste ne
+             * puisse pas diverger du code qui la documente ailleurs.
+             */
+            const items =
+              section.id === 'sous-traitants'
+                ? processors.map((p) => `${p.name} — ${p.purpose} (${p.location})`)
+                : section.items;
+
+            return {
+              id: section.id,
+              title: section.title,
+              paragraphs: section.paragraphs,
+              body: items ? (
+                <ul className="mt-3 grid gap-2">
+                  {items.map((item) => (
+                    <li
+                      key={item}
+                      className="flex gap-2.5 text-[0.9375rem] leading-[1.6] text-muted"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="mt-[0.55rem] size-1 shrink-0 rounded-full bg-white/25"
+                      />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : undefined,
+            };
+          }),
           {
             id: 'reclamation',
             title: 'Réclamation',

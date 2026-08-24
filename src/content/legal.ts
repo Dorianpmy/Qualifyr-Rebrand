@@ -122,12 +122,17 @@ export const privacySections: readonly PrivacySection[] = [
     ],
   },
   {
+    /*
+     * Réécrit le 24/08/2026 : les prestataires ne sont plus décrits en
+     * prose ici, mais lus directement depuis `company.processors`
+     * (src/app/politique-de-confidentialite/page.tsx) — un seul endroit à
+     * tenir à jour, plutôt que deux qui peuvent diverger. Le paragraphe
+     * d'intro reste ici parce qu'il ne dépend d'aucune valeur du code.
+     */
     id: 'sous-traitants',
     title: 'Prestataires techniques',
     paragraphs: [
-      'Netlify assure l’hébergement et la distribution du site. Dans ce cadre, Netlify traite les informations techniques nécessaires à la réception et à la sécurisation des requêtes, et fournit au site le code pays utilisé pour la présélection tarifaire.',
-      'Mistral AI traite les données décrites ci-dessus (raison sociale, code d’activité, ville, tranche d’effectif) pour classer par pertinence les entreprises recensées, lorsqu’un professionnel abonné a décrit son activité. Il ne reçoit jamais d’adresse e-mail ni de jeton de désinscription, et ne rédige ni n’envoie aucun message.',
-      'Tout nouveau prestataire traitant des données sera nommé ici avec la raison de son intervention.',
+      'Chacun des prestataires ci-dessous traite des données pour notre compte, sur nos instructions, pour la finalité indiquée en face de son nom — jamais pour un usage qui lui serait propre. Tout nouveau prestataire apparaît ici dès qu’il est effectivement en place.',
     ],
   },
 ];

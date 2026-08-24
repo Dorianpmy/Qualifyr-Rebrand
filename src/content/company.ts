@@ -108,16 +108,76 @@ export const company = {
 /**
  * Sous-traitants qui traitent réellement des données.
  *
- * **Ne lister que des services effectivement en place.** Netlify héberge le
- * site en production (confirmé) — ajouté le 22/08/2026. Aucun autre
- * prestataire n'est configuré à ce jour : ni fournisseur d'e-mail, ni outil
- * de mesure d'audience.
+ * **Ne lister que des services effectivement en place.** Le commentaire
+ * précédent (« aucun autre prestataire n'est configuré à ce jour ») datait du
+ * 22/08/2026 et ne l'était déjà plus le lendemain : Resend envoie en
+ * production, Supabase porte la base et l'authentification, Stripe encaisse,
+ * Mistral classe les prospects Hermès depuis le 24/08/2026. Mis à jour le
+ * 24/08/2026 pour refléter les cinq.
+ *
+ * **`location` vient d'une source officielle du prestataire, ou de Dorian
+ * pour ce qu'aucune source publique ne documente** (le choix de région d'un
+ * projet Supabase, par exemple, est un réglage propre à ce projet — jamais
+ * une supposition à partir de la documentation générale du prestataire).
  */
 export const processors: readonly Processor[] = [
   {
     name: 'Netlify, Inc.',
-    purpose: 'Hébergement et distribution du site.',
+    purpose:
+      'Hébergement et distribution du site ; fournit le code pays utilisé pour la présélection tarifaire.',
     location: 'États-Unis',
+  },
+  {
+    name: 'Supabase, Inc.',
+    purpose:
+      'Base de données et authentification de l’espace professionnel : comptes, zones et prospects recensés, campagnes Hermès, réservations, abonnements.',
+    /*
+     * Deux faits distincts, aucun ne remplace l'autre : la région
+     * d'hébergement (un réglage du projet, confirmé par Dorian le
+     * 24/08/2026 : Irlande, eu-west-1) et le siège de la société
+     * (États-Unis, conditions Supabase). N'écrire que « Irlande » laisserait
+     * croire qu'aucune entité américaine n'est concernée ; n'écrire que
+     * « États-Unis » laisserait croire que les données y sont stockées.
+     * Région d'abord — c'est ce qui compte le plus pour un lecteur RGPD.
+     */
+    location: 'Irlande (eu-west-1, hébergement des données du projet) — siège de la société aux États-Unis',
+  },
+  {
+    name: 'Resend',
+    purpose:
+      'Envoi des e-mails du site : formulaires, réservations, factures, et prospection Hermès sur un sous-domaine d’expédition dédié.',
+    // Source : resend.com/legal/subprocessors — tous les sous-traitants
+    // listés (infrastructure AWS comprise) sont situés aux États-Unis.
+    location: 'États-Unis',
+  },
+  {
+    name: 'Stripe',
+    purpose:
+      'Paiement des abonnements Qualifyr et des acomptes clients des professionnels (Stripe Connect).',
+    /*
+     * Source : stripe.com/legal/privacy-center. Pour un marchand européen,
+     * l'entité contractante est Stripe Payments Europe, Limited (Irlande) ;
+     * Stripe Technology Company, Limited (Irlande) est l'établissement
+     * principal au sens du RGPD. Le traitement reste international
+     * (clauses contractuelles types / cadre UE-États-Unis de protection des
+     * données) — la page ne donne pas de localisation unique des serveurs.
+     */
+    location:
+      'Irlande (Stripe Payments Europe, Limited, entité contractante pour les marchands européens) — traitement international encadré par des clauses contractuelles types',
+  },
+  {
+    name: 'Mistral AI',
+    purpose:
+      'Classement des entreprises recensées par pertinence pour l’activité du professionnel (Hermès). Ne reçoit jamais l’adresse e-mail ni le jeton de désinscription — voir lib/agent/relevance.ts.',
+    /*
+     * Source : legal.mistral.ai (société) et legal.mistral.ai/terms/privacy-
+     * policy, qui énonce elle-même la nuance reprise ici plutôt qu'une
+     * affirmation plus simple mais moins fidèle : « nous privilégions des
+     * prestataires situés dans l'Union européenne [...], mais pouvons
+     * exceptionnellement recourir à des prestataires hors UE ».
+     */
+    location:
+      'France (siège, Paris) — hébergement annoncé prioritairement dans l’Union européenne, exceptions hors UE possibles selon la politique de confidentialité de Mistral',
   },
 ];
 

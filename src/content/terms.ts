@@ -113,6 +113,16 @@ export const termsSections: readonly TermsSection[] = [
     paragraphs: [
       'Le client peut activer une fonction de prospection qui adresse des messages électroniques, en son nom, aux entreprises recensées dans ses zones d’analyse. Il en définit le contenu, l’expéditeur affiché et l’adresse de réponse.',
       'Le client est l’expéditeur de ces messages et en assume le contenu. L’éditeur agit comme sous-traitant au sens de l’article 28 du règlement général sur la protection des données : il traite les données pour le compte du client, sur ses instructions, et ne les utilise à aucune autre fin.',
+      /*
+       * Ajouté le 24/08/2026 : sans cette phrase, cet article et la
+       * politique de confidentialité auraient décrit deux réalités
+       * différentes dès l'introduction du classement par pertinence — la
+       * politique nommant Mistral, les CGV restant muettes sur le fait que
+       * l'éditeur recourt lui-même à un sous-traitant ultérieur pour une
+       * partie du traitement. L'article 28.4 du RGPD impose précisément que
+       * les mêmes garanties s'appliquent à ce sous-traitant ultérieur.
+       */
+      'Pour classer les entreprises recensées par pertinence, l’éditeur recourt à un sous-traitant ultérieur (Mistral AI), dans les mêmes conditions : sur instruction, pour cette seule finalité, sans droit d’usage propre sur les données. Le détail de ce qui lui est transmis figure dans la politique de confidentialité.',
       'L’éditeur ajoute automatiquement à chaque message, sans possibilité de retrait par le client, l’identité de l’expéditeur, l’origine des données de contact et un lien de désengagement fonctionnel. Une entreprise qui se désengage cesse d’être contactée par l’ensemble des clients du service, et non par le seul expéditeur du message reçu.',
       'Le client s’interdit d’utiliser cette fonction pour adresser des contenus sans rapport avec son activité, trompeurs, ou destinés à des personnes physiques agissant en dehors de leur activité professionnelle.',
       'Un volume quotidien maximal est appliqué à chaque compte. L’éditeur peut suspendre la fonction, sans préavis, en cas de signalement d’abus, de taux de rejet anormal ou d’atteinte à la réputation d’expédition du service. La suspension ne donne lieu à aucun remboursement au prorata lorsqu’elle résulte d’un manquement du client.',
@@ -123,7 +133,15 @@ export const termsSections: readonly TermsSection[] = [
     id: 'disponibilite',
     title: 'Disponibilité et limites',
     paragraphs: [
-      'Le service est fourni sans garantie de disponibilité ininterrompue. Il dépend de services tiers — hébergement, Stripe, INSEE, service d’envoi de courrier électronique — dont les interruptions peuvent l’affecter.',
+      /*
+       * Supabase ajouté le 24/08/2026 : sans base de données ni
+       * authentification, l'espace professionnel est entièrement
+       * inutilisable — omis jusqu'ici alors que Stripe et INSEE, moins
+       * centraux, y figuraient déjà. Mistral n'y figure délibérément pas :
+       * son indisponibilité ne dégrade jamais le service (voir l'article
+       * sur la prospection automatisée et CLAUDE.md, garde-fou n°3).
+       */
+      'Le service est fourni sans garantie de disponibilité ininterrompue. Il dépend de services tiers — hébergement, base de données, Stripe, INSEE, service d’envoi de courrier électronique — dont les interruptions peuvent l’affecter.',
       'Aucun résultat commercial n’est garanti. Le nombre de demandes, de réservations ou de clients obtenus ne dépend pas du logiciel seul.',
       'La responsabilité de l’éditeur, en cas de manquement établi, est limitée aux sommes effectivement versées au titre de l’abonnement sur les douze mois précédant le fait générateur.',
     ],
