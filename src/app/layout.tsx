@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import { Header } from '@/components/layout/Header';
-import { FloatingWhatsApp } from '@/components/agency/FloatingWhatsApp';
+import { WhatsAppBadge } from '@/components/agency/WhatsAppBadge';
 import { AttributionCapture } from '@/components/agency/AttributionCapture';
 import { Footer } from '@/components/layout/Footer';
 import { SkipLink } from '@/components/layout/SkipLink';
@@ -108,9 +108,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <div data-legacy-chrome="header">
           <Header />
         </div>
-        <div data-legacy-chrome="whatsapp">
-          <FloatingWhatsApp />
-        </div>
+        {/* Hors `data-legacy-chrome` : c'est tout l'intérêt du remplacement.
+            `FloatingWhatsApp` vivait à l'intérieur, donc masqué par
+            `body:has(main [data-theme='dark']) [data-legacy-chrome]` — le
+            badge n'existait plus sur aucune page sombre, c'est-à-dire sur
+            l'essentiel du site refait. Le nouveau badge se cache lui-même sur
+            `/app` et `/reservation`, par son propre test de chemin. */}
+        <WhatsAppBadge />
 
         <main id="contenu">{children}</main>
 

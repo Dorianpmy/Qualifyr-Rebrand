@@ -1,0 +1,74 @@
+/*
+ * Badge WhatsApp flottant.
+ *
+ * Charbon et ivoire, comme le reste du site — jamais le vert de la marque
+ * WhatsApp, interdit par la charte. Discret au repos, il ne prend la lumière
+ * qu'au survol.
+ */
+
+.badge {
+  position: fixed;
+  /* `env(safe-area-inset-*)` : sur iPhone, le bas de l'écran est mangé par la
+     barre d'accueil. Sans cette marge, le badge se retrouve dessous et devient
+     difficile à toucher. */
+  right: calc(1rem + env(safe-area-inset-right, 0px));
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+
+  /* 48px : au-dessus des 44px exigés par le référentiel d'accessibilité du
+     projet, avec de la marge pour un doigt qui vise mal. */
+  display: inline-flex;
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 999px;
+  border: 1px solid rgba(245, 247, 250, 0.14);
+  background: #08090b;
+  color: #f5f7fa;
+
+  /* Deux ombres : une portée large qui décolle le badge du fond quelle que
+     soit la section survolée, une interne fine qui dessine le bord sur les
+     fonds clairs, où la bordure seule disparaît. */
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.28),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+
+  /* Au-dessus du contenu, sous le menu mobile (z-index 10000) : un badge qui
+     recouvrirait la navigation ouverte serait un piège. */
+  z-index: 900;
+
+  transition:
+    transform var(--duration-fast, 160ms) var(--ease-out, ease),
+    background-color var(--duration-fast, 160ms) var(--ease-out, ease),
+    border-color var(--duration-fast, 160ms) var(--ease-out, ease);
+}
+
+.badge:hover {
+  background: #14161a;
+  border-color: rgba(245, 247, 250, 0.28);
+  transform: translateY(-2px);
+}
+
+.badge:focus-visible {
+  outline: 2px solid #f5f7fa;
+  outline-offset: 3px;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* Le déplacement au survol est un agrément, pas une information : il disparaît
+   pour qui a demandé de réduire les animations. Les changements de couleur
+   restent, eux, parce qu'ils signalent l'état. */
+@media (prefers-reduced-motion: reduce) {
+  .badge {
+    transition: none;
+  }
+
+  .badge:hover {
+    transform: none;
+  }
+}

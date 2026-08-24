@@ -48,6 +48,16 @@ export function Section({
       id={id}
       data-theme="dark"
       aria-labelledby={labelledBy}
+      /* Révélation au défilement (24/08/2026). `RevealObserver`, monté dans le
+         layout, observe tout ce qui porte cet attribut ; `layout/Section` le
+         posait déjà, pas celui-ci — donc l'effet existait sur les anciennes
+         pages et nulle part sur les pages sombres, qui sont l'essentiel du
+         site refait.
+         Le masquage initial est en CSS, sous `prefers-reduced-motion:
+         no-preference` : sans JavaScript, avec un script en échec, ou pour qui
+         a réduit les animations, la page reste intégralement lisible. Aucun
+         contenu n'attend une animation pour exister. */
+      data-reveal-target
       /* `relative` et `isolate` en permanence : sans le contexte
          d'empilement, un halo de 120 px de flou déborderait sur les sections
          voisines et s'additionnerait au leur. */
