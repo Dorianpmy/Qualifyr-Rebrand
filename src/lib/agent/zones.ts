@@ -73,15 +73,19 @@ export async function requestZone(input: RequestZoneInput): Promise<RequestZoneR
   const zone = input.postalCode.trim();
   const country = zone.length === 4 ? 'CH' : 'FR';
 
-  if (country === 'CH') {
-    return {
-      ok: false,
-      status: 422,
-      error: 'zone_non_couverte',
-      message:
-        'L’analyse de secteur n’est disponible qu’en France pour le moment. Le SaaS de réservation, lui, fonctionne déjà en Suisse.',
-    };
-  }
+  /*
+   * La Suisse est couverte depuis le 09/09/2026.
+   *
+   * Le refus qui se trouvait ici tenait à la source, pas au produit : Sirene
+   * est le répertoire des entreprises françaises et n'a rien à dire au-delà.
+   * Le recensement suisse s'appuie désormais sur Google Places
+   * (`lib/agent/google-places.ts`), choisi selon `country` au moment de
+   * l'analyse.
+   *
+   * Ce que le rapport suisse ne peut pas contenir — code d'activité officiel,
+   * tranche d'effectif — est dit dans le rapport lui-même plutôt que masqué
+   * par des colonnes vides.
+   */
 
   const { data: existing } = await supabase
     .from('agent_zones')

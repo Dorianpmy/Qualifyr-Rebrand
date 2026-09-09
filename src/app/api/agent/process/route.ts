@@ -3,6 +3,7 @@ import { Resend } from 'resend';
 import { isProduction } from '@/lib/env';
 import { getServiceSupabaseClient } from '@/lib/detailing/supabase-server';
 import { SEGMENTS, countBySegment, scanZone } from '@/lib/agent/sirene';
+import { scanZoneGoogle } from '@/lib/agent/google-places';
 import { buildReportErrorMessage, nextReportState } from '@/lib/agent/report-retry';
 import { nearbyPostalCodes } from '@/lib/agent/postal-codes';
 
@@ -239,7 +240,7 @@ export async function POST(request: Request) {
 
   let zoneResult = await supabase
     .from('agent_zones')
-    .select('id, email, postal_code, radius_km')
+    .select('id, email, postal_code, radius_km, country')
     .eq('status', 'en_attente')
     .order('created_at', { ascending: true })
     .limit(1)
@@ -255,7 +256,7 @@ export async function POST(request: Request) {
      */
     zoneResult = await supabase
       .from('agent_zones')
-      .select('id, email, postal_code, radius_km')
+      .select('id, email, postal_code, radius_km, country')
       .eq('status', 'en_cours')
       .lt('locked_at', lockThreshold)
       .order('locked_at', { ascending: true })
@@ -278,10 +279,23 @@ export async function POST(request: Request) {
       .eq('id', zone.id);
 
     try {
-      const { establishments, errors } = await scanZone({
-        postalCodes: nearbyPostalCodes(zone.postal_code as string, Number(zone.radius_km)),
-        perSegment: 20,
-      });
+      /*
+       * La source dépend du pays, et c'est le seul endroit où ce choix se
+       * fait. Sirene est le répertoire officiel français : SIRET, code
+       * d'activité, tranche d'effectif. Il n'a rien à dire hors de France, où
+       * Google Places prend le relais — un annuaire commercial, donc sans ces
+       * trois informations, ce que le rapport suisse énonce plutôt que de le
+       * masquer par des colonnes vides.
+       */
+      const country = (zone.country as string | null) ?? 'FR';
+      const postalCodes = nearbyPostalCodes(zone.postal_code as string, Number(zone.radius_km));
+
+      const scan =
+        country === 'FR'
+          ? await scanZone({ postalCodes, perSegment: 20 })
+          : await scanZoneGoogle({ postalCodes, countryLabel: 'Suisse', perSegment: 20 });
+
+      const { establishments, errors } = scan;
 
       // Diagnostic temporaire : les erreurs par segment n'étaient nulle part
       // visibles avant ce log — seul leur nombre remontait dans la réponse HTTP.
@@ -309,20 +323,42 @@ export async function POST(request: Request) {
           .eq('zone_id', zone.id);
 
         if (!alreadyInserted) {
+          /*
+           * Les deux sources ne portent pas les mêmes champs, et aucune ne
+           * doit prétendre porter ceux de l'autre : fabriquer un faux SIRET
+           * ou un code d'activité déduit pour uniformiser l'insertion
+           * inventerait une donnée officielle que personne n'a émise.
+           * `external_id` (migration 023) remplace le SIRET pour la
+           * déduplication hors de France.
+           */
           await supabase.from('agent_prospects').insert(
-            establishments.map((item) => ({
-              zone_id: zone.id,
-              siret: item.siret,
-              name: item.name,
-              naf_code: item.nafCode,
-              segment: item.segment,
-              address: item.address,
-              postal_code: item.postalCode,
-              city: item.city,
-              workforce_range: item.workforceRange,
-              source: 'sirene',
-              legal_basis: 'interet_legitime',
-            })),
+            establishments.map((item) => {
+              const common = {
+                zone_id: zone.id,
+                name: item.name,
+                segment: item.segment,
+                address: item.address,
+                postal_code: item.postalCode,
+                city: item.city,
+                legal_basis: 'interet_legitime',
+              };
+
+              return 'siret' in item
+                ? {
+                    ...common,
+                    siret: item.siret,
+                    naf_code: item.nafCode,
+                    workforce_range: item.workforceRange,
+                    source: 'sirene',
+                  }
+                : {
+                    ...common,
+                    external_id: item.externalId,
+                    website: item.website,
+                    phone: item.phone,
+                    source: 'google_places',
+                  };
+            }),
           );
         }
       }

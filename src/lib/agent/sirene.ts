@@ -257,9 +257,16 @@ export async function scanZone(input: {
   return { establishments: found, errors };
 }
 
-/** Répartition par segment, pour le rapport et la colonne `segments`. */
+/**
+ * Répartition par segment, pour le rapport et la colonne `segments`.
+ *
+ * Le paramètre ne demande que `segment` : c'est tout ce que ce comptage
+ * regarde, et l'élargir ainsi permet de servir les deux sources — Sirene et
+ * Google Places — sans dupliquer la fonction ni forcer la seconde à fabriquer
+ * un SIRET qu'elle n'a pas.
+ */
 export function countBySegment(
-  establishments: readonly Establishment[],
+  establishments: readonly { readonly segment: SegmentKey }[],
 ): Record<SegmentKey, number> {
   const counts = Object.fromEntries(SEGMENTS.map((s) => [s.key, 0])) as Record<SegmentKey, number>;
   for (const item of establishments) counts[item.segment] += 1;

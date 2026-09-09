@@ -139,6 +139,20 @@ export const REQUIRED_ENV: readonly EnvRequirement[] = [
     requiredInDev: false,
   },
   {
+    /*
+     * Recensement hors de France. Sirene s'arrête à la frontière ; Google
+     * Places prend le relais pour la Suisse (`lib/agent/google-places.ts`).
+     *
+     * Son absence ne dégrade rien en France : `scanZone` reste choisi pour
+     * les zones françaises, et une zone suisse échoue proprement avec ses
+     * erreurs rapportées, sans faux succès.
+     */
+    name: 'GOOGLE_PLACES_API_KEY',
+    consequence:
+      'aucune analyse de secteur hors de France n’aboutit — la Suisse redevient non couverte',
+    requiredInDev: false,
+  },
+  {
     name: 'RESEND_WEBHOOK_SECRET',
     consequence:
       'aucun rebond ni aucune plainte n’alimente la liste de suppression : Hermès continue d’écrire à des adresses mortes',
