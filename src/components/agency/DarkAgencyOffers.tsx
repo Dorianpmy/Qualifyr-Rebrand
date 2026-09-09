@@ -47,6 +47,39 @@ type Offer = {
 
 const offers: readonly Offer[] = [
   {
+    /*
+     * Mise en place du compte (09/09/2026).
+     *
+     * **Elle répond à un frein observé, pas à une envie de vendre plus.** Un
+     * laveur qui passe ses journées sur des véhicules n'a pas forcément le
+     * goût de saisir une grille tarifaire, des durées et des créneaux — et
+     * c'est précisément ce travail qui conditionne l'utilité du logiciel :
+     * une page de réservation sans prestations ne sert à rien. L'abonnement
+     * reste utilisable seul ; cette prestation ne fait qu'épargner la
+     * première heure à qui ne veut pas la passer.
+     *
+     * **Ce qui est promis ici est exactement ce que l'espace pro permet de
+     * régler.** Aucune ligne ne décrit une capacité que le produit n'a pas —
+     * c'est la même règle que pour les offres SaaS, et elle vaut d'autant
+     * plus ici que le client paie pour un travail qu'il pourrait vérifier
+     * lui-même.
+     */
+    kicker: 'Accompagnement',
+    title: 'Mise en place de votre compte',
+    from: 90,
+    to: 90,
+    audience:
+      'Vous préférez que tout soit prêt plutôt que de le saisir vous-même.',
+    items: [
+      'Vos prestations, leurs durées et vos tarifs',
+      'Vos disponibilités et votre zone de déplacement',
+      'Le montant d’acompte et les délais de réservation',
+      'Un échange pour vérifier que la page correspond à votre activité',
+    ],
+    href: '/contact',
+    linkLabel: 'Demander la mise en place',
+  },
+  {
     kicker: 'Agence · Vitrine',
     title: 'Site vitrine',
     from: 690,
@@ -98,10 +131,15 @@ function OfferCard({ offer, region }: { readonly offer: Offer; readonly region: 
         {offer.title}
       </h3>
 
+      {/* Prix fixe ou fourchette selon l'offre. « 90 – 90 € » se lirait comme
+          une erreur de saisie : quand les deux bornes coïncident, le montant
+          s'affiche seul, et c'est justement ce qui distingue une prestation
+          cadrée d'un projet sur devis. */}
       <p className="mb-4 flex items-baseline gap-1.5">
         <span className="text-[1.5rem] font-bold leading-none tracking-[-0.025em] tabular-nums text-primary">
-          {formatMoney(convert(offer.from, region), region)} –{' '}
-          {formatMoney(convert(offer.to, region), region)}
+          {offer.from === offer.to
+            ? formatMoney(convert(offer.from, region), region)
+            : `${formatMoney(convert(offer.from, region), region)} – ${formatMoney(convert(offer.to, region), region)}`}
         </span>
         <span className="text-[0.8125rem] font-medium text-faint">une fois</span>
       </p>
@@ -154,12 +192,16 @@ export function DarkAgencyOffers() {
     <Section labelledBy="agency-offers-title" className="border-t border-hairline py-24">
       <SectionHead
         eyebrow="En plus du logiciel"
-        title="Besoin d’un site, en une fois ?"
-        lead="Le logiciel se loue au mois, sans engagement. Un site sur mesure — vitrine ou parcours de demande complet — se vend séparément, à devis."
+        title="Ce qui se paie une seule fois"
+        lead="Le logiciel se loue au mois, sans engagement. La mise en place de votre compte et la création d’un site se règlent à part, en une fois."
         id="agency-offers-title"
       />
 
-      <div className="mx-auto grid max-w-[46rem] gap-4 sm:grid-cols-2">
+      {/* Trois offres depuis le 09/09/2026 : la grille passe en trois
+          colonnes et s'élargit, sinon la troisième carte tombait seule sur
+          une deuxième ligne, ce qui la faisait lire comme une note de bas de
+          page plutôt que comme une offre. */}
+      <div className="mx-auto grid max-w-[68rem] gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {offers.map((offer) => (
           <OfferCard key={offer.title} offer={offer} region={region} />
         ))}
