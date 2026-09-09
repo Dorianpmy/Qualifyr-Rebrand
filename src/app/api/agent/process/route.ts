@@ -109,6 +109,8 @@ function reportHtml(input: {
   readonly counts: Record<string, number>;
   readonly total: number;
   readonly samples: readonly ReportSample[];
+  /** `FR` ou `CH` : décide de la source citée et des limites annoncées. */
+  readonly country: string;
 }): string {
   const rows = SEGMENTS.filter((segment) => (input.counts[segment.key] ?? 0) > 0)
     .map(
@@ -133,6 +135,17 @@ function reportHtml(input: {
     )
     .join('');
 
+  const methodNote =
+    input.country === 'FR'
+      ? `Source : répertoire Sirene de l’INSEE, établissements en activité, recherche par code
+         postal autour du ${input.postalCode}. Ce sont des entreprises, pas des particuliers.`
+      : `Source : fiches d’établissements publiées sur Google, recherche par code postal autour
+         du ${input.postalCode}. Ce sont des entreprises, pas des particuliers. Hors de France,
+         aucun répertoire officiel équivalent au Sirene n’est interrogeable : ce recensement
+         s’appuie donc sur un annuaire commercial, qui ne connaît que les entreprises qui y
+         figurent, et n’indique ni code d’activité officiel ni effectif. Une entreprise absente
+         de cette liste peut très bien exister.`;
+
   return `
 <div style="font-family:system-ui,-apple-system,sans-serif;max-width:560px;margin:0 auto;color:#111;">
   <p style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#888;margin:0 0 6px;">
@@ -155,10 +168,16 @@ function reportHtml(input: {
 
   <!-- La méthode est dite, pas cachée. Un professionnel qui compte lui-même
        les loueurs de sa rue doit retrouver nos chiffres, ou comprendre
-       pourquoi ils diffèrent. -->
+       pourquoi ils diffèrent.
+
+       Hors de France, ce paragraphe dit aussi ce que le recensement ne peut
+       pas faire. Un annuaire commercial ne connaît que les entreprises qui
+       s'y sont inscrites : taire cette différence laisserait croire à un
+       relevé exhaustif, et un professionnel qui ne trouve pas son voisin dans
+       la liste en conclurait que l'outil se trompe plutôt qu'il ne couvre
+       pas. -->
   <p style="font-size:12px;color:#888;line-height:1.5;border-top:1px solid #eee;padding-top:16px;">
-    Source : répertoire Sirene de l’INSEE, établissements en activité, recherche par code postal
-    autour du ${input.postalCode}. Ce sont des entreprises, pas des particuliers.
+    ${methodNote}
     Vous recevez ce message parce que vous avez demandé une analyse sur qualifyragence.com.
   </p>
 </div>`;
@@ -191,6 +210,7 @@ async function attemptReportSend(input: {
   readonly postalCode: string;
   readonly counts: Record<string, number>;
   readonly samples: readonly ReportSample[];
+  readonly country: string;
 }): Promise<{ readonly reportSent: boolean; readonly sendFailureReason: string | null }> {
   if (input.total === 0) return { reportSent: false, sendFailureReason: null };
 
@@ -211,6 +231,7 @@ async function attemptReportSend(input: {
       counts: input.counts,
       total: input.total,
       samples: input.samples,
+      country: input.country,
     }),
   });
 
@@ -371,6 +392,7 @@ export async function POST(request: Request) {
         postalCode: zone.postal_code as string,
         counts,
         samples: establishments,
+        country,
       });
 
       const outcome = nextReportState({
@@ -434,7 +456,7 @@ export async function POST(request: Request) {
 
   const { data: pendingReports } = await supabase
     .from('agent_zones')
-    .select('id, email, postal_code, segments, report_attempts, report_first_failed_at')
+    .select('id, email, postal_code, country, segments, report_attempts, report_first_failed_at')
     .eq('status', 'rapport_en_attente')
     .or(`locked_at.is.null,locked_at.lt.${lockThreshold}`)
     .order('report_first_failed_at', { ascending: true })
@@ -475,6 +497,10 @@ export async function POST(request: Request) {
           email: pending.email as string,
           postalCode: pending.postal_code as string,
           counts,
+          /* Le renvoi doit citer la même source que l'envoi d'origine : un
+             rapport suisse qui se réclamerait du Sirene à la seconde tentative
+             serait faux, et personne ne comparerait les deux. */
+          country: (pending.country as string | null) ?? 'FR',
           samples,
         });
 
