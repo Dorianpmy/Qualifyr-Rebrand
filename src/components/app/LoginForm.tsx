@@ -66,6 +66,31 @@ export function LoginForm() {
     }
   }
 
+  async function onPasswordReset(event: FormEvent) {
+    event.preventDefault();
+    setPending(true);
+    setMessage(null);
+    setError(null);
+
+    try {
+      /* `redirectTo` n'est pas transmis : la route l'impose depuis l'origine
+         de la requête. Une adresse forgée renverrait sinon le lien de
+         récupération — donc la session — vers un domaine tiers. */
+      const res = await fetch('/api/app/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = (await res.json()) as { ok: boolean; message: string };
+      if (data.ok) setMessage(data.message);
+      else setError(data.message || 'Envoi impossible.');
+    } catch {
+      setError('Envoi impossible. Réessayez.');
+    } finally {
+      setPending(false);
+    }
+  }
+
   return (
     <div>
       <form onSubmit={onPasswordLogin}>
@@ -115,6 +140,22 @@ export function LoginForm() {
       <form onSubmit={onMagicLink}>
         <button className={styles.btnGhostLogin} type="submit" disabled={pending || !email}>
           Recevoir un lien magique
+        </button>
+      </form>
+
+      {/* Définition du mot de passe (01/09/2026).
+
+          Le champ « Mot de passe » ci-dessus existait depuis le début, et
+          aucun écran ne permettait d'en créer un : tout compte né d'un lien
+          magique — donc tous — se heurtait à un cul-de-sac. Le premier
+          utilisateur réel a cru avoir raté une étape à l'inscription.
+
+          Le libellé dit « définir ou changer » plutôt que « mot de passe
+          oublié » : la plupart des comptes n'en ont jamais eu, et « oublié »
+          leur ferait chercher une faute de leur côté. */}
+      <form onSubmit={onPasswordReset}>
+        <button className={styles.btnGhostLogin} type="submit" disabled={pending || !email}>
+          Définir ou changer mon mot de passe
         </button>
       </form>
 

@@ -86,6 +86,73 @@ export async function sendMagicLink(email: string, redirectTo: string): Promise<
   return { ok: true, message: 'Lien envoyé. Vérifiez votre boîte mail.' };
 }
 
+/**
+ * Envoie un lien de définition de mot de passe.
+ *
+ * **Le formulaire de connexion proposait un mot de passe que personne ne
+ * pouvait créer.** `login-password` vérifiait un mot de passe depuis le
+ * début, mais aucun écran n'en définissait : le champ était donc un cul-de-sac
+ * pour tout compte né d'un lien magique — c'est-à-dire tous. Signalé le
+ * 01/09/2026 par le premier utilisateur réel, qui a cru avoir raté une étape.
+ *
+ * **La réponse ne dit jamais si l'adresse existe.** `resetPasswordForEmail`
+ * renvoie une erreur explicite pour un compte inconnu ; la relayer
+ * transformerait cet écran en outil d'énumération, permettant de tester des
+ * adresses une à une pour savoir qui est client. Le message est donc le même
+ * dans les deux cas, et l'erreur ne part qu'en journal serveur.
+ */
+export async function sendPasswordReset(
+  email: string,
+  redirectTo: string,
+): Promise<{ ok: boolean; message: string }> {
+  const env = detailingPublicEnv();
+  if (!env) return { ok: false, message: 'Supabase non configuré.' };
+
+  const client = createClient(env.url, env.anonKey, {
+    auth: { persistSession: false },
+  });
+
+  const { error } = await client.auth.resetPasswordForEmail(email, { redirectTo });
+  if (error) console.warn('[auth] réinitialisation impossible', error.message);
+
+  return {
+    ok: true,
+    message:
+      'Si un compte existe pour cette adresse, un lien de définition de mot de passe vient d’être envoyé.',
+  };
+}
+
+/**
+ * Définit le mot de passe du compte connecté.
+ *
+ * Suppose une session valide : elle vient soit du lien de récupération (que
+ * `/app/auth/confirm` a déjà échangé contre des cookies), soit d'un
+ * professionnel déjà connecté qui veut en changer. Dans les deux cas,
+ * l'ancienne valeur n'est pas demandée — Supabase considère la possession
+ * d'une session comme la preuve, et redemander un mot de passe qu'on vient
+ * justement d'oublier n'aurait pas de sens.
+ */
+export async function setPassword(
+  accessToken: string,
+  password: string,
+): Promise<{ ok: boolean; message: string }> {
+  const env = detailingPublicEnv();
+  if (!env) return { ok: false, message: 'Supabase non configuré.' };
+
+  const client = createClient(env.url, env.anonKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+    global: { headers: { Authorization: `Bearer ${accessToken}` } },
+  });
+
+  const { error } = await client.auth.updateUser({ password });
+  if (error) {
+    console.warn('[auth] définition du mot de passe impossible', error.message);
+    return { ok: false, message: 'Définition impossible. Le lien a peut-être expiré.' };
+  }
+
+  return { ok: true, message: 'Mot de passe enregistré.' };
+}
+
 /** Échange le token du magic link contre une session. */
 export async function exchangeMagicToken(tokenHash: string, type: string) {
   const env = detailingServiceEnv() ?? detailingPublicEnv();

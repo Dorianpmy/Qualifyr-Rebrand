@@ -40,7 +40,12 @@ export default function AuthConfirmPage() {
           setMessage(data.message ?? 'Session impossible.');
           return;
         }
-        router.replace('/app');
+        /* Un lien de récupération mène à la définition du mot de passe, pas
+           au tableau de bord : la session est établie, mais l'intention du
+           professionnel était de choisir un mot de passe. L'envoyer sur son
+           planning l'obligerait à retrouver l'écran par lui-même — et il n'y
+           a pas de menu vers lui. */
+        router.replace(type === 'recovery' ? '/app/mot-de-passe' : '/app');
       } catch {
         setMessage('Erreur réseau. Réessayez.');
       }
