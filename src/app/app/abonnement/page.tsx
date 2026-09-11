@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { BillingPortalButton } from '@/components/app/BillingPortalButton';
 import { redirect } from 'next/navigation';
 import { AppShell } from '@/components/app/AppShell';
 import { capabilitiesOf, type Capability } from '@/lib/billing/entitlements';
@@ -216,13 +217,34 @@ export default async function SubscriptionPage() {
               ))}
             </ul>
 
-            {entitlement.plan !== 'complete' ? (
-              <div style={{ marginTop: '1.35rem' }}>
-                <Link href="/tarifs" className={`app-ghost ${styles.btnGhost}`}>
+            {/* Le portail plutôt qu'un retour vers `/tarifs`.
+
+                Repasser par la page publique crée un **second** abonnement
+                Stripe : les droits s'ouvrent, mais les deux prélèvements
+                courent en parallèle, et rien ici ne le signale puisque la base
+                ne connaît qu'un abonnement vivant à la fois. Le portail modifie
+                l'abonnement existant et calcule le prorata.
+
+                Affiché quelle que soit l'offre, y compris `complete` : on n'y
+                change pas seulement de formule, on y trouve aussi ses factures,
+                sa carte et la résiliation. */}
+            <div style={{ marginTop: '1.35rem', display: 'grid', gap: '0.75rem' }}>
+              <BillingPortalButton
+                label={
+                  entitlement.plan === 'complete'
+                    ? 'Gérer mon abonnement'
+                    : 'Changer d’offre ou gérer mon abonnement'
+                }
+              />
+              {entitlement.plan !== 'complete' ? (
+                <Link
+                  href="/tarifs"
+                  style={{ fontSize: '0.8125rem', color: '#7a8190' }}
+                >
                   Comparer les offres
                 </Link>
-              </div>
-            ) : null}
+              ) : null}
+            </div>
           </div>
         ) : null}
       </main>

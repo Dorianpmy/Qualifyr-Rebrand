@@ -183,6 +183,62 @@ export async function createSubscriptionCheckout(input: {
 }
 
 /**
+ * Ouvre le portail client Stripe.
+ *
+ * **Il règle un problème que le Checkout ne peut pas résoudre : le changement
+ * d'offre.** Un abonné à l'Agent qui passe au Pack complet en repassant par
+ * `/tarifs` crée un **second** abonnement Stripe. Ses droits s'ouvrent bien —
+ * le webhook clôture le précédent en base — mais Stripe, lui, garde les deux
+ * actifs et prélève 17 € **et** 59 €. Le client paie deux fois, et rien de ce
+ * côté-ci ne le signale, puisque la base ne connaît qu'un abonnement vivant.
+ *
+ * Depuis le portail, Stripe modifie l'abonnement existant au lieu d'en créer
+ * un autre, et calcule le prorata : le client ne paie que la différence pour
+ * la période en cours. C'est le comportement qu'attend n'importe qui ayant
+ * déjà changé de forfait ailleurs.
+ *
+ * **Le portail gère aussi ce qu'on n'a pas écrit** : changement de carte,
+ * téléchargement des factures, résiliation. Les développer à la main
+ * reviendrait à réécrire moins bien ce que Stripe maintient déjà.
+ *
+ * **Il faut l'activer dans le tableau de bord Stripe** (Paramètres →
+ * Facturation → Portail client) et y autoriser explicitement le changement
+ * d'offre, en y déclarant les six Prices. Sans cette configuration, le
+ * portail s'ouvre mais ne propose que la résiliation — l'API ne peut pas la
+ * suppléer.
+ */
+export async function createBillingPortalSession(input: {
+  readonly customerId: string;
+  readonly returnUrl: string;
+}): Promise<{ readonly url: string }> {
+  const body = new URLSearchParams({
+    customer: input.customerId,
+    return_url: input.returnUrl,
+  }).toString();
+
+  const response = await fetch(`${API}/billing_portal/sessions`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${secretKey()}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body,
+    cache: 'no-store',
+  });
+
+  const payload = (await response.json()) as {
+    url?: string;
+    error?: { message?: string };
+  };
+
+  if (!response.ok || !payload.url) {
+    throw new Error(payload.error?.message ?? `Stripe a répondu ${response.status}.`);
+  }
+
+  return { url: payload.url };
+}
+
+/**
  * Vérifie la signature d'un webhook Stripe.
  *
  * Copie volontaire de `verifyWebhookSignature` dans `lib/detailing/stripe.ts`
