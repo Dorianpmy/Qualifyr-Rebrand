@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+import Image from 'next/image';
 import { AppShell } from '@/components/app/AppShell';
 import { LockedModule } from '@/components/app/LockedModule';
 import { pageAccess } from '@/lib/billing/page-guard';
@@ -66,10 +67,26 @@ export default async function CasesPage() {
             {cases.map((c) => (
               <article key={c.id} className={styles.caseCard}>
                 <div className={styles.casePair}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={c.before_url} alt={`${c.title} — avant`} />
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={c.after_url} alt={`${c.title} — après`} />
+                  {/* `next/image` plutôt qu'un `<img>` brut : compression
+                      AVIF/WebP automatique et chargement différé — les
+                      photos avant/après (souvent lourdes, prises au
+                      téléphone) faisaient partie de la lenteur observée sur
+                      ce module. Dimensions 4:3 pour coller à `.casePair img`
+                      (aspect-ratio déjà fixé en CSS, object-fit: cover). */}
+                  <Image
+                    src={c.before_url}
+                    alt={`${c.title} — avant`}
+                    width={800}
+                    height={600}
+                    sizes="(min-width: 640px) 50vw, 100vw"
+                  />
+                  <Image
+                    src={c.after_url}
+                    alt={`${c.title} — après`}
+                    width={800}
+                    height={600}
+                    sizes="(min-width: 640px) 50vw, 100vw"
+                  />
                 </div>
                 <div className={styles.caseMeta}>
                   <strong>{c.title}</strong>

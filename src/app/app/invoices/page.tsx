@@ -79,41 +79,67 @@ export default async function InvoicesPage() {
               </p>
             </div>
           ) : (
-            <table className={styles.table} style={{ display: 'table' }}>
-              <thead>
-                <tr>
-                  <th>N°</th>
-                  <th>Client</th>
-                  <th>Montant TTC</th>
-                  <th>Statut</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
+            <>
+              {/* Mobile : liste de cartes, pas un tableau à cinq colonnes.
+                  Un tableau forcé visible sous 720px (comme avant, via
+                  `style={{ display: 'table' }}`) déborde l'écran — c'est ce
+                  qui rendait la page « trop large » sur ce module. */}
+              <div className={styles.mobileList}>
                 {invoices.map((inv) => (
-                  <tr key={inv.id}>
-                    <td>
+                  <Link
+                    key={inv.id}
+                    href={`/app/invoices/${inv.id}`}
+                    className={styles.mobileCard}
+                  >
+                    <div className={styles.mobileCardTop}>
                       <span className={styles.clientName}>{inv.number}</span>
-                    </td>
-                    <td>
-                      <span className={styles.clientName}>{inv.client_name}</span>
-                      {inv.client_siren ? (
-                        <div className={styles.clientMeta}>SIREN {inv.client_siren}</div>
-                      ) : null}
-                    </td>
-                    <td>{formatMoney(Number(inv.amount_ttc))}</td>
-                    <td>
                       <span className={styles.badge}>{STATUS[inv.status] ?? inv.status}</span>
-                    </td>
-                    <td>
-                      <Link href={`/app/invoices/${inv.id}`} className={`app-ghost ${styles.btnGhost}`}>
-                        Voir / PDF
-                      </Link>
-                    </td>
-                  </tr>
+                    </div>
+                    <div className={styles.clientMeta}>
+                      {inv.client_name}
+                      {inv.client_siren ? ` · SIREN ${inv.client_siren}` : ''}
+                    </div>
+                    <div className={styles.clientMeta}>{formatMoney(Number(inv.amount_ttc))}</div>
+                  </Link>
                 ))}
-              </tbody>
-            </table>
+              </div>
+
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>N°</th>
+                    <th>Client</th>
+                    <th>Montant TTC</th>
+                    <th>Statut</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {invoices.map((inv) => (
+                    <tr key={inv.id}>
+                      <td>
+                        <span className={styles.clientName}>{inv.number}</span>
+                      </td>
+                      <td>
+                        <span className={styles.clientName}>{inv.client_name}</span>
+                        {inv.client_siren ? (
+                          <div className={styles.clientMeta}>SIREN {inv.client_siren}</div>
+                        ) : null}
+                      </td>
+                      <td>{formatMoney(Number(inv.amount_ttc))}</td>
+                      <td>
+                        <span className={styles.badge}>{STATUS[inv.status] ?? inv.status}</span>
+                      </td>
+                      <td>
+                        <Link href={`/app/invoices/${inv.id}`} className={`app-ghost ${styles.btnGhost}`}>
+                          Voir / PDF
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
           )}
         </div>
       </main>

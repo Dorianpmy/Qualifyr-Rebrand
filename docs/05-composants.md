@@ -1,5 +1,30 @@
 # 05 — Composants
 
+## Mobile dashboard — débordement horizontal et photos avant/après (12 septembre 2026)
+
+À la demande de Dorian : « la page trop large sur bcp d'onglet + lenteur ». Deux bugs distincts,
+tous deux issus du même angle mort — le fallback mobile `.mobileList`/`.mobileCard` (déjà en
+place sur `/app` pour les demandes) n'avait pas été répété partout où `.table` est utilisé.
+
+**Débordement (« trop large ») — Factures.** `src/app/app/invoices/page.tsx` et
+`src/app/app/invoices/[id]/page.tsx` forçaient leur tableau (`style={{ display: 'table' }}`)
+au lieu de laisser la règle CSS `.table { display: none }` sous 720px s'appliquer. Un tableau à
+4–5 colonnes rendu de force à 360px déborde l'écran — c'était le module concrètement « trop
+large ». Retiré ; les deux pages ont désormais une liste de cartes (`.mobileList`/`.mobileCard`)
+sous 720px, comme `/app`.
+
+**Contenu disparu, pas seulement débordant — Prospection.** `src/app/app/prospection/[id]/page.tsx`
+et `ImportProspects.tsx` n'avaient, eux, aucun forçage — mais aucun fallback non plus : la
+règle `.table { display: none }` cachait la liste sous 720px sans rien la remplacer. Le tableau
+ne débordait pas, il disparaissait simplement sur téléphone. Ajout du même fallback carte.
+
+**Lenteur — photos Avant/Après.** `src/app/app/cases/page.tsx` chargeait les photos via `<img>`
+brut (`eslint-disable-next-line @next/next/no-img-element`), sans compression AVIF/WebP ni
+chargement différé — alors que `next.config.js` autorise déjà le Storage Supabase précisément
+pour `next/image`. Remplacé par `<Image>` (4:3, `sizes` responsive) : mêmes dimensions
+d'affichage (`.casePair img` fixe déjà l'aspect-ratio et l'`object-fit` en CSS), photos
+optimisées et chargées à la demande.
+
 ## Accent chaud du dashboard et micro-interactions (12 septembre 2026)
 
 À la demande de Dorian : le dashboard (`[data-app='dashboard']`) et l'écran de connexion

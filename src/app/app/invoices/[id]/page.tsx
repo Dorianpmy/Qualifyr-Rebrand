@@ -139,7 +139,25 @@ export default async function InvoiceDetailPage({
             service
           </div>
 
-          <table className={styles.table} style={{ display: 'table', marginTop: '1.25rem' }}>
+          {/* Mobile : cartes plutôt qu'un tableau à 4 colonnes forcé visible
+              (`display: 'table'` en ligne, avant) — c'est ce qui débordait
+              l'écran sous 720px. */}
+          <div className={styles.mobileList} style={{ marginTop: '1.25rem' }}>
+            {lines.map((line) => (
+              <div key={line.id} className={styles.mobileCard}>
+                <div className={styles.mobileCardTop}>
+                  <span className={styles.clientName}>{line.description}</span>
+                  <span className={styles.clientMeta}>× {line.quantity}</span>
+                </div>
+                <div className={styles.clientMeta}>
+                  {formatMoney(Number(line.unit_price_ht))} HT / unité · Total{' '}
+                  {formatMoney(Number(line.amount_ht))} HT
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <table className={styles.table} style={{ marginTop: '1.25rem' }}>
             <thead>
               <tr>
                 <th>Description</th>

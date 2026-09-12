@@ -61,6 +61,40 @@ export default async function ProspectionZonePage({
           </div>
         ) : (
           <div className={styles.panel}>
+            {/* Mobile : le tableau à 5 colonnes n'a jamais eu de remplaçant
+                sous 720px (règle CSS `.table { display: none }` sans
+                fallback) — la liste disparaissait simplement sur téléphone. */}
+            <div className={styles.mobileList}>
+              {prospects.map((prospect) => (
+                <div key={prospect.id} className={styles.mobileCard}>
+                  <div className={styles.mobileCardTop}>
+                    <span className={styles.clientName}>{prospect.name}</span>
+                    <span className={styles.clientMeta}>
+                      {SEGMENT_LABELS[prospect.segment] ?? prospect.segment}
+                    </span>
+                  </div>
+                  {prospect.address ? (
+                    <div className={styles.clientMeta}>{prospect.address}</div>
+                  ) : null}
+                  <div className={styles.clientMeta}>
+                    {[prospect.postalCode, prospect.city].filter(Boolean).join(' ') || '—'}
+                    {prospect.workforceRange ? ` · ${prospect.workforceRange}` : ''}
+                  </div>
+                  {prospect.phone ? <div className={styles.clientMeta}>{prospect.phone}</div> : null}
+                  {prospect.website ? (
+                    <a
+                      className={styles.rowLink}
+                      href={prospect.website}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Site
+                    </a>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+
             <table className={styles.table}>
               <thead>
                 <tr>

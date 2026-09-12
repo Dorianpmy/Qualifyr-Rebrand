@@ -196,43 +196,74 @@ export function ImportProspects({ initialProspects, attestationText, maxImportSi
             <p className={styles.emptyHint}>Aucune adresse importée pour l’instant.</p>
           </div>
         ) : (
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Entreprise</th>
-                <th>E-mail</th>
-                <th>État</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
+          <>
+            {/* Mobile : le tableau à 4 colonnes n'avait pas de remplaçant
+                sous 720px (règle CSS `.table { display: none }` sans
+                fallback) — la liste disparaissait simplement sur téléphone. */}
+            <div className={styles.mobileList}>
               {prospects.map((prospect) => (
-                <tr key={prospect.id} className={styles.row}>
-                  <td>
+                <div key={prospect.id} className={styles.mobileCard}>
+                  <div className={styles.mobileCardTop}>
                     <span className={styles.clientName}>{prospect.name}</span>
-                  </td>
-                  <td>{prospect.email}</td>
-                  <td>
-                    {prospect.optedOutAt
-                      ? 'Désinscrit'
-                      : prospect.contactedAt
-                        ? 'Contacté'
-                        : 'En attente'}
-                  </td>
-                  <td>
-                    <button
-                      type="button"
-                      className={styles.rowLink}
-                      disabled={deletingId === prospect.id}
-                      onClick={() => remove(prospect.id)}
-                    >
-                      Supprimer
-                    </button>
-                  </td>
-                </tr>
+                    <span className={styles.clientMeta}>
+                      {prospect.optedOutAt
+                        ? 'Désinscrit'
+                        : prospect.contactedAt
+                          ? 'Contacté'
+                          : 'En attente'}
+                    </span>
+                  </div>
+                  <div className={styles.clientMeta}>{prospect.email}</div>
+                  <button
+                    type="button"
+                    className={styles.rowLink}
+                    disabled={deletingId === prospect.id}
+                    onClick={() => remove(prospect.id)}
+                  >
+                    Supprimer
+                  </button>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Entreprise</th>
+                  <th>E-mail</th>
+                  <th>État</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {prospects.map((prospect) => (
+                  <tr key={prospect.id} className={styles.row}>
+                    <td>
+                      <span className={styles.clientName}>{prospect.name}</span>
+                    </td>
+                    <td>{prospect.email}</td>
+                    <td>
+                      {prospect.optedOutAt
+                        ? 'Désinscrit'
+                        : prospect.contactedAt
+                          ? 'Contacté'
+                          : 'En attente'}
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        className={styles.rowLink}
+                        disabled={deletingId === prospect.id}
+                        onClick={() => remove(prospect.id)}
+                      >
+                        Supprimer
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
         )}
       </div>
     </div>
