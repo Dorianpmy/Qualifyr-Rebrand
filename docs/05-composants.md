@@ -1,5 +1,22 @@
 # 05 — Composants
 
+## Prestations — bouton « Enregistrer » caché par la barre d'onglets (12 septembre 2026)
+
+Capture de Dorian : après la correction du débordement de la grille tarifaire, le bouton
+« Enregistrer » (`.saveBar`, sticky en bas d'écran) n'apparaissait plus que par une fine
+tranche blanche — le reste caché sous la barre d'onglets flottante du dashboard.
+
+**Deux barres visaient le même coin de l'écran.** `.saveBar` était `position: sticky;
+inset-block-end: 0`, donc collée au tout dernier pixel bas de l'écran. Or la barre d'onglets du
+dashboard (`.sidebar`, `app.module.css`) est `position: fixed`, plaquée au même endroit
+(0,6rem de décollement + 3,7rem de hauteur = 4,3rem), et passe par-dessus. Un correctif
+précédent (`padding-block-end` avec `env(safe-area-inset-bottom)`) réglait déjà le cas de la
+barre d'outils de Safari, mais pas celui, plus haut, de la barre d'onglets de l'app elle-même.
+
+**Correction.** Sous 900px (largeur où la barre d'onglets est flottante ; au-delà elle devient
+un menu latéral fixe), `.saveBar` remonte de `4,3rem + env(safe-area-inset-bottom)` au lieu de
+`0` — juste au-dessus de la barre d'onglets plutôt que dessous.
+
 ## Sélecteur de mode d'encaissement — libellés trop longs sur mobile (12 septembre 2026)
 
 Capture de Dorian : « Carte bancaire (automatique) » et « Je gère la réception moi-même » —

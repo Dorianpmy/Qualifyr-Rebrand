@@ -388,6 +388,19 @@
   padding-block-end: calc(0.85rem + env(safe-area-inset-bottom, 0px));
 }
 
+/* La barre d'onglets flottante du dashboard (`.sidebar`, app.module.css)
+   occupe le même coin d'écran que cette barre collante — 0,6rem de
+   décollement plus 3,7rem de hauteur, soit 4,3rem — et n'existe que sous
+   900px (au-delà elle redevient un menu latéral). Sans ce décalage,
+   `inset-block-end: 0` empile les deux à la même hauteur et la barre
+   d'onglets, posée par-dessus, cache presque entièrement « Enregistrer »
+   (12/09/2026, capture Dorian). */
+@media (max-width: 899px) {
+  .saveBar {
+    inset-block-end: calc(4.3rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
 @media (max-width: 780px) {
   .scopeHead {
     grid-template-columns: 1fr;
