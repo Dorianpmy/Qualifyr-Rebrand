@@ -190,7 +190,7 @@ export function DarkHero({
             href={ctaHref}
             data-analytics-event="cta_hero_clicked"
             data-cta-id={ctaLabel}
-            className="cta-solid cta-beam accent-glow group inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full bg-white px-6 text-[0.9375rem] font-semibold text-ink no-underline transition-colors duration-150 hover:bg-white/90"
+            className="cta-solid group inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full bg-white px-6 text-[0.9375rem] font-semibold text-ink no-underline transition-colors duration-150 hover:bg-white/90"
           >
             {ctaLabel}
             <svg

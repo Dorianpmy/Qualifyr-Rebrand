@@ -322,7 +322,7 @@ function CtaLink({
       href={href}
       className={
         solid
-          ? 'cta-solid cta-beam accent-glow inline-flex min-h-[48px] items-center rounded-full bg-white px-6 text-[0.9375rem] font-semibold text-ink no-underline transition-colors duration-150 hover:bg-white/90'
+          ? 'cta-solid inline-flex min-h-[48px] items-center rounded-full bg-white px-6 text-[0.9375rem] font-semibold text-ink no-underline transition-colors duration-150 hover:bg-white/90'
           : 'inline-flex min-h-[48px] items-center rounded-full px-6 text-[0.9375rem] font-semibold !text-primary no-underline transition-colors duration-150 hover:bg-white/[0.06]'
       }
       style={solid ? undefined : { border: '1px solid rgba(255,255,255,0.15)' }}

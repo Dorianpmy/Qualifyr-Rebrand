@@ -94,7 +94,7 @@ export function DemoSection() {
                 <button
                   type="button"
                   onClick={() => setStarted(true)}
-                  className="cta-solid accent-glow inline-flex min-h-[48px] cursor-pointer items-center rounded-full bg-white px-6 text-[0.9375rem] font-semibold text-ink transition-colors duration-150 hover:bg-white/90"
+                  className="cta-solid inline-flex min-h-[48px] cursor-pointer items-center rounded-full bg-white px-6 text-[0.9375rem] font-semibold text-ink transition-colors duration-150 hover:bg-white/90"
                 >
                   Lancer la démo
                 </button>

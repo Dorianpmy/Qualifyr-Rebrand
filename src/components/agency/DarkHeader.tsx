@@ -252,7 +252,7 @@ export function DarkHeader() {
         <div className="flex items-center gap-3">
           <Link
             href={primaryCta.href}
-            className="hidden cta-solid cta-beam accent-glow min-h-[40px] items-center rounded-full bg-white px-4 text-[0.875rem] font-semibold text-ink no-underline lg:inline-flex"
+            className="hidden cta-solid min-h-[40px] items-center rounded-full bg-white px-4 text-[0.875rem] font-semibold text-ink no-underline lg:inline-flex"
             onClick={closeMenu}
           >
             {primaryCta.label}
@@ -444,7 +444,7 @@ export function DarkHeader() {
                 <Link
                   href={primaryCta.href}
                   onClick={closeMenu}
-                  className="cta-solid accent-glow inline-flex items-center justify-center rounded-full bg-white text-[0.9375rem] font-semibold text-ink no-underline"
+                  className="cta-solid inline-flex items-center justify-center rounded-full bg-white text-[0.9375rem] font-semibold text-ink no-underline"
                   style={{ marginTop: '1.5rem', minHeight: '48px' }}
                 >
                   {primaryCta.label}

@@ -1,5 +1,23 @@
 # 05 — Composants
 
+## Boutons d'appel à l'action — retrait du halo lumineux (12 septembre 2026)
+
+`.accent-glow` (halo flouté derrière le bouton, radial-gradient sur `--accent-1`/
+`--accent-2`) et `.cta-beam` (anneau conique animé « comète », même famille de
+teintes) sont supprimés — classes et définitions CSS. Dorian a signalé visuellement
+le défaut (deux formes ovales floues autour des boutons de la section finale de
+l'accueil) ; l'effet correspond mot pour mot à l'interdit `CLAUDE.md` sur les « halos
+lumineux, néon » et relève de la palette interdite (dégradé utilisant les tokens
+d'accent, hors accessoire de marque). Retiré des 8 fichiers qui les posaient sur un
+`<Link>`/bouton : `DarkHero.tsx`, `FinalCtaSection.tsx`, `AgentGrid.tsx`,
+`DarkFooter.tsx`, `DarkVerticalPage.tsx`, `DemoSection.tsx`, `DarkHeader.tsx` (deux
+occurrences), `DarkPricing.tsx`. Les définitions CSS mortes (`tailwind.css`) sont
+retirées avec, y compris le `@property --qualifyr-beam-angle` et les
+`@keyframes qualifyr-beam-orbit` qui n'existaient que pour `.cta-beam`.
+
+`.accent-ring` (bordure en dégradé des pastilles, `DarkHero.tsx`) et `.accent-text`
+sont des classes distinctes, toujours utilisées, non concernées par ce retrait.
+
 ## Connexion / création de compte — mise à jour du 12 septembre 2026
 
 `LoginForm` (`/app/login`) n'envoie plus de lien magique. L'écran porte deux onglets

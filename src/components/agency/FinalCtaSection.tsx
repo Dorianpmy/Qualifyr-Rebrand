@@ -51,7 +51,7 @@ export function FinalCtaSection() {
           <div className="mb-8 flex flex-wrap items-center gap-3">
             <Link
               href="#agent-title"
-              className="cta-solid cta-beam accent-glow inline-flex min-h-[48px] items-center rounded-full bg-white px-6 text-[0.9375rem] font-semibold text-ink no-underline transition-colors duration-150 hover:bg-white/90"
+              className="cta-solid inline-flex min-h-[48px] items-center rounded-full bg-white px-6 text-[0.9375rem] font-semibold text-ink no-underline transition-colors duration-150 hover:bg-white/90"
             >
               Analyser ma zone gratuitement
             </Link>
