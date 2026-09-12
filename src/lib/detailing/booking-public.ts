@@ -1,6 +1,7 @@
 import 'server-only';
 import { formatSlot } from './dashboard';
 import { formatMoney, profileFor } from './locale';
+import { isValidPaypalLink } from './paypal-link';
 import { getServiceSupabaseClient } from './supabase-server';
 
 /**
@@ -23,6 +24,16 @@ export type PublicBookingSummary = {
   readonly detailerName: string;
   readonly detailerSlug: string;
   readonly paymentAvailable: boolean;
+  /**
+   * Mode d'encaissement effectif du professionnel — voir
+   * docs/18-options-paiement-acompte.md. `paymentAvailable` ne concerne que
+   * le mode `stripe` ; en mode `manuel`, l'écran affiche l'IBAN ou le lien
+   * PayPal au lieu d'un bouton de paiement.
+   */
+  readonly paymentMode: 'stripe' | 'manuel';
+  readonly manualMethod: 'virement' | 'paypal_lien' | null;
+  readonly iban: string | null;
+  readonly paypalLink: string | null;
   /**
    * De quoi composer les consignes après paiement : où et quand le
    * professionnel intervient, et la consigne d'accès que le client a
@@ -53,7 +64,9 @@ export async function getPublicBookingSummary(
 
   const { data: detailer } = await client
     .from('detailers')
-    .select('id, name, slug, country, stripe_charges_enabled, free_cancellation_hours')
+    .select(
+      'id, name, slug, country, stripe_charges_enabled, free_cancellation_hours, payment_mode, manual_method, iban, paypal_link',
+    )
     .eq('id', booking.detailer_id)
     .maybeSingle();
 
@@ -65,6 +78,9 @@ export async function getPublicBookingSummary(
   const quotedPrice = Number(booking.quoted_price);
   const depositAmount = Number(booking.deposit_amount);
 
+  const paymentMode = detailer.payment_mode === 'manuel' ? 'manuel' : 'stripe';
+  const rawPaypalLink = (detailer.paypal_link as string | null) ?? null;
+
   return {
     id: booking.id as string,
     status: booking.status as string,
@@ -75,6 +91,17 @@ export async function getPublicBookingSummary(
     detailerName: detailer.name as string,
     detailerSlug: detailer.slug as string,
     paymentAvailable: Boolean(detailer.stripe_charges_enabled),
+    paymentMode,
+    manualMethod:
+      detailer.manual_method === 'virement' || detailer.manual_method === 'paypal_lien'
+        ? detailer.manual_method
+        : null,
+    iban: (detailer.iban as string | null) ?? null,
+    // Revalidé ici, pas seulement à l'enregistrement (`payment-settings/route.ts`) :
+    // c'est cette valeur qui est montrée comme cliquable à un client final, elle
+    // ne doit jamais dépendre uniquement d'un contrôle fait ailleurs, un jour,
+    // sur des données qui ont pu changer depuis (docs/18 §0.3).
+    paypalLink: rawPaypalLink && isValidPaypalLink(rawPaypalLink) ? rawPaypalLink : null,
     locationMode: String(booking.location_mode ?? 'atelier'),
     slotLabel: booking.slot ? formatSlot(booking.slot as string) : null,
     accessNote: (booking.access_note as string | null) ?? null,

@@ -36,6 +36,8 @@ export type DashboardDetailer = {
   readonly baseAddress: string | null;
   readonly baseLatitude: number | null;
   readonly baseLongitude: number | null;
+  /** 'stripe' (défaut) ou 'manuel' — voir docs/18-options-paiement-acompte.md. */
+  readonly paymentMode: string;
 };
 
 function mapBooking(row: Record<string, unknown>): DashboardBooking {
@@ -72,7 +74,9 @@ export async function getDetailerForOwner(ownerId: string): Promise<DashboardDet
 
   const { data, error } = await client
     .from('detailers')
-    .select('id, slug, name, email, city, base_address, base_latitude, base_longitude')
+    .select(
+      'id, slug, name, email, city, base_address, base_latitude, base_longitude, payment_mode',
+    )
     .eq('owner_id', ownerId)
     .maybeSingle();
 
@@ -87,6 +91,7 @@ export async function getDetailerForOwner(ownerId: string): Promise<DashboardDet
     baseAddress: (data.base_address as string | null) ?? null,
     baseLatitude: data.base_latitude == null ? null : Number(data.base_latitude),
     baseLongitude: data.base_longitude == null ? null : Number(data.base_longitude),
+    paymentMode: (data.payment_mode as string | null) ?? 'stripe',
   };
 }
 
@@ -181,6 +186,44 @@ export async function updateBookingStatus(
     .update({ status })
     .eq('detailer_id', detailerId)
     .eq('id', bookingId);
+
+  if (error) return { ok: false, message: 'Mise à jour impossible.' };
+  return { ok: true };
+}
+
+/**
+ * Confirmation manuelle de l'acompte — mode virement ou lien PayPal.
+ *
+ * Équivalent, côté dashboard, de ce que fait le webhook Stripe pour le mode
+ * automatique : passer la réservation à `confirme` et libérer le hold de
+ * créneau. Contrairement au webhook, personne ne vérifie que l'argent est
+ * réellement arrivé — c'est le professionnel qui l'affirme en cliquant.
+ * `deposit_confirmed_by` garde la trace de cette différence (docs/18 §0.1).
+ *
+ * Le filtre `eq('status', 'en_attente_paiement')` rend l'opération
+ * idempotente et empêche de « confirmer » une réservation déjà annulée par
+ * ailleurs — même garde que `stripe-webhook/route.ts`.
+ */
+export async function confirmDepositManually(
+  detailerId: string,
+  bookingId: string,
+  confirmedByUserId: string,
+): Promise<{ ok: true } | { ok: false; message: string }> {
+  const client = getServiceSupabaseClient();
+  if (!client) return { ok: false, message: 'Base de données indisponible.' };
+
+  const { error } = await client
+    .from('detailer_bookings')
+    .update({
+      status: 'confirme',
+      deposit_paid_at: new Date().toISOString(),
+      deposit_confirmed_by: 'manuel',
+      deposit_confirmed_by_user_id: confirmedByUserId,
+      hold_expires_at: null,
+    })
+    .eq('detailer_id', detailerId)
+    .eq('id', bookingId)
+    .eq('status', 'en_attente_paiement');
 
   if (error) return { ok: false, message: 'Mise à jour impossible.' };
   return { ok: true };

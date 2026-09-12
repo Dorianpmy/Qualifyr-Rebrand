@@ -132,16 +132,51 @@ export default async function ConfirmationPage({ params, searchParams }: Confirm
               Estimation {summary.quotedPriceLabel} · Acompte à régler maintenant :{' '}
               <strong>{summary.depositLabel}</strong>
             </p>
-            {summary.paymentAvailable ? (
-              <PayDepositButton
-                bookingId={summary.id}
-                label={`Payer l’acompte de ${summary.depositLabel}`}
-              />
+            {summary.paymentMode === 'stripe' ? (
+              summary.paymentAvailable ? (
+                <PayDepositButton
+                  bookingId={summary.id}
+                  label={`Payer l’acompte de ${summary.depositLabel}`}
+                />
+              ) : (
+                <p style={{ fontSize: '0.9rem', color: '#6b7280' }}>
+                  {summary.detailerName} n’a pas encore activé le paiement en ligne — il vous
+                  recontacte pour régler autrement.
+                </p>
+              )
             ) : (
-              <p style={{ fontSize: '0.9rem', color: '#6b7280' }}>
-                {summary.detailerName} n’a pas encore activé le paiement en ligne — il vous
-                recontacte pour régler autrement.
-              </p>
+              <div
+                style={{
+                  textAlign: 'left',
+                  padding: '1.1rem 1.25rem',
+                  borderRadius: '12px',
+                  border: '1px solid #e5e7eb',
+                  background: '#f9fafb',
+                }}
+              >
+                {summary.manualMethod === 'paypal_lien' && summary.paypalLink ? (
+                  <p style={{ margin: '0 0 0.75rem', fontSize: '0.9rem', color: '#374151' }}>
+                    Réglez {summary.depositLabel} via le lien PayPal de {summary.detailerName} :{' '}
+                    <a href={summary.paypalLink} target="_blank" rel="noreferrer">
+                      {summary.paypalLink}
+                    </a>
+                  </p>
+                ) : summary.manualMethod === 'virement' && summary.iban ? (
+                  <p style={{ margin: '0 0 0.75rem', fontSize: '0.9rem', color: '#374151' }}>
+                    Réglez {summary.depositLabel} par virement à {summary.detailerName} :<br />
+                    <strong>{summary.iban}</strong>
+                  </p>
+                ) : (
+                  <p style={{ margin: '0 0 0.75rem', fontSize: '0.9rem', color: '#374151' }}>
+                    {summary.detailerName} vous recontacte pour vous indiquer comment régler
+                    l’acompte de {summary.depositLabel}.
+                  </p>
+                )}
+                <p style={{ margin: 0, fontSize: '0.8rem', color: '#6b7280' }}>
+                  Cette réservation n’est confirmée qu’après réception du paiement par{' '}
+                  {summary.detailerName} — pas de confirmation automatique.
+                </p>
+              </div>
             )}
           </>
         )}

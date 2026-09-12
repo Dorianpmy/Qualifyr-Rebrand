@@ -40,7 +40,7 @@ export const CAPABILITIES = [
   'services',
   /** Page de réservation publique du professionnel. */
   'booking.public',
-  /** Encaissement d'acompte (Stripe Connect). */
+  /** Encaissement d'acompte (Stripe Connect, virement ou lien PayPal). */
   'payments.deposit',
   /** Factures, y compris l'export au format électronique. */
   'invoices',

@@ -157,4 +157,25 @@ describe('isolation : écriture', () => {
     expect(result.ok).toBe(false);
     expect(recorder.filters.length).toBe(0);
   });
+
+  it('la confirmation manuelle d’un acompte filtre sur le detailer, la réservation et le statut', async () => {
+    // docs/18-options-paiement-acompte.md §4 : même isolation que
+    // `updateBookingStatus`, plus la garde de statut qui rend l'opération
+    // idempotente (même principe que `stripe-webhook/route.ts`).
+    recorder.result = { data: null, error: null };
+    const { confirmDepositManually } = await import('../src/lib/detailing/dashboard');
+    const CONFIRMING_USER = 'dddddddd-0000-0000-0000-000000000004';
+
+    await confirmDepositManually(OWNER_A, BOOKING_OF_B, CONFIRMING_USER);
+
+    expect(recorder.table).toBe('detailer_bookings');
+    expect(recorder.operation).toBe('update');
+    expect(recorder.filtered('detailer_id', OWNER_A)).toBe(true);
+    expect(recorder.filtered('id', BOOKING_OF_B)).toBe(true);
+    expect(recorder.filtered('status', 'en_attente_paiement')).toBe(true);
+    // Les trois filtres, pas moins : sans celui sur `detailer_id`, n'importe
+    // qui confirmerait n'importe quelle réservation ; sans celui sur
+    // `status`, une réservation déjà annulée ailleurs redeviendrait confirmée.
+    expect(recorder.filters.length).toBe(3);
+  });
 });

@@ -1,5 +1,34 @@
 # 05 — Composants
 
+## Mode de paiement manuel — virement et lien PayPal (12 septembre 2026)
+
+Référence : `docs/18-options-paiement-acompte.md`. `PaymentSetup.tsx` (dashboard,
+`/app/prestations`) gagne un sélecteur en tête de module — Stripe (inchangé) ou
+« Je gère la réception moi-même ». En mode manuel, un second sélecteur propose
+virement bancaire ou lien PayPal personnel, avec un avertissement non masquable
+(`.manualWarning`, ambre — même vocabulaire que `.badgeAttente`) : ce mode retire
+la garantie anti-désistement que Stripe apporte, et Qualifyr ne peut pas vérifier
+qu'un paiement a réellement eu lieu.
+
+Réglages persistés via `PUT /api/app/payment-settings` (nouvelle route), lus via
+`GET` de la même route — distincte de `/api/app/stripe-connect`, qui reste le
+seul point d'entrée pour l'onboarding Stripe. Le lien PayPal est validé côté
+serveur (`src/lib/detailing/paypal-link.ts`, hôte `paypal.com`/`paypal.me`
+uniquement) à l'enregistrement, puis revalidé à chaque lecture publique
+(`booking-public.ts`) — jamais fait confiance à une valeur stockée sans
+recontrôle, puisque c'est elle qui est montrée comme cliquable à un client final.
+
+Nouveau composant `DepositConfirmButton.tsx` (détail d'une réservation,
+`/app/bookings/[id]`) : bouton « Acompte reçu », affiché uniquement pour un
+detailer en mode manuel avec une réservation `en_attente_paiement`. Appelle
+`PATCH /api/app/bookings/[id]/deposit-confirm`, qui pose `deposit_confirmed_by`
+= `'manuel'` — distinct du bouton générique « Confirmer » de `StatusActions`
+(préexistant, toujours disponible, mais sans cette traçabilité).
+
+`src/app/reservation/[slug]/confirmation/page.tsx` affiche l'IBAN ou le lien
+PayPal du professionnel avec la mention « pas de confirmation automatique »
+quand `paymentMode === 'manuel'`, à la place du bouton `PayDepositButton`.
+
 ## Boutons d'appel à l'action — retrait du halo lumineux (12 septembre 2026)
 
 `.accent-glow` (halo flouté derrière le bouton, radial-gradient sur `--accent-1`/

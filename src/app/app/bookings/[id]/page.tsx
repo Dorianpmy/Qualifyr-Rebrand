@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { redirect, notFound } from 'next/navigation';
 import { AppShell } from '@/components/app/AppShell';
+import { DepositConfirmButton } from '@/components/app/DepositConfirmButton';
 import { StatusActions } from '@/components/app/StatusActions';
 import {
   formatDuration,
@@ -147,6 +148,10 @@ export default async function BookingDetailPage({
               ))}
             </div>
           </div>
+        ) : null}
+
+        {detailer.paymentMode === 'manuel' && booking.status === 'en_attente_paiement' ? (
+          <DepositConfirmButton bookingId={booking.id} />
         ) : null}
 
         <StatusActions bookingId={booking.id} currentStatus={booking.status} />

@@ -1438,6 +1438,76 @@
   color: var(--color-faint);
 }
 
+/* Mode manuel (12/09/2026, docs/18) : virement ou lien PayPal, sans
+   intégration. Reprend les mêmes couleurs littérales que `.field`/
+   `.hermesForm` un peu plus haut dans ce fichier — ce module ne voit pas les
+   jetons de la charte claire, et le dashboard a son propre langage sombre. */
+.manualBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-top: 1rem;
+}
+
+.manualBlock label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+}
+
+.manualBlock label span {
+  font-size: 0.78rem;
+  color: rgba(250, 250, 250, 0.65);
+  font-weight: 500;
+}
+
+.manualBlock input {
+  padding: 0.75rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.35);
+  color: #e0e0e0;
+  font-size: 1rem;
+  min-height: 2.85rem;
+}
+
+.manualBlock small {
+  font-size: 0.78rem;
+  color: var(--color-muted);
+}
+
+/* Ambre, comme `.badgeAttente` : ce n'est pas une erreur, mais une alerte à
+   ne pas manquer — le professionnel renonce à la garantie anti-désistement
+   de l'acompte encaissé automatiquement (docs/18 §0.2). */
+.manualWarning {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(234, 179, 8, 0.25);
+  background: rgba(234, 179, 8, 0.1);
+  color: rgba(250, 250, 250, 0.85);
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+.manualConsent {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: rgba(250, 250, 250, 0.8);
+}
+
+.manualConsent input {
+  flex: none;
+  inline-size: 1.15rem;
+  block-size: 1.15rem;
+  margin-block-start: 0.15rem;
+  accent-color: #ffffff;
+}
+
 
 /* ---------------------------------------------------------------------------
    La charte tricolore dans l'espace pro.
