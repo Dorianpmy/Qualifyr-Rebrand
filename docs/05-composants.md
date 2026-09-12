@@ -1,5 +1,34 @@
 # 05 — Composants
 
+## Connexion / création de compte — mise à jour du 12 septembre 2026
+
+`LoginForm` (`/app/login`) n'envoie plus de lien magique. L'écran porte deux onglets
+— **Se connecter** et **Créer un compte** — sur les mêmes champs e-mail et mot de passe :
+
+- **Créer un compte** appelle `POST /api/app/signup` (`signUpWithPassword`, douze
+  caractères minimum, sans règle de composition — même choix que `PasswordForm`).
+  Supabase envoie un e-mail de confirmation ; tant qu'il n'est pas ouvert, aucune
+  session n'existe. C'est la seule vérification d'identité : pas de case à cocher,
+  pas d'étape supplémentaire.
+- **Se connecter** reste `POST /api/app/login-password`, inchangé.
+- **Mot de passe oublié ?** est un lien de texte sous le formulaire, visible en mode
+  connexion seulement — recours minoritaire, pas une action de même rang que
+  « Se connecter ». Il appelle toujours `POST /api/app/reset-password`.
+- Un seul bouton « Afficher/Masquer le mot de passe » sert les deux onglets ; aucun
+  champ de confirmation du mot de passe (voir la justification dans `PasswordForm`).
+
+**Pourquoi le lien magique a disparu.** Il dépendait d'une redirection Supabase
+exactement autorisée dans le projet ; mal configurée, l'e-mail partait mais le lien
+ramenait sur l'écran de connexion sans jamais ouvrir de session — silencieusement,
+sans erreur visible. Un mot de passe choisi à l'inscription retire cette dépendance
+de chaque connexion et ne la laisse plus peser que sur l'e-mail de confirmation.
+
+`app.module.css` gagne `.modeSwitch`/`.modeTab`/`.modeTabActive` (le contrôle
+segmenté) et `.forgotLink`. `.error` passe de `#f87171` (rouge vif) à `#e8a598` —
+la charte réserve le rouge vif à rien du tout ; `#e8a598` est le même rouge sourd
+que `--state-error` dans `tailwind.css`, repris en dur ici car ce module ne voit pas
+ce jeton.
+
 ## Diagnostic guidé — mise à jour du 1er août 2026
 
 Le diagnostic commercial possède désormais **une seule source de vérité** : la route

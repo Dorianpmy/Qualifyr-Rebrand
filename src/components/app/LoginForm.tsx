@@ -4,70 +4,95 @@ import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from '@/app/app/app.module.css';
 
+/**
+ * Connexion et création de compte — un seul écran, deux onglets.
+ *
+ * **Le lien magique a disparu (12/09/2026).** Il évitait de choisir un mot de
+ * passe, mais dépendait d'un aller-retour e-mail à *chaque* connexion, et sa
+ * redirection doit être exactement autorisée dans le projet Supabase — un
+ * détail qui l'a rendu silencieusement inutilisable en production (l'e-mail
+ * partait, le lien ramenait sur cet écran sans jamais ouvrir de session).
+ * Un mot de passe choisi une fois à l'inscription règle les deux problèmes :
+ * on se reconnecte sans e-mail, et il ne reste plus qu'un seul lien e-mail à
+ * faire fonctionner correctement — celui de confirmation du compte.
+ *
+ * **La création de compte vit ici, pas sur un écran séparé.** Avant, la seule
+ * façon d'obtenir un compte était de demander un lien magique — l'inscription
+ * et la connexion étaient donc la même action, jamais nommée comme telle. Les
+ * deux onglets rendent explicite ce qui se passait déjà en silence.
+ *
+ * **Pas de champ de confirmation du mot de passe.** Il rassure sans rien
+ * vérifier : une faute de frappe reproduite deux fois passe quand même. Le
+ * bouton d'affichage rend la saisie relisible, ce qui attrape réellement les
+ * erreurs — même choix que `PasswordForm`.
+ */
+
+type Mode = 'signin' | 'signup';
+
+const MIN_LENGTH = 12;
+
 export function LoginForm() {
   const router = useRouter();
+  const [mode, setMode] = useState<Mode>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [visible, setVisible] = useState(false);
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function onPasswordLogin(event: FormEvent) {
+  function switchMode(next: Mode) {
+    if (next === mode) return;
+    setMode(next);
+    setMessage(null);
+    setError(null);
+  }
+
+  async function onSubmit(event: FormEvent) {
     event.preventDefault();
     setPending(true);
     setMessage(null);
     setError(null);
 
     try {
-      const res = await fetch('/api/app/login-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = (await res.json()) as { ok: boolean; message: string };
-      if (data.ok) {
-        router.replace('/app');
-        router.refresh();
-        return;
+      if (mode === 'signin') {
+        const res = await fetch('/api/app/login-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = (await res.json()) as { ok: boolean; message: string };
+        if (data.ok) {
+          router.replace('/app');
+          router.refresh();
+          return;
+        }
+        setError(data.message || 'Connexion impossible.');
+      } else {
+        const res = await fetch('/api/app/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = (await res.json()) as { ok: boolean; message: string };
+        if (data.ok) {
+          setMessage(data.message);
+          // Le mot de passe est vidé de l'état une fois la requête envoyée.
+          setPassword('');
+        } else {
+          setError(data.message || 'Création impossible.');
+        }
       }
-      setError(data.message || 'Connexion impossible.');
     } catch {
-      setError('Connexion impossible. Réessayez.');
+      setError(
+        mode === 'signin' ? 'Connexion impossible. Réessayez.' : 'Création impossible. Réessayez.',
+      );
     } finally {
       setPending(false);
     }
   }
 
-  async function onMagicLink(event: FormEvent) {
-    event.preventDefault();
-    setPending(true);
-    setMessage(null);
-    setError(null);
-
-    try {
-      const res = await fetch('/api/app/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          redirectTo:
-            typeof window !== 'undefined'
-              ? `${window.location.origin}/app/auth/confirm`
-              : undefined,
-        }),
-      });
-      const data = (await res.json()) as { ok: boolean; message: string };
-      if (data.ok) setMessage(data.message);
-      else setError(data.message || 'Envoi impossible.');
-    } catch {
-      setError('Envoi impossible. Réessayez.');
-    } finally {
-      setPending(false);
-    }
-  }
-
-  async function onPasswordReset(event: FormEvent) {
-    event.preventDefault();
+  async function onPasswordReset() {
     setPending(true);
     setMessage(null);
     setError(null);
@@ -91,9 +116,32 @@ export function LoginForm() {
     }
   }
 
+  const signupInvalid = mode === 'signup' && password.length < MIN_LENGTH;
+
   return (
     <div>
-      <form onSubmit={onPasswordLogin}>
+      <div className={styles.modeSwitch} role="tablist" aria-label="Connexion ou création de compte">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mode === 'signin'}
+          className={`${styles.modeTab} ${mode === 'signin' ? styles.modeTabActive : ''}`}
+          onClick={() => switchMode('signin')}
+        >
+          Se connecter
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mode === 'signup'}
+          className={`${styles.modeTab} ${mode === 'signup' ? styles.modeTabActive : ''}`}
+          onClick={() => switchMode('signup')}
+        >
+          Créer un compte
+        </button>
+      </div>
+
+      <form onSubmit={onSubmit}>
         <div className={styles.field}>
           <label htmlFor="email">E-mail professionnel</label>
           <input
@@ -106,61 +154,73 @@ export function LoginForm() {
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
+
         <div className={styles.field}>
           <label htmlFor="password">Mot de passe</label>
           <input
             id="password"
-            type="password"
+            type={visible ? 'text' : 'password'}
             required
-            autoComplete="current-password"
-            placeholder="••••••••"
+            minLength={mode === 'signup' ? MIN_LENGTH : undefined}
+            autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
+            placeholder={mode === 'signup' ? 'Au moins 12 caractères' : '••••••••'}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            aria-describedby={mode === 'signup' ? 'password-hint' : undefined}
           />
+          {mode === 'signup' ? (
+            <small id="password-hint">
+              Douze caractères minimum. Une phrase dont vous vous souvenez vaut mieux qu’une suite
+              de symboles que vous devrez noter.
+            </small>
+          ) : null}
         </div>
-        {/* `app-primary` (22/08/2026, revu) : un premier correctif posait
-            `data-theme="dark"` sur cette page pour échapper au bouton vert de
-            l'ancienne charte, puis `.cta-solid` pour échapper au reset de la
-            charte sombre déclenché par cet attribut — ça marchait, mais ça
-            recréait la même tension que le dashboard a déjà résolue autrement
-            (voir le commentaire dans tailwind.css) : cette page n'a pas
-            besoin de `data-theme="dark"` du tout. `[data-app='login']` (déjà
-            posé sur le conteneur, `login/page.tsx`) neutralise l'ancienne
-            charte tout seul ; `app-primary` reprend la main pour le fond
-            blanc/texte encre, exactement comme les boutons d'action du
-            tableau de bord. `.btn` garde la mise en page (largeur, hauteur,
-            espacement). */}
-        <button className={`${styles.btn} app-primary`} type="submit" disabled={pending}>
-          {pending ? 'Connexion…' : 'Se connecter'}
+
+        <button
+          type="button"
+          className={styles.btnGhostLogin}
+          onClick={() => setVisible((v) => !v)}
+          aria-pressed={visible}
+        >
+          {visible ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+        </button>
+
+        <button
+          className={`${styles.btn} app-primary`}
+          type="submit"
+          disabled={pending || signupInvalid}
+        >
+          {pending
+            ? mode === 'signin'
+              ? 'Connexion…'
+              : 'Création…'
+            : mode === 'signin'
+              ? 'Se connecter'
+              : 'Créer mon compte'}
         </button>
       </form>
 
-      <p className={styles.loginDivider}>ou</p>
-
-      <form onSubmit={onMagicLink}>
-        <button className={styles.btnGhostLogin} type="submit" disabled={pending || !email}>
-          Recevoir un lien magique
+      {mode === 'signin' ? (
+        <button
+          type="button"
+          className={styles.forgotLink}
+          onClick={onPasswordReset}
+          disabled={pending || !email}
+        >
+          Mot de passe oublié ?
         </button>
-      </form>
+      ) : null}
 
-      {/* Définition du mot de passe (01/09/2026).
-
-          Le champ « Mot de passe » ci-dessus existait depuis le début, et
-          aucun écran ne permettait d'en créer un : tout compte né d'un lien
-          magique — donc tous — se heurtait à un cul-de-sac. Le premier
-          utilisateur réel a cru avoir raté une étape à l'inscription.
-
-          Le libellé dit « définir ou changer » plutôt que « mot de passe
-          oublié » : la plupart des comptes n'en ont jamais eu, et « oublié »
-          leur ferait chercher une faute de leur côté. */}
-      <form onSubmit={onPasswordReset}>
-        <button className={styles.btnGhostLogin} type="submit" disabled={pending || !email}>
-          Définir ou changer mon mot de passe
-        </button>
-      </form>
-
-      {message ? <p className={styles.message}>{message}</p> : null}
-      {error ? <p className={styles.error}>{error}</p> : null}
+      {message ? (
+        <p className={styles.message} role="status">
+          {message}
+        </p>
+      ) : null}
+      {error ? (
+        <p className={styles.error} role="alert">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }

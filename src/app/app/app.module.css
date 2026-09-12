@@ -1001,6 +1001,36 @@
   color: rgba(250, 250, 250, 0.35);
 }
 
+/* Bascule Se connecter / Créer un compte (12/09/2026). Contrôle segmenté :
+   les deux intentions sont d'égale importance, contrairement à un lien
+   secondaire discret qui suggérerait que l'inscription est un cas rare. */
+.modeSwitch {
+  display: flex;
+  gap: 0.2rem;
+  margin-bottom: 1.25rem;
+  padding: 0.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+}
+
+.modeTab {
+  flex: 1;
+  min-height: 2.4rem;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(250, 250, 250, 0.55);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modeTabActive {
+  background: #ffffff;
+  color: #0e0e0f;
+}
+
 .btnGhostLogin {
   width: 100%;
   padding: 0.75rem 1rem;
@@ -1013,16 +1043,47 @@
   min-height: 2.75rem;
 }
 
+/* Mot de passe oublié : un lien de texte, pas un bouton — c'est un recours
+   pour le cas minoritaire (connexion déjà tentée), pas une action au même
+   rang que « Se connecter ». Un bouton de la même taille lui aurait donné un
+   poids qu'il n'a pas. */
+.forgotLink {
+  display: block;
+  margin: 0.65rem 0 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: rgba(250, 250, 250, 0.55);
+  font-size: 0.8rem;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.forgotLink:hover:not(:disabled) {
+  color: #e0e0e0;
+}
+
+.forgotLink:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 .message {
   margin-top: 1rem;
   font-size: 0.85rem;
   color: var(--color-primary);
 }
 
+/* #e8a598 plutôt qu'un rouge standard : la charte réserve le rouge vif à rien
+   du tout, et prévoit justement un « rouge sourd » pour les erreurs de
+   formulaire (voir `--state-error` dans tailwind.css). Cette page a son
+   propre module CSS et ne voit pas ce jeton — la valeur est donc reprise en
+   dur, identique. */
 .error {
   margin-top: 1rem;
   font-size: 0.85rem;
-  color: #f87171;
+  color: #e8a598;
 }
 
 .unlinked {

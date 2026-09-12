@@ -68,8 +68,28 @@ export async function clearSessionCookies() {
   jar.delete(COOKIE_REFRESH);
 }
 
-/** Envoie un magic link. */
-export async function sendMagicLink(email: string, redirectTo: string): Promise<{ ok: boolean; message: string }> {
+/**
+ * Crée un compte avec e-mail et mot de passe.
+ *
+ * **Remplace le lien magique comme unique porte d'entrée (12/09/2026).** Le
+ * lien magique évitait de choisir un mot de passe, mais dépendait d'un aller-
+ * retour e-mail à chaque connexion et s'est révélé fragile en pratique (la
+ * redirection Supabase doit être exactement autorisée dans le projet, sans
+ * quoi elle échoue en silence). Un mot de passe choisi à l'inscription règle
+ * les deux problèmes à la fois : on se reconnecte sans e-mail, et il ne reste
+ * qu'un seul lien e-mail à faire fonctionner correctement — celui de
+ * confirmation, pas celui de chaque connexion.
+ *
+ * **La confirmation d'identité vient de Supabase, pas d'une case cochée.**
+ * Tant que le lien reçu par e-mail n'est pas ouvert, `signUp` ne renvoie aucune
+ * session : le compte existe mais reste inutilisable. C'est exactement ce qui
+ * garantit que l'adresse saisie appartient bien à qui crée le compte.
+ */
+export async function signUpWithPassword(
+  email: string,
+  password: string,
+  redirectTo: string,
+): Promise<{ ok: boolean; message: string }> {
   const env = detailingPublicEnv();
   if (!env) return { ok: false, message: 'Supabase non configuré.' };
 
@@ -77,13 +97,30 @@ export async function sendMagicLink(email: string, redirectTo: string): Promise<
     auth: { persistSession: false },
   });
 
-  const { error } = await client.auth.signInWithOtp({
+  const { error } = await client.auth.signUp({
     email,
+    password,
     options: { emailRedirectTo: redirectTo },
   });
 
-  if (error) return { ok: false, message: error.message };
-  return { ok: true, message: 'Lien envoyé. Vérifiez votre boîte mail.' };
+  if (error) {
+    return {
+      ok: false,
+      message:
+        error.message === 'User already registered'
+          ? 'Un compte existe déjà pour cette adresse. Connectez-vous plutôt.'
+          : error.message,
+    };
+  }
+
+  /* Supabase renvoie un succès sans erreur, même pour une adresse déjà
+     confirmée par ailleurs — protection anti-énumération intégrée qui évite
+     de révéler qui a déjà un compte. Le message reste donc le même dans tous
+     les cas : personne n'apprend ici si l'adresse existait déjà. */
+  return {
+    ok: true,
+    message: 'Compte créé. Ouvrez l’e-mail de confirmation pour l’activer.',
+  };
 }
 
 /**

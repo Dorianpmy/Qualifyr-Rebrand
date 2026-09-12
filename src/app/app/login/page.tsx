@@ -49,8 +49,7 @@ export default function AppLoginPage() {
         <h1>Le tableau de bord de votre activité.</h1>
         <p>
           Vos demandes, votre agenda et vos factures — pas l’espace de réservation de vos clients.
-          Connectez-vous avec votre mot de passe, ou par lien e-mail si vous préférez ne pas en
-          retenir un.
+          Connectez-vous, ou créez votre compte si c’est votre première visite.
         </p>
 
         <LoginForm />
@@ -75,8 +74,8 @@ export default function AppLoginPage() {
         </ul>
 
         <p className={styles.loginFootnote}>
-          Pas encore de compte ?{' '}
-          <Link href="/#pricing-title">Découvrir Qualifyr et ses tarifs</Link>
+          Vous découvrez seulement Qualifyr ?{' '}
+          <Link href="/#pricing-title">Voir les tarifs</Link>
         </p>
       </div>
     </div>
