@@ -1,5 +1,35 @@
 # 05 — Composants
 
+## Accent chaud du dashboard et micro-interactions (12 septembre 2026)
+
+À la demande de Dorian : le dashboard (`[data-app='dashboard']`) et l'écran de connexion
+(`[data-app='login']`) utilisaient `--accent-2` (bleu givré `#b8cfe4`) et `--accent-3` (lilas
+`#c9c4ee`) sur les contours dégradés, points d'état, halos et texte en dégradé — deux couleurs
+explicitement interdites par `docs/03-direction-artistique.md` §1.7 (« bleu électrique »,
+« mauve, violet ») et déjà signalées, sans être corrigées, dans `docs/17-audit-fonctionnel-trois-agents.md`
+finding #4.
+
+**Recolorisation, strictement scopée au dashboard/login.** `--accent-2` et `--accent-3` restent
+inchangés partout ailleurs (identité des trois agents sur le site vitrine, `AgentGrid.tsx`,
+`.node-hero` etc. — hors périmètre de cette demande, toujours signalé comme non résolu).
+Uniquement dans `src/app/app/app.module.css` et les blocs `[data-app='dashboard']` de
+`tailwind.css`, chaque référence est remplacée par du laiton (`#c7a06b`) et du cuivre
+(`#c9835c`) — les teintes officielles de `docs/03` §1.2, éclaircies pour rester lisibles sur
+les fonds presque noirs du dashboard (même logique déjà appliquée à `--state-error`).
+
+**Halos retirés, pas seulement recolorés.** `.paymentPanel`, `.loginBox` et `.navItemFab`/
+`.app-tab-fab` portaient des `box-shadow` diffuses ou des cercles floutés en arrière-plan
+(`.loginShell::before/::after`) — exactement les « box-shadow diffuses de type glow » et
+« halos lumineux » interdits par `docs/03` §1.7. Retirés ; le contour dégradé (net, sans flou)
+suffit à porter l'accent. Une ombre neutre (`rgba(0, 0, 0, …)`, sans teinte) remplace la lueur
+là où un peu de relief restait utile.
+
+**Micro-interactions ajoutées** (`peps` demandé par Dorian) : survol laiton sur les onglets du
+menu latéral (`.navItem`, ordinateur uniquement — `hover: hover` exclut le tactile), léger
+soulèvement + ombre laiton au survol de `.app-primary`, contour laiton au survol de
+`.app-ghost`/`.app-filter`, et un survol équivalent sur `.paymentPanel`. Toutes ces transitions
+sont neutralisées sous `prefers-reduced-motion: reduce`.
+
 ## Mode de paiement manuel — virement et lien PayPal (12 septembre 2026)
 
 Référence : `docs/18-options-paiement-acompte.md`. `PaymentSetup.tsx` (dashboard,

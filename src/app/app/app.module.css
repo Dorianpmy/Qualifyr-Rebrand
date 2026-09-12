@@ -167,7 +167,7 @@
   border: 1px solid transparent;
   background:
     linear-gradient(#141416, #141416) padding-box,
-    linear-gradient(140deg, var(--accent-1), var(--accent-2)) border-box;
+    linear-gradient(140deg, var(--accent-1), #c7a06b) border-box;
   color: var(--color-primary);
 }
 
@@ -230,7 +230,18 @@
   touch-action: manipulation;
   user-select: none;
   -webkit-user-select: none;
-  transition: color 0.15s ease;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+/* Survol du menu latéral (ordinateur uniquement — `hover: hover` exclut le
+   tactile, où `:hover` reste collé après le tap). Un peu de laiton en fond,
+   pour qu'un onglet réagisse avant même le clic — la barre mobile n'a pas
+   cet état, il n'y a rien à survoler au doigt. */
+@media (min-width: 900px) and (hover: hover) and (pointer: fine) {
+  .navItem:hover {
+    background: rgba(199, 160, 107, 0.08);
+    color: var(--color-primary);
+  }
 }
 
 /* Le retour au doigt : l'onglet s'enfonce légèrement. Sur mobile il n'y a pas
@@ -328,9 +339,10 @@
   /* **Fond sombre, pas un aplat clair.** La version précédente remplissait le
      cercle d'un dégradé sable → céladon : un disque doré au milieu d'une
      barre noire, que la charte du produit exclut explicitement. Le bouton
-     reste donc sombre, et c'est le liseré vert plus la lueur qui le
-     détachent — le symbole blanc et vert garde ainsi son contraste, ce qu'un
-     fond clair lui aurait retiré. */
+     reste donc sombre, et c'est le liseré laiton qui le détache — sans lueur
+     diffuse depuis le 12/09/2026 (docs/03 §1.7, « box-shadow glow » interdit) :
+     l'anneau suffit à signaler le bouton, l'ombre qui reste n'est que du
+     relief neutre. */
   .navItemFab {
     position: relative;
     top: -0.9rem;
@@ -340,13 +352,12 @@
     min-height: 0;
     padding: 0;
     border-radius: 999px;
-    border: 1px solid rgba(184, 207, 228, 0.5);
+    border: 1px solid rgba(199, 160, 107, 0.5);
     background:
       radial-gradient(120% 120% at 50% 0%, #1e2225, #121416 70%);
     box-shadow:
       0 8px 20px rgba(0, 0, 0, 0.55),
-      0 0 0 5px rgba(16, 18, 20, 0.9),
-      0 0 18px -4px rgba(184, 207, 228, 0.35);
+      0 0 0 5px rgba(16, 18, 20, 0.9);
   }
 
   /* L'anneau sombre de 5 px posé par la troisième ombre découpe le bouton
@@ -444,7 +455,7 @@
     inline-size: 0.25rem;
     block-size: 0.25rem;
     border-radius: 999px;
-    background: var(--accent-2);
+    background: #c7a06b;
   }
 
   /* Le bouton central ne prend jamais ce traitement : il n'est pas un onglet
@@ -460,7 +471,7 @@
     border: 1px solid transparent;
     background:
       linear-gradient(#1b1b1d, #1b1b1d) padding-box,
-      linear-gradient(140deg, var(--accent-1), var(--accent-2)) border-box;
+      linear-gradient(140deg, var(--accent-1), #c7a06b) border-box;
   }
 }
 
@@ -640,7 +651,7 @@
   border: 1px solid transparent !important;
   background:
     linear-gradient(#141416, #141416) padding-box,
-    linear-gradient(140deg, var(--accent-1), transparent 45%, var(--accent-2)) border-box !important;
+    linear-gradient(140deg, var(--accent-1), transparent 45%, #c7a06b) border-box !important;
 }
 
 .kpiAccent::before {
@@ -1198,7 +1209,7 @@
   color: var(--color-primary) !important;
   background:
     linear-gradient(#141416, #141416) padding-box,
-    linear-gradient(140deg, var(--accent-1), transparent 45%, var(--accent-2)) border-box !important;
+    linear-gradient(140deg, var(--accent-1), transparent 45%, #c7a06b) border-box !important;
 }
 
 /* En attente : le même contour, plus dense — c'est la ligne qui demande une
@@ -1208,7 +1219,7 @@
   color: var(--color-primary) !important;
   background:
     linear-gradient(#141416, #141416) padding-box,
-    linear-gradient(140deg, var(--accent-1), var(--accent-2)) border-box !important;
+    linear-gradient(140deg, var(--accent-1), #c7a06b) border-box !important;
 }
 
 /* Annulé et expiré restent gris, sans contour : ce n'est pas une alerte,
@@ -1230,7 +1241,7 @@
   color: var(--color-primary) !important;
   background:
     linear-gradient(#141416, #141416) padding-box,
-    linear-gradient(140deg, var(--accent-1), transparent 45%, var(--accent-2)) border-box !important;
+    linear-gradient(140deg, var(--accent-1), transparent 45%, #c7a06b) border-box !important;
 }
 
 .btnGhost:hover,
@@ -1238,7 +1249,7 @@
 .btnGhostLogin:hover {
   background:
     linear-gradient(#1b1b1d, #1b1b1d) padding-box,
-    linear-gradient(140deg, var(--accent-1), var(--accent-2)) border-box !important;
+    linear-gradient(140deg, var(--accent-1), #c7a06b) border-box !important;
 }
 
 /* La page courante est marquée par le contour dégradé, déclaré plus haut avec
@@ -1372,7 +1383,7 @@
   border: 1px solid transparent !important;
   background:
     linear-gradient(#121213, #121213) padding-box,
-    linear-gradient(140deg, var(--accent-1), transparent 55%, var(--accent-2)) border-box !important;
+    linear-gradient(140deg, var(--accent-1), transparent 55%, #c7a06b) border-box !important;
 }
 
 .paymentHead {
@@ -1541,22 +1552,38 @@
   .navItemActive {
     background:
       linear-gradient(#1b1b1d, #1b1b1d) padding-box,
-      linear-gradient(115deg, var(--accent-1), var(--accent-3) 50%, var(--accent-2)) border-box !important;
+      linear-gradient(115deg, var(--accent-1), #c9835c 50%, #c7a06b) border-box !important;
   }
 }
 
-/* La carte d'activation du paiement porte le halo : c'est l'action qui
-   débloque tout le reste du produit, et tant qu'elle n'est pas faite, elle
-   doit rester impossible à ignorer. */
+/* La carte d'activation du paiement porte le contour tricolore : c'est
+   l'action qui débloque tout le reste du produit, et tant qu'elle n'est pas
+   faite, elle doit rester impossible à ignorer.
+   Halo flouté retiré le 12/09/2026 (peps chaud, conforme à docs/03 §1.7 —
+   « box-shadow diffuses de type glow » interdites) : le contour dégradé
+   suffit à porter l'accent sans tache colorée qui déborde de la carte. Une
+   ombre neutre remplace la lueur pour donner un peu de relief. */
 .paymentPanel {
   background:
-    radial-gradient(120% 140% at 12% 0%, rgba(201, 196, 238, 0.07), transparent 55%),
     linear-gradient(#121213, #121213) padding-box,
-    linear-gradient(115deg, var(--accent-1), var(--accent-3) 50%, var(--accent-2)) border-box !important;
-  box-shadow:
-    0 0 28px -8px rgba(242, 213, 179, 0.22),
-    0 0 32px -6px rgba(201, 196, 238, 0.18),
-    0 0 28px -10px rgba(184, 207, 228, 0.16) !important;
+    linear-gradient(115deg, var(--accent-1), #c9835c 50%, #c7a06b) border-box !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35) !important;
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+
+.paymentPanel:hover {
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.4) !important;
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paymentPanel {
+    transition: none;
+  }
+
+  .paymentPanel:hover {
+    transform: none;
+  }
 }
 
 /* La carte prioritaire des indicateurs reprend le contour tricolore, sans
@@ -1564,7 +1591,7 @@
 .kpiAccent {
   background:
     linear-gradient(#141416, #141416) padding-box,
-    linear-gradient(115deg, var(--accent-1), var(--accent-3) 55%, var(--accent-2)) border-box !important;
+    linear-gradient(115deg, var(--accent-1), #c9835c 55%, #c7a06b) border-box !important;
 }
 
 /* --- Écran de connexion ---------------------------------------------------
@@ -1580,49 +1607,23 @@
   overflow: hidden;
 }
 
-/* Halos d'ambiance, comme sur le hero du site. `pointer-events: none` est
-   indispensable : une tache floue plein écran intercepterait le clic sur le
-   champ e-mail. */
-.loginShell::before,
-.loginShell::after {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  inline-size: 30rem;
-  block-size: 30rem;
-  border-radius: 50%;
-  filter: blur(120px);
-  pointer-events: none;
-}
-
-.loginShell::before {
-  inset-block-start: -14%;
-  inset-inline-start: -12%;
-  background: var(--accent-1);
-  opacity: 0.14;
-}
-
-.loginShell::after {
-  inset-block-end: -18%;
-  inset-inline-end: -12%;
-  background: var(--accent-3);
-  opacity: 0.12;
-}
+/* Les deux taches floutées d'ambiance derrière la carte ont été retirées le
+   12/09/2026 : ce sont exactement les « halos lumineux » que CLAUDE.md et
+   docs/03 §1.7 interdisent, blur compris. Le contour dégradé de `.loginBox`
+   ci-dessous porte tout l'accent, sans rien qui déborde de la carte. */
 
 .loginBox {
   border: 1px solid transparent !important;
   background:
     linear-gradient(#111112, #111112) padding-box,
-    linear-gradient(115deg, var(--accent-1), var(--accent-3) 50%, var(--accent-2)) border-box !important;
-  box-shadow:
-    0 0 30px -8px rgba(242, 213, 179, 0.2),
-    0 0 34px -6px rgba(201, 196, 238, 0.16) !important;
+    linear-gradient(115deg, var(--accent-1), #c9835c 50%, #c7a06b) border-box !important;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* Le sur-titre passait en blanc plein, ce qui le mettait au même niveau que
    le titre. En dégradé, il redevient une étiquette. */
 .loginEyebrow {
-  background-image: linear-gradient(100deg, var(--accent-1), var(--accent-3), var(--accent-2));
+  background-image: linear-gradient(100deg, var(--accent-1), #c9835c, #c7a06b);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent !important;
@@ -1653,7 +1654,7 @@
   block-size: 0.95rem;
   flex-shrink: 0;
   margin-block-start: 0.2rem;
-  stroke: var(--accent-2);
+  stroke: #c7a06b;
 }
 
 .loginFootnote {
@@ -1670,7 +1671,7 @@
 }
 
 .loginFootnote a:hover {
-  text-decoration-color: var(--accent-3);
+  text-decoration-color: #c9835c;
 }
 
 

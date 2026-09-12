@@ -819,7 +819,10 @@
   }
 
   /* Le bouton d'action reprend la main : blanc plein, comme sur le site.
-     C'est le seul élément plein de chaque écran. */
+     C'est le seul élément plein de chaque écran.
+     Micro-interaction du 12/09/2026 : léger soulèvement au survol, chaleur
+     laiton en ombre plutôt qu'un gris neutre — de quoi donner un peu de vie
+     sans jamais devenir un halo (l'ombre reste courte et peu opaque). */
   :is([data-app='dashboard'], [data-app='login']) .app-primary {
     background-color: #ffffff !important;
     color: #0e0e0f !important;
@@ -829,6 +832,14 @@
     font-size: 0.875rem !important;
     font-weight: 600 !important;
     min-height: 40px !important;
+    transition: transform 150ms ease, box-shadow 150ms ease !important;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    :is([data-app='dashboard'], [data-app='login']) .app-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(199, 160, 107, 0.25) !important;
+    }
   }
 
   :is([data-app='dashboard'], [data-app='login']) .app-ghost {
@@ -838,10 +849,19 @@
     font-size: 0.875rem !important;
     color: var(--color-muted) !important;
     min-height: 40px !important;
+    transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease !important;
   }
 
   :is([data-app='dashboard'], [data-app='login']) .app-ghost:hover {
     color: var(--color-primary) !important;
+    border-color: rgba(199, 160, 107, 0.45) !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :is([data-app='dashboard'], [data-app='login']) .app-primary,
+    :is([data-app='dashboard'], [data-app='login']) .app-ghost {
+      transition: none !important;
+    }
   }
 
   /* -------------------------------------------------------------------------
@@ -871,6 +891,13 @@
     color: var(--color-muted) !important;
     border-color: var(--color-hairline-strong) !important;
     background-color: rgba(255, 255, 255, 0.02) !important;
+    transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-app='dashboard'] .app-filter {
+      transition: none !important;
+    }
   }
 
   /* Le survol n'existe que là où il y a un curseur : sur un écran tactile,
@@ -935,16 +962,17 @@
     font-weight: 700 !important;
   }
 
-  /* Bouton central. Le fond sombre, le liseré céladon et la lueur sont
-     précisément les trois propriétés que le reset supprimait. */
+  /* Bouton central. Le fond sombre et le liseré laiton sont précisément les
+     propriétés que le reset supprimait. Lueur retirée le 12/09/2026 (même
+     raison que `.navItemFab` dans app.module.css, qui stylise ce même
+     bouton) : accent chaud, sans halo diffus. */
   [data-app='dashboard'] .app-tab-fab {
     border-radius: 999px !important;
-    border-color: rgba(184, 207, 228, 0.5) !important;
+    border-color: rgba(199, 160, 107, 0.5) !important;
     background-image: radial-gradient(120% 120% at 50% 0%, #1e2225, #121416 70%) !important;
     box-shadow:
       0 8px 20px rgba(0, 0, 0, 0.55),
-      0 0 0 5px rgba(16, 18, 20, 0.9),
-      0 0 18px -4px rgba(184, 207, 228, 0.35) !important;
+      0 0 0 5px rgba(16, 18, 20, 0.9) !important;
     padding: 0 !important;
     min-height: 0 !important;
   }
