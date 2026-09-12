@@ -1,5 +1,27 @@
 # 05 — Composants
 
+## Prestations (grille tarifaire) — débordement horizontal sur téléphone (12 septembre 2026)
+
+Capture de Dorian, sur téléphone, zoom vérifié à 100 % : les cartes de la grille tarifaire
+(Berline, SUV/break, Utilitaire, Prestige) débordaient à droite de l'écran, avec les champs
+« min » coupés.
+
+**Cause : un « blowout » de grille CSS, classique et déjà rencontré dans ce même fichier.**
+`.cellInputs` (les deux champs CHF/min d'une case) est une grille à deux colonnes `1fr 1fr`.
+Sans indication contraire, un navigateur ne laisse jamais une colonne `1fr` descendre sous la
+taille minimale de son contenu (`min-width: auto`) — et cette taille minimale se propage vers le
+haut à travers `.cell` puis `.grid`, qui poussent alors toute la page plus large que l'écran au
+lieu de se comprimer. `PricingEditor.module.css` corrige déjà ce problème à plusieurs endroits
+(`.nameField input`, `.inline input`, `.baseSearch input` ont tous un `min-inline-size: 0`
+explicite, commenté comme tel) — il manquait sur `.cell`, `.cellInputs` et `.inline` eux-mêmes,
+les conteneurs immédiatement responsables du débordement visible. Complété.
+
+**Bug voisin, même famille : le sélecteur de pays.** `.setting select` n'avait aucune largeur
+déclarée — un `<select>` sans `width` se dimensionne sur son option la plus longue
+(« France — EUR, TVA 20 % »), ce qui le fait déborder une fois `.settingsGrid` passé à deux
+colonnes sur téléphone. Ajout de `inline-size: 100%` + `min-inline-size: 0`, même famille de
+correctif.
+
 ## Échelle visuelle du dashboard — réduction (12 septembre 2026)
 
 Dorian, capture à l'appui (page Démarchage) : « l'affichage est trop immense ». Deux causes,

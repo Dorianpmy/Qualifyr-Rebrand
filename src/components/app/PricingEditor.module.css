@@ -138,6 +138,13 @@
 }
 
 .cell {
+  /* `min-inline-size: 0` : sans elle, une case de grille garde par défaut sa
+     taille minimale de contenu (min-content) et pousse `.grid` plus large
+     que l'écran au lieu de se laisser comprimer — c'est ce qui faisait
+     déborder les cartes « Berline »/« SUV »/etc. sur téléphone (12/09/2026).
+     Même correction déjà appliquée à `.nameField input`, `.baseSearch input`
+     plus bas dans ce fichier. */
+  min-inline-size: 0;
   border: 1px solid var(--color-hairline-strong);
   border-radius: 0.6rem;
   padding: 0.65rem;
@@ -161,12 +168,14 @@
 .cellInputs {
   display: grid;
   gap: 0.35rem;
+  min-inline-size: 0;
 }
 
 .inline {
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  min-inline-size: 0;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 0.45rem;
   padding: 0.3rem 0.5rem;
@@ -304,6 +313,12 @@
 .setting select,
 .setting input,
 .settingFull textarea {
+  /* `<select>` n'a pas de largeur par défaut : sans elle, le navigateur le
+     dimensionne sur son option la plus longue (« France — EUR, TVA 20 % »),
+     ce qui le fait déborder une fois la grille des réglages passée à deux
+     colonnes sur téléphone. */
+  inline-size: 100%;
+  min-inline-size: 0;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 0.5rem;
   padding: 0.5rem 0.6rem;
