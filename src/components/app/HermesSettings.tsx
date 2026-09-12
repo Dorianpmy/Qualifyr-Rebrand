@@ -159,7 +159,7 @@ export function HermesSettings({ initial, accountEmail, availableProspects }: Pr
 
       {initial !== null ? (
         <button type="button" className="app-tab cta-solid" onClick={togglePause}>
-          {paused ? 'Relancer Hermès' : 'Mettre en pause'}
+          {paused ? 'Relancer le démarchage' : 'Mettre en pause'}
         </button>
       ) : null}
 
@@ -277,7 +277,7 @@ export function HermesSettings({ initial, accountEmail, availableProspects }: Pr
         {message ? <p className={styles.hermesError}>{message}</p> : null}
         {status === 'saved' ? (
           <p className={styles.hermesSuccess}>
-            Enregistré. Hermès commence aux prochains envois.
+            Enregistré. Le démarchage commence aux prochains envois.
           </p>
         ) : null}
 

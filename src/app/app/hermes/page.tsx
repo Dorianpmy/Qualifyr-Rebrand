@@ -82,7 +82,7 @@ export default async function HermesPage() {
         city={null}
         active="abonnement"
       >
-        <LockedModule reason={access.reason} capability="agent.prospecting" moduleName="Hermès" />
+        <LockedModule reason={access.reason} capability="agent.prospecting" moduleName="Démarchage" />
       </AppShell>
     );
   }
@@ -130,17 +130,17 @@ export default async function HermesPage() {
       active="hermes"
     >
       <header className="mb-6">
-        <h1 className="mb-2 text-[1.35rem] font-bold tracking-[-0.02em] text-primary">Hermès</h1>
+        <h1 className="mb-2 text-[1.35rem] font-bold tracking-[-0.02em] text-primary">Démarchage</h1>
         <p className="max-w-[38rem] text-[0.9375rem] leading-[1.65] text-muted">
-          Hermès écrit chaque jour aux entreprises que l’agent a recensées dans vos zones, en
-          votre nom. Vous recevez les réponses directement. Vous pouvez l’arrêter à tout moment.
+          L’agent écrit chaque jour aux entreprises recensées dans vos zones, en votre nom. Vous
+          recevez les réponses directement. Vous pouvez l’arrêter à tout moment.
         </p>
       </header>
 
       {availableProspects === 0 ? (
         /* Dire pourquoi rien ne partira, plutôt que d'afficher un formulaire
            qui n'aura aucun effet. Le professionnel repartirait sinon en
-           croyant Hermès actif. */
+           croyant le démarchage actif. */
         <p className="mb-6 rounded-2xl border border-hairline px-4 py-3.5 text-[0.875rem] leading-[1.6] text-muted">
           Aucune entreprise à contacter pour l’instant. Analysez d’abord une zone, ou importez
           une liste que vous connaissez déjà.

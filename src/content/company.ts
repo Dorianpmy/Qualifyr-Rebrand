@@ -136,7 +136,7 @@ export const processors: readonly Processor[] = [
   {
     name: 'Supabase, Inc.',
     purpose:
-      'Base de données et authentification de l’espace professionnel : comptes, zones et prospects recensés, campagnes Hermès, réservations, abonnements.',
+      'Base de données et authentification de l’espace professionnel : comptes, zones et prospects recensés, campagnes de prospection, réservations, abonnements.',
     /*
      * Deux faits distincts, aucun ne remplace l'autre : la région
      * d'hébergement (un réglage du projet, confirmé par Dorian le
@@ -151,7 +151,7 @@ export const processors: readonly Processor[] = [
   {
     name: 'Resend',
     purpose:
-      'Envoi des e-mails du site : formulaires, réservations, factures, et prospection Hermès sur un sous-domaine d’expédition dédié.',
+      'Envoi des e-mails du site : formulaires, réservations, factures, et prospection sortante sur un sous-domaine d’expédition dédié.',
     // Source : resend.com/legal/subprocessors — tous les sous-traitants
     // listés (infrastructure AWS comprise) sont situés aux États-Unis.
     location: 'États-Unis',
@@ -174,7 +174,7 @@ export const processors: readonly Processor[] = [
   {
     name: 'Mistral AI',
     purpose:
-      'Classement des entreprises recensées par pertinence pour l’activité du professionnel (Hermès). Ne reçoit jamais l’adresse e-mail ni le jeton de désinscription — voir lib/agent/relevance.ts.',
+      'Classement des entreprises recensées par pertinence pour l’activité du professionnel, dans le cadre de la prospection. Ne reçoit jamais l’adresse e-mail ni le jeton de désinscription — voir lib/agent/relevance.ts.',
     /*
      * Source : legal.mistral.ai (société) et legal.mistral.ai/terms/privacy-
      * policy, qui énonce elle-même la nuance reprise ici plutôt qu'une

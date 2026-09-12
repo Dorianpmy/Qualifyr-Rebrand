@@ -63,7 +63,7 @@ const offers: readonly Offer[] = [
          formulation dit ce qui se passe — un premier message, à votre nom —
          sans promettre ce qui vient après : relancer et conclure restent au
          professionnel. */
-      'Hermès écrit à ces entreprises pour vous, à votre nom',
+      'Il leur écrit pour vous, à votre nom',
       'Vous recevez les réponses directement, vous décidez de la suite',
     ],
     href: '/nettoyage-automobile',
