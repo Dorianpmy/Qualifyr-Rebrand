@@ -11,6 +11,7 @@ import {
   countContactableImportedProspects,
   listImportedProspects,
 } from '@/lib/agent/import-prospects';
+import styles from '../app.module.css';
 
 /**
  * Hermès — l'écran où le professionnel active la prospection.
@@ -129,47 +130,58 @@ export default async function HermesPage() {
       city={detailer?.city ?? null}
       active="hermes"
     >
-      <header className="mb-6">
-        <h1 className="mb-2 text-[1.35rem] font-bold tracking-[-0.02em] text-primary">Démarchage</h1>
-        <p className="max-w-[38rem] text-[0.9375rem] leading-[1.65] text-muted">
-          L’agent écrit chaque jour aux entreprises recensées dans vos zones, en votre nom. Vous
-          recevez les réponses directement. Vous pouvez l’arrêter à tout moment.
-        </p>
-      </header>
+      {/* `.main`/`.title`/`.subtitle` : cette page utilisait des tailles
+          Tailwind posées à la main (titre 1.35rem, pas de largeur maximale)
+          au lieu des classes partagées du dashboard — visiblement plus
+          grande que le reste du SaaS pour Dorian (12/09/2026). Alignée sur
+          `invoices/page.tsx`, `cases/page.tsx`, etc. */}
+      <main className={styles.main}>
+        <div className={styles.topbar}>
+          <div>
+            <h1 className={styles.title}>Démarchage</h1>
+            <p className={styles.subtitle}>
+              L’agent écrit chaque jour aux entreprises recensées dans vos zones, en votre nom.
+              Vous recevez les réponses directement. Vous pouvez l’arrêter à tout moment.
+            </p>
+          </div>
+        </div>
 
-      {availableProspects === 0 ? (
-        /* Dire pourquoi rien ne partira, plutôt que d'afficher un formulaire
-           qui n'aura aucun effet. Le professionnel repartirait sinon en
-           croyant le démarchage actif. */
-        <p className="mb-6 rounded-2xl border border-hairline px-4 py-3.5 text-[0.875rem] leading-[1.6] text-muted">
-          Aucune entreprise à contacter pour l’instant. Analysez d’abord une zone, ou importez
-          une liste que vous connaissez déjà.
-        </p>
-      ) : null}
+        {availableProspects === 0 ? (
+          /* Dire pourquoi rien ne partira, plutôt que d'afficher un formulaire
+             qui n'aura aucun effet. Le professionnel repartirait sinon en
+             croyant le démarchage actif. */
+          <div className={styles.panel} style={{ padding: '1rem 1.1rem', marginBottom: '1.25rem' }}>
+            <p className={styles.clientMeta}>
+              Aucune entreprise à contacter pour l’instant. Analysez d’abord une zone, ou importez
+              une liste que vous connaissez déjà.
+            </p>
+          </div>
+        ) : null}
 
-      <HermesSettings
-        initial={
-          row
-            ? {
-                senderName: row.sender_name,
-                replyToEmail: row.reply_to_email,
-                subject: row.subject,
-                body: row.body,
-                dailyQuota: row.daily_quota,
-                activityDescription: row.activity_description,
-                paused: row.paused_at !== null,
-              }
-            : null
-        }
-        accountEmail={user.email}
-        availableProspects={availableProspects}
-      />
+        <HermesSettings
+          initial={
+            row
+              ? {
+                  senderName: row.sender_name,
+                  replyToEmail: row.reply_to_email,
+                  subject: row.subject,
+                  body: row.body,
+                  dailyQuota: row.daily_quota,
+                  activityDescription: row.activity_description,
+                  paused: row.paused_at !== null,
+                }
+              : null
+          }
+          accountEmail={user.email}
+          availableProspects={availableProspects}
+        />
 
-      <ImportProspects
-        initialProspects={importedProspects}
-        attestationText={IMPORT_ATTESTATION_TEXT}
-        maxImportSize={MAX_IMPORT_SIZE}
-      />
+        <ImportProspects
+          initialProspects={importedProspects}
+          attestationText={IMPORT_ATTESTATION_TEXT}
+          maxImportSize={MAX_IMPORT_SIZE}
+        />
+      </main>
     </AppShell>
   );
 }

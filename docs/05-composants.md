@@ -1,5 +1,28 @@
 # 05 — Composants
 
+## Échelle visuelle du dashboard — réduction (12 septembre 2026)
+
+Dorian, capture à l'appui (page Démarchage) : « l'affichage est trop immense ». Deux causes,
+une propre à la page, une partagée par tout le dashboard.
+
+**Page Démarchage désynchronisée du reste.** `src/app/app/hermes/page.tsx` posait son titre et
+son intro à la main en Tailwind (`text-[1.35rem]`, `text-[0.9375rem]`) au lieu des classes
+partagées `.title`/`.subtitle`/`.main` (1.1–1.2rem, 0.72rem, largeur maximale 1120px) utilisées
+par toutes les autres pages — d'où un titre visiblement plus gros et une largeur non contrainte
+sur grand écran. Réalignée sur `invoices/page.tsx` et consorts.
+
+**Réduction partagée, ressentie sur tout le SaaS.** `.title` (desktop 1.3rem → 1.2rem), `.main`
+(padding desktop 2rem/2.25rem/3rem → 1.5rem/2rem/2.25rem), `.kpi` (padding 0.9rem/0.95rem →
+0.75rem/0.85rem) et `.kpiValue` (1.3rem → 1.15rem) sont utilisées par toutes les pages à cases
+(accueil, Démarchage…) — les resserrer ici réduit l'échelle générale sans dupliquer le
+changement page par page. `.hermesForm`/`.hermesSection` (écarts 1.5rem → 1.15rem/1.25rem) et le padding des champs
+(0.7rem/0.9rem → 0.6rem/0.85rem) suivent le même mouvement.
+
+**Ce qui n'a pas bougé.** Le texte des champs de saisie reste à 16px (`max(16px, 1em)`,
+`.shell :is(input, select, textarea)`) — en dessous, iOS zoome la page au focus et ne revient
+jamais à l'échelle initiale. Les cibles tactiles (boutons, onglets) gardent leur taille : seuls
+les textes, cases et espacements ont été resserrés.
+
 ## Mobile dashboard — débordement horizontal et photos avant/après (12 septembre 2026)
 
 À la demande de Dorian : « la page trop large sur bcp d'onglet + lenteur ». Deux bugs distincts,

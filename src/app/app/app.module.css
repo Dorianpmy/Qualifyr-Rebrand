@@ -522,7 +522,7 @@
 
 @media (min-width: 900px) {
   .main {
-    padding: 2rem 2.25rem 3rem;
+    padding: 1.5rem 2rem 2.25rem;
   }
 }
 
@@ -545,7 +545,7 @@
 
 @media (min-width: 900px) {
   .title {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
 }
 
@@ -621,7 +621,10 @@
 
 .kpi {
   position: relative;
-  padding: 0.9rem 0.95rem;
+  /* Réduit le 12/09/2026 (0.9rem 0.95rem → ceci) : Dorian trouvait l'ensemble
+     du dashboard « trop immense ». Ces cases sont partagées par toutes les
+     pages à cases (Démarchage, accueil…), donc l'effet se voit partout. */
+  padding: 0.75rem 0.85rem;
   border-radius: 14px;
   border: 1px solid var(--color-hairline-strong);
   background: linear-gradient(165deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015));
@@ -672,7 +675,7 @@
 }
 
 .kpiValue {
-  font-size: 1.3rem;
+  font-size: 1.15rem;
   font-weight: 700;
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
@@ -1781,7 +1784,7 @@
 
 .hermesSection {
   display: grid;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .hermesKpis {
@@ -1792,7 +1795,7 @@
 
 .hermesForm {
   display: grid;
-  gap: 1.5rem;
+  gap: 1.15rem;
   max-width: 42rem;
 }
 
@@ -1807,7 +1810,7 @@
 .hermesForm input[type='email'],
 .hermesForm input:not([type]),
 .hermesForm textarea {
-  padding: 0.7rem 0.9rem;
+  padding: 0.6rem 0.85rem;
   border-radius: 10px;
   border: 1px solid var(--color-hairline-strong);
   background: rgba(255, 255, 255, 0.03);
