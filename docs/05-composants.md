@@ -1,5 +1,21 @@
 # 05 — Composants
 
+## Sélecteur de mode d'encaissement — libellés trop longs sur mobile (12 septembre 2026)
+
+Capture de Dorian : « Carte bancaire (automatique) » et « Je gère la réception moi-même » —
+les deux onglets du sélecteur `PaymentSetup.tsx` — pressés bord à bord sans respiration sur
+téléphone. `.modeTab`/`.modeSwitch` est le même contrôle segmenté 50/50 que la bascule
+Se connecter/Créer un compte de l'écran de connexion (`LoginForm.tsx`), dimensionné pour des
+libellés courts (« Se connecter », 12 caractères) — pas pour deux phrases de 29-30 caractères.
+
+Deux corrections, une de contenu et une défensive :
+- Libellés raccourcis dans `PaymentSetup.tsx` : « Carte bancaire (automatique) » → « Carte
+  bancaire », « Je gère la réception moi-même » → « Réception manuelle ». Le badge d'état
+  (Actif/Non activé) et le texte au-dessus continuent de porter le sens perdu.
+- `.modeTab` (partagé par tous les sélecteurs de ce type) : `min-inline-size: 0` pour autoriser
+  un retour à la ligne si un futur libellé est de nouveau trop long, `text-align: center` pour
+  que ce retour à la ligne reste lisible, et un léger resserrement du texte/padding sous 420px.
+
 ## Prestations (grille tarifaire) — débordement horizontal sur téléphone (12 septembre 2026)
 
 Capture de Dorian, sur téléphone, zoom vérifié à 100 % : les cartes de la grille tarifaire

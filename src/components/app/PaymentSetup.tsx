@@ -252,7 +252,7 @@ export function PaymentSetup() {
           className={mode === 'stripe' ? `${styles.modeTab} ${styles.modeTabActive}` : styles.modeTab}
           onClick={selectStripe}
         >
-          Carte bancaire (automatique)
+          Carte bancaire
         </button>
         <button
           type="button"
@@ -261,7 +261,7 @@ export function PaymentSetup() {
           className={mode === 'manuel' ? `${styles.modeTab} ${styles.modeTabActive}` : styles.modeTab}
           onClick={selectManual}
         >
-          Je gère la réception moi-même
+          Réception manuelle
         </button>
       </div>
 
