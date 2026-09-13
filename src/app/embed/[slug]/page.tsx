@@ -2,8 +2,11 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { BookingFlow } from '@/components/detailing/BookingFlow';
 import { EmbedAutoHeight } from '@/components/detailing/EmbedAutoHeight';
+import { WhatsAppBadge } from '@/components/agency/WhatsAppBadge';
+import { agencyChannels } from '@/content/agency-channels';
 import { loadDetailerBySlug } from '@/lib/detailing/config';
 import { DEMO_DETAILER, DEMO_QUOTE_CONFIG } from '@/lib/detailing/demo';
+import { buildClientWhatsAppMessage } from '@/lib/whatsapp';
 
 /**
  * Tunnel de réservation embarqué sur le site du professionnel.
@@ -50,6 +53,12 @@ export default async function EmbedPage({ params }: EmbedPageProps) {
       <>
         <EmbedAutoHeight />
         <BookingFlow detailer={DEMO_DETAILER} quoteConfig={DEMO_QUOTE_CONFIG} demo />
+        {/* Pas un vrai professionnel : le numéro de support Qualifyr est le
+            bon choix ici, pas un repli. */}
+        <WhatsAppBadge
+          phoneNumber={agencyChannels.whatsappNumber}
+          message={buildClientWhatsAppMessage(DEMO_DETAILER.name)}
+        />
       </>
     );
   }
@@ -74,6 +83,13 @@ export default async function EmbedPage({ params }: EmbedPageProps) {
           workshopAddress: detailer.workshopAddress,
         }}
         quoteConfig={detailer.quoteConfig}
+      />
+
+      {/* Numéro du professionnel, jamais celui de Qualifyr : voir le
+          commentaire de `WhatsAppBadge`. */}
+      <WhatsAppBadge
+        phoneNumber={detailer.whatsappNumber ?? agencyChannels.whatsappNumber}
+        message={buildClientWhatsAppMessage(detailer.name)}
       />
     </>
   );

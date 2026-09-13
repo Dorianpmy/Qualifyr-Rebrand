@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { optionCopy, scopeCopy, soilingCopy, vehicleSizeCopy } from '@/components/detailing/content';
 import { isQrBillEligibleIban } from '@/lib/detailing/iban';
 import { formatMoney, profileFor } from '@/lib/detailing/locale';
+import { isValidWhatsAppNumber } from '@/lib/whatsapp';
 import type {
   DetailerSettings,
   OptionRow,
@@ -493,6 +494,43 @@ export function PricingEditor({ catalogue }: { catalogue: PricingCatalogue }) {
             </p>
           )}
           {baseError ? <p className={editor.blockHint}>{baseError}</p> : null}
+        </div>
+
+        {/* Numéro affiché sur la bulle WhatsApp de la page de réservation et
+            de l'embarqué (`/reservation/[slug]`, `/embed/[slug]`) — distinct
+            du numéro de support Qualifyr, qui ne sert plus que de repli tant
+            que ce champ est vide (12/09/2026 : un client qui cliquait sur
+            cette bulle pendant sa réservation écrivait à Qualifyr au lieu
+            d'écrire au professionnel). */}
+        <div className={editor.settingFull}>
+          <span>Numéro WhatsApp affiché aux clients</span>
+          <input
+            type="tel"
+            value={settings.whatsappNumber ?? ''}
+            placeholder="+33 6 12 34 56 78"
+            onChange={(event) => {
+              setSettings({ ...settings, whatsappNumber: event.target.value || null });
+              setState('idle');
+            }}
+          />
+          {settings.whatsappNumber && settings.whatsappNumber.trim().length > 0 ? (
+            isValidWhatsAppNumber(settings.whatsappNumber) ? (
+              <p className={editor.blockHint}>
+                Tes clients pourront t’écrire directement sur ce numéro depuis leur page de
+                réservation.
+              </p>
+            ) : (
+              <p className={editor.blockHint}>
+                <strong className={editor.warn}>Ce numéro ne sera pas utilisable.</strong> Le
+                bouton WhatsApp n’apparaîtra pas tant qu’il n’est pas corrigé.
+              </p>
+            )
+          ) : (
+            <p className={editor.blockHint}>
+              Sans numéro, tes clients voient le numéro de support Qualifyr à ta place sur leur
+              page de réservation.
+            </p>
+          )}
         </div>
 
         {/* IBAN — uniquement utile en Suisse, où la facture porte une

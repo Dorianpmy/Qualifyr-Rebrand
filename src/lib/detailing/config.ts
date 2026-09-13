@@ -33,6 +33,13 @@ export type DetailerRecord = {
   readonly mobileService: boolean;
   readonly workshopService: boolean;
   readonly workshopAddress: string | null;
+  /**
+   * Numéro WhatsApp affiché au client pendant sa réservation. `null` tant que
+   * le professionnel ne l'a pas renseigné dans Prestations → Réglages — les
+   * pages qui consomment ce champ retombent alors sur le numéro de support
+   * Qualifyr (`agencyChannels.whatsappNumber`), jamais sur une bulle muette.
+   */
+  readonly whatsappNumber: string | null;
   readonly quoteConfig: DetailerConfig;
   readonly availabilityConfig: AvailabilityConfig;
 };
@@ -141,6 +148,7 @@ export async function loadDetailerBySlug(slug: string): Promise<DetailerRecord |
     mobileService: Boolean(detailer.mobile_service),
     workshopService: Boolean(detailer.workshop_service),
     workshopAddress: (detailer.workshop_address as string | null) ?? null,
+    whatsappNumber: (detailer.whatsapp_number as string | null) ?? null,
     quoteConfig,
     availabilityConfig,
   };

@@ -1,5 +1,44 @@
 # 05 — Composants
 
+## Bulle WhatsApp — numéro de Qualifyr affiché à tort au client d'un professionnel (13 septembre 2026)
+
+Demande de Dorian : `WhatsAppBadge` était câblé en dur sur le numéro de support Qualifyr sur
+*toutes* les pages. Sur `/reservation/[slug]` et `/embed/[slug]` — les pages où un client final
+réserve chez un professionnel — un clic sur la bulle écrivait donc à Qualifyr au lieu d'écrire
+au professionnel chez qui la réservation avait lieu.
+
+**État avant correction, plus nuancé qu'il n'y paraît.** `WhatsAppBadge` s'auto-masquait déjà
+sur `/app` et `/reservation` (son propre test de chemin, `isSaaSPath`) — donc aucune bulle,
+plutôt qu'une bulle au mauvais numéro, y apparaissait. `/embed/[slug]` n'était en revanche pas
+exclu : la bulle Qualifyr y apparaissait bel et bien. Dans les deux cas, le résultat concret
+pour ces pages était le même : aucune façon, ou la mauvaise façon, de joindre le professionnel.
+
+**Nouveau champ.** `detailers.whatsapp_number` (migration 025), réglable dans Prestations →
+Réglages, sous le même format libre que l'IBAN — la validation (`isValidWhatsAppNumber`, 8 à 15
+chiffres une fois nettoyé) se fait à l'affichage, jamais en bloquant l'enregistrement : un
+numéro mal formé fait simplement disparaître le bouton plutôt que planter une page. Tant qu'il
+est vide, le numéro de support Qualifyr sert de repli — jamais de bulle muette.
+
+**`WhatsAppBadge` accepte désormais `phoneNumber`/`message`.** Sans ces props (usage historique,
+posé une fois dans `layout.tsx`), rien ne change : le badge continue à utiliser le numéro
+Qualifyr et à s'effacer sur `/app`, `/reservation` et, désormais, `/embed`. Avec `phoneNumber`
+fourni explicitement (même `null`), le masquage par chemin ne s'applique plus — c'est ce que
+posent maintenant `/reservation/[slug]/page.tsx` et `/embed/[slug]/page.tsx`, avec le numéro du
+professionnel (repli Qualifyr inclus) et un message dédié, `buildClientWhatsAppMessage` (« au
+sujet d'une réservation chez {nom} »), distinct du message `buildDirectWhatsAppMessage` du site
+vitrine qui parle, lui, d'un projet avec Qualifyr — les mélanger aurait envoyé un client vers un
+message parlant de Qualifyr à un professionnel qui n'y comprendrait rien.
+
+**`/embed/demo`, cas à part.** C'est la démonstration produit de Qualifyr elle-même (intégrée en
+iframe sur la page d'accueil), pas la page d'un professionnel réel : elle garde explicitement le
+numéro de support Qualifyr plutôt qu'un repli.
+
+Vérifié qu'aucun autre point du parcours client ne pointait vers le numéro Qualifyr : `Header`
+(et son propre bouton WhatsApp, `WhatsAppDirectButton`) est déjà masqué sur ces pages via
+`body:has(main [data-theme='dark']) [data-legacy-chrome]`, que `BookingFlow` active sur
+`/reservation` et `/embed`. Aucune autre référence WhatsApp dans `components/detailing` ou dans
+ces deux routes.
+
 ## Prestations — bouton « Enregistrer » caché par la barre d'onglets (12 septembre 2026)
 
 Capture de Dorian : après la correction du débordement de la grille tarifaire, le bouton

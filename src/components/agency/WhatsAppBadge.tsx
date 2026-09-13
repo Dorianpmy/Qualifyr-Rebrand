@@ -25,26 +25,54 @@ import styles from './WhatsAppBadge.module.css';
  * modifiable. Ce n'est pas un détail d'agrément : la phrase à écrire soi-même
  * est précisément l'effort qui fait renoncer.
  *
- * **Masqué sur le SaaS.** Un professionnel connecté à son espace n'est pas un
- * visiteur à convertir, et son écran est déjà chargé.
+ * **Masqué sur le SaaS et le parcours client.** Un professionnel connecté à
+ * son espace n'est pas un visiteur à convertir, et son écran est déjà chargé.
+ * `/reservation/[slug]` et `/embed/[slug]` sont un cas différent : ce badge
+ * par défaut s'y efface aussi, mais parce que ces pages posent leur propre
+ * instance, avec `phoneNumber` explicitement fourni — voir plus bas. Sans
+ * cette distinction, le numéro de support Qualifyr (`agencyChannels`)
+ * s'affichait sur la page de réservation d'un professionnel : un client qui
+ * cliquait dessus écrivait à Qualifyr au lieu d'écrire au professionnel chez
+ * qui il réservait (12/09/2026).
  *
  * **Rien ne s'affiche sans numéro configuré.** `agencyChannels.whatsappNumber`
  * vaut `null` si la variable d'environnement est absente : plutôt qu'un bouton
- * qui ouvre une conversation vide, il n'y a pas de bouton.
+ * qui ouvre une conversation vide, il n'y a pas de bouton. Même règle pour un
+ * numéro de professionnel mal renseigné.
  */
 
 function isSaaSPath(pathname: string): boolean {
-  return pathname.startsWith('/app') || pathname.startsWith('/reservation');
+  return (
+    pathname.startsWith('/app') ||
+    pathname.startsWith('/reservation') ||
+    pathname.startsWith('/embed')
+  );
 }
 
-export function WhatsAppBadge() {
-  const pathname = usePathname();
+type WhatsAppBadgeProps = {
+  /**
+   * Numéro à utiliser à la place de celui de Qualifyr. Fourni explicitement
+   * (même `null`, tant que le professionnel n'a pas encore renseigné le
+   * sien) par `/reservation/[slug]` et `/embed/[slug]` : sa seule présence
+   * désactive le masquage par chemin ci-dessus, qui ne vise que le badge par
+   * défaut du site vitrine.
+   */
+  readonly phoneNumber?: string | null;
+  /** Message pré-rempli à utiliser à la place du message contextuel du site
+   *  vitrine — obligatoire dès lors que `phoneNumber` est fourni, pour ne
+   *  jamais envoyer un client vers un message parlant de Qualifyr. */
+  readonly message?: string;
+};
 
-  if (isSaaSPath(pathname)) return null;
+export function WhatsAppBadge({ phoneNumber, message }: WhatsAppBadgeProps = {}) {
+  const pathname = usePathname();
+  const isOverride = phoneNumber !== undefined;
+
+  if (!isOverride && isSaaSPath(pathname)) return null;
 
   const href = buildWhatsAppUrl(
-    agencyChannels.whatsappNumber,
-    buildDirectWhatsAppMessage(pathname),
+    isOverride ? phoneNumber : agencyChannels.whatsappNumber,
+    message ?? buildDirectWhatsAppMessage(pathname),
   );
   if (!href) return null;
 

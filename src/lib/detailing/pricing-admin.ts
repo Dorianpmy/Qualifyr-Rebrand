@@ -73,6 +73,13 @@ export type DetailerSettings = {
    * acomptes mais ne restitue jamais l'IBAN en clair.
    */
   readonly iban: string | null;
+  /**
+   * Numéro WhatsApp affiché au client pendant sa réservation
+   * (`/reservation/[slug]`, `/embed/[slug]`) — distinct du numéro de support
+   * Qualifyr, utilisé en repli tant que ce champ est vide. Voir
+   * `lib/whatsapp.ts`.
+   */
+  readonly whatsappNumber: string | null;
 };
 
 export type PricingCatalogue = {
@@ -197,6 +204,7 @@ export async function loadCatalogue(detailerId: string): Promise<PricingCatalogu
       baseLatitude: detailer.base_latitude == null ? null : Number(detailer.base_latitude),
       baseLongitude: detailer.base_longitude == null ? null : Number(detailer.base_longitude),
       iban: (detailer.iban as string | null) ?? null,
+      whatsappNumber: (detailer.whatsapp_number as string | null) ?? null,
     },
   };
 }
@@ -338,6 +346,7 @@ export async function saveCatalogue(
     if (s.baseLatitude !== undefined) row.base_latitude = s.baseLatitude;
     if (s.baseLongitude !== undefined) row.base_longitude = s.baseLongitude;
     if (s.iban !== undefined) row.iban = s.iban;
+    if (s.whatsappNumber !== undefined) row.whatsapp_number = s.whatsappNumber;
 
     if (Object.keys(row).length > 0) {
       const { error } = await client.from('detailers').update(row).eq('id', detailerId);

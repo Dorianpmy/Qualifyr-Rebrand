@@ -2,9 +2,12 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { BookingFlow } from '@/components/detailing/BookingFlow';
 import { BookingIntro } from '@/components/detailing/BookingIntro';
+import { WhatsAppBadge } from '@/components/agency/WhatsAppBadge';
+import { agencyChannels } from '@/content/agency-channels';
 import { site } from '@/content/site';
 import { listPublishedCases } from '@/lib/detailing/cases';
 import { loadDetailerBySlug } from '@/lib/detailing/config';
+import { buildClientWhatsAppMessage } from '@/lib/whatsapp';
 
 type ReservationPageProps = {
   readonly params: Promise<{ slug: string }>;
@@ -81,6 +84,15 @@ export default async function ReservationPage({ params }: ReservationPageProps) 
           workshopAddress: detailer.workshopAddress,
         }}
         quoteConfig={detailer.quoteConfig}
+      />
+
+      {/* Numéro du professionnel, jamais celui de Qualifyr : voir le
+          commentaire de `WhatsAppBadge`. Repli sur le numéro de support tant
+          que le professionnel n'a pas rempli le sien (Prestations →
+          Réglages). */}
+      <WhatsAppBadge
+        phoneNumber={detailer.whatsappNumber ?? agencyChannels.whatsappNumber}
+        message={buildClientWhatsAppMessage(detailer.name)}
       />
     </>
   );

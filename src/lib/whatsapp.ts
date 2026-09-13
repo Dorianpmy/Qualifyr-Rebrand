@@ -39,9 +39,32 @@ export function buildDirectWhatsAppMessage(pathname?: string | null) {
   );
 }
 
+/** Un numéro exploitable pour un lien `wa.me` : 8 à 15 chiffres, une fois les
+ *  espaces, points et indicatifs (`+`, `00`) retirés. Même règle que
+ *  `buildWhatsAppUrl`, exposée à part pour l'afficher comme un indicateur
+ *  dans un formulaire, sans construire une URL inutilisée. */
+export function isValidWhatsAppNumber(value: string | null | undefined): boolean {
+  const digits = value?.replace(/\D/g, '') ?? '';
+  return digits.length >= 8 && digits.length <= 15;
+}
+
 /** Retourne `null` lorsque le numéro public n'est pas exploitable. */
 export function buildWhatsAppUrl(number: string | null | undefined, message: string) {
   const digits = number?.replace(/\D/g, '') ?? '';
   if (digits.length < 8 || digits.length > 15) return null;
   return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
+}
+
+/**
+ * Message pré-rempli pour écrire au professionnel depuis sa page de
+ * réservation (`/reservation/[slug]`, `/embed/[slug]`).
+ *
+ * Distinct de `buildDirectWhatsAppMessage` : celui-ci s'adresse à Qualifyr
+ * au sujet d'un projet de site, celui-ci s'adresse **au professionnel**, au
+ * sujet d'une réservation chez lui. Les mélanger enverrait un client final
+ * avec un message parlant de Qualifyr au professionnel qu'il essaie de
+ * joindre.
+ */
+export function buildClientWhatsAppMessage(detailerName: string): string {
+  return `Bonjour, j’ai une question au sujet d’une réservation chez ${detailerName}.`;
 }
