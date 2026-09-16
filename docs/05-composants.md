@@ -1,5 +1,29 @@
 # 05 — Composants
 
+## E-mail de nouvelle demande au professionnel — rendu plus visible, devise corrigée (16 septembre 2026)
+
+Demande de Dorian : après avoir écarté le SMS et la notification WhatsApp (bloquée par le délai
+d'approbation d'un modèle chez Meta — voir section suivante), rendre plus visible l'e-mail déjà
+envoyé au professionnel par `sendDetailerBookingEmail` (`lib/detailing/email.ts`), seul canal de
+notification réellement actif aujourd'hui.
+
+**Objet enrichi.** Un aperçu de notification (téléphone, client mail) n'affiche souvent que
+l'objet. Il contient désormais le créneau et le montant du devis, précédés de `🔔` pour se
+distinguer au coup d'œil dans une boîte dense : `🔔 Nouvelle demande — lundi 21 septembre 2026 à
+10:00 · 89,00 CHF` (auparavant : `Nouvelle réservation — lundi 21 septembre à 10:00`, sans montant).
+
+**Lien direct vers la fiche.** Un bouton « Voir la demande » (texte et HTML) pointe vers
+`{site.url}/app/bookings/{bookingId}` — le professionnel répond en un clic, sans chercher la
+réservation dans son tableau de bord. `textBody`/`htmlBody` acceptent désormais un `cta?`
+optionnel à cet effet ; les autres e-mails (`sendClientBookingEmail`) n'en passent pas.
+
+**Bug de devise corrigé au passage, non signalé par Dorian.** `formatPrice` dans `email.ts`
+formatait tout montant en EUR, quel que soit le pays du professionnel — un detailer suisse voyait
+donc ses propres devis affichés en euros dans ses e-mails de notification. Corrigé en le
+faisant passer par `formatMoney`/`profileFor` (`locale.ts`), déjà utilisés ailleurs (WhatsApp,
+`PricingEditor`). Un nouveau champ `country?` sur `BookingEmailPayload`, alimenté par
+`booking.ts` (`detailer.country`), pilote la devise affichée.
+
 ## Notification WhatsApp au professionnel — nouvelle demande de réservation (16 septembre 2026)
 
 Demande de Dorian : prévenir un professionnel par WhatsApp à chaque nouvelle demande de

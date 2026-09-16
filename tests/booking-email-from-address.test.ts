@@ -95,6 +95,56 @@ describe('sendClientBookingEmail — adresse d’expédition', () => {
   });
 });
 
+describe('sendDetailerBookingEmail — objet visible, devise et lien direct', () => {
+  it('affiche le montant dans la devise du pays du professionnel, jamais toujours en EUR', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    vi.resetModules();
+    const { sendDetailerBookingEmail } = await import('@/lib/detailing/email');
+
+    await sendDetailerBookingEmail({ ...bookingPayload(), country: 'CH', quotedPrice: 89 });
+
+    const call = sendMock.mock.calls[0]?.[0] as unknown as { subject: string; text: string };
+    expect(call.subject).toContain('CHF');
+    expect(call.text).toContain('CHF');
+    expect(call.subject).not.toMatch(/€/);
+  });
+
+  it("garde l'euro pour un professionnel français (comportement historique)", async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    vi.resetModules();
+    const { sendDetailerBookingEmail } = await import('@/lib/detailing/email');
+
+    await sendDetailerBookingEmail({ ...bookingPayload(), country: 'FR', quotedPrice: 50 });
+
+    const call = sendMock.mock.calls[0]?.[0] as unknown as { subject: string };
+    expect(call.subject).toMatch(/€/);
+  });
+
+  it('inclut le prix et le créneau dans l’objet — visible sans ouvrir le message', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    vi.resetModules();
+    const { sendDetailerBookingEmail } = await import('@/lib/detailing/email');
+
+    await sendDetailerBookingEmail(bookingPayload());
+
+    const call = sendMock.mock.calls[0]?.[0] as unknown as { subject: string };
+    expect(call.subject).toContain('50');
+    expect(call.subject.length).toBeGreaterThan('Nouvelle réservation'.length);
+  });
+
+  it('ajoute un lien direct vers la réservation dans le dashboard', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    vi.resetModules();
+    const { sendDetailerBookingEmail } = await import('@/lib/detailing/email');
+
+    await sendDetailerBookingEmail(bookingPayload());
+
+    const call = sendMock.mock.calls[0]?.[0] as unknown as { text: string; html: string };
+    expect(call.text).toContain('/app/bookings/booking-1');
+    expect(call.html).toContain('/app/bookings/booking-1');
+  });
+});
+
 describe('bookingFromEmail() — code mort retiré', () => {
   it('n’existe plus dans lib/detailing/env.ts', async () => {
     const mod = await import('@/lib/detailing/env');

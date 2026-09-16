@@ -1,6 +1,8 @@
 import { Resend } from 'resend';
 import { isProduction } from '@/lib/env';
 import { vehicleSizeCopy, scopeCopy, soilingCopy, optionCopy } from '@/components/detailing/content';
+import { site } from '@/content/site';
+import { formatMoney, profileFor } from './locale';
 import type { LocationMode, OptionKey, Scope, SoilingLevel, VehicleSize } from './types';
 
 /**
@@ -78,6 +80,13 @@ export type BookingEmailPayload = {
   readonly bookingId: string;
   readonly detailerName: string;
   readonly detailerEmail?: string | null;
+  /**
+   * Pilote la devise affichée (`formatMoney`/`profileFor`, `locale.ts`).
+   * Absente ⇒ `profileFor` retombe sur `FR`/EUR — c'était jusqu'ici la seule
+   * devise possible, un montant en EUR était donc affiché à tort aux
+   * professionnels suisses (16/09/2026, corrigé au passage).
+   */
+  readonly country?: string | null;
   readonly clientEmail: string;
   readonly clientPhone?: string | undefined;
   readonly vehicleSize: VehicleSize;
@@ -94,8 +103,8 @@ export type BookingEmailPayload = {
   readonly depositAmount: number;
 };
 
-function formatPrice(amount: number): string {
-  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(amount);
+function formatPrice(amount: number, country?: string | null): string {
+  return formatMoney(amount, profileFor(country));
 }
 
 function formatSlot(iso: string): string {
@@ -140,20 +149,48 @@ function rows(payload: BookingEmailPayload): { label: string; value: string }[] 
     { label: 'Options', value: optionsLabel(payload.optionKeys) },
     { label: 'Lieu', value: locationLabel(payload.locationMode, payload.postalCode) },
     { label: 'Durée estimée', value: `${payload.quotedMinutes} min` },
-    { label: 'Montant', value: formatPrice(payload.quotedPrice) },
+    { label: 'Montant', value: formatPrice(payload.quotedPrice, payload.country) },
     ...(payload.depositAmount > 0
-      ? [{ label: 'Acompte', value: formatPrice(payload.depositAmount) }]
+      ? [{ label: 'Acompte', value: formatPrice(payload.depositAmount, payload.country) }]
       : []),
     { label: 'Référence', value: payload.bookingId },
   ];
 }
 
-function textBody(title: string, intro: string, payload: BookingEmailPayload, outro: string): string {
+/** Lien direct vers la réservation, affiché en plus de l'accroche textuelle —
+ *  utile au professionnel (répondre en un clic), sans objet pour le client
+ *  (qui n'a pas de compte dashboard). */
+type Cta = { readonly label: string; readonly url: string };
+
+function textBody(
+  title: string,
+  intro: string,
+  payload: BookingEmailPayload,
+  outro: string,
+  cta?: Cta,
+): string {
   const lines = rows(payload).map((r) => `${r.label} : ${r.value}`);
-  return [title, '', intro, '', ...lines, '', outro, '', '— Qualifyr'].join('\n');
+  return [
+    title,
+    '',
+    intro,
+    '',
+    ...lines,
+    '',
+    outro,
+    ...(cta ? ['', `${cta.label} : ${cta.url}`] : []),
+    '',
+    '— Qualifyr',
+  ].join('\n');
 }
 
-function htmlBody(title: string, intro: string, payload: BookingEmailPayload, outro: string): string {
+function htmlBody(
+  title: string,
+  intro: string,
+  payload: BookingEmailPayload,
+  outro: string,
+  cta?: Cta,
+): string {
   const list = rows(payload)
     .map(
       (r) =>
@@ -167,11 +204,15 @@ function htmlBody(title: string, intro: string, payload: BookingEmailPayload, ou
    * — échapper la chaîne composée entière est plus sûr que de traquer quelle
    * portion vient de l'utilisateur à chaque appel.
    */
+  const ctaBlock = cta
+    ? `<p style="margin:20px 0 0"><a href="${escapeHtml(cta.url)}" style="display:inline-block;padding:12px 24px;border-radius:999px;background:#0e0e0f;color:#fff;text-decoration:none;font-weight:600">${escapeHtml(cta.label)}</a></p>`
+    : '';
   return `<!DOCTYPE html><html><body style="font-family:system-ui,-apple-system,sans-serif;line-height:1.5;color:#111;max-width:560px;margin:0 auto;padding:24px">
   <h1 style="font-size:20px;margin:0 0 12px">${escapeHtml(title)}</h1>
   <p style="margin:0 0 20px;color:#333">${escapeHtml(intro)}</p>
   <table style="border-collapse:collapse;width:100%;font-size:14px">${list}</table>
   <p style="margin:24px 0 0;color:#333">${escapeHtml(outro)}</p>
+  ${ctaBlock}
   <p style="margin:16px 0 0;color:#888;font-size:13px">— Qualifyr</p>
 </body></html>`;
 }
@@ -219,15 +260,26 @@ export async function sendDetailerBookingEmail(payload: BookingEmailPayload): Pr
 
   const title = 'Nouvelle demande de réservation';
   const intro = `Client : ${payload.clientEmail}${payload.clientPhone ? ` · ${payload.clientPhone}` : ''}`;
-  const outro = 'Connectez-vous à votre espace pour confirmer ou ajuster.';
+  const outro = 'Ouvrez la fiche pour confirmer ou ajuster.';
+  const cta = { label: 'Voir la demande', url: `${site.url}/app/bookings/${payload.bookingId}` };
+
+  /*
+   * Objet enrichi (16/09/2026, demande de Dorian : « rendre l'e-mail plus
+   * visible »). Un aperçu de notification n'affiche souvent que l'objet —
+   * le prix et le créneau y figurent donc directement, pour qu'un
+   * professionnel puisse trier sans ouvrir le message. `🔔` distingue cette
+   * alerte du reste d'une boîte de réception au coup d'œil, y compris dans
+   * une liste dense sur téléphone.
+   */
+  const subject = `🔔 Nouvelle demande — ${formatSlot(payload.slotStart)} · ${formatPrice(payload.quotedPrice, payload.country)}`;
 
   try {
     const { error } = await resend.emails.send({
       from,
       to,
-      subject: `Nouvelle réservation — ${formatSlot(payload.slotStart)}`,
-      text: textBody(title, intro, payload, outro),
-      html: htmlBody(title, intro, payload, outro),
+      subject,
+      text: textBody(title, intro, payload, outro, cta),
+      html: htmlBody(title, intro, payload, outro, cta),
     });
     if (error) {
       console.error('[booking-email] detailer failed', error);

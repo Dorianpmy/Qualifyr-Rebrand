@@ -192,6 +192,7 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
     bookingId,
     detailerName: detailer.name,
     detailerEmail: detailer.email ?? null,
+    country: detailer.country,
     clientEmail: input.email,
     clientPhone: input.phone,
     vehicleSize: input.vehicleSize,
