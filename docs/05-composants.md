@@ -1,5 +1,31 @@
 # 05 — Composants
 
+## Invitation calendrier (.ics) jointe aux e-mails de réservation (16 septembre 2026)
+
+Demande de Dorian, après avoir vu à quoi ressemblaient les e-mails de confirmation
+(client et professionnel) : pouvoir ajouter le rendez-vous à son agenda (iOS ou
+Samsung/Android) en un geste, sans passer par une autre application.
+
+**Nouveau module `lib/detailing/ics.ts`** : construit un fichier `.ics` minimal (norme
+RFC 5545), sans dépendance externe — un `.ics` est du texte brut, une bibliothèque
+n'aurait rien apporté pour une trentaine de lignes de gabarit. Pas de `import
+'server-only'` ici, à la différence de `whatsapp.ts` : ce module ne lit aucun secret,
+seulement du formatage de texte.
+
+**Joint aux deux e-mails de nouvelle réservation** (`sendClientBookingEmail` et
+`sendDetailerBookingEmail`, `lib/detailing/email.ts`), pas à la relance de devis
+abandonné (`sendAbandonedBookingEmail`) : à ce stade, rien n'est encore confirmé, une
+invitation calendrier prétendrait un rendez-vous qui n'existe pas. Le contenu de
+l'événement (description) reprend le même tableau que le corps de l'e-mail (`rows()`),
+pour que l'agenda et le message portent toujours la même information. Le titre de
+l'événement diffère selon le destinataire : nom du professionnel pour le client,
+véhicule et formule pour le professionnel — c'est le seul champ qu'un agenda affiche
+sans ouvrir l'événement.
+
+Ouvert nativement par Gmail, Outlook, Apple Mail et l'application Email de Samsung, sur
+iOS comme sur Android : chacun propose « Ajouter au calendrier » à l'ouverture de la
+pièce jointe.
+
 ## Nouvel écran « Horaires » — le professionnel configure lui-même ses jours et heures d'ouverture (16 septembre 2026)
 
 Référence : `docs/19-horaires-ouverture.md`. En creusant pourquoi SW Carcleaning n'affichait

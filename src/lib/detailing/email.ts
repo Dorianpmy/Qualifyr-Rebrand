@@ -2,6 +2,7 @@ import { Resend } from 'resend';
 import { isProduction } from '@/lib/env';
 import { vehicleSizeCopy, scopeCopy, soilingCopy, optionCopy } from '@/components/detailing/content';
 import { site } from '@/content/site';
+import { buildBookingIcs } from './ics';
 import { formatMoney, profileFor } from './locale';
 import type { LocationMode, OptionKey, Scope, SoilingLevel, VehicleSize } from './types';
 
@@ -217,6 +218,30 @@ function htmlBody(
 </body></html>`;
 }
 
+/**
+ * Pièce jointe `.ics` — même contenu que le tableau de l'e-mail (`rows()`),
+ * pour que l'agenda du destinataire porte les mêmes informations que le
+ * message qui l'accompagne. `summary` diffère selon le destinataire (client
+ * ou professionnel) : c'est le seul champ qu'un agenda affiche sans ouvrir
+ * l'événement.
+ */
+function bookingIcsAttachment(payload: BookingEmailPayload, summary: string) {
+  return {
+    filename: 'reservation.ics',
+    contentType: 'text/calendar; charset=utf-8; method=PUBLISH',
+    content: buildBookingIcs({
+      uid: payload.bookingId,
+      start: new Date(payload.slotStart),
+      durationMinutes: payload.quotedMinutes,
+      summary,
+      description: rows(payload)
+        .map((r) => `${r.label} : ${r.value}`)
+        .join('\n'),
+      location: locationLabel(payload.locationMode, payload.postalCode),
+    }),
+  };
+}
+
 export async function sendClientBookingEmail(payload: BookingEmailPayload): Promise<boolean> {
   const resend = getResend();
   if (!resend) return false;
@@ -234,6 +259,7 @@ export async function sendClientBookingEmail(payload: BookingEmailPayload): Prom
       subject: `Demande enregistrée — ${payload.detailerName}`,
       text: textBody(title, intro, payload, outro),
       html: htmlBody(title, intro, payload, outro),
+      attachments: [bookingIcsAttachment(payload, `Nettoyage auto — ${payload.detailerName}`)],
     });
     if (error) {
       console.error('[booking-email] client failed', error);
@@ -280,6 +306,12 @@ export async function sendDetailerBookingEmail(payload: BookingEmailPayload): Pr
       subject,
       text: textBody(title, intro, payload, outro, cta),
       html: htmlBody(title, intro, payload, outro, cta),
+      attachments: [
+        bookingIcsAttachment(
+          payload,
+          `Nettoyage auto — ${vehicleSizeCopy[payload.vehicleSize].label} · ${scopeCopy[payload.scope].label}`,
+        ),
+      ],
     });
     if (error) {
       console.error('[booking-email] detailer failed', error);

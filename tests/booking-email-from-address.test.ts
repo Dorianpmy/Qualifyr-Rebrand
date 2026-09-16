@@ -145,6 +145,38 @@ describe('sendDetailerBookingEmail — objet visible, devise et lien direct', ()
   });
 });
 
+describe('invitation calendrier (.ics)', () => {
+  it('est jointe à l’e-mail du client', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    vi.resetModules();
+    const { sendClientBookingEmail } = await import('@/lib/detailing/email');
+
+    await sendClientBookingEmail(bookingPayload());
+
+    const call = sendMock.mock.calls[0]?.[0] as unknown as {
+      attachments: readonly { filename: string; content: string }[];
+    };
+    expect(call.attachments).toHaveLength(1);
+    expect(call.attachments[0]?.filename).toBe('reservation.ics');
+    expect(call.attachments[0]?.content).toContain('BEGIN:VCALENDAR');
+  });
+
+  it('est jointe à l’e-mail du professionnel', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    vi.resetModules();
+    const { sendDetailerBookingEmail } = await import('@/lib/detailing/email');
+
+    await sendDetailerBookingEmail(bookingPayload());
+
+    const call = sendMock.mock.calls[0]?.[0] as unknown as {
+      attachments: readonly { filename: string; content: string }[];
+    };
+    expect(call.attachments).toHaveLength(1);
+    expect(call.attachments[0]?.filename).toBe('reservation.ics');
+    expect(call.attachments[0]?.content).toContain('BEGIN:VCALENDAR');
+  });
+});
+
 describe('bookingFromEmail() — code mort retiré', () => {
   it('n’existe plus dans lib/detailing/env.ts', async () => {
     const mod = await import('@/lib/detailing/env');
