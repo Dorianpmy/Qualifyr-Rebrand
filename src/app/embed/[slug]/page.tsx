@@ -58,6 +58,7 @@ export default async function EmbedPage({ params }: EmbedPageProps) {
         <WhatsAppBadge
           phoneNumber={agencyChannels.whatsappNumber}
           message={buildClientWhatsAppMessage(DEMO_DETAILER.name)}
+          liftAboveActionBar
         />
       </>
     );
@@ -90,6 +91,7 @@ export default async function EmbedPage({ params }: EmbedPageProps) {
       <WhatsAppBadge
         phoneNumber={detailer.whatsappNumber ?? agencyChannels.whatsappNumber}
         message={buildClientWhatsAppMessage(detailer.name)}
+        liftAboveActionBar
       />
     </>
   );

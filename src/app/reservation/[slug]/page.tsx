@@ -93,6 +93,7 @@ export default async function ReservationPage({ params }: ReservationPageProps) 
       <WhatsAppBadge
         phoneNumber={detailer.whatsappNumber ?? agencyChannels.whatsappNumber}
         message={buildClientWhatsAppMessage(detailer.name)}
+        liftAboveActionBar
       />
     </>
   );

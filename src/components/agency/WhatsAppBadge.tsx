@@ -62,9 +62,21 @@ type WhatsAppBadgeProps = {
    *  vitrine — obligatoire dès lors que `phoneNumber` est fourni, pour ne
    *  jamais envoyer un client vers un message parlant de Qualifyr. */
   readonly message?: string;
+  /**
+   * À activer sur toute page qui pose sa propre barre d'action fixe en bas
+   * d'écran (le tunnel de réservation `BookingFlow`, sur `/reservation/[slug]`
+   * et `/embed/[slug]`) : sans ça, le badge se superpose au bouton
+   * « Continuer »/« Confirmer », qui devient illisible et difficile à
+   * atteindre (16/09/2026).
+   */
+  readonly liftAboveActionBar?: boolean;
 };
 
-export function WhatsAppBadge({ phoneNumber, message }: WhatsAppBadgeProps = {}) {
+export function WhatsAppBadge({
+  phoneNumber,
+  message,
+  liftAboveActionBar,
+}: WhatsAppBadgeProps = {}) {
   const pathname = usePathname();
   const isOverride = phoneNumber !== undefined;
 
@@ -76,9 +88,13 @@ export function WhatsAppBadge({ phoneNumber, message }: WhatsAppBadgeProps = {})
   );
   if (!href) return null;
 
+  const badgeClassName = liftAboveActionBar
+    ? `${styles.badge} ${styles.liftedAboveActions}`
+    : styles.badge;
+
   return (
     <a
-      className={styles.badge}
+      className={badgeClassName}
       href={href}
       target="_blank"
       rel="noopener noreferrer"

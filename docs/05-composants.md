@@ -1,5 +1,25 @@
 # 05 — Composants
 
+## Tunnel de réservation — champ caché par la barre d'action et bulle WhatsApp sur le bouton (16 septembre 2026)
+
+Deux débordements signalés par Dorian sur `BookingFlow` (`/reservation/[slug]`, `/embed/[slug]`),
+l'un seulement visible sur ordinateur, l'autre sur les deux formats.
+
+**Immatriculation à moitié cachée, sur ordinateur seulement.** `.actions` (la barre « Continuer »/
+« Confirmer ») reste `position: fixed` en bas d'écran à toutes les tailles. Le padding réservé en
+bas de `.workspace` pour ne pas être recouvert par cette barre valait `8.5rem` sur mobile, mais
+seulement `3rem` à partir de `min-width: 64rem` — mesuré à environ `5,1rem` de haut sur un écran de
+bureau, la barre dépassait donc largement ce padding et recouvrait le dernier champ de chaque
+étape (l'immatriculation, sur « Votre véhicule »). Corrigé à `6,5rem`.
+
+**Bulle WhatsApp posée sur le bouton d'action.** `WhatsAppBadge` est fixé en bas à droite de
+l'écran (`right/bottom: 1rem`) avec un `z-index` volontairement élevé pour rester au-dessus du
+contenu — mais `BookingFlow` pose sa propre barre d'action fixe dans cette même zone, et le badge
+s'affichait donc pile sur le bouton. Nouveau prop `liftAboveActionBar` sur `WhatsAppBadge` : relève
+le badge à `5,75rem` du bas plutôt que `1rem`, activé sur les trois points de rendu du tunnel
+(`/reservation/[slug]`, `/embed/[slug]` professionnel réel et démo). Les autres pages du site, sans
+barre d'action fixe, gardent la position par défaut.
+
 ## E-mail de nouvelle demande au professionnel — rendu plus visible, devise corrigée (16 septembre 2026)
 
 Demande de Dorian : après avoir écarté le SMS et la notification WhatsApp (bloquée par le délai

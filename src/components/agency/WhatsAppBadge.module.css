@@ -55,6 +55,17 @@
   outline-offset: 3px;
 }
 
+/*
+ * Sur `/reservation/[slug]` et `/embed/[slug]`, `BookingFlow` pose sa propre
+ * barre d'action fixe en bas d'écran (bouton « Continuer »/« Confirmer »).
+ * Le badge, fixé lui aussi et posé par-dessus (z-index plus élevé), s'affichait
+ * juste sur ce bouton — repéré par Dorian (16/09/2026). 5,75rem dégage la
+ * barre mesurée à environ 5,1rem sur ordinateur, avec de la marge.
+ */
+.liftedAboveActions {
+  bottom: calc(5.75rem + env(safe-area-inset-bottom, 0px));
+}
+
 .icon {
   width: 24px;
   height: 24px;

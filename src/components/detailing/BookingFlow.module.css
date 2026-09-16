@@ -512,7 +512,17 @@
   .workspace {
     max-width: 26rem;
     margin: 0 auto;
-    padding: 1.75rem 1.15rem 3rem;
+    /*
+     * 3rem à l'origine — trop court : `.actions` reste `position: fixed`
+     * juste en dessous (voir la règle suivante), avec une hauteur mesurée
+     * d'environ 5,1rem sur un écran de bureau. Le dernier champ d'une étape
+     * (l'immatriculation, sur « Votre véhicule ») se retrouvait donc à moitié
+     * caché par la barre d'action, invisible tant qu'on ne réduit pas le
+     * zoom — signalé par Dorian (16/09/2026), reproduit uniquement au
+     * clavier/souris, jamais sur mobile où le padding (8.5rem, ligne 106)
+     * suffisait déjà.
+     */
+    padding: 1.75rem 1.15rem 6.5rem;
   }
 
   .actions {
