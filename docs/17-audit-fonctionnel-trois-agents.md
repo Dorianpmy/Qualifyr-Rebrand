@@ -73,13 +73,13 @@ La page d'accueil affiche deux pieds de page l'un en dessous de l'autre : celui 
 
 **Correction probable :** appliquer le même masquage `data-legacy-chrome="footer"` utilisé pour l'en-tête, ou retirer l'ancien composant de pied de page de la page d'accueil du SaaS.
 
-### 6. Tunnel de réservation : bouton bloqué sans message d'erreur
+### 6. Tunnel de réservation : bouton bloqué sans message d'erreur — corrigé (16 septembre 2026)
 
-Étape « Où se passe l'intervention », pour un professionnel sans adresse de départ configurée (`detailer.base` = null — c'est le cas du compte de démonstration public) : le bouton « Continuer » reste désactivé si le client laisse vide le champ « Distance jusqu'au professionnel », **alors que le texte d'aide dit explicitement** : *« indiquez une distance approximative si vous la connaissez, sinon laissez vide — il ajustera »*. Reproduit : adresse valide sélectionnée, champ distance vide → bouton grisé, aucun message n'explique pourquoi.
+Étape « Où se passe l'intervention », pour un professionnel sans adresse de départ configurée (`detailer.base` = null — c'est le cas du compte de démonstration public) : le bouton « Continuer » restait désactivé si le client laissait vide le champ « Distance jusqu'au professionnel », **alors que le texte d'aide disait explicitement** : *« indiquez une distance approximative si vous la connaissez, sinon laissez vide — il ajustera »*. Reproduit par Dorian sur le compte SW Carcleaning (pas seulement la démo).
 
-Code : `src/components/detailing/BookingFlow.tsx:443-459`, condition `canProceed.lieu`.
+Code : `src/components/detailing/BookingFlow.tsx`, condition `canProceed.lieu`.
 
-**Correction :** soit rendre le champ visuellement obligatoire avec un message d'erreur clair quand `detailer.base` est vide, soit corriger le texte d'aide pour ne plus promettre qu'un champ vide est accepté.
+**Corrigé** en choisissant la première des deux options proposées ci-dessous : le champ reste facultatif, le texte d'aide devient vrai. `effectiveTravelKm` retombe déjà sur `0` quand le champ est vide, et `0` est toujours dans la zone gratuite — rien ne change au calcul du devis, seulement au blocage.
 
 ### 7. La démo publique du tunnel échoue à la toute dernière étape
 

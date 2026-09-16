@@ -445,15 +445,24 @@ export function BookingFlow({
     formule: scope !== '',
     etat: true,
     options: true,
-    // Une adresse retenue suffit : elle porte le code postal et la distance.
-    // Sans point de départ chez le professionnel, on exige encore la saisie
-    // manuelle, faute de quoi le déplacement serait facturé zéro.
+    /*
+     * Une adresse retenue suffit : elle porte le code postal et la distance.
+     *
+     * Sans point de départ chez le professionnel, le champ « Distance
+     * jusqu'au professionnel » (voir plus bas) reste facultatif — son texte
+     * d'aide le dit explicitement (« sinon laissez vide — il ajustera »).
+     * Une version antérieure exigeait quand même une valeur non vide ici,
+     * bloquant silencieusement le bouton « Continuer » sans le moindre
+     * message : le client suivait la consigne affichée à l'écran et se
+     * retrouvait coincé (repéré dans `docs/17-audit-fonctionnel-trois-
+     * agents.md`, point 6, corrigé le 16/09/2026). `effectiveTravelKm`
+     * retombe déjà sur `0` quand le champ est vide, et `0` est toujours
+     * dans la zone gratuite (`travelAllowed`) — retirer l'exigence ne
+     * change donc rien au calcul, seulement au blocage.
+     */
     lieu:
       locationMode === 'atelier' ||
-      (locationMode === 'domicile' &&
-        address !== null &&
-        (detailer.base !== null || travelKm.trim().length > 0) &&
-        Boolean(currentQuote?.travelAllowed)),
+      (locationMode === 'domicile' && address !== null && Boolean(currentQuote?.travelAllowed)),
     creneau: selectedSlot !== null,
     photos: emailValid,
   };

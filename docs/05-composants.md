@@ -1,5 +1,20 @@
 # 05 — Composants
 
+## Tunnel de réservation — bouton Continuer bloqué à l'étape « Lieu » sans adresse de départ (16 septembre 2026)
+
+Bug déjà repéré dans `docs/17-audit-fonctionnel-trois-agents.md` (point 6), reproduit par Dorian sur
+le compte SW Carcleaning : pour un professionnel n'ayant pas encore renseigné son adresse de départ
+(`detailer.base = null`), le bouton « Continuer » restait grisé si le client laissait vide le champ
+« Distance jusqu'au professionnel » — alors que le texte d'aide affiché disait explicitement que
+c'était permis (« sinon laissez vide — il ajustera »). Un client qui suivait la consigne à l'écran
+se retrouvait bloqué sans le moindre message d'erreur.
+
+**Corrigé en rendant le champ réellement facultatif** (option choisie par Dorian entre les deux
+proposées par l'audit, l'autre étant de le rendre obligatoire avec un message d'erreur).
+`canProceed.lieu` (`BookingFlow.tsx`) n'exige plus `travelKm` non vide : `effectiveTravelKm` retombe
+déjà sur `0` dans ce cas, et `0` est toujours dans le rayon gratuit du professionnel — le calcul du
+devis ne change pas, seul le blocage disparaît.
+
 ## Tunnel de réservation — champ caché par la barre d'action et bulle WhatsApp sur le bouton (16 septembre 2026)
 
 Deux débordements signalés par Dorian sur `BookingFlow` (`/reservation/[slug]`, `/embed/[slug]`),
