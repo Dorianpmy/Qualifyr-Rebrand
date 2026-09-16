@@ -1,8 +1,32 @@
+import { vehicleSizeCopy, scopeCopy } from '@/components/detailing/content';
+import { site } from '@/content/site';
 import { loadDetailerBySlug } from './config';
 import { notifyBookingEmails } from './email';
+import { formatMoney, profileFor } from './locale';
 import { quote } from './quote';
 import { getServiceSupabaseClient } from './supabase-server';
 import type { LocationMode, OptionKey, Scope, SoilingLevel, VehicleSize } from './types';
+import { notifyNewBooking } from './whatsapp';
+
+/**
+ * Créneau lisible dans une notification courte (WhatsApp).
+ *
+ * Copie volontaire du `formatSlot` interne d'`email.ts` — même sortie, mais
+ * ce module ne doit dépendre que de ce dont il a besoin pour composer sa
+ * propre notification, pas de l'implémentation privée d'un canal voisin. Même
+ * duplication déjà assumée entre `email.ts` et `dashboard.ts`.
+ */
+function formatBookingSlot(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return new Intl.DateTimeFormat('fr-FR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(d);
+}
 
 /**
  * Création d'une réservation — serveur uniquement.
@@ -183,6 +207,34 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
     quotedMinutes: computed.totalMinutes,
     depositAmount: computed.depositAmount,
   });
+
+  /*
+   * Notification WhatsApp au professionnel — best-effort, comme l'e-mail
+   * ci-dessus : un échec d'envoi n'annule jamais la réservation.
+   *
+   * **Aucun repli sur le numéro Qualifyr.** Contrairement à la bulle
+   * WhatsApp du parcours client, une notification professionnelle sans
+   * numéro renseigné n'est simplement pas envoyée — voir le commentaire de
+   * `notifyNewBooking`.
+   *
+   * **Nécessite un modèle approuvé par Meta.** Comme `vehicule_pret` et
+   * `demande_avis`, le modèle `nouvelle_reservation` doit être créé et
+   * validé dans le gestionnaire WhatsApp Business avant le premier envoi —
+   * voir le commentaire de `notifyNewBooking` dans `whatsapp.ts` pour son
+   * texte exact. Tant qu'il n'est pas approuvé, l'appel échoue
+   * silencieusement (aucune conséquence pour le client).
+   */
+  if (detailer.whatsappNumber) {
+    const profile = profileFor(detailer.country);
+    void notifyNewBooking({
+      phone: detailer.whatsappNumber,
+      country: detailer.country === 'CH' ? 'CH' : 'FR',
+      summary: `${vehicleSizeCopy[input.vehicleSize].label} · ${scopeCopy[input.scope].label}`,
+      slotLabel: formatBookingSlot(input.slotStart),
+      priceLabel: formatMoney(computed.totalPrice, profile),
+      detailUrl: `${site.url}/app/bookings/${bookingId}`,
+    });
+  }
 
   return {
     ok: true,

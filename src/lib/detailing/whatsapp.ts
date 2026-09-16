@@ -159,6 +159,40 @@ export async function requestGoogleReview(input: {
 }
 
 /**
+ * « Nouvelle demande de réservation. »
+ *
+ * Modèle à déclarer sous le nom `nouvelle_reservation` :
+ *
+ *   Nouvelle demande de réservation sur Qualifyr : {{1}}, le {{2}}.
+ *   Montant du devis : {{3}}. Détails et confirmation : {{4}}
+ *
+ * **Numéro du professionnel, jamais celui de Qualifyr.** Contrairement à la
+ * bulle WhatsApp du parcours client (`WhatsAppBadge`, qui retombe sur le
+ * numéro de support Qualifyr tant que le professionnel n'a pas rempli le
+ * sien), il n'existe **aucun repli** ici : envoyer à Qualifyr une
+ * notification destinée à un professionnel n'aurait aucun sens. C'est à
+ * l'appelant (`booking.ts`) de ne tenter l'envoi que si
+ * `detailer.whatsappNumber` est renseigné.
+ */
+export async function notifyNewBooking(input: {
+  readonly phone: string;
+  readonly country: 'FR' | 'CH';
+  readonly summary: string;
+  readonly slotLabel: string;
+  readonly priceLabel: string;
+  readonly detailUrl: string;
+}): Promise<SendResult> {
+  const to = normalizePhone(input.phone, input.country);
+  if (!to) return { ok: false, reason: 'numéro_invalide' };
+
+  return sendTemplate({
+    to,
+    template: 'nouvelle_reservation',
+    variables: [input.summary, input.slotLabel, input.priceLabel, input.detailUrl],
+  });
+}
+
+/**
  * URL du formulaire d'avis Google.
  *
  * Google n'expose aucune API permettant de déposer un avis — c'est

@@ -1,5 +1,34 @@
 # 05 — Composants
 
+## Notification WhatsApp au professionnel — nouvelle demande de réservation (16 septembre 2026)
+
+Demande de Dorian : prévenir un professionnel par WhatsApp à chaque nouvelle demande de
+réservation, en plus de l'e-mail déjà envoyé par `sendDetailerBookingEmail`. Il avait d'abord
+envisagé une notification « push » du navigateur, écartée après explication (Safari sur iPhone
+n'autorise les notifications que pour un site ajouté à l'écran d'accueil — une vraie
+particularité de la plateforme, pas un bug).
+
+**Réutilise l'infrastructure déjà en place.** `lib/detailing/whatsapp.ts` sait déjà envoyer des
+messages WhatsApp via l'API Cloud de Meta (`vehicule_pret`, `demande_avis`) — `notifyNewBooking`
+en est un troisième, même mécanique (`sendTemplate`), déclenché depuis `createBooking`
+(`booking.ts`) juste après l'e-mail, en best-effort (un échec n'annule jamais la réservation).
+
+**Nécessite un nouveau modèle approuvé par Meta**, comme les deux précédents — c'est un délai
+externe à prévoir, pas un manque dans le code. Texte à soumettre dans le gestionnaire WhatsApp
+Business, sous le nom `nouvelle_reservation` :
+
+> Nouvelle demande de réservation sur Qualifyr : {{1}}, le {{2}}. Montant du devis : {{3}}.
+> Détails et confirmation : {{4}}
+
+Variables : véhicule + formule (« Berline · Extérieur »), créneau formaté, montant dans la
+devise du professionnel, lien direct vers la réservation dans le dashboard.
+
+**Numéro du professionnel (`detailers.whatsapp_number`), sans repli.** À la différence de la
+bulle WhatsApp du parcours client (qui retombe sur le numéro de support Qualifyr tant que le
+professionnel n'a pas rempli le sien), une notification professionnelle sans numéro renseigné
+n'est simplement pas envoyée — un repli enverrait les notifications de tous les professionnels
+non configurés directement à Dorian.
+
 ## Bulle WhatsApp — numéro de Qualifyr affiché à tort au client d'un professionnel (13 septembre 2026)
 
 Demande de Dorian : `WhatsAppBadge` était câblé en dur sur le numéro de support Qualifyr sur
