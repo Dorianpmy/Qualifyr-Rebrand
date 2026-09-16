@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { AppShell } from '@/components/app/AppShell';
+import { HoursSetup } from '@/components/app/HoursSetup';
 import { LockedModule } from '@/components/app/LockedModule';
 import { pageAccess } from '@/lib/billing/page-guard';
 import {
@@ -126,7 +127,18 @@ export default async function PlanningPage() {
       <main className={styles.main}>
         <div className={styles.topbar}>
           <div>
-            <h1 className={styles.title}>Tournée du jour</h1>
+            <h1 className={styles.title}>Planning</h1>
+            <p className={styles.subtitle}>Vos horaires, puis la tournée du jour.</p>
+          </div>
+        </div>
+
+        <HoursSetup />
+
+        <div className={styles.topbar}>
+          <div>
+            <h2 className={styles.title} style={{ fontSize: '1.05rem' }}>
+              Tournée du jour
+            </h2>
             <p className={styles.subtitle} style={{ textTransform: 'capitalize' }}>
               {dayLabel}
             </p>

@@ -1,5 +1,45 @@
 # 05 — Composants
 
+## Nouvel écran « Horaires » — le professionnel configure lui-même ses jours et heures d'ouverture (16 septembre 2026)
+
+Référence : `docs/19-horaires-ouverture.md`. En creusant pourquoi SW Carcleaning n'affichait
+aucun créneau sur trois semaines glissantes quel que soit le jour testé : le moteur de
+créneaux lit une table `detailer_availability` (un jour de semaine, une heure d'ouverture,
+une heure de fermeture, un battement) qui existait déjà, mais **aucun écran de
+l'application ne permettait de la remplir** — seule une requête SQL manuelle le pouvait.
+Dorian a choisi de construire un vrai écran plutôt qu'un correctif SQL ponctuel.
+
+**Nouveau composant `HoursSetup.tsx`**, intégré en tête de la page **Planning**
+(`src/app/app/planning/page.tsx`, au-dessus de « Tournée du jour », qui devient un sous-titre
+de la page plutôt que son titre — la page couvre désormais les deux). Sept lignes
+(lundi→dimanche), chacune un interrupteur Ouvert/Fermé et, si ouvert, une heure de début et
+de fin (`<input type="time">`) ; un battement unique pour toute la semaine (§0.2 du
+document de référence — pas un par jour, personne n'a demandé cette granularité). Même
+architecture que `PaymentSetup.tsx` (docs/18) : chargement au montage, édition locale
+distincte de ce qui est enregistré, bouton « Enregistrer » explicite.
+
+**Nouvelle route `GET`/`PUT /api/app/availability`**, même garde que les routes voisines
+(`requireCapability('planning')` + `getDetailerForOwner`, jamais un identifiant pris dans le
+corps de la requête). Fermer un jour supprime sa ligne plutôt que de la désactiver par un
+booléen — c'est l'absence de ligne pour un `weekday` qui signale déjà « fermé » au moteur de
+créneaux (`availability.ts:47-48`), ce nouvel écran ne fait que refléter cette convention
+existante plutôt que d'en inventer une seconde.
+
+**Migration `026_detailer_availability_unique.sql`** : un index unique sur
+`(detailer_id, weekday)`, nécessaire pour que l'upsert par jour remplace une ligne existante
+plutôt que d'en créer une seconde (aucune migration ne traçait de contrainte à la création
+initiale de cette table).
+
+**Volontairement hors périmètre** (documenté en §0 de la référence, pas oublié) : les
+fermetures ponctuelles (`detailer_closures`, déjà en base et déjà lues par le moteur de
+créneaux, toujours sans écran) et les réglages `minBookingNoticeHours` /
+`slotGranularityMinutes` (sur `detailers`, gardent leurs valeurs par défaut). Pas de test
+dédié à la nouvelle route : aucune route sœur de ce dashboard (`payment-settings`,
+`stripe-connect`, `deposit-confirm`) n'en a — la convention de ce projet teste l'isolation
+propriétaire au niveau des fonctions `lib/`, pas des routes Next elles-mêmes
+(`tests/owner-isolation.test.ts`), et cette route suit exactement le même schéma
+d'autorisation qu'elles.
+
 ## Tunnel de réservation — bouton Continuer bloqué à l'étape « Lieu » sans adresse de départ (16 septembre 2026)
 
 Bug déjà repéré dans `docs/17-audit-fonctionnel-trois-agents.md` (point 6), reproduit par Dorian sur
