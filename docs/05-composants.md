@@ -1,5 +1,23 @@
 # 05 — Composants
 
+## Bloc « À partir de / Dès / Lieu » centré sur mobile (17 septembre 2026)
+
+Repéré par Dorian sur une capture de la page publique d'Auto Clean Pro : sur
+téléphone, les trois chiffres clés (prix, durée, lieu) s'affichaient collés à
+gauche dans leur encadré, alors que tout le reste de l'en-tête (titre, texte,
+carte) est centré — l'œil accroche sur ce bloc qui détonne.
+
+En cause : une règle mobile de `BookingIntro.module.css` (`.facts { align-items:
+flex-start }`, ajoutée à l'origine pour empiler les trois faits en colonne sous
+560px) qui, en gardant l'alignement à gauche, cassait la symétrie du reste de
+la page. Remplacé par `align-items: center` + `text-align: center` : les trois
+faits restent empilés sur mobile, mais chacun est maintenant centré comme sur
+ordinateur.
+
+Corrigé au passage : la page **Avant / Après** (`src/app/app/cases/page.tsx`)
+affichait « Preuve sociale que **Detailr** ne pousse pas » — reliquat d'un nom
+de code antérieur au projet. Remplacé par Qualifyr.
+
 ## Refonte visuelle de la facture imprimable (17 septembre 2026)
 
 Demande de Dorian après avoir vu le gabarit existant (`/app/invoices/[id]/print`) :

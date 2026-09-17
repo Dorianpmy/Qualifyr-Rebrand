@@ -44,7 +44,7 @@ export default async function CasesPage() {
           <div>
             <h1 className={styles.title}>Avant / Après</h1>
             <p className={styles.subtitle}>
-              Preuve sociale que Detailr ne pousse pas — tes résultats visibles pour convertir.
+              Preuve sociale que Qualifyr ne pousse pas — tes résultats visibles pour convertir.
             </p>
           </div>
         </div>

@@ -229,7 +229,8 @@
 @media (max-width: 560px) {
   .facts {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    text-align: center;
     gap: 1rem;
   }
 
