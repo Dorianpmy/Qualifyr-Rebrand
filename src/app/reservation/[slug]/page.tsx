@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { BookingFlow } from '@/components/detailing/BookingFlow';
 import { BookingIntro } from '@/components/detailing/BookingIntro';
+import { PoweredByQualifyr } from '@/components/detailing/PoweredByQualifyr';
 import { WhatsAppBadge } from '@/components/agency/WhatsAppBadge';
 import { agencyChannels } from '@/content/agency-channels';
 import { site } from '@/content/site';
@@ -85,6 +86,8 @@ export default async function ReservationPage({ params }: ReservationPageProps) 
         }}
         quoteConfig={detailer.quoteConfig}
       />
+
+      <PoweredByQualifyr />
 
       {/* Numéro du professionnel, jamais celui de Qualifyr : voir le
           commentaire de `WhatsAppBadge`. Repli sur le numéro de support tant

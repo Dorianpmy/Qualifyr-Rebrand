@@ -66,20 +66,31 @@ export function BookingIntro({
         ? 'Le professionnel se déplace chez vous'
         : 'Dépôt du véhicule à l’atelier';
 
+  /*
+   * Les trois cartes doivent rester crédibles sur toutes les fiches, pas
+   * seulement sur celles qui ont un acompte : quand `depositEnabled` est
+   * faux (Auto Clean Pro, entre autres), l'ancienne phrase de la carte du
+   * milieu tenait en une ligne quand les deux autres en tenaient quatre —
+   * un déséquilibre visuel repéré par Dorian sur une capture (17/09/2026).
+   * La phrase de repli en dit davantage, mais seulement ce que le parcours
+   * garantit réellement : aucun prélèvement à la réservation, le règlement
+   * se fait directement avec le professionnel (voir `BookingFlow`, l'écran
+   * de confirmation sans acompte ne mentionne aucun paiement en ligne).
+   */
   const reassurances = [
     {
       title: 'Le prix affiché est le prix payé',
-      body: `Il est calculé pendant que vous choisissez, pas envoyé sous 48 h. ${name} vérifie le véhicule à son arrivée ; si l’état diffère de ce que vous avez décrit, il vous propose un montant ajusté et vous restez libre de refuser.`,
+      body: `Il est calculé pendant que vous choisissez, pas envoyé par e-mail 48 h plus tard. ${name} vérifie le véhicule à son arrivée : si l’état diffère de votre description, un montant ajusté vous est proposé, et vous restez libre de refuser.`,
     },
     {
       title: `Annulation gratuite jusqu’à ${freeCancellationHours} h avant`,
       body: depositEnabled
-        ? 'L’acompte bloque le créneau. Passé ce délai il reste acquis, avant, il vous est rendu intégralement.'
-        : 'Aucun montant n’est prélevé à la réservation.',
+        ? 'L’acompte bloque le créneau. Passé ce délai il reste acquis ; avant, il vous est rendu intégralement.'
+        : `Aucun montant n’est prélevé à la réservation : vous réglez directement avec ${name}, sans acompte ni engagement.`,
     },
     {
       title: 'Une heure de restitution, pas une fourchette',
-      body: 'La durée est calculée à partir de la taille du véhicule, de la formule et de l’état déclaré. Vous savez à quelle heure vous récupérez la voiture avant même de réserver.',
+      body: 'La durée est calculée à partir de la taille du véhicule, de la formule choisie et de l’état déclaré : vous savez à quelle heure récupérer la voiture avant même de réserver.',
     },
   ];
 

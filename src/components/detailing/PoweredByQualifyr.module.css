@@ -1,0 +1,45 @@
+/*
+ * Crédit discret en pied de page publique — voir PoweredByQualifyr.tsx pour
+ * ce qu'il fait et pourquoi.
+ */
+
+.credit {
+  margin: 0;
+  padding: 1.5rem 1.25rem 2.5rem;
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--color-faint);
+}
+
+.link {
+  color: var(--color-faint);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color var(--duration-fast, 160ms) var(--ease-out, ease),
+    border-color var(--duration-fast, 160ms) var(--ease-out, ease);
+}
+
+.link:hover,
+.link:focus-visible {
+  color: var(--color-primary);
+  border-color: currentColor;
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Le nom de marque se détache légèrement du reste de la phrase — assez pour
+   être lu, pas assez pour concurrencer le nom du professionnel plus haut sur
+   la page. */
+.brand {
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.link:hover .brand,
+.link:focus-visible .brand {
+  color: var(--color-primary);
+}

@@ -1,5 +1,39 @@
 # 05 — Composants
 
+## Crédit « Propulsé par Qualifyr » sur les pages publiques (17 septembre 2026)
+
+Demande de Dorian : un moyen subtil de faire connaître Qualifyr (le SaaS et
+l'offre de création de site) à travers les pages que ses professionnels
+publient, sans nuire à leur propre conversion.
+
+**Nouveau composant `PoweredByQualifyr.tsx`**, posé en pied de page sur
+`/reservation/[slug]` (juste après `BookingFlow`) et sur `/embed/[slug]`
+(sauf la variante `demo`, déjà posée sur qualifyragence.com lui-même — le
+crédit y serait redondant). Texte discret, couleur `--color-faint`, aucun
+accent de couleur de la page, lien vers la page d'accueil (`productionUrl`)
+plutôt que directement vers `/creation-site-web` : le visiteur d'une page de
+réservation est un client du professionnel, pas un prospect déjà qualifié
+pour un site — la page d'accueil présente l'ensemble de l'offre et laisse le
+visiteur curieux naviguer lui-même.
+
+Le tunnel embarqué (`/embed/[slug]`) se redimensionne déjà automatiquement
+via `EmbedAutoHeight` (`ResizeObserver` sur `document.documentElement`) :
+aucun ajustement necessaire pour que le crédit soit pris en compte dans la
+hauteur publiée au site hébergeur.
+
+## Textes de réassurance rééquilibrés selon acompte ou non (17 septembre 2026)
+
+Sur une fiche sans acompte (Auto Clean Pro, `deposit_enabled = false`), la
+carte du milieu (« Annulation gratuite jusqu'à N h avant ») tenait en une
+seule phrase courte quand les deux autres cartes de `BookingIntro.tsx` en
+tenaient quatre — déséquilibre visuel repéré par Dorian sur capture. La
+phrase de repli sans acompte dit maintenant explicitement ce que garantit
+réellement le parcours (aucun prélèvement à la réservation, règlement
+directement avec le professionnel — cohérent avec l'écran de confirmation de
+`BookingFlow`, qui ne mentionne aucun paiement en ligne dans ce cas), sans
+rien inventer de plus. Les deux autres cartes sont légèrement resserrées au
+passage.
+
 ## Bloc « À partir de / Dès / Lieu » centré sur mobile (17 septembre 2026)
 
 Repéré par Dorian sur une capture de la page publique d'Auto Clean Pro : sur

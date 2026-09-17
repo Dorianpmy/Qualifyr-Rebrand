@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { BookingFlow } from '@/components/detailing/BookingFlow';
 import { EmbedAutoHeight } from '@/components/detailing/EmbedAutoHeight';
+import { PoweredByQualifyr } from '@/components/detailing/PoweredByQualifyr';
 import { WhatsAppBadge } from '@/components/agency/WhatsAppBadge';
 import { agencyChannels } from '@/content/agency-channels';
 import { loadDetailerBySlug } from '@/lib/detailing/config';
@@ -85,6 +86,8 @@ export default async function EmbedPage({ params }: EmbedPageProps) {
         }}
         quoteConfig={detailer.quoteConfig}
       />
+
+      <PoweredByQualifyr />
 
       {/* Numéro du professionnel, jamais celui de Qualifyr : voir le
           commentaire de `WhatsAppBadge`. */}
