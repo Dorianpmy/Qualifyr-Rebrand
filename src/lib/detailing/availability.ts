@@ -12,11 +12,73 @@
 
 import type { AvailabilityConfig, TimeRange } from './types';
 
+const PARIS_TIME_ZONE = 'Europe/Paris';
+
+/**
+ * Décalage réel (en ms) entre UTC et « Europe/Paris » pour l'instant donné —
+ * +1h en hiver (CET), +2h en été (CEST). Calculé sans dépendance externe : on
+ * demande à `Intl.DateTimeFormat` ce que Paris afficherait pour cet instant,
+ * puis on compare au même instant lu comme s'il était déjà UTC.
+ */
+function parisOffsetMs(utcMs: number): number {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: PARIS_TIME_ZONE,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hourCycle: 'h23',
+  }).formatToParts(new Date(utcMs));
+  const get = (type: string) => Number(parts.find((p) => p.type === type)?.value ?? 0);
+  const impliedUtcMs = Date.UTC(
+    get('year'),
+    get('month') - 1,
+    get('day'),
+    get('hour'),
+    get('minute'),
+    get('second'),
+  );
+  return impliedUtcMs - utcMs;
+}
+
+/**
+ * Convertit une heure murale « Europe/Paris » (celle que le professionnel
+ * règle dans Horaires, celle que son client lit sur son téléphone) en
+ * l'instant UTC réel qu'elle représente.
+ *
+ * Avant ce correctif, `atTime` lisait `hh:mm` avec `Date.prototype.setHours`,
+ * qui l'interprète dans le fuseau **du serveur qui exécute le code** — UTC
+ * sur l'hébergement utilisé ici, jamais explicitement « Europe/Paris ». Un
+ * professionnel réglant 16h30 obtenait donc un instant lu à tort comme
+ * « 16h30 UTC », qu'un navigateur français (UTC+2 en septembre) affichait
+ * ensuite correctement... 2 heures plus tard, soit 18h30. Confirmé par
+ * Dorian sur Auto Clean Pro (16h30/17h45 réglés, 18h30/19h45 affichés,
+ * 17/09/2026). Un décalage identique touchait très probablement tous les
+ * professionnels ayant déjà utilisé l'écran Horaires.
+ */
+export function parisWallTimeToUtc(
+  year: number,
+  month: number,
+  day: number,
+  hours: number,
+  minutes: number,
+): Date {
+  const naiveUtcMs = Date.UTC(year, month - 1, day, hours, minutes, 0, 0);
+  const offsetMs = parisOffsetMs(naiveUtcMs);
+  return new Date(naiveUtcMs - offsetMs);
+}
+
 function atTime(day: Date, hhmm: string): Date {
   const [hours, minutes] = hhmm.split(':').map(Number);
-  const result = new Date(day);
-  result.setHours(hours ?? 0, minutes ?? 0, 0, 0);
-  return result;
+  return parisWallTimeToUtc(
+    day.getFullYear(),
+    day.getMonth() + 1,
+    day.getDate(),
+    hours ?? 0,
+    minutes ?? 0,
+  );
 }
 
 function overlaps(a: TimeRange, b: TimeRange): boolean {

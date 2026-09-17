@@ -111,7 +111,12 @@ function formatPrice(amount: number, country?: string | null): string {
 function formatSlot(iso: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
+  // `timeZone` explicite : sans lui, un serveur qui tourne en UTC afficherait
+  // une heure décalée par rapport à celle vue par le client dans son
+  // navigateur (fuseau Europe/Paris) — même défaut que celui corrigé dans
+  // `availability.ts` (17/09/2026), mais côté affichage plutôt que calcul.
   return new Intl.DateTimeFormat('fr-FR', {
+    timeZone: 'Europe/Paris',
     weekday: 'long',
     day: 'numeric',
     month: 'long',

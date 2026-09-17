@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { availableSlots } from '@/lib/detailing/availability';
+import { availableSlots, parisWallTimeToUtc } from '@/lib/detailing/availability';
 import type { AvailabilityConfig, TimeRange } from '@/lib/detailing/types';
 
 /** Le lendemain, à minuit — un jour toujours dans le futur, quelle que soit la date d'exécution. */
@@ -10,12 +10,39 @@ function tomorrow(): Date {
   return date;
 }
 
+/**
+ * Même conversion « heure murale Europe/Paris → instant UTC » que le moteur
+ * (`atTime`, interne à `availability.ts`) — réutilise `parisWallTimeToUtc`
+ * plutôt que de dupliquer la logique, pour que ce fichier ne puisse pas
+ * rester vert par erreur si le comportement réel change (17/09/2026,
+ * correctif du décalage horaire).
+ */
 function at(day: Date, hhmm: string): Date {
   const [hours, minutes] = hhmm.split(':').map(Number);
-  const result = new Date(day);
-  result.setHours(hours ?? 0, minutes ?? 0, 0, 0);
-  return result;
+  return parisWallTimeToUtc(day.getFullYear(), day.getMonth() + 1, day.getDate(), hours ?? 0, minutes ?? 0);
 }
+
+/*
+ * Cette machine de test tourne elle-même en Europe/Paris (confirmé,
+ * 17/09/2026) : une comparaison entre deux appels de `parisWallTimeToUtc` ne
+ * peut donc pas trahir un bug de fuseau, les deux hériteraient de la même
+ * erreur. Ces deux cas fixent l'instant UTC attendu en dur (calculé à la
+ * main), pour rester valables même si les tests tournent un jour sur un
+ * serveur en UTC — ce qui est le cas de l'hébergement de production, et la
+ * cause du décalage de 2h que Dorian a observé sur Auto Clean Pro avant ce
+ * correctif.
+ */
+describe('parisWallTimeToUtc — indépendant du fuseau de la machine qui exécute les tests', () => {
+  it('convertit 16h30 Paris un jour d’été (CEST, UTC+2) en 14h30 UTC', () => {
+    const result = parisWallTimeToUtc(2026, 9, 29, 16, 30);
+    expect(result.toISOString()).toBe('2026-09-29T14:30:00.000Z');
+  });
+
+  it('convertit 16h30 Paris un jour d’hiver (CET, UTC+1) en 15h30 UTC', () => {
+    const result = parisWallTimeToUtc(2026, 1, 15, 16, 30);
+    expect(result.toISOString()).toBe('2026-01-15T15:30:00.000Z');
+  });
+});
 
 describe('availableSlots — découpe de l’amplitude', () => {
   it('propose des créneaux espacés de la granularité réglée, sans dépasser la fermeture', () => {

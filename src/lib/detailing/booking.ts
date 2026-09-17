@@ -19,7 +19,11 @@ import { notifyNewBooking } from './whatsapp';
 function formatBookingSlot(iso: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
+  // `timeZone` explicite — même correctif que `formatSlot` dans `email.ts`
+  // (17/09/2026) : sans lui, un serveur en UTC afficherait une heure décalée
+  // par rapport à ce que le professionnel voit sur son téléphone.
   return new Intl.DateTimeFormat('fr-FR', {
+    timeZone: 'Europe/Paris',
     weekday: 'long',
     day: 'numeric',
     month: 'long',

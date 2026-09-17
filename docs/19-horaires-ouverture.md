@@ -176,7 +176,59 @@ professionnels en ont besoin, ajouter un champ à `HoursSetup.tsx` et à la rout
 
 ---
 
-## 5. Ordre de construction proposé
+## 6. Correctif — décalage de 2h entre l'heure réglée et l'heure affichée (17-18 septembre 2026)
+
+Signalé par Dorian sur Auto Clean Pro : les créneaux réglés à 16h30 et 17h45
+s'affichaient à 18h30 et 19h45 sur la page de réservation.
+
+**Cause.** `availableSlots` (`src/lib/detailing/availability.ts`) lisait
+`opens_at`/`closes_at` avec sa fonction interne `atTime`, qui utilisait
+`Date.prototype.setHours` — cette méthode interprète l'heure dans le fuseau
+**du serveur qui exécute le code**, jamais explicitement « Europe/Paris ».
+L'hébergement de production tourne en UTC : « 16h30 » réglé par le
+professionnel était donc lu comme « 16h30 UTC », qu'un navigateur français
+(UTC+2 en septembre, CEST) affichait ensuite très correctement... 2 heures
+plus tard. Le bug était côté calcul serveur, pas côté affichage client
+(`BookingFlow.tsx` utilise déjà `toLocaleTimeString`/`toLocaleString` sans
+fuseau explicite, ce qui est le comportement voulu : afficher l'heure locale
+du visiteur). Ce défaut touchait très probablement **tous les professionnels**
+ayant déjà réglé leurs horaires via l'écran Horaires, pas seulement Auto Clean
+Pro — simplement plus visible chez lui du fait de ses deux créneaux fixes.
+
+**Correctif.** Nouvelle fonction `parisWallTimeToUtc` (exportée par
+`availability.ts`) : convertit une date + heure murale explicitement
+« Europe/Paris » en l'instant UTC réel, en tenant compte du décalage CET
+(+1h)/CEST (+2h) suivant la période de l'année — sans nouvelle dépendance
+(deux passes `Intl.DateTimeFormat.formatToParts`, technique déjà utilisée
+ailleurs dans le projet pour un besoin voisin). `atTime` s'appuie maintenant
+sur cette fonction plutôt que sur `setHours`.
+
+Même correctif appliqué à `formatSlot` (`src/lib/detailing/email.ts`, e-mails
+de confirmation) et à sa copie volontaire dans `src/lib/detailing/booking.ts`
+(notification WhatsApp) : les deux manquaient l'option `timeZone:
+'Europe/Paris'` sur leur `Intl.DateTimeFormat`, ce qui aurait fait apparaître
+un décalage différent (mais tout aussi faux) dans les e-mails une fois le
+calcul des créneaux lui-même corrigé.
+
+**Aucune donnée à corriger.** Les horaires déjà enregistrés en base
+(`detailer_availability.opens_at`/`closes_at`, ex. `16:30`/`17:45` pour Auto
+Clean Pro) représentaient déjà correctement l'intention du professionnel — le
+défaut était uniquement dans la façon de les *interpréter* au moment du
+calcul. Le correctif s'applique donc immédiatement à tous les professionnels
+existants, sans aucune requête SQL de rattrapage.
+
+**Vérification du correctif lui-même.** La machine qui exécute les tests
+tourne elle-même en Europe/Paris — une comparaison entre deux appels de la
+même fonction ne peut donc pas trahir un bug de fuseau. Un test dédié
+(`tests/detailing-availability.test.ts`, describe « indépendant du fuseau »)
+fixe l'instant UTC attendu en dur pour un cas CEST et un cas CET, et
+`npm run test` a été rejoué une seconde fois avec `TZ=UTC` (fuseau de
+l'hébergement de production) pour confirmer que le correctif se comporte
+identiquement dans les deux fuseaux.
+
+---
+
+## 7. Ordre de construction proposé
 
 1. Migration `026_detailer_availability_unique.sql` (§1) — inoffensive pour les comptes
    existants, `create unique index if not exists`.
