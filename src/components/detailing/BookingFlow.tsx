@@ -754,6 +754,7 @@ export function BookingFlow({
                 <AddressPicker
                   country={detailer.country}
                   base={detailer.base}
+                  city={detailer.city}
                   value={address}
                   onChange={setAddress}
                   accessNote={accessNote}

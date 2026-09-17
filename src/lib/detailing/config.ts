@@ -123,6 +123,8 @@ export async function loadDetailerBySlug(slug: string): Promise<DetailerRecord |
     })),
     minBookingNoticeHours: Number(detailer.min_booking_notice_hours),
     slotGranularityMinutes: Number(detailer.slot_granularity_minutes),
+    maxDailySlots:
+      detailer.max_daily_slots == null ? null : Number(detailer.max_daily_slots),
   };
 
   return {

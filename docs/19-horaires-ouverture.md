@@ -147,6 +147,30 @@ modules lisent déjà `detailer_availability` tel quel, ils n'ont pas besoin de 
 - `minBookingNoticeHours` et `slotGranularityMinutes` gardent leurs valeurs actuelles sur
   `detailers`, non exposées par ce nouvel écran (§0.5).
 - Les fermetures ponctuelles (`detailer_closures`) restent sans écran (§0.3).
+
+---
+
+## 5. Plafond quotidien de créneaux — `max_daily_slots` (17 septembre 2026)
+
+Demande de Dorian pour Auto Clean Pro : deux interventions fixes par jour, 16h30 et 17h45,
+tous les jours sauf dimanche — pas une amplitude continue. Or `availableSlots` (§ci-dessus)
+calcule les débuts possibles en avançant par pas de `slot_granularity_minutes` tant que la
+durée demandée tient avant la fermeture : avec une seule amplitude réglée, un client qui
+choisit une prestation plus courte (la formule moto, 30 min, par exemple) voit un troisième
+créneau apparaître que Dorian ne veut pas proposer — le nombre de créneaux dépend alors de
+la durée choisie, jamais d'un chiffre fixe.
+
+**Nouvelle colonne `detailers.max_daily_slots`** (migration 027), lue dans
+`AvailabilityConfig.maxDailySlots` (`config.ts`) et appliquée en toute fin de calcul dans
+`availableSlots` (`slots.slice(0, maxDailySlots)`) : les créneaux gardés restent toujours
+ceux qui tiennent réellement avant la fermeture (aucun horaire fantaisiste n'est inventé),
+seul leur nombre est plafonné. `null` (valeur par défaut) : aucun changement pour les
+professionnels existants.
+
+**Pas d'écran pour l'instant.** Comme `slotGranularityMinutes` (§0.5, §4), ce réglage n'est
+pas exposé dans l'écran Horaires — réglé par SQL pour Auto Clean Pro. Si d'autres
+professionnels en ont besoin, ajouter un champ à `HoursSetup.tsx` et à la route
+`/api/app/availability` suivrait le même schéma que `bufferMinutes`.
 - Aucun impact sur la facturation, les capacités d'abonnement autres que `planning`, ou le
   paiement.
 

@@ -1,5 +1,21 @@
 # 05 — Composants
 
+## Recherche d'adresse biaisée autour du professionnel (17 septembre 2026)
+
+Repéré par Dorian sur une réservation réelle chez Auto Clean Pro (Fréjus, Var) : un client
+qui tape « Frejus » se voyait proposer en premier résultat un lieu-dit du même nom situé à
+200 km, dans les Hautes-Alpes. Nominatim (`/api/detailing/geocode`) classe les résultats par
+pertinence textuelle pure, sans notion de proximité géographique — un homonyme rural peut
+donc dépasser la ville que le client a réellement en tête.
+
+**Correctif** : `viewbox` (préférence, pas un filtre dur — pas de `bounded=1`, un client qui
+réserve pour une résidence secondaire lointaine reste trouvable) recentre désormais le
+classement autour du point de départ du professionnel (`detailer.base`) quand il en a un, ou
+à défaut autour du centre de sa ville (`detailer.city`, geocodée une fois puis mise en cache
+30 jours — cas d'Auto Clean Pro, qui ne facture aucun déplacement et n'a donc jamais
+renseigné de point de départ précis). `AddressPicker` reçoit un nouveau prop `city`, câblé
+depuis `BookingFlow` sur `/reservation/[slug]` et `/embed/[slug]`.
+
 ## Crédit « Propulsé par Qualifyr » sur les pages publiques (17 septembre 2026)
 
 Demande de Dorian : un moyen subtil de faire connaître Qualifyr (le SaaS et

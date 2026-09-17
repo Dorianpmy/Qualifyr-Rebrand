@@ -92,3 +92,53 @@ describe('availableSlots — délai minimal de réservation', () => {
     expect(availableSlots(day, 60, config, [])).toEqual([]);
   });
 });
+
+/**
+ * Cas Auto Clean Pro (17/09/2026) : deux interventions fixes par jour,
+ * 16h30 et 17h45, quelle que soit la durée choisie par le client.
+ */
+describe('availableSlots — plafond quotidien de créneaux', () => {
+  const baseConfig: AvailabilityConfig = {
+    weekly: [{ weekday: 0, opensAt: '16:30', closesAt: '22:00', bufferMinutes: 15 }],
+    closures: [],
+    minBookingNoticeHours: 0,
+    slotGranularityMinutes: 75,
+    maxDailySlots: 2,
+  };
+
+  it('ne propose jamais plus que le plafond, même pour une prestation courte', () => {
+    const day = tomorrow();
+    const config: AvailabilityConfig = { ...baseConfig, weekly: [{ ...baseConfig.weekly[0]!, weekday: day.getDay() }] };
+
+    // Une prestation de 30 minutes (ex. formule moto) laisserait apparaître
+    // un troisième créneau (19:00, 20:15…) sans le plafond.
+    const slots = availableSlots(day, 30, config, []);
+
+    expect(slots).toHaveLength(2);
+    expect(slots[0]!.start).toEqual(at(day, '16:30'));
+    expect(slots[1]!.start).toEqual(at(day, '17:45'));
+  });
+
+  it('respecte toujours la durée réelle pour les créneaux qu’il garde', () => {
+    const day = tomorrow();
+    const config: AvailabilityConfig = { ...baseConfig, weekly: [{ ...baseConfig.weekly[0]!, weekday: day.getDay() }] };
+
+    // Prestation longue (2 h) : les deux créneaux gardés tiennent toujours
+    // avant la fermeture.
+    const slots = availableSlots(day, 120, config, []);
+
+    expect(slots).toHaveLength(2);
+    expect(slots[1]!.end.getHours()).toBeLessThanOrEqual(22);
+  });
+
+  it('n’ajoute pas de créneau qui n’existerait pas sans plafond', () => {
+    const day = tomorrow();
+    // Fenêtre trop courte pour un deuxième créneau, plafond à 2 malgré tout.
+    const config: AvailabilityConfig = {
+      ...baseConfig,
+      weekly: [{ weekday: day.getDay(), opensAt: '16:30', closesAt: '17:00', bufferMinutes: 15 }],
+    };
+
+    expect(availableSlots(day, 30, config, [])).toHaveLength(1);
+  });
+});

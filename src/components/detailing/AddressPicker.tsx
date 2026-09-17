@@ -42,6 +42,7 @@ type Suggestion = {
 export function AddressPicker({
   country,
   base,
+  city,
   value,
   onChange,
   accessNote,
@@ -50,6 +51,13 @@ export function AddressPicker({
   readonly country: string;
   /** Point de départ du professionnel ; sans lui, aucune distance calculable. */
   readonly base: Point | null;
+  /**
+   * Ville du professionnel — sert à recentrer la recherche d'adresse quand
+   * `base` est absent (professionnel qui ne facture aucun déplacement et n'a
+   * donc jamais renseigné de point de départ précis). Voir le commentaire de
+   * `/api/detailing/geocode`.
+   */
+  readonly city: string | null;
   readonly value: SelectedAddress | null;
   readonly onChange: (address: SelectedAddress | null) => void;
   readonly accessNote: string;
@@ -84,9 +92,14 @@ export function AddressPicker({
         return;
       }
       setSearching(true);
-      fetch(
-        `/api/detailing/geocode?q=${encodeURIComponent(query)}&country=${encodeURIComponent(country)}`,
-      )
+      const params = new URLSearchParams({ q: query, country });
+      if (base) {
+        params.set('biasLat', String(base.lat));
+        params.set('biasLon', String(base.lon));
+      } else if (city) {
+        params.set('biasCity', city);
+      }
+      fetch(`/api/detailing/geocode?${params.toString()}`)
         .then((response) => response.json())
         .then((data: { results?: Suggestion[] }) => setSuggestions(data.results ?? []))
         .catch(() => setSuggestions([]))
@@ -94,7 +107,7 @@ export function AddressPicker({
     }, 400);
 
     return () => window.clearTimeout(debounceRef.current);
-  }, [query, country, touched, value]);
+  }, [query, country, base, city, touched, value]);
 
   function select(suggestion: Suggestion) {
     const point = { lat: suggestion.lat, lon: suggestion.lon };

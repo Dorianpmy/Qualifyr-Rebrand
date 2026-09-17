@@ -79,5 +79,13 @@ export function availableSlots(
     slots.push(candidate);
   }
 
+  // Plafond volontaire, indépendant de la durée demandée : un professionnel
+  // qui ne veut que deux interventions par jour ne doit pas en voir une
+  // troisième apparaître simplement parce qu'un client a choisi une
+  // prestation plus courte qu'une autre (17/09/2026).
+  if (config.maxDailySlots != null && config.maxDailySlots >= 0) {
+    return slots.slice(0, config.maxDailySlots);
+  }
+
   return slots;
 }

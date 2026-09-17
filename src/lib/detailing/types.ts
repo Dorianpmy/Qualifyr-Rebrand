@@ -155,4 +155,11 @@ export type AvailabilityConfig = {
   readonly closures: readonly Closure[];
   readonly minBookingNoticeHours: number;
   readonly slotGranularityMinutes: number;
+  /**
+   * Plafonne le nombre de créneaux proposés par jour, quelle que soit
+   * l'amplitude d'ouverture — pour un professionnel qui ne veut qu'un nombre
+   * fixe d'interventions quotidiennes plutôt qu'une plage continue.
+   * `null`/absent : aucun plafond (comportement historique).
+   */
+  readonly maxDailySlots?: number | null;
 };
