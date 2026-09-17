@@ -191,3 +191,79 @@ describe('quote — acompte', () => {
     expect(result.depositAmount).toBe(0);
   });
 });
+
+/**
+ * Gabarit moto (17/09/2026) : une moto n'a en général qu'une seule formule
+ * réglée (« complet », voir `docs/13-...md` §1) — le professionnel ne remplit
+ * pas les cases intérieur/extérieur, qui n'ont pas de sens pour un deux-roues.
+ */
+describe('quote — gabarit moto', () => {
+  const motoConfig: DetailerConfig = {
+    ...baseConfig,
+    prices: [...baseConfig.prices, { scope: 'complet', vehicleSize: 'moto', basePrice: 20, baseMinutes: 30 }],
+  };
+
+  it('chiffre une moto sur sa seule formule réglée', () => {
+    const result = quote(
+      { scope: 'complet', vehicleSize: 'moto', soiling: 'normal', optionKeys: [], locationMode: 'atelier' },
+      motoConfig,
+    );
+    expect(result.totalPrice).toBe(20);
+    expect(result.totalMinutes).toBe(30);
+  });
+
+  it('refuse un devis pour une formule non réglée sur ce gabarit', () => {
+    expect(() =>
+      quote(
+        { scope: 'interieur', vehicleSize: 'moto', soiling: 'normal', optionKeys: [], locationMode: 'atelier' },
+        motoConfig,
+      ),
+    ).toThrow();
+  });
+});
+
+/** Option désinfection habitacle (17/09/2026) — forfait fixe, sensible à la salissure comme l'ozone. */
+describe('quote — option désinfection', () => {
+  const configWithDesinfection: DetailerConfig = {
+    ...baseConfig,
+    options: [
+      ...baseConfig.options,
+      {
+        key: 'desinfection',
+        enabled: true,
+        price: 10,
+        minutes: 20,
+        scaleWithSize: false,
+        affectedBySoiling: true,
+      },
+    ],
+  };
+
+  it('ajoute le forfait désinfection sans le faire varier avec le gabarit', () => {
+    const berline = quote(
+      { scope: 'complet', vehicleSize: 'berline', soiling: 'normal', optionKeys: ['desinfection'], locationMode: 'atelier' },
+      configWithDesinfection,
+    );
+    const suv = quote(
+      { scope: 'complet', vehicleSize: 'suv', soiling: 'normal', optionKeys: ['desinfection'], locationMode: 'atelier' },
+      configWithDesinfection,
+    );
+    expect(berline.optionsPrice).toBe(10);
+    expect(suv.optionsPrice).toBe(10);
+  });
+
+  it('applique le multiplicateur de salissure au forfait désinfection', () => {
+    const result = quote(
+      {
+        scope: 'complet',
+        vehicleSize: 'berline',
+        soiling: 'tres_sale',
+        optionKeys: ['desinfection'],
+        locationMode: 'atelier',
+      },
+      configWithDesinfection,
+    );
+    // (base 80 + désinfection 10) × 1.25
+    expect(result.labourPrice).toBeCloseTo(112.5);
+  });
+});

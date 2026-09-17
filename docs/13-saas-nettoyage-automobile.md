@@ -115,12 +115,16 @@ professionnel règle, et la seule source du calcul.
 |---|---|---|
 | `detailer_id` | uuid | |
 | `scope` | enum | `interieur`, `exterieur`, `complet` |
-| `vehicle_size` | enum | `citadine`, `berline`, `suv`, `utilitaire`, `prestige` |
+| `vehicle_size` | enum | `citadine`, `berline`, `suv`, `utilitaire`, `prestige`, `moto` |
 | `base_price` | numeric | Prix de base, en euros |
 | `base_minutes` | int | Durée de base, en minutes |
 
-Quinze lignes par professionnel, créées à l'inscription avec des valeurs de
-départ modifiables.
+Dix-huit lignes par professionnel (6 gabarits × 3 formules), présentées comme
+autant de cases modifiables dans l'éditeur de tarifs. Une case laissée vide
+n'est pas comblée : la combinaison est simplement absente du tunnel (§1,
+`saveCatalogue`). C'est le cas attendu pour `moto` × `interieur` ou
+`exterieur` : une moto n'a pas d'habitacle, seule la formule `complet`
+(« la moto entière ») a vocation à être réglée.
 
 **Pourquoi une table et non des coefficients par gabarit.** Un SUV ne coûte pas
 « 1,3 × une citadine » de façon uniforme : l'écart est fort en intérieur, faible
@@ -131,7 +135,7 @@ lui qui connaît son métier — même principe que les barèmes de la concierge
 
 | Colonne | Type | Rôle |
 |---|---|---|
-| `detailer_id`, `option_key` | | `shampouinage`, `ceramique`, `polissage`, `phares`, `ozone` |
+| `detailer_id`, `option_key` | | `shampouinage`, `ceramique`, `polissage`, `phares`, `ozone`, `desinfection` |
 | `enabled` | boolean | Le professionnel ne propose pas forcément tout |
 | `price`, `minutes` | numeric / int | Surcoût et durée ajoutée |
 | `scale_with_size` | boolean | Le polissage suit le gabarit, la rénovation de phares non |
@@ -220,6 +224,7 @@ Chaque option porte donc un drapeau `affected_by_soiling` :
 |---|---|
 | Shampouinage sièges | Oui |
 | Traitement anti-odeur ozone | Oui |
+| Désinfection habitacle vapeur | Oui |
 | Polissage carrosserie | Non |
 | Traitement céramique | Non |
 | Rénovation phares | Non |
@@ -347,9 +352,11 @@ Cinq étapes, une décision par écran. Le prix et la durée sont **visibles en
 permanence** à partir de l'étape 2 et se mettent à jour à chaque choix : c'est
 le mécanisme qui fait monter le panier, bien plus qu'un argumentaire.
 
-1. **Le véhicule** — gabarit en cinq vignettes illustrées, puis modèle et
-   immatriculation.
-2. **La formule** — intérieur, extérieur, complet. Le prix apparaît ici.
+1. **Le véhicule** — gabarit en six vignettes illustrées (citadine, berline,
+   SUV, utilitaire, prestige, moto), puis modèle et immatriculation.
+2. **La formule** — intérieur, extérieur, complet ; seules les formules
+   réellement tarifées pour le gabarit choisi sont proposées (une moto n'a
+   par exemple pas de formule « intérieur »). Le prix apparaît ici.
 3. **L'état** — trois niveaux, avec une phrase concrète chacun plutôt qu'un
    adjectif : « quelques miettes et poussière » / « taches visibles sur les
    sièges » / « poils d'animaux, taches anciennes ».
@@ -401,7 +408,7 @@ véhicule, devis, statut. Plus les photos en vignette, et deux actions directes 
 C'est l'écran qui rend l'outil indispensable au quotidien : il voit tout de
 suite si sa journée tient.
 
-**Tarifs** — la grille quinze lignes, les options, les multiplicateurs de
+**Tarifs** — la grille dix-huit lignes, les options, les multiplicateurs de
 salissure, les zones de déplacement. Un aperçu en direct affiche « une berline
 complète très sale à 12 km = 285 €, 4 h 15 », pour qu'il règle en voyant le
 résultat.

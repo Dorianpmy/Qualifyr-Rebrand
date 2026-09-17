@@ -7,11 +7,17 @@
  * code que la page, comme le moteur d'estimation locative.
  */
 
-export type VehicleSize = 'citadine' | 'berline' | 'suv' | 'utilitaire' | 'prestige';
+export type VehicleSize = 'citadine' | 'berline' | 'suv' | 'utilitaire' | 'prestige' | 'moto';
 export type Scope = 'interieur' | 'exterieur' | 'complet';
 export type SoilingLevel = 'normal' | 'tres_sale' | 'poils_taches';
 export type LocationMode = 'domicile' | 'atelier';
-export type OptionKey = 'shampouinage' | 'ceramique' | 'polissage' | 'phares' | 'ozone';
+export type OptionKey =
+  | 'shampouinage'
+  | 'ceramique'
+  | 'polissage'
+  | 'phares'
+  | 'ozone'
+  | 'desinfection';
 
 export type BookingStatus =
   | 'en_attente_paiement'
@@ -27,6 +33,7 @@ export const vehicleSizes: readonly VehicleSize[] = [
   'suv',
   'utilitaire',
   'prestige',
+  'moto',
 ];
 
 export const scopes: readonly Scope[] = ['interieur', 'exterieur', 'complet'];
@@ -39,6 +46,7 @@ export const optionKeys: readonly OptionKey[] = [
   'polissage',
   'phares',
   'ozone',
+  'desinfection',
 ];
 
 /** Une ligne de `detailer_prices` : le prix de base pour une formule × un gabarit. */

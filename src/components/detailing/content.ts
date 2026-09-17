@@ -16,6 +16,7 @@ export const vehicleSizeCopy: Record<VehicleSize, { label: string; hint: string 
   suv: { label: 'SUV / break', hint: 'Ex. Qashqai, 3008, Tiguan' },
   utilitaire: { label: 'Utilitaire', hint: 'Ex. Kangoo, Trafic, Jumpy' },
   prestige: { label: 'Prestige', hint: 'Berline haut de gamme, sportive, collection' },
+  moto: { label: 'Moto / scooter', hint: 'Deux-roues motorisé' },
 };
 
 export const scopeCopy: Record<Scope, { label: string; hint: string }> = {
@@ -64,6 +65,13 @@ export const optionCopy: Record<OptionKey, { label: string; lines: readonly [str
     lines: [
       'Une odeur de tabac, d’humidité ou d’animal ne part pas au parfum : elle est dans les textiles.',
       'Le traitement à l’ozone la neutralise à la source plutôt que de la masquer.',
+    ],
+  },
+  desinfection: {
+    label: 'Désinfection de l’habitacle à la vapeur',
+    lines: [
+      'La vapeur haute pression atteint les bactéries et acariens logés dans les textiles et les aérations.',
+      'Un geste sanitaire, pas seulement un geste de propreté — sans produit chimique ajouté.',
     ],
   },
 };

@@ -233,7 +233,30 @@ export function BookingFlow({
     detailer.scopeLabels[value]?.description || scopeCopy[value].hint;
   const formatPrice = (value: number) => formatPriceIn(value, detailer.country);
 
-  const canQuote = vehicleSize !== '' && scope !== '';
+  /**
+   * Formules réellement tarifées pour le gabarit choisi — voir le
+   * commentaire posé sur `ChoiceGroup` de l'étape « formule ». Recalculée à
+   * chaque changement de gabarit. Si la formule déjà choisie n'en fait plus
+   * partie (ex. « Intérieur » restait sélectionné en passant de citadine à
+   * moto), `ChoiceGroup` ne la présente plus comme sélectionnée — aucune de
+   * ses options ne correspond à la valeur mémorisée — et `canProceed.formule`
+   * ci-dessous s'aligne sur ce même constat plutôt que de réinitialiser
+   * `scope` depuis un effet (évite un rendu en cascade pour un cas que le
+   * rendu suivant règle de toute façon).
+   */
+  const availableScopes = useMemo(
+    () =>
+      vehicleSize === ''
+        ? scopes
+        : scopes.filter((value) =>
+            quoteConfig.prices.some(
+              (entry) => entry.scope === value && entry.vehicleSize === vehicleSize,
+            ),
+          ),
+    [vehicleSize, quoteConfig.prices],
+  );
+
+  const canQuote = vehicleSize !== '' && scope !== '' && availableScopes.includes(scope);
 
   const currentQuote: Quote | null = useMemo(() => {
     if (!canQuote) return null;
@@ -442,7 +465,7 @@ export function BookingFlow({
 
   const canProceed: Record<StepId, boolean> = {
     vehicule: vehicleSize !== '',
-    formule: scope !== '',
+    formule: scope !== '' && availableScopes.includes(scope),
     etat: true,
     options: true,
     /*
@@ -646,7 +669,16 @@ export function BookingFlow({
               id="scope"
               name="scope"
               type="radio"
-              options={scopes.map((value) => ({
+              /*
+               * Seules les formules réellement tarifées pour le gabarit choisi
+               * sont proposées. Sans ce filtre, un client pouvait choisir
+               * « Intérieur » sur une moto (aucune ligne `detailer_prices`
+               * pour cette combinaison chez un professionnel qui ne facture
+               * que la formule complète) : l'estimation restait bloquée à
+               * « — » jusqu'au bouton final, désactivé sans explication
+               * (17/09/2026, ajout de la catégorie moto).
+               */
+              options={availableScopes.map((value) => ({
                 value,
                 label: scopeLabelFor(value),
                 description: scopeHintFor(value),

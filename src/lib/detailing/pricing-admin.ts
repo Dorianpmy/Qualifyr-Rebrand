@@ -97,6 +97,9 @@ const optionDefaults: Record<OptionKey, Omit<OptionRow, 'key' | 'enabled'>> = {
   polissage: { price: 180, minutes: 150, scaleWithSize: true, affectedBySoiling: false },
   phares: { price: 70, minutes: 45, scaleWithSize: false, affectedBySoiling: false },
   ozone: { price: 50, minutes: 45, scaleWithSize: false, affectedBySoiling: false },
+  // Forfait fixe quel que soit le gabarit (comme l'ozone) : le temps de
+  // passage vapeur ne dépend pas de la taille du véhicule.
+  desinfection: { price: 40, minutes: 30, scaleWithSize: false, affectedBySoiling: true },
 };
 
 const soilingDefaults: Record<SoilingLevel, number> = {

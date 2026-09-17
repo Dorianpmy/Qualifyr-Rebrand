@@ -36,6 +36,9 @@ const optionSizeCoefficient: Record<VehicleSize, number> = {
   suv: 1.25,
   utilitaire: 1.15,
   prestige: 1.35,
+  // Surface et temps de traitement bien moindres qu'une citadine — la plus
+  // petite valeur de la grille.
+  moto: 0.5,
 };
 
 function roundMoney(value: number): number {
