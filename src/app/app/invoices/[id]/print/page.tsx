@@ -81,38 +81,50 @@ export default async function InvoicePrintPage({
         <title>Facture {invoice.number}</title>
         <style>{`
           * { box-sizing: border-box; }
-          body { font-family: system-ui, sans-serif; color: #111; margin: 2rem; font-size: 14px; }
-          h1 { font-size: 1.4rem; margin: 0 0 0.25rem; }
-          .muted { color: #555; font-size: 12px; }
-          .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0; }
-          table { width: 100%; border-collapse: collapse; margin-top: 1.25rem; }
-          th, td { text-align: left; padding: 0.5rem 0.4rem; border-bottom: 1px solid #ddd; }
-          th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #555; }
+          body { font-family: system-ui, sans-serif; color: #171513; margin: 0; background: #DCCFBD; font-size: 14px; }
+          .sheet { max-width: 720px; margin: 0 auto; background: #FFFDF8; }
+          .band { background: #171513; color: #F5F0E7; padding: 2.25rem 2.5rem 1.75rem; }
+          .band h1 { font-family: Georgia, 'Times New Roman', serif; font-weight: 600; font-size: 1.9rem; margin: 0 0 0.3rem; color: #F5F0E7; }
+          .band .meta { color: #DCCFBD; font-size: 12.5px; margin: 0; }
+          .content { padding: 2rem 2.5rem 2.5rem; }
+          .rule { height: 2px; width: 48px; background: #B08A52; border: none; margin: 0 0 1.5rem; }
+          .muted { color: #70675F; font-size: 12px; }
+          .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 0 0 1.5rem; }
+          .grid .label { display: block; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: #8B452F; font-weight: 600; margin-bottom: 0.35rem; }
+          table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+          th, td { text-align: left; padding: 0.55rem 0.4rem; border-bottom: 1px solid #DED5C9; }
+          th { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; color: #70675F; font-weight: 600; }
           .totals { margin-top: 1rem; text-align: right; }
-          .totals strong { font-size: 1.1rem; }
+          .totals strong { font-family: Georgia, 'Times New Roman', serif; font-size: 1.4rem; font-weight: 600; color: #171513; }
           @media print {
-            body { margin: 0; }
+            body { margin: 0; background: #fff; }
+            .sheet { max-width: none; }
             .no-print { display: none; }
           }
-          .qrbill { margin-top: 2rem; border-top: 2px dashed #999; padding-top: 1.25rem; page-break-inside: avoid; }
+          .qrbill { margin: 2rem 2.5rem 0; padding-top: 1.25rem; border-top: 2px dashed #DED5C9; page-break-inside: avoid; }
           .qrbill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; }
-          .qrbill h2 { font-size: 0.95rem; margin: 0 0 0.5rem; text-transform: uppercase; letter-spacing: 0.04em; }
+          .qrbill h2 { font-size: 0.9rem; margin: 0 0 0.5rem; text-transform: uppercase; letter-spacing: 0.04em; color: #171513; }
           .qrbill dl { margin: 0; font-size: 12px; }
-          .qrbill dt { color: #555; margin-top: 0.5rem; }
+          .qrbill dt { color: #70675F; margin-top: 0.5rem; }
           .qrbill dd { margin: 0; font-weight: 600; }
           .qrbill svg { display: block; margin-top: 0.5rem; }
         `}</style>
       </head>
       <body>
-        <p className="no-print muted">
+        <p className="no-print muted" style={{ padding: '1rem 2.5rem 0', maxWidth: 720, margin: '0 auto' }}>
           Utilise Cmd/Ctrl+P → Enregistrer en PDF
         </p>
-        <h1>FACTURE {invoice.number}</h1>
-        <p className="muted">Émise le {issued} · Prestation du {invoice.service_date ?? '—'}</p>
+        <div className="sheet">
+        <div className="band">
+          <h1>{sellerName}</h1>
+          <p className="meta">Facture {invoice.number} · émise le {issued} · prestation du {invoice.service_date ?? '—'}</p>
+        </div>
+        <div className="content">
+        <hr className="rule" />
 
         <div className="grid">
           <div>
-            <strong>Émetteur</strong>
+            <span className="label">Émetteur</span>
             <div>{sellerName}</div>
             <div className="muted">
               {[legal.legal_address, legal.legal_postal, legal.legal_city].filter(Boolean).join(' ')}
@@ -124,7 +136,7 @@ export default async function InvoicePrintPage({
             {legal.capital ? <div className="muted">Capital {String(legal.capital)}</div> : null}
           </div>
           <div>
-            <strong>Client</strong>
+            <span className="label">Client</span>
             <div>{invoice.client_name}</div>
             {invoice.client_siren ? <div className="muted">SIREN {invoice.client_siren}</div> : null}
             {invoice.client_siret ? <div className="muted">SIRET {invoice.client_siret}</div> : null}
@@ -176,6 +188,7 @@ export default async function InvoicePrintPage({
           {invoice.payment_terms}
         </p>
         {invoice.notes ? <p className="muted">{invoice.notes}</p> : null}
+        </div>
 
         {/* QR-facture suisse — voir `swiss-qr-bill.ts` pour le détail du
             format. Ce n'est pas le gabarit pré-imprimé officiel de SIX
@@ -205,6 +218,7 @@ export default async function InvoicePrintPage({
             </div>
           </div>
         ) : null}
+        </div>
 
         <script
           dangerouslySetInnerHTML={{

@@ -1,5 +1,36 @@
 # 05 — Composants
 
+## Refonte visuelle de la facture imprimable (17 septembre 2026)
+
+Demande de Dorian après avoir vu le gabarit existant (`/app/invoices/[id]/print`) :
+le document généré était un simple texte noir sur blanc, système, sans aucune
+identité visuelle — pas assez « pro » pour un document envoyé à un client.
+
+**Important, correction de Dorian en cours de travail** : le logo et la marque
+Qualifyr ne doivent **jamais** apparaître sur ce document. La facture est émise
+par le professionnel (le detailer), pas par Qualifyr — Qualifyr ne fait que la
+générer pour son compte. Un premier essai ajoutait le logo Qualifyr et un
+bandeau « Facturé via Qualifyr » ; retiré immédiatement sur retour de Dorian.
+Le nom affiché en en-tête reste uniquement celui du professionnel
+(`legal_name` en base, ou le nom du compte à défaut).
+
+**Ce qui a changé dans `src/app/app/invoices/[id]/print/page.tsx`** (styles
+uniquement, aucune logique ni donnée modifiée) : bandeau d'en-tête charbon
+(`#171513`) portant le nom du professionnel en Georgia (à défaut des polices
+maison, non chargées sur cette page qui rend un `<html>` brut hors du layout
+Next.js), fond de page sable (`#DCCFBD`) autour d'une feuille couleur papier
+(`#FFFDF8`), liseré laiton (`#B08A52`) sous l'en-tête, libellés Émetteur/Client
+en cuivre profond (`#8B452F`), tableau et totaux réalignés sur les tons
+neutres du reste de la charte (`docs/03-direction-artistique.md`). Le bloc
+QR-facture suisse (`swiss-qr-bill.ts`) n'est pas concerné par cette refonte,
+seulement replacé proprement en dehors du bloc de contenu paddé.
+
+**Vérification** : `lint`, `typecheck` et les 343 tests passent. `build` n'a
+pas pu être vérifié dans cet environnement (bac à sable sans accès réseau
+pour télécharger les polices Google Fonts — limitation de l'environnement,
+sans lien avec ce changement) ; à revérifier lors d'un déploiement Netlify
+normal si besoin.
+
 ## Invitation calendrier (.ics) jointe aux e-mails de réservation (16 septembre 2026)
 
 Demande de Dorian, après avoir vu à quoi ressemblaient les e-mails de confirmation
