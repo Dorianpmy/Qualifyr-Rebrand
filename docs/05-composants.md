@@ -1,5 +1,30 @@
 # 05 — Composants
 
+## `DarkHeader` / `DarkFooter` — préchargement de liens en arrière-plan (18 septembre 2026)
+
+Demande de Dorian : « comment améliorer la vitesse sur mon site et saas ». Audit du site en
+ligne (requêtes réseau capturées via le navigateur) : à chaque visite de l'accueil, cinq
+requêtes de préchargement partent immédiatement en arrière-plan (`/fonctionnalites`, `/tarifs`,
+`/faq`, `/app`, `/nettoyage-automobile`) — parfois la même page plusieurs fois en quelques
+secondes. Aucun tiers en cause : c'est le comportement par défaut de `next/link`, qui précharge
+la page complète de chaque lien dès qu'il entre dans le viewport. `DarkHeader` est toujours
+visible dès le premier pixel (bandeau collant), donc ses cinq liens se préchargent tous au
+chargement, avant tout clic. `DarkFooter` a le même effet dès qu'on défilie jusqu'en bas
+(douze liens d'un coup).
+
+**Correctif** : `prefetch={false}` sur les liens secondaires des deux composants (navigation du
+header, panneau mobile, groupes du footer). L'action principale (`primaryCta`, « Créer mon
+compte ») garde le comportement par défaut : c'est la seule destination qu'on veut réellement
+précharger. Aucun impact sur la navigation elle-même — un clic déclenche toujours le
+chargement, juste sans l'avoir anticipé ; la différence n'est perceptible que sur le volume de
+données transférées en arrière-plan, plus sensible en connexion mobile.
+
+Reste à mesurer avec un audit Lighthouse mobile réel (voir `docs/04-plan-implementation.md` pour
+le seuil visé) : ce correctif réduit une dépense réseau constatée, mais ne remplace pas un
+relevé chiffré de LCP/CLS/INP sur les pages clés.
+
+---
+
 ## `MessageBubble` — carré noir derrière les bulles sur Safari iOS (18 septembre 2026)
 
 Signalé par Dorian sur capture d'écran mobile (page d'accueil, nuage de bulles décoratives du

@@ -174,6 +174,12 @@ export function DarkFooter() {
             </ul>
           </div>
 
+          {/* `prefetch={false}` sur les douze liens ci-dessous (18/09/2026,
+              même correctif que `DarkHeader` : voir son commentaire). Ce
+              pied de page est rendu sur sept pages ; dès qu'un visiteur
+              défile jusqu'ici, Next.js précharge en arrière-plan les douze
+              pages de destination d'un coup, alors qu'un seul clic suit en
+              général. */}
           {groups.map((group) => (
             <nav key={group.title} aria-label={group.title}>
               <p className="mb-4 text-[0.75rem] font-semibold uppercase tracking-[0.08em] text-faint">
@@ -184,6 +190,7 @@ export function DarkFooter() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
+                      prefetch={false}
                       className="text-[0.875rem] !text-muted no-underline transition-colors duration-150 hover:!text-primary"
                     >
                       {link.label}

@@ -231,11 +231,24 @@ export function DarkHeader() {
 
         {/* Masquée sous 1024 px (`lg`) : cinq libellés côte à côte ne
             tiennent pas. Reprise en dessous dans un panneau plein écran. */}
+        {/* `prefetch={false}` sur les cinq liens ci-dessous (18/09/2026,
+            demande de Dorian : « comment améliorer la vitesse »).
+            Ce `<nav>` est toujours visible dès le premier pixel, sur
+            toutes les pages sombres : Next.js précharge en arrière-plan
+            la page complète de chaque lien dès qu'il entre dans le
+            viewport, donc dès le chargement, sans attendre un clic.
+            Mesuré sur le site en ligne : cinq requêtes de préchargement
+            partent immédiatement à chaque visite de l'accueil, avant même
+            que l'utilisateur ait choisi une direction — du réseau dépensé
+            en pure perte la plupart du temps, plus sensible en 4G qu'en
+            fibre. Seul `primaryCta` (l'action qu'on veut réellement
+            précharger) garde le comportement par défaut. */}
         <nav aria-label="Navigation principale" className="hidden items-center gap-7 lg:flex">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
+              prefetch={false}
               className="text-[0.875rem] !text-muted no-underline transition-colors duration-150 hover:!text-primary motion-reduce:transition-none"
             >
               {link.label}
@@ -243,6 +256,7 @@ export function DarkHeader() {
           ))}
           <Link
             href={proLink.href}
+            prefetch={false}
             className="text-[0.875rem] !text-muted no-underline transition-colors duration-150 hover:!text-primary motion-reduce:transition-none"
           >
             {proLink.label}
@@ -417,6 +431,7 @@ export function DarkHeader() {
                   <Link
                     key={link.href}
                     href={link.href}
+                    prefetch={false}
                     onClick={closeMenu}
                     className="text-[1.0625rem] font-medium !text-primary no-underline"
                     style={{
@@ -430,6 +445,7 @@ export function DarkHeader() {
                 ))}
                 <Link
                   href={proLink.href}
+                  prefetch={false}
                   onClick={closeMenu}
                   className="text-[1.0625rem] font-medium !text-primary no-underline"
                   style={{
