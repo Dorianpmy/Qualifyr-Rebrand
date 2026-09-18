@@ -1,3 +1,4 @@
+import { Resend } from 'resend';
 import { NextResponse } from 'next/server';
 
 /**
@@ -21,11 +22,44 @@ export async function GET() {
     return typeof value === 'string' && value.trim().length > 0;
   };
 
+  /*
+   * Étape 2 du diagnostic : les quatre variables sont bien lisibles (étape 1,
+   * confirmée), donc `sendClientBookingEmail` devrait atteindre
+   * `resend.emails.send(...)` — pourtant aucune requête n'apparaît côté
+   * Resend, même après une réservation réelle. On tente ici un envoi réel,
+   * en capturant l'erreur exacte (message, `name`, statut HTTP le cas
+   * échéant) au lieu de la seule journaliser côté serveur où personne ne
+   * peut la lire.
+   */
+  let sendAttempt: unknown = null;
+  try {
+    const key = process.env.RESEND_API_KEY;
+    const from = process.env.BOOKING_FROM_EMAIL;
+    if (key && from) {
+      const resend = new Resend(key);
+      const { data, error } = await resend.emails.send({
+        from,
+        to: 'dorian.poumay10@gmail.com',
+        subject: 'Diagnostic — envoi direct depuis la fonction',
+        text: 'Test.',
+      });
+      sendAttempt = { ok: !error, data, error };
+    } else {
+      sendAttempt = { ok: false, reason: 'clé ou expéditeur absent au moment de l’appel' };
+    }
+  } catch (err) {
+    sendAttempt = {
+      ok: false,
+      exception: err instanceof Error ? { name: err.name, message: err.message } : String(err),
+    };
+  }
+
   return NextResponse.json({
     nodeEnv: process.env.NODE_ENV ?? null,
     hasResendApiKey: present('RESEND_API_KEY'),
     hasBookingFromEmail: present('BOOKING_FROM_EMAIL'),
     hasContactFromEmail: present('CONTACT_FROM_EMAIL'),
     hasHermesFromEmail: present('HERMES_FROM_EMAIL'),
+    sendAttempt,
   });
 }
