@@ -168,11 +168,17 @@ export default async function AppHomePage({
               cette ligne, la fonctionnalité n'existait que pour qui savait
               déjà qu'elle existait. Sur `.subtitle`, comme la ligne
               au-dessus : une précision, pas une bannière à fermer.
+
+              Le glyphe `⋮` (menu Android) ne s'affiche pas dans cette police
+              sur tous les téléphones — invisible plutôt qu'un carré vide,
+              donc silencieusement absent (constaté par Dorian, capture
+              d'écran, même jour). Décrit en toutes lettres à la place.
             */}
             <p className={styles.subtitle}>
               (Astuce : ajoute cet espace à l’écran d’accueil de ton téléphone pour l’ouvrir comme
-              une application, avec le logo Qualifyr — sur Android, menu ⋮ puis « Installer
-              l’application » ; sur iPhone, Partager puis « Sur l’écran d’accueil ».)
+              une application, avec le logo Qualifyr — sur Android, menu en haut à droite (trois
+              points) puis « Installer l’application » ; sur iPhone, Partager puis « Sur l’écran
+              d’accueil ».)
             </p>
           </div>
           <div className={styles.topActions}>
