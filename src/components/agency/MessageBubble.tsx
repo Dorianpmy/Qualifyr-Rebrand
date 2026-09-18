@@ -21,6 +21,17 @@ import type { CSSProperties } from 'react';
  * classe en cascade), pas du bleu en tant que tel. Ici la couleur du texte
  * est elle aussi posée en `style`, pas en classe : le même risque ne
  * s'applique pas.
+ *
+ * **`filter: drop-shadow`, jamais `box-shadow`, sur cet élément précis.**
+ * Signalé par Dorian (18/09/2026, capture d'écran) : sur Safari iOS, un
+ * carré noir plein s'affichait derrière chaque groupe de bulles — jamais
+ * reproduit sur Chromium. Cause connue de WebKit : un `box-shadow` sur un
+ * élément que `.bubble-impact` anime via `transform` (voir `tailwind.css`)
+ * peut se peindre en rectangle opaque au lieu de l'ombre portée attendue,
+ * dès que Safari promeut l'élément sur son propre calque pendant
+ * l'animation. `filter: drop-shadow(...)` produit un rendu visuellement
+ * identique ici (fond plein, forme simple) mais compose correctement avec
+ * `transform` sur WebKit — c'est le contournement documenté de ce bug précis.
  */
 type MessageBubbleProps = {
   readonly text: string;
@@ -75,7 +86,7 @@ export function MessageBubble({
         borderRadius: '9999px',
         background: '#1683F8',
         color: '#FFFFFF',
-        boxShadow: '0 4px 14px rgba(22, 131, 248, 0.22)',
+        filter: 'drop-shadow(0 4px 14px rgba(22, 131, 248, 0.22))',
         /* Le délai passe par une variable CSS plutôt que par
            `animationDelay` : la règle `.bubble-impact` doit pouvoir redéfinir
            toute l'animation sous `prefers-reduced-motion`, ce qu'un

@@ -1,5 +1,25 @@
 # 05 — Composants
 
+## `MessageBubble` — carré noir derrière les bulles sur Safari iOS (18 septembre 2026)
+
+Signalé par Dorian sur capture d'écran mobile (page d'accueil, nuage de bulles décoratives du
+hero) : un carré noir plein s'affichait derrière chaque groupe de bulles. Jamais reproduit sur
+Chromium (vérifié via le navigateur intégré) — bug WebKit connu.
+
+**Cause.** `.bubble-impact` (`tailwind.css`) anime l'arrivée de chaque bulle via `transform`
+(`translateY` + `scale`). `MessageBubble.tsx` posait par ailleurs un `boxShadow` sur ce même
+élément. Sur Safari iOS, un `box-shadow` combiné à une animation `transform` peut se peindre en
+rectangle opaque au lieu de l'ombre portée attendue, dès que Safari promeut l'élément sur son
+propre calque de composition pendant l'animation.
+
+**Correctif.** `boxShadow` remplacé par `filter: drop-shadow(...)` — rendu visuellement
+identique ici (la bulle a un fond plein, une forme simple, pas de transparence interne à
+respecter), mais qui compose correctement avec `transform` sur WebKit. Contournement documenté
+de ce bug précis, pas une réécriture générale : `box-shadow` reste employé sans problème
+ailleurs dans le projet, tant qu'il n'est pas posé sur un élément animé via `transform`.
+
+---
+
 ## Recherche d'adresse biaisée autour du professionnel (17 septembre 2026)
 
 Repéré par Dorian sur une réservation réelle chez Auto Clean Pro (Fréjus, Var) : un client
