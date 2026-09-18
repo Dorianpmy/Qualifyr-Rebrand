@@ -27,19 +27,98 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("source", type=Path)
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
+    parser.add_argument(
+        "--icon-only",
+        action="store_true",
+        help=(
+            "Source is a standalone wordmark (no separate monogram to split out via "
+            "split_mark()) — regenerate only the favicon/PWA icon set from it, and leave "
+            "qualifyr-lockup.png / qualifyr-mark.png / the Open Graph cards untouched. "
+            "Added 18/09/2026 for the 'QUALIFYR en toutes lettres' icon (demande de "
+            "Dorian) : ce fichier-là n'a pas de monogramme séparé à isoler."
+        ),
+    )
     return parser.parse_args()
 
 
-def extract_monochrome(source: Image.Image) -> Image.Image:
-    """Turn the near-white preview background into a smooth alpha mask."""
+def _cropped_alpha(source: Image.Image) -> tuple[Image.Image, tuple[int, int, int, int]]:
+    """Shared alpha-extraction step: which pixels are the logo, not the
+    background — and the crop box for them, padded a little so antialiasing
+    and the original render's soft glow aren't cut off.
+
+    Historically the supplied source was a dark logo photographed on a
+    near-white preview background — luminance had to be *inverted* to become
+    alpha. The 18/09/2026 icon brief is the opposite: light glossy letters
+    already sitting on a dark textured background, much closer to what ships
+    on screen. Sampling the four corners picks the right mapping instead of
+    assuming one photography style forever; a hard threshold would leave
+    jagged edges once recomposited, hence the smoothstep ramp for the
+    dark-background case.
+    """
 
     luminance = source.convert("L")
-    alpha = luminance.point(lambda value: max(0, min(255, round((235 - value) * 255 / 190))))
+    width, height = luminance.size
+    corners = [
+        luminance.getpixel(point)
+        for point in [(2, 2), (width - 3, 2), (2, height - 3), (width - 3, height - 3)]
+    ]
+    dark_background = sum(corners) / len(corners) < 128
+
+    if dark_background:
+        lo, hi = 150.0, 205.0
+
+        def smoothstep(value: int) -> int:
+            t = max(0.0, min(1.0, (value - lo) / (hi - lo)))
+            eased = t * t * (3 - 2 * t)
+            return round(eased * 255)
+
+        alpha = luminance.point(smoothstep)
+    else:
+        alpha = luminance.point(lambda value: max(0, min(255, round((235 - value) * 255 / 190))))
+
     bbox = alpha.getbbox()
     if bbox is None:
         raise RuntimeError("The supplied source does not contain a detectable logo.")
-    alpha = alpha.crop(bbox)
+    pad = round(0.04 * max(bbox[2] - bbox[0], bbox[3] - bbox[1]))
+    bbox = (
+        max(0, bbox[0] - pad),
+        max(0, bbox[1] - pad),
+        min(alpha.width, bbox[2] + pad),
+        min(alpha.height, bbox[3] + pad),
+    )
+    return alpha.crop(bbox), bbox
+
+
+def extract_monochrome(source: Image.Image) -> Image.Image:
+    """Turn the logo's own background into a smooth `INK`-filled alpha mask.
+
+    The source's actual colour is discarded here — every downstream user of
+    this function (`split_mark`, then `recolor()`) throws colour away and
+    keeps only the alpha channel, so filling with `INK` costs nothing. Do
+    **not** reuse this for a path that wants to keep the source's real
+    shading (e.g. a glossy 3D render) — see `extract_alpha_photographic`.
+    """
+
+    alpha, _ = _cropped_alpha(source)
     result = Image.new("RGBA", alpha.size, (*INK, 0))
+    result.putalpha(alpha)
+    return result
+
+
+def extract_alpha_photographic(source: Image.Image) -> Image.Image:
+    """`--icon-only` counterpart of `extract_monochrome` : keeps the
+    source's own pixels (the glossy white/gradient shading of the 18/09/2026
+    icon) instead of flattening them to a single flat colour.
+
+    Bug caught before shipping (18/09/2026): a first attempt reused
+    `extract_monochrome` directly for the photographic icons — it compiles,
+    `mark.size` looks right, but the RGB channels are always `INK`
+    regardless of source, so compositing onto an `INK` canvas produces an
+    icon that is technically correct and visibly blank.
+    """
+
+    alpha, bbox = _cropped_alpha(source)
+    result = source.convert("RGBA").crop(bbox)
     result.putalpha(alpha)
     return result
 
@@ -104,6 +183,48 @@ def write_embedded_svg(mark: Image.Image, path: Path) -> None:
     path.write_text(svg, encoding="utf-8")
 
 
+def save_icon_photographic(mark: Image.Image, path: Path, size: int, fit: float = 0.84) -> None:
+    """`--icon-only` variant of `save_icon` : keeps the source's own glossy
+    shading (18/09/2026 icon) instead of flattening to a single flat `IVORY`
+    fill. The live icons already on the site (`public/icons/qualifyr-*.png`,
+    the bubble `Q`) show real gradient/highlight, not a flat silhouette —
+    `recolor()` would be a visible regression against what currently ships,
+    not a neutral choice.
+
+    `fit` defaults higher than `save_icon`'s 0.7/0.72 (a roughly square
+    monogram) because a wide wordmark like `QUALIFYR` needs to use most of
+    the available width to stay legible at all; `contain()`'s aspect-ratio
+    preservation still keeps the height well short of the canvas.
+    """
+
+    canvas = Image.new("RGBA", (size, size), (*INK, 255))
+    box = round(size * fit)
+    fitted = contain(mark, (box, box))
+    canvas.alpha_composite(fitted, ((size - fitted.width) // 2, (size - fitted.height) // 2))
+    canvas.convert("RGB").save(path, optimize=True)
+
+
+def write_embedded_svg_photographic(
+    mark: Image.Image, path: Path, canvas_size: int = 512, fit: float = 0.84
+) -> None:
+    """`--icon-only` counterpart of `write_embedded_svg` — see
+    `save_icon_photographic` for why the source colour is kept as-is."""
+
+    box = round(canvas_size * fit)
+    fitted = contain(mark, (box, box))
+    buffer = BytesIO()
+    fitted.save(buffer, format="PNG", optimize=True)
+    encoded = base64.b64encode(buffer.getvalue()).decode("ascii")
+    x = (canvas_size - fitted.width) // 2
+    y = (canvas_size - fitted.height) // 2
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {canvas_size} {canvas_size}" role="img" aria-label="Qualifyr">
+  <rect width="{canvas_size}" height="{canvas_size}" fill="#171513"/>
+  <image href="data:image/png;base64,{encoded}" x="{x}" y="{y}" width="{fitted.width}" height="{fitted.height}" preserveAspectRatio="xMidYMid meet"/>
+</svg>
+'''
+    path.write_text(svg, encoding="utf-8")
+
+
 def update_open_graph(lockup: Image.Image, mark: Image.Image, path: Path) -> None:
     card = Image.open(path).convert("RGBA")
     background = card.getpixel((12, 12))[:3]
@@ -132,6 +253,17 @@ def main() -> None:
     icon_dir.mkdir(parents=True, exist_ok=True)
 
     source = Image.open(args.source).convert("RGB")
+
+    if args.icon_only:
+        mark = extract_alpha_photographic(source)
+        save_icon_photographic(mark, icon_dir / "qualifyr-48.png", 48)
+        save_icon_photographic(mark, icon_dir / "apple-touch-icon.png", 180)
+        save_icon_photographic(mark, icon_dir / "qualifyr-192.png", 192)
+        save_icon_photographic(mark, icon_dir / "qualifyr-512.png", 512)
+        write_embedded_svg_photographic(mark, root / "src/app/icon.svg")
+        print(f"icon-only mark={mark.size}")
+        return
+
     lockup = extract_monochrome(source)
     mark = split_mark(lockup)
 
