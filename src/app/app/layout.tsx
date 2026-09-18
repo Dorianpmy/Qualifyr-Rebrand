@@ -19,6 +19,15 @@ export const metadata: Metadata = {
     title: 'Qualifyr',
     statusBarStyle: 'black-translucent',
   },
+
+  /*
+   * Manifest propre à l'espace pro (18/09/2026), plutôt que celui hérité de
+   * la racine (`/manifest.webmanifest`, `start_url: '/'`) : un pro qui
+   * installe l'app depuis son téléphone Android doit atterrir sur son
+   * tableau de bord, pas sur le site vitrine. Voir la route
+   * `app/manifest.webmanifest/route.ts` pour le détail et le pourquoi.
+   */
+  manifest: '/app/manifest.webmanifest',
 };
 
 /*

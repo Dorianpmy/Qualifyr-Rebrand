@@ -1,5 +1,28 @@
 # 05 — Composants
 
+## Manifest PWA dédié à l'espace pro (18 septembre 2026)
+
+Demande de Dorian : que l'espace pro (`/app`) s'installe comme une application, avec le logo
+Qualifyr. Une partie existait déjà — `appleWebApp` dans `app/app/layout.tsx` fait qu'un ajout à
+l'écran d'accueil iOS s'ouvre en plein écran, sans barre d'adresse. Ce qui manquait : sur Android,
+« Installer l'application » (Chrome) suit le manifest **du site**, pas la page consultée au moment
+de l'installation — un pro qui installe depuis son tableau de bord aurait donc atterri sur le site
+vitrine (`start_url: '/'` du manifest racine, `app/manifest.ts`), pas sur `/app`.
+
+**Solution.** Un second manifest, propre à l'espace pro : `app/app/manifest.webmanifest/route.ts`
+(une route classique, pas le fichier spécial `manifest.ts` de Next.js — celui-ci ne produit qu'un
+seul manifest, à la racine). `start_url`/`scope` valent `/app`, le nom devient « Qualifyr — Espace
+pro », le fond et le thème reprennent le noir de l'interface pro (`#0e0e0f`). Les icônes sont les
+mêmes que le manifest racine (`qualifyr-192.png`, `qualifyr-512.png`, `icon.svg`) : une seule
+identité visuelle Qualifyr, pas de logo par professionnel. Branché via `metadata.manifest` dans
+`app/app/layout.tsx`.
+
+**Installation côté pro** : Android/Chrome → menu ⋮ → « Installer l'application » (ou bandeau
+automatique) ; iOS/Safari → Partager → « Sur l'écran d'accueil ». Dans les deux cas, l'icône ouvre
+directement le tableau de bord, sans barre de navigateur.
+
+---
+
 ## Résend — cause réelle des e-mails de réservation jamais envoyés (18 septembre 2026)
 
 Suite du correctif `createBooking` ci-dessous : une fois `await Promise.allSettled(...)` en
