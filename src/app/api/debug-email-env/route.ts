@@ -9,6 +9,11 @@ import { NextResponse } from 'next/server';
  * effectivement visibles par la fonction au moment de l'exécution, après
  * plusieurs réservations réelles n'ayant jamais généré la moindre requête
  * côté Resend malgré des réglages Netlify a priori corrects.
+ *
+ * **Pas de `_` dans le nom du dossier.** Une première version vivait dans
+ * `api/_debug/email-env` — App Router traite tout segment préfixé `_` comme
+ * un dossier privé, exclu du routage : la route répondait 404 sur toute la
+ * ligne, jamais atteinte.
  */
 export async function GET() {
   const present = (name: string) => {
