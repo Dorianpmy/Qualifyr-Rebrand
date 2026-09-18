@@ -191,55 +191,73 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
 
   const bookingId = data.id as string;
 
-  // Best-effort : un échec d'email ne annule pas la réservation.
-  void notifyBookingEmails({
-    bookingId,
-    detailerName: detailer.name,
-    detailerEmail: detailer.email ?? null,
-    country: detailer.country,
-    clientEmail: input.email,
-    clientPhone: input.phone,
-    vehicleSize: input.vehicleSize,
-    vehicleModel: input.vehicleModel,
-    plate: input.plate,
-    scope: input.scope,
-    soiling: input.soiling,
-    optionKeys: input.optionKeys,
-    locationMode: input.locationMode,
-    postalCode: input.postalCode,
-    slotStart: input.slotStart,
-    quotedPrice: computed.totalPrice,
-    quotedMinutes: computed.totalMinutes,
-    depositAmount: computed.depositAmount,
-  });
-
   /*
-   * Notification WhatsApp au professionnel — best-effort, comme l'e-mail
-   * ci-dessus : un échec d'envoi n'annule jamais la réservation.
+   * Best-effort : un échec d'e-mail ou de WhatsApp n'annule jamais la
+   * réservation (chaque fonction avale déjà ses propres erreurs).
    *
-   * **Aucun repli sur le numéro Qualifyr.** Contrairement à la bulle
-   * WhatsApp du parcours client, une notification professionnelle sans
+   * **Ces envois sont `await`és, pas lancés en `void` (corrigé le
+   * 18/09/2026).** Une plateforme serverless (les fonctions Netlify de ce
+   * projet incluses) peut geler l'exécution dès que la réponse HTTP est
+   * renvoyée — un `void notifyBookingEmails(...)` suivi d'un retour immédiat
+   * ne garantit pas que l'appel réseau vers Resend ait le temps de partir.
+   * Signalé par Dorian : la page de confirmation affichait « un e-mail a été
+   * envoyé », mais aucun envoi n'apparaissait jamais dans l'historique
+   * Resend, même après plusieurs réservations réelles menées jusqu'au bout.
+   * `Promise.allSettled` en amont garantit déjà qu'aucune des deux ne lève —
+   * les attendre ici ne fait qu'ajouter le temps réel de l'appel réseau
+   * (quelques centaines de ms) avant la réponse, pas de risque d'échec en
+   * cascade.
+   *
+   * **Aucun repli sur le numéro Qualifyr pour WhatsApp.** Contrairement à la
+   * bulle WhatsApp du parcours client, une notification professionnelle sans
    * numéro renseigné n'est simplement pas envoyée — voir le commentaire de
    * `notifyNewBooking`.
    *
-   * **Nécessite un modèle approuvé par Meta.** Comme `vehicule_pret` et
-   * `demande_avis`, le modèle `nouvelle_reservation` doit être créé et
+   * **WhatsApp nécessite un modèle approuvé par Meta.** Comme `vehicule_pret`
+   * et `demande_avis`, le modèle `nouvelle_reservation` doit être créé et
    * validé dans le gestionnaire WhatsApp Business avant le premier envoi —
    * voir le commentaire de `notifyNewBooking` dans `whatsapp.ts` pour son
    * texte exact. Tant qu'il n'est pas approuvé, l'appel échoue
    * silencieusement (aucune conséquence pour le client).
    */
+  const notifications: Promise<unknown>[] = [
+    notifyBookingEmails({
+      bookingId,
+      detailerName: detailer.name,
+      detailerEmail: detailer.email ?? null,
+      country: detailer.country,
+      clientEmail: input.email,
+      clientPhone: input.phone,
+      vehicleSize: input.vehicleSize,
+      vehicleModel: input.vehicleModel,
+      plate: input.plate,
+      scope: input.scope,
+      soiling: input.soiling,
+      optionKeys: input.optionKeys,
+      locationMode: input.locationMode,
+      postalCode: input.postalCode,
+      slotStart: input.slotStart,
+      quotedPrice: computed.totalPrice,
+      quotedMinutes: computed.totalMinutes,
+      depositAmount: computed.depositAmount,
+    }),
+  ];
+
   if (detailer.whatsappNumber) {
     const profile = profileFor(detailer.country);
-    void notifyNewBooking({
-      phone: detailer.whatsappNumber,
-      country: detailer.country === 'CH' ? 'CH' : 'FR',
-      summary: `${vehicleSizeCopy[input.vehicleSize].label} · ${scopeCopy[input.scope].label}`,
-      slotLabel: formatBookingSlot(input.slotStart),
-      priceLabel: formatMoney(computed.totalPrice, profile),
-      detailUrl: `${site.url}/app/bookings/${bookingId}`,
-    });
+    notifications.push(
+      notifyNewBooking({
+        phone: detailer.whatsappNumber,
+        country: detailer.country === 'CH' ? 'CH' : 'FR',
+        summary: `${vehicleSizeCopy[input.vehicleSize].label} · ${scopeCopy[input.scope].label}`,
+        slotLabel: formatBookingSlot(input.slotStart),
+        priceLabel: formatMoney(computed.totalPrice, profile),
+        detailUrl: `${site.url}/app/bookings/${bookingId}`,
+      }),
+    );
   }
+
+  await Promise.allSettled(notifications);
 
   return {
     ok: true,

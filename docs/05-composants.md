@@ -1,5 +1,28 @@
 # 05 — Composants
 
+## `createBooking` — les e-mails et le WhatsApp de réservation ne partaient jamais (18 septembre 2026)
+
+Signalé par Dorian après plusieurs réservations tests réelles, menées jusqu'au bout : la page de
+confirmation affichait « un e-mail a été envoyé à … », mais l'historique Resend restait vide —
+aucune tentative d'envoi, pas même un échec visible.
+
+**Cause.** `createBooking` (`booking.ts`) lançait `notifyBookingEmails(...)` et
+`notifyNewBooking(...)` (WhatsApp) en `void`, sans les attendre, puis retournait aussitôt. La
+route qui l'appelle (`api/detailing/[slug]/bookings/route.ts`) renvoie alors sa réponse HTTP
+immédiatement après. Sur une fonction serverless (les fonctions Netlify de ce projet incluses),
+rien ne garantit qu'un travail asynchrone non attendu ait le temps de partir avant que la
+plateforme ne gèle l'exécution une fois la réponse envoyée — l'appel réseau vers Resend (et vers
+l'API WhatsApp) pouvait donc être interrompu avant même d'avoir été émis, sans la moindre erreur
+puisqu'il n'atteignait jamais l'API distante.
+
+**Correctif.** Les deux envois sont maintenant rassemblés dans un tableau de promesses et
+attendus (`await Promise.allSettled(...)`) avant que `createBooking` ne retourne. Le comportement
+« best-effort » est inchangé — un échec d'e-mail ou de WhatsApp n'annule toujours pas la
+réservation, `Promise.allSettled` ne lève jamais — seul le moment où la réponse HTTP part change
+(quelques centaines de ms de plus, le temps réel de l'appel réseau).
+
+---
+
 ## `DarkHeader` / `DarkFooter` — préchargement de liens en arrière-plan (18 septembre 2026)
 
 Demande de Dorian : « comment améliorer la vitesse sur mon site et saas ». Audit du site en
