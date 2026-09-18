@@ -192,6 +192,34 @@ export async function updateBookingStatus(
 }
 
 /**
+ * Suppression définitive d'une demande (18/09/2026, demande de Dorian : ses
+ * réservations tests s'accumulaient dans « Demandes » sans jamais pouvoir en
+ * sortir — « Annuler » ne fait que changer le statut, la ligne reste).
+ *
+ * **Irréversible, contrairement à `updateBookingStatus`.** Pas de corbeille
+ * ni de restauration : une fois supprimée, la ligne (et l'historique associé)
+ * disparaît. `eq('detailer_id', detailerId)` empêche un professionnel de
+ * supprimer la demande d'un autre, exactement comme `updateBookingStatus`.
+ */
+export async function deleteBooking(
+  detailerId: string,
+  bookingId: string,
+): Promise<{ ok: true } | { ok: false; message: string }> {
+  const client = getServiceSupabaseClient();
+  if (!client) return { ok: false, message: 'Base de données indisponible.' };
+
+  const { error, count } = await client
+    .from('detailer_bookings')
+    .delete({ count: 'exact' })
+    .eq('detailer_id', detailerId)
+    .eq('id', bookingId);
+
+  if (error) return { ok: false, message: 'Suppression impossible.' };
+  if (!count) return { ok: false, message: 'Demande introuvable.' };
+  return { ok: true };
+}
+
+/**
  * Confirmation manuelle de l'acompte — mode virement ou lien PayPal.
  *
  * Équivalent, côté dashboard, de ce que fait le webhook Stripe pour le mode

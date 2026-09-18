@@ -44,6 +44,38 @@ export function StatusActions({
     }
   }
 
+  /*
+   * Suppression définitive (18/09/2026, demande de Dorian). Distincte de
+   * `update('annule')` ci-dessus : « Annuler » change le statut mais garde la
+   * ligne dans « Demandes » indéfiniment — ses réservations tests
+   * s'accumulaient sans qu'aucune action existante ne les fasse disparaître.
+   *
+   * `window.confirm` plutôt qu'un clic simple : la suppression n'a pas de
+   * corbeille ni de retour possible, contrairement à un changement de statut
+   * qu'on peut toujours refaire dans l'autre sens.
+   */
+  async function remove() {
+    if (!window.confirm('Supprimer définitivement cette demande ? Cette action est irréversible.')) {
+      return;
+    }
+    setPending('supprimer');
+    setError(null);
+    try {
+      const res = await fetch(`/api/app/bookings/${bookingId}`, { method: 'DELETE' });
+      const data = (await res.json()) as { ok: boolean; message?: string };
+      if (!data.ok) {
+        setError(data.message ?? 'Erreur');
+        return;
+      }
+      router.push('/app');
+      router.refresh();
+    } catch {
+      setError('Suppression impossible.');
+    } finally {
+      setPending(null);
+    }
+  }
+
   return (
     <div>
       <div className={styles.actions}>
@@ -65,6 +97,14 @@ export function StatusActions({
             {pending === action.status ? '…' : action.label}
           </button>
         ))}
+        <button
+          type="button"
+          className="app-ghost"
+          disabled={pending !== null}
+          onClick={() => void remove()}
+        >
+          {pending === 'supprimer' ? '…' : 'Supprimer'}
+        </button>
       </div>
       {error ? <p className={styles.error}>{error}</p> : null}
     </div>

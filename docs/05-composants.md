@@ -1,5 +1,19 @@
 # 05 — Composants
 
+## `StatusActions` — suppression définitive d'une demande (18 septembre 2026)
+
+Demande de Dorian : ses réservations tests s'accumulaient dans « Demandes » sans qu'aucun bouton
+existant ne les fasse disparaître — « Annuler » ne fait que passer le statut à `annule`, la ligne
+reste affichée indéfiniment.
+
+Ajout d'un bouton « Supprimer » distinct, sur la fiche d'une demande (`/app/bookings/[id]`) :
+supprime la ligne de `detailer_bookings` (nouvelle fonction `deleteBooking`, `dashboard.ts`,
+nouvelle route `DELETE /api/app/bookings/[id]`), avec la même vérification de propriété
+(`detailer_id`) que les autres actions. `window.confirm` avant l'appel : contrairement à un
+changement de statut, il n'y a pas de retour en arrière possible une fois la ligne supprimée.
+
+---
+
 ## `createBooking` — les e-mails et le WhatsApp de réservation ne partaient jamais (18 septembre 2026)
 
 Signalé par Dorian après plusieurs réservations tests réelles, menées jusqu'au bout : la page de
