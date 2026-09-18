@@ -21,6 +21,13 @@ identité visuelle Qualifyr, pas de logo par professionnel. Branché via `metada
 automatique) ; iOS/Safari → Partager → « Sur l'écran d'accueil ». Dans les deux cas, l'icône ouvre
 directement le tableau de bord, sans barre de navigateur.
 
+**Parenthèse explicative sur le tableau de bord** (même jour, demande de Dorian). Le manifest
+rendait l'installation *possible*, mais rien sur l'écran « Demandes » ne disait à un pro qu'elle
+existait. Ajout d'une ligne sous le fil d'Ariane de la page (`app/app/page.tsx`), au même style que
+la ligne au-dessus (`.subtitle`) : une précision entre parenthèses, pas une bannière avec un bouton
+à fermer. Reprend le tutoiement déjà utilisé sur cet écran (« Ton pipeline… », « Partage ta
+page… »), par cohérence avec le reste du dashboard.
+
 ---
 
 ## Résend — cause réelle des e-mails de réservation jamais envoyés (18 septembre 2026)

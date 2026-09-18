@@ -161,6 +161,19 @@ export default async function AppHomePage({
                 {publicPath}
               </Link>
             </p>
+            {/*
+              Parenthèse explicative (18/09/2026, demande de Dorian) : le
+              manifest dédié (`app/manifest.webmanifest/route.ts`) rend
+              l'installation possible, mais rien ne le disait aux pros — sans
+              cette ligne, la fonctionnalité n'existait que pour qui savait
+              déjà qu'elle existait. Sur `.subtitle`, comme la ligne
+              au-dessus : une précision, pas une bannière à fermer.
+            */}
+            <p className={styles.subtitle}>
+              (Astuce : ajoute cet espace à l’écran d’accueil de ton téléphone pour l’ouvrir comme
+              une application, avec le logo Qualifyr — sur Android, menu ⋮ puis « Installer
+              l’application » ; sur iPhone, Partager puis « Sur l’écran d’accueil ».)
+            </p>
           </div>
           <div className={styles.topActions}>
             <Link href={publicPath} className={`app-ghost ${styles.btnGhost}`} target="_blank">
