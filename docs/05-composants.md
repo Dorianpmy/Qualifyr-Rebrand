@@ -1,5 +1,32 @@
 # 05 — Composants
 
+## Résend — cause réelle des e-mails de réservation jamais envoyés (18 septembre 2026)
+
+Suite du correctif `createBooking` ci-dessous : une fois `await Promise.allSettled(...)` en
+place, une réservation réelle ne générait toujours **aucune** tentative côté Resend. Le correctif
+serverless était donc réel mais insuffisant seul.
+
+**Diagnostic.** Une route temporaire (`api/debug-email-env`, supprimée une fois la cause confirmée)
+a permis de vérifier, en production, la présence des variables d'environnement (toutes présentes)
+puis de déclencher un `resend.emails.send(...)` réel et de renvoyer l'erreur exacte au lieu de la
+seule journaliser côté serveur (logs Netlify inaccessibles depuis l'interface pour ce projet).
+Résultat : `403 validation_error — "The mail.qualifyragence.com domain is not verified"`, alors que
+`mail.qualifyragence.com` est bien vérifié côté compte Resend.
+
+**Cause.** La clé `RESEND_API_KEY` en service était une clé Resend restreinte à un seul domaine
+d'expédition (mécanisme `sending_access` + `domainId` de Resend), configurée au moment de sa
+création (13/08/2026) sur un domaine différent — vraisemblablement l'ancien
+`notifications.qualifyragence.com`, abandonné depuis. Une clé ainsi restreinte refuse tout envoi
+depuis un autre domaine, même vérifié, avec un message d'erreur trompeur (« domaine non vérifié »)
+qui ne distingue pas « non vérifié » de « non autorisé pour cette clé ».
+
+**Correctif.** Nouvelle clé API Resend créée sans restriction de domaine, `RESEND_API_KEY` mise à
+jour dans Netlify, puis nouveau déploiement déclenché manuellement (un changement de variable
+d'environnement seul ne redéploie pas les fonctions déjà construites). Confirmé en production :
+`sendAttempt.ok: true`. La route de diagnostic temporaire a été supprimée dans la foulée.
+
+---
+
 ## `StatusActions` — suppression définitive d'une demande (18 septembre 2026)
 
 Demande de Dorian : ses réservations tests s'accumulaient dans « Demandes » sans qu'aucun bouton
