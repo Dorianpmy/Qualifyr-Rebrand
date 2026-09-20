@@ -370,21 +370,24 @@ organiques.
   une exception de marque au jeu linéaire. Ils restent monochromes, utilisent `currentColor`
   et sont toujours nommés par un libellé visible ou accessible.
 
-### 7.1 Exception — emoji dans le menu de l'espace pro (20/09/2026)
+### 7.1 Exception — emoji dans la navigation de l'espace pro (20/09/2026, élargie le même jour)
 
 L'interdiction d'emoji ci-dessus reste entière pour le **site vitrine** : accueil, pages
-métier, journal, pied de page. Elle s'assouplit uniquement dans le **menu latéral de
-bureau de l'espace pro** (`/app`, ≥ 900 px), à la demande explicite de Dorian, qui veut y
-retrouver un peu de la personnalité d'un outil qu'on ouvre chaque jour — un registre
-différent de celui d'un site qui reçoit un visiteur une fois.
+métier, journal, pied de page. Elle s'assouplit uniquement dans la **navigation de
+l'espace pro** (`/app` — menu latéral de bureau et barre d'onglets mobile), à la demande
+explicite de Dorian, qui veut y retrouver un peu de la personnalité d'un outil qu'on ouvre
+chaque jour — un registre différent de celui d'un site qui reçoit un visiteur une fois.
 
-- Chaque entrée de menu (Demandes, Planning, Prospect, Prestations, Démarchage,
-  Avant/Après, Factures, Abonnement) peut afficher **un seul emoji, décoratif**, en plus
-  de son pictogramme linéaire existant — qui reste l'icône fonctionnelle et n'est pas
-  remplacé.
-- L'emoji est masqué sur la barre d'onglets mobile (< 900 px) : cette barre est
-  dimensionnée au pixel près pour cinq colonnes égales (voir `AppShell.tsx`), et un
-  caractère de plus par libellé y recrée le débordement déjà corrigé le 22/08/2026.
+- Chaque entrée de navigation (Demandes, Planning, Prospect, Prestations, Démarchage,
+  Avant/Après, Factures, Abonnement) affiche **un seul emoji**, qui est son icône — sur
+  les deux barres, mobile et bureau.
+- **D'abord limité au menu de bureau, élargi le jour même.** La première version
+  réservait l'emoji au menu de bureau, en ajout au pictogramme linéaire, et le masquait
+  sur la barre mobile par crainte de recréer le débordement déjà corrigé le 22/08/2026
+  (cinq colonnes calées au pixel). Ce risque supposait que l'emoji s'ajoute *à côté* du
+  libellé ; en le faisant remplacer le pictogramme plutôt que s'y ajouter, il occupe la
+  même case que l'icône qu'il remplace et n'ajoute aucune largeur — le jeu de
+  pictogrammes linéaires d'origine a donc été retiré des deux barres.
 - `Déconnexion` et le bouton central « Page client » n'en reçoivent pas : le premier est
   une action neutre, le second porte déjà le symbole de marque.
 - **Ce que cette exception n'autorise pas.** Elle porte sur l'iconographie, pas sur le

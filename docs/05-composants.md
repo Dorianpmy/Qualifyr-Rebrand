@@ -1,5 +1,24 @@
 # 05 — Composants
 
+## L'emoji devient l'icône des deux barres de navigation (20 septembre 2026)
+
+Retour de Dorian sur la barre d'onglets mobile : « trop terne, pas assez de personnalité »,
+dans le même esprit que la demande d'emoji sur le menu de bureau plus tôt le même jour.
+
+Le menu de bureau avait réservé l'emoji au-delà de 900 px, en ajout au pictogramme linéaire,
+par crainte qu'un caractère de plus par libellé fasse déborder la barre mobile — calée au pixel
+sur cinq colonnes égales, débordement déjà corrigé le 22/08/2026 (`AppShell.tsx`). Cette crainte
+supposait que l'emoji s'ajoute *à côté* du texte ; en le faisant remplacer l'icône plutôt que
+s'y ajouter, il occupe la même case qu'elle (au-dessus du libellé sur la barre mobile, comme le
+pictogramme avant lui) et n'ajoute donc aucune largeur.
+
+Le jeu d'icônes SVG linéaires de `AppShell.tsx` (`icons`, huit tracés) est retiré : l'emoji est
+maintenant l'icône des deux barres. `Déconnexion` et le bouton central « Page client » gardent
+leur pictogramme et leur symbole de marque, inchangés — ils ne sont pas rendus par `renderTab`.
+`docs/03-direction-artistique.md` §7.1 mis à jour pour refléter l'exception élargie.
+
+---
+
 ## Aperçu du mois sur la page Demandes — palette ajustée (20 septembre 2026)
 
 Retour de Dorian après déploiement : les trois couleurs d'origine (pêche, terracotta, laiton —

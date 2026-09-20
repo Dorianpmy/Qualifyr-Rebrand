@@ -44,59 +44,22 @@ const iconProps = {
   className: styles.navIcon,
 };
 
-const icons = {
-  demandes: (
-    <svg {...iconProps}>
-      <path d="M4 6h16M4 12h16M4 18h10" />
-    </svg>
-  ),
-  planning: (
-    <svg {...iconProps}>
-      <path d="M12 21.2s7-7.4 7-12.3a7 7 0 1 0-14 0c0 4.9 7 12.3 7 12.3Z" />
-      <circle cx="12" cy="8.9" r="2.4" />
-    </svg>
-  ),
-  tarifs: (
-    <svg {...iconProps}>
-      <path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0l-7.2-7.2A2 2 0 0 1 2.8 12V4.8A2 2 0 0 1 4.8 2.8H12a2 2 0 0 1 1.4.6l7.2 7.2a2 2 0 0 1 0 2.8Z" />
-      <circle cx="7.5" cy="7.5" r="1.2" />
-    </svg>
-  ),
-  cases: (
-    <svg {...iconProps}>
-      <rect x="3" y="4" width="18" height="16" rx="2.5" />
-      <path d="M12 4v16" />
-      <path d="m6.5 15 2-2.5 2 2" />
-      <circle cx="16.5" cy="9" r="1.3" />
-    </svg>
-  ),
-  factures: (
-    <svg {...iconProps}>
-      <path d="M6 2.8h12v18.4l-3-1.8-3 1.8-3-1.8-3 1.8Z" />
-      <path d="M9.5 8.5h5M9.5 12.5h5" />
-    </svg>
-  ),
-  prospection: (
-    <svg {...iconProps}>
-      <circle cx="10.5" cy="10.5" r="6.5" />
-      <path d="m20 20-4.6-4.6" />
-    </svg>
-  ),
-  abonnement: (
-    <svg {...iconProps}>
-      <rect x="2.8" y="5.5" width="18.4" height="13" rx="2.2" />
-      <path d="M2.8 10h18.4M6.5 14.5h3.5" />
-    </svg>
-  ),
-} as const;
-
 /**
- * Emoji décoratifs du menu de bureau — exception ciblée du 20/09/2026,
- * voir `docs/03-direction-artistique.md` §7.1. N'existent que sur le menu
- * vertical (≥ 900 px, `.navEmoji` dans `app.module.css`) : la barre
- * d'onglets mobile n'a pas la largeur pour un caractère de plus par
- * libellé. Ils s'ajoutent au pictogramme linéaire, ils ne le remplacent
- * pas.
+ * Icône de chaque destination — un seul emoji, sur les deux barres.
+ *
+ * **Historique : d'abord réservé au menu de bureau (20/09/2026).** La
+ * version d'origine gardait le pictogramme linéaire sur la barre mobile et
+ * ajoutait l'emoji seulement sur le menu de bureau, par crainte qu'un
+ * caractère de plus par libellé ne fasse déborder la barre mobile (cinq
+ * colonnes calées au pixel, voir le débordement corrigé le 22/08/2026). Ce
+ * risque supposait que l'emoji s'ajoute *à côté* du libellé ; il occupe en
+ * réalité la même case que l'icône qu'il remplace (au-dessus du texte sur
+ * mobile, comme le pictogramme avant lui), donc aucune largeur en plus. Ce
+ * jour-là, Dorian a redemandé plus de « peps » : l'emoji est donc devenu
+ * l'icône des deux barres (docs/03-direction-artistique.md §7.1, exception
+ * étendue), et le jeu de pictogrammes linéaires ci-dessus a été retiré —
+ * `Déconnexion` et le bouton central « Page client » gardent le leur, voir
+ * plus bas.
  */
 const emojis = {
   demandes: '📋',
@@ -158,21 +121,21 @@ export function AppShell({
    * sans le tronquer.
    */
   const tabsBeforeFab = [
-    { key: 'demandes', href: '/app', label: 'Demandes', icon: icons.demandes, emoji: emojis.demandes, desktopOnly: false },
-    { key: 'planning', href: '/app/planning', label: 'Planning', icon: icons.planning, emoji: emojis.planning, desktopOnly: false },
-    { key: 'prospection', href: '/app/prospection', label: 'Prospect', icon: icons.prospection, emoji: emojis.prospection, desktopOnly: false },
+    { key: 'demandes', href: '/app', label: 'Demandes', emoji: emojis.demandes, desktopOnly: false },
+    { key: 'planning', href: '/app/planning', label: 'Planning', emoji: emojis.planning, desktopOnly: false },
+    { key: 'prospection', href: '/app/prospection', label: 'Prospect', emoji: emojis.prospection, desktopOnly: false },
   ] as const;
 
   const tabsAfterFab = [
-    { key: 'tarifs', href: '/app/prestations', label: 'Prestations', icon: icons.tarifs, emoji: emojis.tarifs, desktopOnly: false },
+    { key: 'tarifs', href: '/app/prestations', label: 'Prestations', emoji: emojis.tarifs, desktopOnly: false },
     /* Hermès, en `desktopOnly` : la barre mobile est pleine à cinq
        emplacements, et configurer une campagne — écrire un message, relire un
        aperçu — n'est pas quelque chose qu'on fait entre deux véhicules. Le
        tableau de bord y renvoie, comme pour « Avant/Après » et
        « Factures ». */
-    { key: 'hermes', href: '/app/hermes', label: 'Démarchage', icon: icons.prospection, emoji: emojis.hermes, desktopOnly: true },
-    { key: 'cases', href: '/app/cases', label: 'Avant/Après', icon: icons.cases, emoji: emojis.cases, desktopOnly: true },
-    { key: 'factures', href: '/app/invoices', label: 'Factures', icon: icons.factures, emoji: emojis.factures, desktopOnly: true },
+    { key: 'hermes', href: '/app/hermes', label: 'Démarchage', emoji: emojis.hermes, desktopOnly: true },
+    { key: 'cases', href: '/app/cases', label: 'Avant/Après', emoji: emojis.cases, desktopOnly: true },
+    { key: 'factures', href: '/app/invoices', label: 'Factures', emoji: emojis.factures, desktopOnly: true },
     /* L'abonnement n'est pas un module quotidien : il se consulte rarement,
        et n'a donc pas sa place dans les cinq emplacements du téléphone. Il
        reste joignable depuis chaque écran verrouillé, qui y renvoie. */
@@ -180,7 +143,6 @@ export function AppShell({
       key: 'abonnement',
       href: '/app/abonnement',
       label: 'Abonnement',
-      icon: icons.abonnement,
       emoji: emojis.abonnement,
       desktopOnly: true,
     },
@@ -210,19 +172,14 @@ export function AppShell({
          */
         className={`${styles.navItem} app-tab ${tab.desktopOnly ? styles.navItemDesktopOnly : ''} ${isActive ? `${styles.navItemActive} app-tab-active` : ''}`}
       >
-        {/*
-          Le pictogramme linéaire reste l'icône de la barre mobile (`.navIconMobileOnly`
-          le masque à partir de 900 px). En dessous de 900 px, la barre d'onglets n'a
-          pas de version emoji — voir le commentaire sur `emojis` plus haut.
-        */}
-        <span className={styles.navIconMobileOnly}>{tab.icon}</span>
         <span className={styles.navLabel}>{tab.label}</span>
         {/*
-          Sur le menu de bureau, l'emoji remplace le pictogramme (demande de Dorian,
-          20/09/2026) plutôt que de s'y ajouter : les deux ensemble faisaient double
-          emploi. `order: -1` (dans `app.module.css`) le replace visuellement avant le
-          libellé, à l'endroit qu'occupait l'icône. `aria-hidden` : le nom accessible du
-          lien reste porté par `navLabel` seul.
+          L'emoji est l'icône des deux barres — voir le commentaire sur
+          `emojis` plus haut pour l'historique. `order: -1` (dans
+          `app.module.css`) le place avant le libellé : au-dessus sur la
+          barre mobile (colonne), à gauche sur le menu de bureau (ligne).
+          `aria-hidden` : le nom accessible du lien reste porté par
+          `navLabel` seul.
         */}
         <span aria-hidden="true" className={styles.navEmoji}>
           {tab.emoji}

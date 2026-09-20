@@ -307,39 +307,23 @@
   }
 }
 
-/* Pictogramme linéaire des entrées à emoji : reste l'icône de la barre
-   mobile, disparaît sur le menu de bureau où l'emoji prend sa place (voir
-   `.navEmoji` ci-dessous — demande de Dorian, 20/09/2026, après un premier
-   essai qui affichait les deux et faisait double emploi). Ne s'applique
-   qu'aux icônes passées par `renderTab` : `Déconnexion` et les icônes
-   affichées ailleurs dans le fichier gardent `.navIcon` seul et ne sont pas
-   concernées. */
-.navIconMobileOnly {
-  display: contents;
-}
-
-@media (min-width: 900px) {
-  .navIconMobileOnly {
-    display: none;
-  }
-}
-
-/* Emoji du menu de bureau — docs/03-direction-artistique.md §7.1
-   (20/09/2026). Masqué par défaut : la barre d'onglets mobile est calée sur
-   cinq colonnes égales et n'a pas la largeur pour un caractère de plus par
-   libellé (voir le commentaire sur `.sidebarNav` plus haut, et celui sur
-   `emojis` dans `AppShell.tsx`). `order: -1` le place avant le libellé, à
-   l'endroit qu'occupait le pictogramme linéaire qu'il remplace ici. */
+/* Emoji de navigation — icône des deux barres depuis le 20/09/2026
+   (docs/03-direction-artistique.md §7.1). `order: -1` le place avant le
+   libellé : au-dessus du texte sur la barre mobile (`.navItem` en colonne),
+   à gauche du texte sur le menu de bureau (`.navItem` en ligne). Taille
+   proche de l'ancien pictogramme linéaire qu'il remplace, à chaque
+   breakpoint (voir `.navIcon` plus haut, conservé pour `Déconnexion` et
+   « Page client », en dehors de `renderTab`). */
 .navEmoji {
-  display: none;
+  display: inline-block;
+  order: -1;
+  font-size: 1.3rem;
+  line-height: 1;
 }
 
 @media (min-width: 900px) {
   .navEmoji {
-    display: inline-block;
-    order: -1;
     font-size: 1.05rem;
-    line-height: 1;
   }
 }
 
