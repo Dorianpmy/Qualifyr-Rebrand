@@ -80,11 +80,11 @@ export type DarkHeroProps = {
  * 11.25rem pour loger la troisième rangée.
  */
 const heroCloudPositions = [
-  { left: 0, top: 0, transform: 'rotate(-5deg)' },
-  { right: 0, top: '0.25rem', transform: 'rotate(4deg)' },
-  { left: '4%', top: '4rem', transform: 'rotate(-3deg)' },
-  { right: '2%', top: '4rem', transform: 'rotate(5deg)' },
-  { left: 0, top: '7.5rem', transform: 'rotate(3deg)' },
+  { left: 0, top: 0, rotate: '-5deg' },
+  { right: 0, top: '0.25rem', rotate: '4deg' },
+  { left: '4%', top: '4rem', rotate: '-3deg' },
+  { right: '2%', top: '4rem', rotate: '5deg' },
+  { left: 0, top: '7.5rem', rotate: '3deg' },
 ] as const;
 
 export function DarkHero({
@@ -109,21 +109,30 @@ export function DarkHero({
           className="relative mx-auto mb-6 w-full max-w-[26rem] overflow-visible"
           style={{ height: '11.25rem' }}
         >
-          {messages.map((text, index) => (
-            <MessageBubble
-              key={text}
-              text={text}
-              /* Le rang déclenche l'arrivée « impact » et l'échelonne : les
-                 bulles se posent l'une après l'autre, comme des messages qui
-                 arrivent. Toutes ensemble, elles se liraient comme un bloc. */
-              order={index}
-              compact={index === 1 || index === 2 || index === 3}
-              style={{
-                ...heroCloudPositions[index % heroCloudPositions.length],
-                zIndex: index === 0 || index === 4 ? 2 : 1,
-              }}
-            />
-          ))}
+          {messages.map((text, index) => {
+            const { rotate, ...placement } =
+              heroCloudPositions[index % heroCloudPositions.length]!;
+
+            return (
+              <MessageBubble
+                key={text}
+                text={text}
+                /* Le rang déclenche l'arrivée « impact » et l'échelonne : les
+                   bulles se posent l'une après l'autre, comme des messages qui
+                   arrivent. Toutes ensemble, elles se liraient comme un bloc. */
+                order={index}
+                compact={index === 1 || index === 2 || index === 3}
+                /* Séparé du reste du placement : l'inclinaison passe par une
+                   variable CSS que les images clés relisent, pas par un
+                   `transform` en ligne — voir `MessageBubble.tsx`. */
+                rotate={rotate}
+                style={{
+                  ...placement,
+                  zIndex: index === 0 || index === 4 ? 2 : 1,
+                }}
+              />
+            );
+          })}
         </div>
       ) : null}
 

@@ -22,25 +22,44 @@ import type { CSSProperties } from 'react';
  * est elle aussi posée en `style`, pas en classe : le même risque ne
  * s'applique pas.
  *
- * **Aucune ombre sur cet élément — ni `box-shadow`, ni `filter`.**
- * Signalé par Dorian (18/09/2026, capture d'écran) : sur Safari iOS, un
- * carré noir plein s'affichait derrière chaque groupe de bulles — jamais
- * reproduit sur Chromium. Premier correctif (18/09) : remplacer le
- * `box-shadow` par un `filter: drop-shadow(...)` visuellement identique,
- * supposé composer correctement avec le `transform` que `.bubble-impact`
- * anime (voir `tailwind.css`). Insuffisant : Dorian revoit exactement le
- * même carré noir le 20/09, sur le même appareil — `filter` promeut lui
- * aussi l'élément sur son propre calque, donc le même bug WebKit
- * (calque + `transform` animé + effet peint en rectangle opaque) s'applique
- * tout autant à `drop-shadow` qu'à `box-shadow`.
+ * **Deux éléments imbriqués, et c'est tout l'intérêt du composant : le carré
+ * noir de Safari iOS.**
  *
- * Plutôt que de retenter une troisième variante CSS invérifiable dans ce
- * projet (aucun accès à un Safari iOS réel ici, seulement Chromium), l'ombre
- * est retirée : plus d'ombre, plus de calque forcé par un effet de peinture,
- * plus de bug possible. C'était de toute façon une ombre teintée de bleu
- * (`rgba(22, 131, 248, …)`), or `docs/03-direction-artistique.md` interdit
- * les ombres colorées — cette suppression aligne aussi le composant sur la
- * charte plutôt que de créer une exception qui n'a jamais été documentée.
+ * Signalé trois fois par Dorian (18/09, 20/09 deux fois, captures à l'appui) :
+ * sur Safari iOS, un rectangle noir plein s'affiche derrière chaque bulle —
+ * jamais reproduit sur Chromium. Deux correctifs ont échoué avant de
+ * comprendre la cause :
+ *
+ * 1. 18/09 — `box-shadow` remplacé par `filter: drop-shadow(...)`. Récidive.
+ * 2. 20/09 — ombre retirée entièrement. Récidive **alors que le correctif
+ *    était bien en ligne** : vérifié sur qualifyragence.com, les bulles
+ *    calculaient `filter: none` et `box-shadow: none`, et le rectangle était
+ *    toujours là. L'ombre n'a donc jamais été la cause.
+ *
+ * **La vraie cause.** Le rectangle est peint dans le noir du document, pas
+ * dans le bleu de la bulle : ce n'est pas une ombre qui déborde, c'est le fond
+ * opaque d'un calque de composition. WebKit promeut l'élément sur son propre
+ * calque — un `transform` non nul y suffit, et il y en a deux ici, la rotation
+ * posée en ligne et celle qu'anime `.bubble-impact` — puis remplit le calque
+ * avec un fond opaque **sans lui appliquer le `border-radius`**. D'où un
+ * rectangle là où on attend une pilule. Tant que le même élément porte à la
+ * fois la transformation et la peinture (fond + rayon), n'importe quelle
+ * variante d'ombre laisse le bug intact.
+ *
+ * **Le correctif est structurel.** L'élément externe porte le placement, la
+ * rotation et l'animation, et rien à peindre : pas de fond, pas de rayon.
+ * L'élément interne porte le fond, le rayon et le texte, et aucune
+ * transformation. Le calque promu est donc transparent — il n'y a plus de fond
+ * opaque à remplir — et la pilule est peinte normalement à l'intérieur.
+ *
+ * Aucune ombre n'est rétablie au passage : elle était teintée de bleu, ce que
+ * `docs/03-direction-artistique.md` interdit (ombres colorées), et le composant
+ * s'en passe très bien.
+ *
+ * **La rotation passe par `--bubble-rotate`** plutôt que par un `transform` en
+ * ligne, pour que les images clés de `.bubble-impact` puissent la reprendre.
+ * Sans ça, l'animation écrase la rotation pendant 520 ms puis la bulle y
+ * revient d'un coup à la fin — un ressaut visible que personne n'avait demandé.
  */
 type MessageBubbleProps = {
   readonly text: string;
@@ -67,6 +86,15 @@ type MessageBubbleProps = {
    * — la bulle reste utilisable telle quelle ailleurs sur le site.
    */
   readonly order?: number;
+  /**
+   * Inclinaison de la bulle, par exemple `'-5deg'`.
+   *
+   * Posée en variable CSS (`--bubble-rotate`) et non en `transform` en ligne :
+   * les images clés de `.bubble-impact` la relisent, donc l'inclinaison est
+   * conservée pendant toute l'animation au lieu d'être écrasée puis rétablie
+   * d'un coup à la fin.
+   */
+  readonly rotate?: string;
 };
 
 /** Écart entre deux arrivées, en millisecondes. */
@@ -78,23 +106,23 @@ export function MessageBubble({
   compact = false,
   position = 'absolute',
   order,
+  rotate,
 }: MessageBubbleProps) {
   const animated = typeof order === 'number';
 
   return (
+    /* Élément externe : placement, rotation, animation. Rien à peindre — c'est
+       la condition pour que le calque promu par WebKit reste transparent (voir
+       l'en-tête du fichier). */
     <span
-      className={`${position === 'absolute' ? 'absolute' : 'relative'} ${
+      className={`${position === 'absolute' ? 'absolute' : 'inline-block'} ${
         animated ? 'bubble-impact' : ''
-      } font-medium leading-[1.35] ${
-        compact
-          ? 'max-w-[8.5rem] px-3 py-1.5 text-[0.75rem] sm:max-w-[9.5rem] sm:px-3.5 sm:py-2 sm:text-[0.8125rem]'
-          : 'max-w-[9.5rem] px-3.5 py-2 text-[0.8125rem] sm:max-w-[11rem] sm:px-4 sm:py-2.5 sm:text-[0.875rem]'
       }`}
       style={{
         ...style,
-        borderRadius: '9999px',
-        background: '#1683F8',
-        color: '#FFFFFF',
+        ...(rotate
+          ? { ['--bubble-rotate' as string]: rotate, transform: `rotate(${rotate})` }
+          : {}),
         /* Le délai passe par une variable CSS plutôt que par
            `animationDelay` : la règle `.bubble-impact` doit pouvoir redéfinir
            toute l'animation sous `prefers-reduced-motion`, ce qu'un
@@ -103,7 +131,22 @@ export function MessageBubble({
         ...(animated ? { ['--bubble-delay' as string]: `${order * IMPACT_STAGGER}ms` } : {}),
       }}
     >
-      {text}
+      {/* Élément interne : fond, rayon, texte. Aucune transformation, donc
+          aucune promotion de calque, donc pas de rectangle opaque. */}
+      <span
+        className={`block font-medium leading-[1.35] ${
+          compact
+            ? 'max-w-[8.5rem] px-3 py-1.5 text-[0.75rem] sm:max-w-[9.5rem] sm:px-3.5 sm:py-2 sm:text-[0.8125rem]'
+            : 'max-w-[9.5rem] px-3.5 py-2 text-[0.8125rem] sm:max-w-[11rem] sm:px-4 sm:py-2.5 sm:text-[0.875rem]'
+        }`}
+        style={{
+          borderRadius: '9999px',
+          background: '#1683F8',
+          color: '#FFFFFF',
+        }}
+      >
+        {text}
+      </span>
     </span>
   );
 }

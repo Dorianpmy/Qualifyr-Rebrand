@@ -1,5 +1,63 @@
 # 05 — Composants
 
+## Clôture de l'accueil — un seul bloc au lieu de deux (20 septembre 2026, quatrième retour)
+
+Dorian : « y a-t-il moyen de faire qu'un bloc et rassembler les deux ? » La page d'accueil se
+terminait sur deux clôtures successives — `FinalCtaSection` (sur-titre, titre, deux boutons,
+trois réassurances, carte « Agent Qualifyr ») puis la relance de `DarkFooter` (autre titre,
+autre bouton, capture du tableau de bord). Deux invitations à la suite se neutralisent.
+
+**Ce qui est réuni.** `FinalCtaSection` garde sa copy, ses deux boutons et ses réassurances ; sa
+carte « Agent Qualifyr » — trois lignes d'exemple — laisse la place à la capture réelle du
+tableau de bord, qui dit la même chose en vrai. Le cadre `node-hero` (contour tricolore + halo)
+est conservé et encadre désormais la capture : le motif de la charte survit à la fusion. Le
+paragraphe fusionne les deux messages en deux phrases (ce que l'agent trouve dehors, ce qu'on
+suit dedans). La grille passe à `max-w-[72rem]` / `0.9fr · 1.2fr` — une capture de tableau de
+bord est dense et devient illisible en dessous de ~600 px.
+
+**Effets.** Aucun `mask-image`, aucune ombre portée sous la capture : un simple dégradé peint en
+bas de l'image, vers la couleur exacte du `padding-box` de `node-hero` (`#0f0f11`), pour que la
+capture se dissolve dans la carte au lieu de s'arrêter sur une coupe nette. Tout effet qui
+promeut l'élément sur son propre calque est écarté par principe — c'est la cause des rectangles
+noirs de `MessageBubble` (voir plus bas).
+
+**Ce qui disparaît du pied de page.** La relance est retirée de `DarkFooter`, donc des sept
+pages : sur l'accueil elle doublonnait avec `FinalCtaSection`, sur les six autres avec leur
+propre `CtaSection` (`DarkVerticalPage`). Le pied de page redevient de la navigation, une
+signature et des mentions légales. La prop `glow` ajoutée une heure plus tôt est retirée avec
+(`FinalCtaSection` porte déjà `glow="bottom"`, et c'est elle qui contient maintenant le visuel),
+ainsi que le filet haut de la grille de liens, redondant avec celui du `<footer>`.
+
+---
+
+## `MessageBubble` — la vraie cause du carré noir (20 septembre 2026, troisième signalement)
+
+Troisième capture de Dorian, même rectangle noir derrière les bulles du hero, **alors que le
+correctif précédent était bien en ligne** : vérifié sur qualifyragence.com, les bulles
+calculaient `filter: none` et `box-shadow: none`. L'ombre n'a donc jamais été la cause, et les
+deux correctifs précédents (18/09 `box-shadow` → `filter`, 20/09 retrait de l'ombre) visaient à
+côté.
+
+**La cause.** Le rectangle est peint dans le noir du document, pas dans le bleu de la bulle : ce
+n'est pas une ombre qui déborde, c'est le fond opaque d'un calque de composition. WebKit promeut
+la bulle sur son propre calque — un `transform` non nul suffit, et il y en avait deux, la
+rotation en ligne et celle qu'anime `.bubble-impact` — puis remplit ce calque d'un fond opaque
+**sans appliquer le `border-radius`**. Tant que le même élément porte la transformation *et* la
+peinture (fond + rayon), aucune variante d'ombre n'y change quoi que ce soit.
+
+**Le correctif est structurel.** `MessageBubble` rend maintenant deux éléments imbriqués :
+l'externe porte le placement, la rotation et l'animation et n'a rien à peindre ; l'interne porte
+le fond, le rayon et le texte et n'a aucune transformation. Le calque promu est transparent, donc
+il n'y a plus de fond opaque à remplir.
+
+Au passage, la rotation passe par `--bubble-rotate`, que les images clés de `.bubble-impact`
+relisent (`rotate(var(--bubble-rotate, 0deg))`) : elle est conservée pendant l'animation au lieu
+d'être écrasée 520 ms puis rétablie d'un coup — un ressaut visible que personne n'avait demandé.
+`BeforeAfterSection` continue de passer son inclinaison via `style.transform`, qui atterrit sur
+l'élément externe : son appel est inchangé et profite du même correctif.
+
+---
+
 ## `DarkFooter` — halo d'ambiance en option (20 septembre 2026, troisième retour)
 
 Dorian compare une capture de `FinalCtaSection` (halo chaud diffus derrière la carte « Agent

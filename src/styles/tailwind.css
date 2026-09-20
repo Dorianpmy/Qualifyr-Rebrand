@@ -1584,18 +1584,22 @@
    bulles en attente s'afficheraient à taille pleine puis sauteraient.
 --------------------------------------------------------------------------- */
 @layer utilities {
+  /* `rotate(var(--bubble-rotate))` dans chaque image clé : l'inclinaison de la
+     bulle est posée par le composant en variable CSS, et doit être reprise ici,
+     sinon l'animation l'écrase pendant 520 ms puis la bulle y revient d'un coup
+     à la fin. Repli à `0deg` pour les bulles sans inclinaison. */
   @keyframes qualifyr-bubble-impact {
     0% {
       opacity: 0;
-      transform: translateY(8px) scale(0.72);
+      transform: translateY(8px) scale(0.72) rotate(var(--bubble-rotate, 0deg));
     }
     55% {
       opacity: 1;
-      transform: translateY(0) scale(1.06);
+      transform: translateY(0) scale(1.06) rotate(var(--bubble-rotate, 0deg));
     }
     100% {
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: translateY(0) scale(1) rotate(var(--bubble-rotate, 0deg));
     }
   }
 

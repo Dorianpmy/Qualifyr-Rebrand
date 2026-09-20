@@ -1,7 +1,5 @@
-import Image from 'next/image';
 import Link from 'next/link';
 
-import { AmbientGlow } from './AmbientGlow';
 import { Logo } from '@/components/ui/Logo';
 import { agents } from '@/content/agents';
 import { contact } from '@/content/contact';
@@ -60,51 +58,21 @@ import { contact } from '@/content/contact';
  *
  * ---
  *
- * ## Visuel produit dans la relance — 20 septembre 2026
+ * ## Relance retirée — 20 septembre 2026
  *
- * La relance n'était qu'un titre centré et un bouton : rien ne montrait ce que le visiteur
- * obtient. Dorian fournit une capture réelle de l'espace pro (page Demandes) et demande une
- * composition à deux temps, texte d'un côté, capture de l'autre — voir
- * `docs/03-direction-artistique.md` §12.1 pour la justification de l'exception (la direction
- * artistique écarte les « captures d'interface », mais seulement sous leur forme flottante
- * avec ombre et reflet ; posée à plat, sans élévation, cette capture reste conforme).
+ * Une relance a vécu ici une journée : titre, phrase, bouton et capture du tableau de bord,
+ * au-dessus des colonnes de liens. Elle a été retirée le soir même, en même temps qu'elle était
+ * fusionnée dans `FinalCtaSection` (voir l'en-tête de ce composant pour le raisonnement).
  *
- * Recadrage effectué avant intégration : ligne `Pipeline réservations ·
- * /reservation/sw-carcleaning` (identifiant du compte client) retirée, ainsi que le nom et la
- * ville de l'entreprise dans la barre latérale (« SW Carcleaning », « Fribourg »). Les compteurs
- * affichés sont ceux, réels, du compte au moment de la capture — aucun chiffre n'a été modifié
- * ni ajouté.
+ * **Ce n'est pas seulement un déplacement.** Sur l'accueil, la relance doublonnait avec
+ * `FinalCtaSection` juste au-dessus ; sur les six autres pages qui rendent ce pied de page, elle
+ * doublonnait avec leur propre `CtaSection` (`DarkVerticalPage`), qui ferme déjà chacune d'elles.
+ * Le pied de page redevient donc ce qu'il doit être : de la navigation, une signature et les
+ * mentions légales — pas un troisième appel à l'action que personne ne lit.
  *
- * ## Retour de Dorian le 20/09 (même jour) — capture de bureau plutôt que mobile
- *
- * La première capture était une capture de téléphone (portrait), posée dans un cadre étroit
- * façon écran de mobile — Dorian n'aime pas ce rendu (« je déteste ce bloc, enlève ce screen
- * iPhone ») : à côté d'une page pensée pour du bureau, un portrait de téléphone lit comme un
- * corps étranger plutôt que comme la continuité de la page. Remplacée par une capture de la
- * même page (Demandes) prise sur bureau — sidebar, KPI et calendrier dans leur mise en page
- * réelle, au format paysage natif du reste du site. Même retrait des informations du compte
- * (nom, ville, identifiant d'URL), aucun chiffre modifié. Fichier :
- * `public/images/app-preview/espace-pro-demandes-desktop.webp` ; l'ancienne capture mobile
- * (`espace-pro-demandes.webp`) est supprimée, plus aucune référence n'y pointe.
- *
- * ## Halo d'ambiance en option — 20/09 (troisième retour)
- *
- * Dorian compare une capture de `FinalCtaSection` (fond charbon, halo chaud diffus derrière la
- * carte « Agent Qualifyr ») à une capture du pied de page juste en dessous (fond plat, aucun
- * halo) et demande de reprendre le fond coloré du premier pour le second — la coupure entre les
- * deux sections se voyait trop nettement, glow puis noir plat sans transition.
- *
- * `AmbientGlow` est déjà le mécanisme du système pour ça (voir `Section.tsx`), réservé à deux ou
- * trois endroits par page — l'entrée et la sortie. Sur l'accueil, `DarkHero` tient l'entrée
- * (`glow="top"`) et `FinalCtaSection` tient la sortie (`glow="bottom"`) : ajouter un halo ici
- * porterait ce total à trois, encore dans le budget documenté, et prolonge le même halo de
- * sortie au lieu d'en ouvrir un nouveau point de couleur.
- *
- * `DarkFooter` est cependant posé sur sept pages, dont six sans `FinalCtaSection` au-dessus —
- * y activer le halo partout dépasserait le budget sur des pages qui ont déjà leur propre clôture
- * colorée (`DarkVerticalPage`, `glow="bottom"`). D'où une prop plutôt qu'un comportement fixe :
- * `glow` reste à `false` par défaut (les six autres pages sont inchangées), et seul
- * `src/app/page.tsx` la passe à `true`.
+ * L'historique du visuel produit (capture recadrée, anonymisée, deux fois refaite) est conservé
+ * dans `docs/03-direction-artistique.md` §12.1 et dans `FinalCtaSection.tsx`, qui l'affiche
+ * désormais.
  */
 
 const groups = [
@@ -158,70 +126,24 @@ const groups = [
 /** Marchés où le produit est effectivement proposé. */
 const markets = ['France', 'Belgique', 'Suisse', 'Luxembourg'] as const;
 
-export type DarkFooterProps = {
-  /**
-   * Prolonge le halo de sortie de `FinalCtaSection` dans le pied de page.
-   * `false` par défaut : voir le commentaire d'en-tête — seul `src/app/page.tsx`
-   * (la seule page qui pose `FinalCtaSection` juste au-dessus) l'active.
-   */
-  readonly glow?: boolean;
-};
-
-export function DarkFooter({ glow = false }: DarkFooterProps = {}) {
+export function DarkFooter() {
   const year = new Date().getFullYear();
 
   return (
     <footer
       data-theme="dark"
-      className="relative isolate flex w-full justify-center overflow-hidden border-t border-hairline bg-ink"
+      className="flex w-full justify-center border-t border-hairline bg-ink"
     >
-      {glow ? <AmbientGlow position="top" intensity="soft" /> : null}
       <div className="w-full max-w-7xl px-4 pb-12 pt-20 md:px-8 md:pt-24">
-        {/* La relance occupe la largeur, au-dessus des liens : elle doit être
-            lue avant eux, pas trouvée après.
-            Deux colonnes sur grand écran — texte et bouton à gauche, capture
-            réelle de l'espace pro à droite — une seule colonne, image sous le
-            texte, sur mobile. Voir le commentaire d'en-tête pour la
-            justification de la capture et son recadrage. */}
-        <div className="mb-20 grid items-center gap-10 text-center lg:grid-cols-[0.8fr_1.05fr] lg:gap-14 lg:text-left">
-          <div className="flex flex-col items-center gap-5 lg:items-start">
-            <h2 className="max-w-[28rem] text-[clamp(1.5rem,3vw,2.1rem)] font-bold leading-[1.15] tracking-[-0.025em] text-primary">
-              Votre zone est analysée en une minute.
-            </h2>
-            <p className="max-w-[26rem] text-[0.9375rem] leading-[1.6] text-muted">
-              Un espace pour suivre vos demandes, votre planning et vos prestations — sans rien
-              à installer.
-            </p>
-            <Link
-              href="/#agent-title"
-              className="cta-solid inline-flex min-h-[48px] items-center rounded-full bg-white px-6 text-[0.9375rem] font-semibold text-ink no-underline transition-colors duration-150 hover:bg-white/90"
-            >
-              Commencer gratuitement
-            </Link>
-          </div>
-
-          {/* Cadre à arêtes franches, sans ombre ni reflet — composition
-              écartée par docs/03-direction-artistique.md §12 sous sa forme
-              flottante uniquement ; posée à plat, elle reste conforme (§12.1).
-              Capture desktop (paysage) plutôt que mobile : la première version
-              (capture de téléphone en portrait) lisait comme un écran flottant
-              greffé dans une mise en page pensée pour du paysage — retiré à la
-              demande de Dorian le 20/09. */}
-          <div className="relative mx-auto aspect-[1400/847] w-full max-w-[34rem] overflow-hidden border border-hairline lg:mx-0 lg:max-w-none">
-            <Image
-              src="/images/app-preview/espace-pro-demandes-desktop.webp"
-              alt="Page Demandes de l'espace pro Qualifyr : demandes, compteurs de réservations et calendrier mensuel."
-              fill
-              sizes="(min-width: 62rem) 44rem, 34rem"
-              className="object-cover object-top"
-            />
-          </div>
-        </div>
-
         {/* Première zone : signature de marque à gauche, navigation à droite.
             La colonne de marque est plus large que les autres (`1.4fr`) —
-            elle porte le logo et une phrase, pas une liste. */}
-        <div className="grid gap-12 border-t border-hairline pt-14 lg:grid-cols-[1.4fr_repeat(4,minmax(0,1fr))] lg:gap-8">
+            elle porte le logo et une phrase, pas une liste.
+
+            Plus de filet ni d'espacement en haut depuis le retrait de la
+            relance : le `<footer>` porte déjà sa propre bordure haute, et deux
+            filets à quelques pixels l'un de l'autre se voyaient comme un
+            défaut. */}
+        <div className="grid gap-12 lg:grid-cols-[1.4fr_repeat(4,minmax(0,1fr))] lg:gap-8">
           <div className="max-w-[22rem]">
             {/* Le logo officiel, en masque monochrome recoloré par
                 `currentColor` — voir l'en-tête du fichier. Le lien vers

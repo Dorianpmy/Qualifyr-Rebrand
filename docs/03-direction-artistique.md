@@ -233,10 +233,11 @@ Il ne couvre pas les deux taches de couleur très diffuses (`--accent-1`, `--acc
 (`components/agency/AmbientGlow.tsx`) : un rappel de marque à peine perceptible, jamais un objet
 qu'on regarde. Réservé à deux ou trois sections par page au maximum — l'entrée et la sortie,
 jamais un milieu de page — sans quoi la couleur cesse d'être un accent et devient un fond.
-Sur l'accueil : `DarkHero` (entrée), `FinalCtaSection` (sortie) et, depuis le 20/09/2026,
-`DarkFooter` (`glow`, prolonge le halo de sortie plutôt que d'en ouvrir un troisième point —
-voir le commentaire d'en-tête de `DarkFooter.tsx`), soit trois occurrences au total : le plafond,
-pas un point de départ pour en ajouter d'autres.
+Sur l'accueil : `DarkHero` (entrée) et `FinalCtaSection` (sortie), soit deux occurrences. Un
+troisième halo a existé quelques heures le 20/09/2026 dans `DarkFooter`, pour que le fond coloré
+ne s'arrête pas net entre la clôture et le pied de page ; il a été retiré le soir même quand les
+deux blocs de clôture ont fusionné dans `FinalCtaSection` — le visuel vit désormais dans la
+section qui porte déjà le halo, et le pied de page n'a plus rien à mettre en valeur.
 
 ---
 
@@ -550,28 +551,37 @@ et les liens fonctionnent dès que le pointeur ou le doigt se trouve dans la fen
 - Toute composition qui rappellerait un site automobile agressif, un site de tuning ou une
   copie de Patissio.
 
-### 12.1 Exception — capture du tableau de bord en pied de page (20 septembre 2026)
+### 12.1 Exception — capture du tableau de bord dans la clôture de l'accueil (20 septembre 2026)
 
 L'interdit ci-dessus vise la capture **flottante, avec ombre portée et reflet** — le mockup
-« template SaaS » générique. Il ne s'applique pas à une capture réelle, posée à plat, sans
-ombre ni reflet, présentée comme un fragment d'interface et non comme un objet en lévitation.
-C'est cette seconde forme qu'utilise `DarkFooter.tsx` : la relance de fin de page associe son
-texte et son bouton à une capture réelle de l'espace pro (page Demandes — KPI et calendrier),
-encadrée par un simple filet (`border-hairline`), arêtes franches, posée sur le fond charbon
-sans élévation ni halo.
+« template SaaS » générique, un écran en lévitation au-dessus de rien. Il ne s'applique pas à une
+capture réelle posée à plat **dans un cadre déjà employé ailleurs sur la page**, présentée comme
+un fragment d'interface et non comme un objet qui flotte.
 
-Deux versions se sont succédé le même jour. La première reprenait une capture de téléphone
+C'est cette seconde forme qu'utilise `FinalCtaSection.tsx` : la clôture de l'accueil associe son
+texte et ses boutons à une capture réelle de l'espace pro (page Demandes — barre latérale,
+compteurs, calendrier), logée dans le cadre `node-hero` — contour tricolore peint et halo, celui
+de l'agent central d'`AgentFlow`, déjà vu deux fois avant d'arriver ici. Le halo appartient au
+cadre, pas à la capture : il ne simule aucune élévation, il désigne, comme partout ailleurs, le
+point central de la composition. La capture, elle, ne porte ni ombre, ni reflet, ni perspective.
+Seul un dégradé peint en bas de l'image la fait se dissoudre dans le fond de la carte plutôt que
+s'arrêter sur une coupe nette.
+
+Trois versions se sont succédé le même jour. La première reprenait une capture de téléphone
 (portrait), recadrée pour retirer la barre de statut iOS et la ligne
 `Pipeline réservations · /reservation/sw-carcleaning` (identifiant du compte client). Dorian
 l'a écartée : posée dans une page pensée pour du bureau, une capture de téléphone en portrait
 lit comme un corps étranger plutôt que comme la continuité de la page.
 
-Remplacée par une capture de bureau de la même page (sidebar, KPI, calendrier), au format
-paysage natif du reste du site — plus de cadre façon écran de mobile. Même exigence
-d'anonymisation : le nom et la ville de l'entreprise (« SW Carcleaning », « Fribourg ») et la
-ligne d'URL du compte sont retirés avant intégration ; seuls restent des éléments d'interface
-réels et anonymes (titre, quatre compteurs à zéro — aucun chiffre modifié ni inventé —,
-calendrier, barre latérale, onglets de filtre). Fichier :
+La deuxième, retenue, est une capture de bureau de la même page (barre latérale, compteurs,
+calendrier), au format paysage natif du reste du site. La troisième ne change pas l'image mais
+son emplacement : d'abord posée dans une relance du pied de page, elle rejoint la clôture de
+l'accueil quand les deux blocs fusionnent (voir `docs/05-composants.md`).
+
+Exigence d'anonymisation constante d'une version à l'autre : le nom et la ville de l'entreprise
+(« SW Carcleaning », « Fribourg ») et la ligne d'URL du compte sont retirés avant intégration ;
+seuls restent des éléments d'interface réels et anonymes (titre, quatre compteurs à zéro — aucun
+chiffre modifié ni inventé —, calendrier, barre latérale, onglets de filtre). Fichier :
 `public/images/app-preview/espace-pro-demandes-desktop.webp`.
 
 ---

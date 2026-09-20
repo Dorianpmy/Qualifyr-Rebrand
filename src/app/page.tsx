@@ -172,11 +172,7 @@ export default function HomePage() {
 
       <FinalCtaSection />
 
-      {/* `glow` : prolonge le halo de sortie de `FinalCtaSection` dans le pied
-          de page plutôt que de couper net sur du noir plat — voir le
-          commentaire d'en-tête de `DarkFooter.tsx`. Activé uniquement ici :
-          c'est la seule page qui pose `FinalCtaSection` juste au-dessus. */}
-      <DarkFooter glow />
+      <DarkFooter />
     </div>
   );
 }
