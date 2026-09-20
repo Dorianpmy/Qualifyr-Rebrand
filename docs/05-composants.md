@@ -1,5 +1,41 @@
 # 05 — Composants
 
+## `/creation-site-web` — page restée sur l'ancien système (20 septembre 2026)
+
+Signalée par Dorian depuis le bouton « Créer mon site avec Qualifyr » de la clôture de
+l'accueil : « problème de DA, il faut refaire ».
+
+**Ce n'était pas un défaut de réglage.** La page ne posait pas `data-theme="dark"`, le seul
+attribut qui déclenche la règle de `tailwind.css`
+(`body:has(main [data-theme='dark']) [data-legacy-chrome] { display: none }`) masquant l'en-tête
+et le pied de page hérités rendus par `layout.tsx`. Un visiteur venu d'un appel à l'action de
+l'accueil refaite atterrissait donc sur l'ancienne identité : menu « Nettoyage automobile ·
+Réalisations · Tarifs · Journal · À propos », bouton laiton « Discuter sur WhatsApp » — une
+navigation qui ne correspond plus au site et qui pointe vers des pages volontairement retirées.
+S'y ajoutaient les symptômes d'un module CSS de juillet posé sur fond sombre : encadrés fantômes
+autour du titre et du chapô, sur-titres gris sous le seuil de contraste, grille de trois cartes
+identiques (écartée par `docs/03-direction-artistique.md` §12). La page n'avait par ailleurs
+aucune sortie — elle s'arrêtait après « Déroulement ».
+
+**Reconstruite avec les blocs de la charte** : `DarkHeader`, `DarkHero` (qui porte le `<h1>` —
+`SectionHead` rend un `<h2>`, correct pour une section, insuffisant pour une ouverture),
+`WhyUsSection` pour les trois rôles du site, une liste éditoriale à filets pour les sept éléments
+pris en charge (sept cartes auraient refait une grille), `JourneySection` pour les quatre étapes,
+`CtaSection` pour la sortie qui manquait, `DarkFooter`. Deux halos, entrée et sortie : le budget
+du §1.7. `page.module.css` est supprimé.
+
+**Le contenu n'a pas bougé** : tout vient mot pour mot de `content/web-design.ts`. La refonte est
+visuelle et structurelle, pas rédactionnelle — seul le texte de la nouvelle `CtaSection` est
+écrit, et il reprend le vocabulaire de la première étape du déroulé (« Cadrer ») plutôt que
+d'annoncer un résultat : aucun chiffre, aucun délai, aucune promesse.
+
+**Restent sur l'ancien système** (vérifié le même jour, pages publiques uniquement) :
+`/a-propos`, `/methode`, `/realisations` et `/realisations/sw-car-cleaning`, `/blog` et
+`/blog/[slug]`, `/diagnostic`, `/vitrine`. Même symptôme à prévoir sur chacune dès qu'un lien y
+mène depuis une page refaite.
+
+---
+
 ## Clôture de l'accueil — un seul bloc au lieu de deux (20 septembre 2026, quatrième retour)
 
 Dorian : « y a-t-il moyen de faire qu'un bloc et rassembler les deux ? » La page d'accueil se
