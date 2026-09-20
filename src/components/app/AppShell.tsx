@@ -91,6 +91,25 @@ const icons = {
 } as const;
 
 /**
+ * Emoji décoratifs du menu de bureau — exception ciblée du 20/09/2026,
+ * voir `docs/03-direction-artistique.md` §7.1. N'existent que sur le menu
+ * vertical (≥ 900 px, `.navEmoji` dans `app.module.css`) : la barre
+ * d'onglets mobile n'a pas la largeur pour un caractère de plus par
+ * libellé. Ils s'ajoutent au pictogramme linéaire, ils ne le remplacent
+ * pas.
+ */
+const emojis = {
+  demandes: '📋',
+  planning: '📅',
+  prospection: '🔍',
+  tarifs: '💶',
+  hermes: '📣',
+  cases: '📸',
+  factures: '🧾',
+  abonnement: '💳',
+} as const;
+
+/**
  * Icône « ouvrir en externe » du menu de bureau.
  *
  * Le symbole de marque (`QualifyrMark`) la remplace sur mobile, où le bouton
@@ -139,21 +158,21 @@ export function AppShell({
    * sans le tronquer.
    */
   const tabsBeforeFab = [
-    { key: 'demandes', href: '/app', label: 'Demandes', icon: icons.demandes, desktopOnly: false },
-    { key: 'planning', href: '/app/planning', label: 'Planning', icon: icons.planning, desktopOnly: false },
-    { key: 'prospection', href: '/app/prospection', label: 'Prospect', icon: icons.prospection, desktopOnly: false },
+    { key: 'demandes', href: '/app', label: 'Demandes', icon: icons.demandes, emoji: emojis.demandes, desktopOnly: false },
+    { key: 'planning', href: '/app/planning', label: 'Planning', icon: icons.planning, emoji: emojis.planning, desktopOnly: false },
+    { key: 'prospection', href: '/app/prospection', label: 'Prospect', icon: icons.prospection, emoji: emojis.prospection, desktopOnly: false },
   ] as const;
 
   const tabsAfterFab = [
-    { key: 'tarifs', href: '/app/prestations', label: 'Prestations', icon: icons.tarifs, desktopOnly: false },
+    { key: 'tarifs', href: '/app/prestations', label: 'Prestations', icon: icons.tarifs, emoji: emojis.tarifs, desktopOnly: false },
     /* Hermès, en `desktopOnly` : la barre mobile est pleine à cinq
        emplacements, et configurer une campagne — écrire un message, relire un
        aperçu — n'est pas quelque chose qu'on fait entre deux véhicules. Le
        tableau de bord y renvoie, comme pour « Avant/Après » et
        « Factures ». */
-    { key: 'hermes', href: '/app/hermes', label: 'Démarchage', icon: icons.prospection, desktopOnly: true },
-    { key: 'cases', href: '/app/cases', label: 'Avant/Après', icon: icons.cases, desktopOnly: true },
-    { key: 'factures', href: '/app/invoices', label: 'Factures', icon: icons.factures, desktopOnly: true },
+    { key: 'hermes', href: '/app/hermes', label: 'Démarchage', icon: icons.prospection, emoji: emojis.hermes, desktopOnly: true },
+    { key: 'cases', href: '/app/cases', label: 'Avant/Après', icon: icons.cases, emoji: emojis.cases, desktopOnly: true },
+    { key: 'factures', href: '/app/invoices', label: 'Factures', icon: icons.factures, emoji: emojis.factures, desktopOnly: true },
     /* L'abonnement n'est pas un module quotidien : il se consulte rarement,
        et n'a donc pas sa place dans les cinq emplacements du téléphone. Il
        reste joignable depuis chaque écran verrouillé, qui y renvoie. */
@@ -162,6 +181,7 @@ export function AppShell({
       href: '/app/abonnement',
       label: 'Abonnement',
       icon: icons.abonnement,
+      emoji: emojis.abonnement,
       desktopOnly: true,
     },
   ] as const;
@@ -192,6 +212,13 @@ export function AppShell({
       >
         {tab.icon}
         <span className={styles.navLabel}>{tab.label}</span>
+        {/* Décoratif, masqué sous 900 px — voir le commentaire sur `emojis`
+            plus haut. `aria-hidden` : le nom accessible du lien reste porté
+            par `navLabel` seul, pas question qu'un lecteur d'écran énonce
+            l'emoji après le libellé. */}
+        <span aria-hidden="true" className={styles.navEmoji}>
+          {tab.emoji}
+        </span>
       </Link>
     );
   };

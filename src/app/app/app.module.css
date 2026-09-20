@@ -307,6 +307,27 @@
   }
 }
 
+/* Emoji décoratif du menu de bureau — docs/03-direction-artistique.md §7.1
+   (20/09/2026). Masqué par défaut : la barre d'onglets mobile est calée sur
+   cinq colonnes égales et n'a pas la largeur pour un caractère de plus par
+   libellé (voir le commentaire sur `.sidebarNav` plus haut, et celui sur
+   `emojis` dans `AppShell.tsx`). `margin-left: auto` le pousse contre le bord
+   droit de la ligne de menu plutôt que de le coller au libellé, pour qu'il se
+   lise comme un repère, pas comme un second mot. */
+.navEmoji {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .navEmoji {
+    display: inline-block;
+    margin-left: auto;
+    font-size: 0.95rem;
+    line-height: 1;
+    opacity: 0.85;
+  }
+}
+
 /* Le symbole de marque du bouton central : masqué par défaut, il ne sert que
    dans la barre du téléphone. Sur ordinateur, c'est `clientPageIcon` qui
    prend le relais (voir le commentaire dans AppShell.tsx). */

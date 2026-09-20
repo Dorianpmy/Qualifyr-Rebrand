@@ -1,5 +1,34 @@
 # 05 — Composants
 
+## Emoji dans le menu de bureau de l'espace pro (20 septembre 2026)
+
+Demande de Dorian, après comparaison avec le menu d'un produit concurrent : ajouter du « peps »
+au tableau de bord (`AppShell.tsx`). L'iconographie du produit interdit l'emoji sans exception
+(`docs/03-direction-artistique.md` §7) — l'ajout a donc commencé par une exception documentée
+avant le code (§7.1), scopée précisément pour ne pas déborder sur le reste du produit :
+
+- Elle ne touche que le **menu vertical de bureau** de l'espace pro (`/app`, ≥ 900 px). Le site
+  vitrine garde l'interdiction intacte.
+- Un emoji décoratif s'ajoute à côté du pictogramme linéaire existant sur huit entrées
+  (Demandes 📋, Planning 📅, Prospect 🔍, Prestations 💶, Démarchage 📣, Avant/Après 📸,
+  Factures 🧾, Abonnement 💳) — il ne le remplace pas. `Déconnexion` et le bouton « Page client »
+  n'en reçoivent pas : le premier est une action neutre, le second porte déjà le symbole de
+  marque.
+- Masqué sur la barre d'onglets mobile (`.navEmoji`, `display:none` sous 900 px) : cette barre
+  est calée au pixel sur cinq colonnes égales, et un caractère de plus par libellé y recréerait
+  le débordement corrigé le 22/08/2026 (« Prestatio… »).
+- `aria-hidden="true"` sur l'emoji : le nom accessible du lien reste porté par le seul libellé
+  texte, un lecteur d'écran n'énonce pas le symbole.
+
+**Ce qui n'a pas été fait, volontairement.** Le produit de référence affichait aussi un compteur
+de série (« 11 semaines d'affilée ») et des badges « bientôt disponible ». Les deux auraient
+nécessité soit une donnée réelle qui n'existe pas encore (un suivi d'activité pour calculer une
+série), soit un chiffre ou un badge inventés pour l'occasion — exactement le faux contenu que
+`CLAUDE.md` interdit. Ni l'un ni l'autre n'a été ajouté ; un vrai indicateur de série reste
+possible plus tard, comme fonctionnalité à part entière avec son propre calcul.
+
+---
+
 ## WhatsApp — token confirmé valide (20 septembre 2026)
 
 Les modèles Meta (`nouvelle_reservation`, `vehicule_pret`, `demande_avis`) sont approuvés

@@ -370,6 +370,30 @@ organiques.
   une exception de marque au jeu linéaire. Ils restent monochromes, utilisent `currentColor`
   et sont toujours nommés par un libellé visible ou accessible.
 
+### 7.1 Exception — emoji dans le menu de l'espace pro (20/09/2026)
+
+L'interdiction d'emoji ci-dessus reste entière pour le **site vitrine** : accueil, pages
+métier, journal, pied de page. Elle s'assouplit uniquement dans le **menu latéral de
+bureau de l'espace pro** (`/app`, ≥ 900 px), à la demande explicite de Dorian, qui veut y
+retrouver un peu de la personnalité d'un outil qu'on ouvre chaque jour — un registre
+différent de celui d'un site qui reçoit un visiteur une fois.
+
+- Chaque entrée de menu (Demandes, Planning, Prospect, Prestations, Démarchage,
+  Avant/Après, Factures, Abonnement) peut afficher **un seul emoji, décoratif**, en plus
+  de son pictogramme linéaire existant — qui reste l'icône fonctionnelle et n'est pas
+  remplacé.
+- L'emoji est masqué sur la barre d'onglets mobile (< 900 px) : cette barre est
+  dimensionnée au pixel près pour cinq colonnes égales (voir `AppShell.tsx`), et un
+  caractère de plus par libellé y recrée le débordement déjà corrigé le 22/08/2026.
+- `Déconnexion` et le bouton central « Page client » n'en reçoivent pas : le premier est
+  une action neutre, le second porte déjà le symbole de marque.
+- **Ce que cette exception n'autorise pas.** Elle porte sur l'iconographie, pas sur le
+  contenu : aucun compteur, badge « bientôt disponible » ou indicateur de série (« X
+  semaines d'affilée ») n'est ajouté tant qu'il ne repose pas sur une donnée réelle et
+  calculée — un chiffre inventé pour faire « peps » est exactement le faux contenu que
+  `CLAUDE.md` interdit. Un tel indicateur reste possible plus tard, comme fonctionnalité à
+  part entière avec son propre calcul, pas comme décoration de menu.
+
 ---
 
 ## 8. Traitement des images
