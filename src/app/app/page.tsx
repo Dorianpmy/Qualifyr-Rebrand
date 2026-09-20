@@ -69,9 +69,9 @@ function badgeClass(status: string): string {
 }
 
 /**
- * Couleur de puce par prestation — voir la note dans `dashboard.ts`
- * (`SCOPE_DISPLAY_ORDER`) : reprend le contour tricolore déjà utilisé dans ce
- * dashboard, elle n'introduit pas une quatrième identité de couleur.
+ * Couleur de puce par prestation — palette dédiée du calendrier, définie
+ * dans `app.module.css` (`.calDotInterieur` et suivants). Voir la note dans
+ * `calendar.ts` (`SCOPE_DISPLAY_ORDER`) pour l'historique du choix.
  */
 function scopeDotClass(scope: string): string {
   const map: Record<string, string> = {

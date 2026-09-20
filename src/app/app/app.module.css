@@ -965,26 +965,31 @@
 
 .calendarDot {
   display: inline-block;
-  inline-size: 5px;
-  block-size: 5px;
+  inline-size: 7px;
+  block-size: 7px;
   border-radius: 999px;
   flex-shrink: 0;
 }
 
-/* Trois teintes chaudes déjà en usage dans ce dashboard (onglet actif, carte
-   de paiement, écran de connexion) — voir la note dans `dashboard.ts`
-   (`SCOPE_DISPLAY_ORDER`). Aucune couleur froide, aucune quatrième identité
-   ajoutée pour ce seul calendrier. */
+/* Palette dédiée du calendrier (ajustée le 20/09/2026 : la première version
+   reprenait le contour tricolore existant — pêche, terracotta, laiton — mais
+   ces trois teintes, très proches en luminosité, se distinguaient mal une
+   fois réduites à une puce pleine de 6 px, alors qu'un dégradé large les
+   fond ensemble sans qu'il faille les distinguer). Les trois couleurs
+   restent chaudes (13°–43°, comme l'exige la charte) mais s'étagent
+   nettement en clarté — sombre, moyenne, claire — un repère qui fonctionne
+   même sans distinguer les teintes entre elles. Voir la note dans
+   `calendar.ts` (`SCOPE_DISPLAY_ORDER`). */
 .calDotInterieur {
-  background: var(--accent-1);
+  background: #8b4a2e;
 }
 
 .calDotExterieur {
-  background: #c9835c;
+  background: #c9843d;
 }
 
 .calDotComplet {
-  background: #c7a06b;
+  background: #e0bc6e;
 }
 
 .calendarLegend {

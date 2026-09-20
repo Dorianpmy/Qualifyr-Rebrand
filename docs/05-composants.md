@@ -1,5 +1,20 @@
 # 05 — Composants
 
+## Aperçu du mois sur la page Demandes — palette ajustée (20 septembre 2026)
+
+Retour de Dorian après déploiement : les trois couleurs d'origine (pêche, terracotta, laiton —
+reprises du contour tricolore existant) se distinguaient mal une fois réduites à une puce pleine
+de 5 px, alors que le même trio fonctionnait comme dégradé large sur les autres écrans. Un
+dégradé n'a pas besoin que chaque teinte se reconnaisse isolément ; une puce, si.
+
+Palette dédiée du calendrier, définie directement dans `.calDotInterieur`/`.calDotExterieur`/
+`.calDotComplet` (`app.module.css`) : `#8b4a2e` (rouille sombre), `#c9843d` (ambre moyen),
+`#e0bc6e` (or clair). Toujours chaudes (13°–43°, comme l'exige `docs/03-direction-artistique.md`
+§1), mais étagées nettement en clarté plutôt que juxtaposées à luminosité proche — un repère qui
+tient même sans distinguer finement les teintes. Puces agrandies de 5 à 7 px au passage.
+
+---
+
 ## Aperçu du mois sur la page Demandes (20 septembre 2026)
 
 Demande de Dorian : un calendrier sur la page Demandes, avec une couleur par prestation pour

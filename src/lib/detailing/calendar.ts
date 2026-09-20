@@ -39,13 +39,15 @@ export function slotStart(slotRaw: string | null): Date | null {
    (`types.ts`) — pas un catalogue libre par professionnel — donc une palette
    à trois teintes suffit, sans mécanisme d'assignation dynamique.
 
-   **Les trois couleurs ne sont pas nouvelles.** Elles reprennent le contour
-   « tricolore » déjà utilisé dans ce même dashboard (onglet actif, carte
-   d'activation du paiement, écran de connexion — voir la note du
-   12/09/2026 dans `app.module.css`) : pêche (`--accent-1`), terracotta
-   (`#c9835c`) et laiton (`#c7a06b`). Les trois restent chaudes — la charte
-   interdit tout dégradé froid — et introduire une quatrième identité de
-   couleur pour le même produit aurait dilué un repère déjà appris.
+   **Palette dédiée, ajustée le 20/09/2026.** Un premier essai reprenait le
+   contour « tricolore » déjà utilisé ailleurs dans ce dashboard (onglet
+   actif, carte de paiement, écran de connexion), mais ses trois teintes —
+   proches en luminosité dans un dégradé large — se distinguaient mal une
+   fois réduites à une puce pleine (retour de Dorian). Les couleurs
+   définitives vivent dans `app.module.css` (`.calDotInterieur`,
+   `.calDotExterieur`, `.calDotComplet`) : trois tons chauds (13°–43°, comme
+   l'exige la charte) mais nettement étagés en clarté — sombre, moyen,
+   clair — pour rester lisibles même à 7 px.
    ========================================================================= */
 
 /** Ordre d'affichage stable des prestations — légende et puces du calendrier. */
