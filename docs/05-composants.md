@@ -1,5 +1,25 @@
 # 05 — Composants
 
+## `MessageBubble` — récidive du carré noir Safari iOS, ombre retirée (20 septembre 2026)
+
+Dorian revoit exactement le bug déjà signalé le 18/09 (carré noir plein derrière chaque groupe
+de bulles du hero), sur une nouvelle capture, malgré le correctif du 18/09 qui remplaçait le
+`box-shadow` par un `filter: drop-shadow(...)` supposé équivalent. Le correctif n'a pas tenu sur
+l'appareil réel de Dorian : `filter`, comme `box-shadow`, force la promotion de l'élément sur son
+propre calque, et c'est cette promotion combinée au `transform` que `.bubble-impact` anime qui
+déclenche le rendu en rectangle opaque sur WebKit — pas la propriété CSS précise utilisée pour
+l'ombre.
+
+Sans accès à un Safari iOS réel dans ce projet (seul Chromium est disponible ici), retenter une
+troisième variante CSS reviendrait à deviner. L'ombre est retirée entièrement de
+`MessageBubble.tsx` : bulles bleues pleines, sans ombre. Plus de calque forcé par un effet de
+peinture, plus de rectangle possible. Cette ombre était de toute façon teintée de bleu
+(`rgba(22, 131, 248, …)`), ce que `docs/03-direction-artistique.md` (ombres colorées interdites)
+n'autorisait pas — sa suppression aligne le composant sur la charte plutôt que de créer une
+exception jamais documentée.
+
+---
+
 ## `DarkFooter` — visuel produit dans la relance de fin de page (20 septembre 2026)
 
 Demande de Dorian : donner un visage à la relance charbon du pied de page, jusque-là un simple

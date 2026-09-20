@@ -22,16 +22,25 @@ import type { CSSProperties } from 'react';
  * est elle aussi posée en `style`, pas en classe : le même risque ne
  * s'applique pas.
  *
- * **`filter: drop-shadow`, jamais `box-shadow`, sur cet élément précis.**
+ * **Aucune ombre sur cet élément — ni `box-shadow`, ni `filter`.**
  * Signalé par Dorian (18/09/2026, capture d'écran) : sur Safari iOS, un
  * carré noir plein s'affichait derrière chaque groupe de bulles — jamais
- * reproduit sur Chromium. Cause connue de WebKit : un `box-shadow` sur un
- * élément que `.bubble-impact` anime via `transform` (voir `tailwind.css`)
- * peut se peindre en rectangle opaque au lieu de l'ombre portée attendue,
- * dès que Safari promeut l'élément sur son propre calque pendant
- * l'animation. `filter: drop-shadow(...)` produit un rendu visuellement
- * identique ici (fond plein, forme simple) mais compose correctement avec
- * `transform` sur WebKit — c'est le contournement documenté de ce bug précis.
+ * reproduit sur Chromium. Premier correctif (18/09) : remplacer le
+ * `box-shadow` par un `filter: drop-shadow(...)` visuellement identique,
+ * supposé composer correctement avec le `transform` que `.bubble-impact`
+ * anime (voir `tailwind.css`). Insuffisant : Dorian revoit exactement le
+ * même carré noir le 20/09, sur le même appareil — `filter` promeut lui
+ * aussi l'élément sur son propre calque, donc le même bug WebKit
+ * (calque + `transform` animé + effet peint en rectangle opaque) s'applique
+ * tout autant à `drop-shadow` qu'à `box-shadow`.
+ *
+ * Plutôt que de retenter une troisième variante CSS invérifiable dans ce
+ * projet (aucun accès à un Safari iOS réel ici, seulement Chromium), l'ombre
+ * est retirée : plus d'ombre, plus de calque forcé par un effet de peinture,
+ * plus de bug possible. C'était de toute façon une ombre teintée de bleu
+ * (`rgba(22, 131, 248, …)`), or `docs/03-direction-artistique.md` interdit
+ * les ombres colorées — cette suppression aligne aussi le composant sur la
+ * charte plutôt que de créer une exception qui n'a jamais été documentée.
  */
 type MessageBubbleProps = {
   readonly text: string;
@@ -86,7 +95,6 @@ export function MessageBubble({
         borderRadius: '9999px',
         background: '#1683F8',
         color: '#FFFFFF',
-        filter: 'drop-shadow(0 4px 14px rgba(22, 131, 248, 0.22))',
         /* Le délai passe par une variable CSS plutôt que par
            `animationDelay` : la règle `.bubble-impact` doit pouvoir redéfinir
            toute l'animation sous `prefers-reduced-motion`, ce qu'un
