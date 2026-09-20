@@ -1,5 +1,22 @@
 # 05 — Composants
 
+## WhatsApp — token confirmé valide (20 septembre 2026)
+
+Les modèles Meta (`nouvelle_reservation`, `vehicule_pret`, `demande_avis`) sont approuvés
+(« Actif – Qualifié »). `WHATSAPP_TOKEN`/`WHATSAPP_PHONE_NUMBER_ID` étaient déjà présentes dans
+Netlify depuis le 17/09, sans certitude qu'il s'agissait du token permanent d'un utilisateur
+système plutôt que de l'ancien token de test de 24h (qui aurait expiré). Vérifié via une route
+de diagnostic temporaire (`api/debug-whatsapp-env`, supprimée une fois la confirmation obtenue) :
+lecture des métadonnées du numéro (`GET /{phone-number-id}`), sans envoi de message ni exposition
+du token. Réponse `200`, `verified_name: "Qualifyr"` — le token en place fonctionne, rien à
+reconfigurer.
+
+Reste à confirmer : un envoi réel (nouvelle réservation chez un detailer dont le champ
+« Numéro WhatsApp affiché aux clients » est renseigné) pour vérifier que le message arrive
+effectivement, au-delà de la seule validité du token.
+
+---
+
 ## Manifest PWA dédié à l'espace pro (18 septembre 2026)
 
 Demande de Dorian : que l'espace pro (`/app`) s'installe comme une application, avec le logo
