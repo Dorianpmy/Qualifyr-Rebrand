@@ -210,12 +210,20 @@ export function AppShell({
          */
         className={`${styles.navItem} app-tab ${tab.desktopOnly ? styles.navItemDesktopOnly : ''} ${isActive ? `${styles.navItemActive} app-tab-active` : ''}`}
       >
-        {tab.icon}
+        {/*
+          Le pictogramme linéaire reste l'icône de la barre mobile (`.navIconMobileOnly`
+          le masque à partir de 900 px). En dessous de 900 px, la barre d'onglets n'a
+          pas de version emoji — voir le commentaire sur `emojis` plus haut.
+        */}
+        <span className={styles.navIconMobileOnly}>{tab.icon}</span>
         <span className={styles.navLabel}>{tab.label}</span>
-        {/* Décoratif, masqué sous 900 px — voir le commentaire sur `emojis`
-            plus haut. `aria-hidden` : le nom accessible du lien reste porté
-            par `navLabel` seul, pas question qu'un lecteur d'écran énonce
-            l'emoji après le libellé. */}
+        {/*
+          Sur le menu de bureau, l'emoji remplace le pictogramme (demande de Dorian,
+          20/09/2026) plutôt que de s'y ajouter : les deux ensemble faisaient double
+          emploi. `order: -1` (dans `app.module.css`) le replace visuellement avant le
+          libellé, à l'endroit qu'occupait l'icône. `aria-hidden` : le nom accessible du
+          lien reste porté par `navLabel` seul.
+        */}
         <span aria-hidden="true" className={styles.navEmoji}>
           {tab.emoji}
         </span>

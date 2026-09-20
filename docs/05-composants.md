@@ -1,5 +1,17 @@
 # 05 — Composants
 
+## Emoji dans le menu de bureau de l'espace pro — ajustement (20 septembre 2026)
+
+Suite immédiate de l'entrée ci-dessous : la première version affichait le pictogramme
+linéaire **et** l'emoji côte à côte sur chaque ligne du menu de bureau — deux icônes pour
+la même entrée, qui faisaient double emploi (retour de Dorian après déploiement). L'emoji
+remplace maintenant le pictogramme sur ce menu (`.navIconMobileOnly` masque l'icône SVG à
+partir de 900 px, `.navEmoji` prend `order: -1` pour se placer là où elle était). La barre
+d'onglets mobile n'est pas concernée : elle n'affichait déjà pas l'emoji, et garde son
+icône linéaire seule.
+
+---
+
 ## Emoji dans le menu de bureau de l'espace pro (20 septembre 2026)
 
 Demande de Dorian, après comparaison avec le menu d'un produit concurrent : ajouter du « peps »
