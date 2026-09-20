@@ -532,6 +532,24 @@ et les liens fonctionnent dès que le pointeur ou le doigt se trouve dans la fen
 - Sections « Nos valeurs » avec pictogrammes génériques.
 - Accordéons empilés servant à masquer un contenu faible.
 - Carrousels automatiques.
+
+### 12.1 Exception — capture du tableau de bord en pied de page (20 septembre 2026)
+
+L'interdit ci-dessus vise la capture **flottante, avec ombre portée et reflet** — le mockup
+« template SaaS » générique. Il ne s'applique pas à une capture réelle, posée à plat, sans
+ombre ni reflet, présentée comme un fragment d'interface et non comme un objet en lévitation.
+C'est cette seconde forme qu'utilise `DarkFooter.tsx` : la relance de fin de page associe son
+texte et son bouton à une capture réelle de l'espace pro (page Demandes — KPI et calendrier),
+encadrée par un simple filet (`border-hairline`), arêtes franches, posée sur le fond charbon
+sans élévation ni halo.
+
+La capture fournie par Dorian a été recadrée avant intégration : barre de statut iPhone
+retirée (horloge, réseau, batterie — n'apporte rien et date le visuel), et la ligne
+`Pipeline réservations · /reservation/sw-carcleaning` retirée avec les boutons qui
+l'entouraient — elle identifie le compte client, ce qu'une image d'illustration générale du
+produit n'a pas à exposer. Restent uniquement des éléments d'interface réels et anonymes : le
+titre, les quatre compteurs (à zéro — aucun chiffre modifié ni inventé), le calendrier et la
+barre d'onglets. Fichier : `public/images/app-preview/espace-pro-demandes.webp`.
 - Boutons en pilule avec dégradé.
 - Superposition de plus de deux niveaux de profondeur : le site est plat, structuré par des
   filets et du vide.

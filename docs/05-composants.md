@@ -1,5 +1,25 @@
 # 05 — Composants
 
+## `DarkFooter` — visuel produit dans la relance de fin de page (20 septembre 2026)
+
+Demande de Dorian : donner un visage à la relance charbon du pied de page, jusque-là un simple
+titre centré suivi d'un bouton. Il fournit une capture réelle de l'espace pro (page Demandes,
+KPI et calendrier) et demande qu'elle apparaisse « comme sur la photo de référence » — une
+composition éditoriale avec texte à gauche, capture encadrée à droite, dans le style déjà arrêté
+pour ce bloc le même jour : **sans ombre portée ni reflet**, à l'inverse du mockup flottant que
+`docs/03-direction-artistique.md` §12 écarte explicitement. Voir §12.1 du même document pour la
+justification de l'exception et le détail du recadrage (statut iPhone et identifiant du compte
+client retirés avant intégration — aucune donnée du compte SW Carcleaning n'est exposée).
+
+La relance passe d'une colonne centrée à deux colonnes sur grand écran (`lg:grid-cols-[1.1fr_1fr]`) :
+titre, phrase de contexte et bouton d'un côté ; `next/image` de la capture de l'autre, dans un
+cadre à arêtes franches (`border-hairline`, pas de rayon — cohérent avec le reste du système,
+qui réserve l'arrondi à l'exception). Sur mobile, la capture passe sous le texte, largeur pleine,
+hauteur plafonnée pour ne pas dominer l'écran. Aucun chiffre affiché n'est modifié : les
+compteurs à zéro sont ceux du compte réel au moment de la capture.
+
+---
+
 ## Icônes monochromes et police Quicksand pour l'espace pro (20 septembre 2026)
 
 Retour de Dorian avec une référence plus sobre : remplacer les emoji colorés (ajoutés plus tôt

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 
 import { Logo } from '@/components/ui/Logo';
@@ -55,6 +56,22 @@ import { contact } from '@/content/contact';
  *
  * Le préfixe `/#ancre` fait de l'ancre une destination absolue. Il est
  * conservé, et `tests/footer-links.test.ts` empêche la régression.
+ *
+ * ---
+ *
+ * ## Visuel produit dans la relance — 20 septembre 2026
+ *
+ * La relance n'était qu'un titre centré et un bouton : rien ne montrait ce que le visiteur
+ * obtient. Dorian fournit une capture réelle de l'espace pro (page Demandes) et demande une
+ * composition à deux temps, texte d'un côté, capture de l'autre — voir
+ * `docs/03-direction-artistique.md` §12.1 pour la justification de l'exception (la direction
+ * artistique écarte les « captures d'interface », mais seulement sous leur forme flottante
+ * avec ombre et reflet ; posée à plat, sans élévation, cette capture reste conforme).
+ *
+ * Recadrage effectué avant intégration : barre de statut iPhone retirée, ligne
+ * `/reservation/sw-carcleaning` (identifiant du compte client) retirée avec les boutons
+ * alentour. Les compteurs affichés sont ceux, réels, du compte au moment de la capture —
+ * aucun chiffre n'a été modifié ni ajouté.
  */
 
 const groups = [
@@ -118,17 +135,40 @@ export function DarkFooter() {
     >
       <div className="w-full max-w-7xl px-4 pb-12 pt-20 md:px-8 md:pt-24">
         {/* La relance occupe la largeur, au-dessus des liens : elle doit être
-            lue avant eux, pas trouvée après. */}
-        <div className="mb-20 flex flex-col items-center gap-5 text-center">
-          <h2 className="max-w-[28rem] text-[clamp(1.5rem,3vw,2.1rem)] font-bold leading-[1.15] tracking-[-0.025em] text-primary">
-            Votre zone est analysée en une minute.
-          </h2>
-          <Link
-            href="/#agent-title"
-            className="cta-solid inline-flex min-h-[48px] items-center rounded-full bg-white px-6 text-[0.9375rem] font-semibold text-ink no-underline transition-colors duration-150 hover:bg-white/90"
-          >
-            Commencer gratuitement
-          </Link>
+            lue avant eux, pas trouvée après.
+            Deux colonnes sur grand écran — texte et bouton à gauche, capture
+            réelle de l'espace pro à droite — une seule colonne, image sous le
+            texte, sur mobile. Voir le commentaire d'en-tête pour la
+            justification de la capture et son recadrage. */}
+        <div className="mb-20 grid items-center gap-10 text-center lg:grid-cols-[1.1fr_1fr] lg:gap-14 lg:text-left">
+          <div className="flex flex-col items-center gap-5 lg:items-start">
+            <h2 className="max-w-[28rem] text-[clamp(1.5rem,3vw,2.1rem)] font-bold leading-[1.15] tracking-[-0.025em] text-primary">
+              Votre zone est analysée en une minute.
+            </h2>
+            <p className="max-w-[26rem] text-[0.9375rem] leading-[1.6] text-muted">
+              Un espace pour suivre vos demandes, votre planning et vos prestations — sans rien
+              à installer.
+            </p>
+            <Link
+              href="/#agent-title"
+              className="cta-solid inline-flex min-h-[48px] items-center rounded-full bg-white px-6 text-[0.9375rem] font-semibold text-ink no-underline transition-colors duration-150 hover:bg-white/90"
+            >
+              Commencer gratuitement
+            </Link>
+          </div>
+
+          {/* Cadre à arêtes franches, sans ombre ni reflet — composition
+              écartée par docs/03-direction-artistique.md §12 sous sa forme
+              flottante uniquement ; posée à plat, elle reste conforme (§12.1). */}
+          <div className="relative mx-auto aspect-[900/1330] w-full max-w-[20rem] overflow-hidden border border-hairline lg:mx-0 lg:max-w-[22rem]">
+            <Image
+              src="/images/app-preview/espace-pro-demandes.webp"
+              alt="Page Demandes de l'espace pro Qualifyr : compteurs de réservations et calendrier mensuel."
+              fill
+              sizes="(min-width: 62rem) 22rem, 20rem"
+              className="object-cover object-top"
+            />
+          </div>
         </div>
 
         {/* Première zone : signature de marque à gauche, navigation à droite.
