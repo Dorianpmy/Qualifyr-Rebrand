@@ -1,5 +1,26 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
+import { Quicksand } from 'next/font/google';
+
+/**
+ * Police de l'espace pro — exception typographique du 20 septembre 2026,
+ * voir `docs/03-direction-artistique.md` §2.4. Le site vitrine reste sur
+ * Cormorant Garamond / Manrope ; Quicksand, plus ronde et plus fine, ne
+ * charge que sur `/app`, via la classe posée sur le conteneur ci-dessous —
+ * elle ne fuit pas hors de cette arborescence.
+ *
+ * Cinq graisses (300 à 700) : `app.module.css` en emploie quatre (400, 500,
+ * 600, 700) et 300 ajoute l'option la plus fine, cohérente avec la demande
+ * initiale. Pas de graisse simulée par le navigateur (même règle qu'au
+ * §2.3) — d'où charger explicitement chaque poids plutôt qu'une seule
+ * instance variable.
+ */
+const dashboardFont = Quicksand({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-dashboard',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'Espace pro — Qualifyr',
@@ -52,5 +73,11 @@ export const viewport: Viewport = {
 };
 
 export default function AppLayout({ children }: { children: ReactNode }) {
-  return children;
+  /*
+   * `dashboardFont.variable` pose `--font-dashboard` sur ce conteneur ; les
+   * variables CSS personnalisées se transmettent aux descendants, donc
+   * `.shell` dans `AppShell.tsx` (rendu plus bas dans l'arbre, par chaque
+   * page) peut la consommer sans que ce fichier connaisse `AppShell`.
+   */
+  return <div className={dashboardFont.variable}>{children}</div>;
 }

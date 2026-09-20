@@ -19,9 +19,18 @@
 
 /* Dashboard pro — DA SaaS mobile-first */
 
+/* `.loginShell` est inclus : l'écran de connexion vit dans le même dossier
+   `/app` mais ne s'affiche jamais à l'intérieur de `.shell` (pas encore de
+   session) — sans lui, la police changerait entre l'écran de connexion et
+   le tableau de bord juste après. Police définie dans `app/app/layout.tsx`
+   (`--font-dashboard`, Quicksand) — voir docs/03-direction-artistique.md
+   §2.4. */
 .shell,
-.shell * {
-  font-family: var(--font-body), 'Manrope', ui-sans-serif, system-ui, sans-serif !important;
+.shell *,
+.loginShell,
+.loginShell * {
+  font-family: var(--font-dashboard), 'Quicksand', ui-rounded, ui-sans-serif, system-ui,
+    sans-serif !important;
 }
 
 .shell {
@@ -304,26 +313,6 @@
 @media (min-width: 900px) {
   .navItemDesktopOnly {
     display: flex;
-  }
-}
-
-/* Emoji de navigation — icône des deux barres depuis le 20/09/2026
-   (docs/03-direction-artistique.md §7.1). `order: -1` le place avant le
-   libellé : au-dessus du texte sur la barre mobile (`.navItem` en colonne),
-   à gauche du texte sur le menu de bureau (`.navItem` en ligne). Taille
-   proche de l'ancien pictogramme linéaire qu'il remplace, à chaque
-   breakpoint (voir `.navIcon` plus haut, conservé pour `Déconnexion` et
-   « Page client », en dehors de `renderTab`). */
-.navEmoji {
-  display: inline-block;
-  order: -1;
-  font-size: 1.3rem;
-  line-height: 1;
-}
-
-@media (min-width: 900px) {
-  .navEmoji {
-    font-size: 1.05rem;
   }
 }
 

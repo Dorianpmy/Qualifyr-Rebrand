@@ -274,6 +274,21 @@ Règles :
 - Chiffres en `oldstyle-nums` par défaut — cohérent avec le registre éditorial.
 - `font-synthesis-weight: none` : aucune graisse simulée par le navigateur.
 
+### 2.4 Exception — police de l'espace pro (20 septembre 2026)
+
+Les deux familles ci-dessus restent celles du **site vitrine**. L'espace pro (`/app`) porte sa
+propre police d'interface, **Quicksand**, sur les deux barres de navigation et l'ensemble du
+tableau de bord — même logique que l'exception d'iconographie du §7.1 : Dorian veut à cet
+endroit le registre d'un outil personnel qu'on ouvre chaque jour, plus rond et plus fin que
+l'interface du site public, pas celui d'un site qui reçoit un visiteur une fois.
+
+Chargée via `next/font/google` dans `app/app/layout.tsx` (auto-hébergée, comme les polices du
+site — aucune requête vers Google au chargement), graisses 300/400/500/600/700 pour couvrir
+tous les poids déjà utilisés dans `app.module.css` sans graisse simulée par le navigateur (même
+règle qu'au §2.3). Variable `--font-dashboard`, consommée par `.shell, .shell *` — elle ne fuit
+pas hors de l'espace pro : le reste du site continue de charger Cormorant Garamond et Manrope
+sans Quicksand en plus.
+
 ---
 
 ## 3. Grilles
@@ -370,26 +385,27 @@ organiques.
   une exception de marque au jeu linéaire. Ils restent monochromes, utilisent `currentColor`
   et sont toujours nommés par un libellé visible ou accessible.
 
-### 7.1 Exception — emoji dans la navigation de l'espace pro (20/09/2026, élargie le même jour)
+### 7.1 Exception — iconographie de la navigation de l'espace pro (20/09/2026)
 
 L'interdiction d'emoji ci-dessus reste entière pour le **site vitrine** : accueil, pages
-métier, journal, pied de page. Elle s'assouplit uniquement dans la **navigation de
-l'espace pro** (`/app` — menu latéral de bureau et barre d'onglets mobile), à la demande
-explicite de Dorian, qui veut y retrouver un peu de la personnalité d'un outil qu'on ouvre
-chaque jour — un registre différent de celui d'un site qui reçoit un visiteur une fois.
+métier, journal, pied de page. La navigation de l'**espace pro** (`/app` — menu latéral de
+bureau et barre d'onglets mobile) porte un jeu d'icônes propre, un peu plus rond et plus fin
+que le jeu linéaire général, à la demande explicite de Dorian : il veut y retrouver la
+personnalité d'un outil qu'on ouvre chaque jour, un registre différent de celui d'un site qui
+reçoit un visiteur une fois.
 
 - Chaque entrée de navigation (Demandes, Planning, Prospect, Prestations, Démarchage,
-  Avant/Après, Factures, Abonnement) affiche **un seul emoji**, qui est son icône — sur
-  les deux barres, mobile et bureau.
-- **D'abord limité au menu de bureau, élargi le jour même.** La première version
-  réservait l'emoji au menu de bureau, en ajout au pictogramme linéaire, et le masquait
-  sur la barre mobile par crainte de recréer le débordement déjà corrigé le 22/08/2026
-  (cinq colonnes calées au pixel). Ce risque supposait que l'emoji s'ajoute *à côté* du
-  libellé ; en le faisant remplacer le pictogramme plutôt que s'y ajouter, il occupe la
-  même case que l'icône qu'il remplace et n'ajoute aucune largeur — le jeu de
-  pictogrammes linéaires d'origine a donc été retiré des deux barres.
-- `Déconnexion` et le bouton central « Page client » n'en reçoivent pas : le premier est
-  une action neutre, le second porte déjà le symbole de marque.
+  Avant/Après, Factures, Abonnement) a **une icône qui lui est propre**, sur les deux
+  barres, mobile et bureau. Démarchage a désormais la sienne plutôt que de reprendre celle
+  de Prospect.
+- **Toujours linéaire, monochrome, sans couleur** — la même contrainte que le jeu général,
+  simplement un trait plus fin (1.5 px) et des jonctions plus arrondies.
+- **Essai d'emoji le même jour, abandonné.** Une première version remplaçait ces icônes par
+  des emoji colorés. Dorian les a trouvés en décalage une fois posés à côté d'une référence
+  plus sobre qu'il avait sous les yeux, et a demandé un jeu d'icônes minimaliste sans
+  couleur à la place — ce que documente la version actuelle de cette section.
+- `Déconnexion` et le bouton central « Page client » gardent leur pictogramme habituel,
+  inchangé par cette exception : le second porte déjà le symbole de marque.
 - **Ce que cette exception n'autorise pas.** Elle porte sur l'iconographie, pas sur le
   contenu : aucun compteur, badge « bientôt disponible » ou indicateur de série (« X
   semaines d'affilée ») n'est ajouté tant qu'il ne repose pas sur une donnée réelle et

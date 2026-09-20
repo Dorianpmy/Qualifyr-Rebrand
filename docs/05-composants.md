@@ -1,5 +1,35 @@
 # 05 — Composants
 
+## Icônes monochromes et police Quicksand pour l'espace pro (20 septembre 2026)
+
+Retour de Dorian avec une référence plus sobre : remplacer les emoji colorés (ajoutés plus tôt
+le même jour) par des icônes minimalistes sans couleur, et adopter une police plus ronde et plus
+fine pour tout le tableau de bord.
+
+**Icônes.** Retour à un jeu SVG linéaire monochrome — proche de celui d'avant l'expérience
+emoji, trait affiné (1.7 → 1.5 px) — sur les deux barres, mobile et bureau. `Démarchage`
+(Hermès) reçoit enfin sa propre icône (avion en papier) plutôt que de reprendre celle de
+`Prospect` (loupe), les deux se distinguant mal l'une de l'autre. `Déconnexion` et « Page
+client » n'étaient pas concernés par l'exception emoji et ne le sont pas plus par ce retour.
+`docs/03-direction-artistique.md` §7.1 réécrit pour documenter l'état final plutôt que
+d'empiler une troisième version de l'historique du jour.
+
+**Police.** Quicksand (300 à 700), chargée via `next/font/google` dans `app/app/layout.tsx`,
+scopée à `/app` par une variable CSS (`--font-dashboard`) posée sur un conteneur enveloppant —
+le site vitrine garde Cormorant Garamond / Manrope, aucune fuite. Le sélecteur qui applique la
+police (`.shell, .shell *`) a été étendu à `.loginShell, .loginShell *` : l'écran de connexion
+vit dans le même dossier `/app` mais hors de `.shell` (pas encore de session), et sans cet ajout
+la police aurait changé entre la connexion et le tableau de bord juste après. Documenté dans
+`docs/03-direction-artistique.md` §2.4.
+
+**Build non vérifiable ici.** `next build` télécharge les polices Google Fonts à la
+construction ; ce bac à sable n'a pas d'accès réseau (déjà noté pour Inter/Manrope). Confirmé
+en le lançant : les trois polices (Inter, Manrope, Quicksand) échouent au fetch, pour la même
+raison. `lint`, `typecheck` et les tests passent, mais le build doit être vérifié une fois
+poussé, là où Netlify a un accès réseau réel.
+
+---
+
 ## Cases de statistiques épurées sur bureau (20 septembre 2026)
 
 Retour de Dorian : « les carreaux sont vachement gros ». Sur bureau, la grille à quatre
