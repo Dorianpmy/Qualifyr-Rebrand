@@ -1,5 +1,21 @@
 # 05 — Composants
 
+## Cases de statistiques épurées sur bureau (20 septembre 2026)
+
+Retour de Dorian : « les carreaux sont vachement gros ». Sur bureau, la grille à quatre
+colonnes (`.kpis`) s'étirait sur toute la largeur de `.main` (jusqu'à 1120 px) alors que
+chaque case ne contient qu'un nombre et deux courtes lignes de texte — le problème était la
+largeur de la grille, pas seulement son remplissage intérieur (déjà réduit une première fois
+le 12/09/2026).
+
+Un `max-width: 640px` sur `.kpis` à partir de 900 px fait redevenir les quatre cases des
+pastilles à la taille de leur contenu plutôt que des blocs étirés ; la grille à deux colonnes
+du téléphone n'est pas concernée, l'espace y est déjà compté. Rayon réduit de 14 à 10 px et
+`padding` resserré (`0.75rem 0.85rem` → `0.65rem 0.75rem`) pour aller avec. Ces cases sont
+partagées par toutes les pages à cases (Démarchage, accueil…) : l'effet se voit partout.
+
+---
+
 ## L'emoji devient l'icône des deux barres de navigation (20 septembre 2026)
 
 Retour de Dorian sur la barre d'onglets mobile : « trop terne, pas assez de personnalité »,
