@@ -1,5 +1,24 @@
 # 05 — Composants
 
+## `DarkFooter` — capture de bureau plutôt que de téléphone (20 septembre 2026, second retour)
+
+Dorian rejette la première version du visuel produit (capture de téléphone en portrait,
+encadrée) livrée plus tôt le même jour : « je déteste ce bloc, enlève ce screen iPhone ». Un
+portrait de téléphone posé dans une page pensée pour du bureau ne lit pas comme un fragment de
+la page, mais comme un objet rapporté — l'inverse de l'effet recherché.
+
+Il fournit une nouvelle capture, de bureau cette fois : sidebar complète, quatre compteurs,
+calendrier. Même traitement d'anonymisation que la première (voir
+`docs/03-direction-artistique.md` §12.1, mis à jour) : nom et ville de l'entreprise retirés de
+la sidebar, ligne d'URL du compte retirée du contenu — sans toucher aux boutons voisins ni au
+titre, contrairement au premier recadrage qui avait supprimé le bloc entier. Le cadre passe d'un
+ratio portrait (`900/1330`, `max-w-20rem`) à un ratio paysage (`1400/847`, pleine largeur de sa
+colonne) et la grille de la relance s'ajuste (`0.8fr / 1.05fr` plutôt que `1.1fr / 1fr`) pour
+laisser plus de place à une image qui n'est plus verticale. L'ancien fichier
+(`espace-pro-demandes.webp`) est supprimé ; plus aucune référence n'y pointe.
+
+---
+
 ## `MessageBubble` — récidive du carré noir Safari iOS, ombre retirée (20 septembre 2026)
 
 Dorian revoit exactement le bug déjà signalé le 18/09 (carré noir plein derrière chaque groupe

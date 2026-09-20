@@ -532,6 +532,11 @@ et les liens fonctionnent dès que le pointeur ou le doigt se trouve dans la fen
 - Sections « Nos valeurs » avec pictogrammes génériques.
 - Accordéons empilés servant à masquer un contenu faible.
 - Carrousels automatiques.
+- Boutons en pilule avec dégradé.
+- Superposition de plus de deux niveaux de profondeur : le site est plat, structuré par des
+  filets et du vide.
+- Toute composition qui rappellerait un site automobile agressif, un site de tuning ou une
+  copie de Patissio.
 
 ### 12.1 Exception — capture du tableau de bord en pied de page (20 septembre 2026)
 
@@ -543,18 +548,19 @@ texte et son bouton à une capture réelle de l'espace pro (page Demandes — KP
 encadrée par un simple filet (`border-hairline`), arêtes franches, posée sur le fond charbon
 sans élévation ni halo.
 
-La capture fournie par Dorian a été recadrée avant intégration : barre de statut iPhone
-retirée (horloge, réseau, batterie — n'apporte rien et date le visuel), et la ligne
-`Pipeline réservations · /reservation/sw-carcleaning` retirée avec les boutons qui
-l'entouraient — elle identifie le compte client, ce qu'une image d'illustration générale du
-produit n'a pas à exposer. Restent uniquement des éléments d'interface réels et anonymes : le
-titre, les quatre compteurs (à zéro — aucun chiffre modifié ni inventé), le calendrier et la
-barre d'onglets. Fichier : `public/images/app-preview/espace-pro-demandes.webp`.
-- Boutons en pilule avec dégradé.
-- Superposition de plus de deux niveaux de profondeur : le site est plat, structuré par des
-  filets et du vide.
-- Toute composition qui rappellerait un site automobile agressif, un site de tuning ou une
-  copie de Patissio.
+Deux versions se sont succédé le même jour. La première reprenait une capture de téléphone
+(portrait), recadrée pour retirer la barre de statut iOS et la ligne
+`Pipeline réservations · /reservation/sw-carcleaning` (identifiant du compte client). Dorian
+l'a écartée : posée dans une page pensée pour du bureau, une capture de téléphone en portrait
+lit comme un corps étranger plutôt que comme la continuité de la page.
+
+Remplacée par une capture de bureau de la même page (sidebar, KPI, calendrier), au format
+paysage natif du reste du site — plus de cadre façon écran de mobile. Même exigence
+d'anonymisation : le nom et la ville de l'entreprise (« SW Carcleaning », « Fribourg ») et la
+ligne d'URL du compte sont retirés avant intégration ; seuls restent des éléments d'interface
+réels et anonymes (titre, quatre compteurs à zéro — aucun chiffre modifié ni inventé —,
+calendrier, barre latérale, onglets de filtre). Fichier :
+`public/images/app-preview/espace-pro-demandes-desktop.webp`.
 
 ---
 
