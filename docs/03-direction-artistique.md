@@ -226,6 +226,18 @@ Vert · mauve · violet · bleu électrique · cyan · dégradé bleu-violet · 
 Seules ombres autorisées : `--shadow-subtle` (`0 1px 2px rgb(23 21 19 / 6%)`) et
 `--shadow-raised` (`0 2px 8px rgb(23 21 19 / 7%)`), toutes deux neutres.
 
+**Exception documentée — halos d'ambiance (`AmbientGlow`).** L'interdit ci-dessus vise le halo
+décoratif posé sur un élément (bouton, carte, bordure) — un effet local qui simule un éclairage.
+Il ne couvre pas les deux taches de couleur très diffuses (`--accent-1`, `--accent-2`, flou
+120–130 px, opacité 10–17 %) que `Section` peut poser en fond de page via sa prop `glow`
+(`components/agency/AmbientGlow.tsx`) : un rappel de marque à peine perceptible, jamais un objet
+qu'on regarde. Réservé à deux ou trois sections par page au maximum — l'entrée et la sortie,
+jamais un milieu de page — sans quoi la couleur cesse d'être un accent et devient un fond.
+Sur l'accueil : `DarkHero` (entrée), `FinalCtaSection` (sortie) et, depuis le 20/09/2026,
+`DarkFooter` (`glow`, prolonge le halo de sortie plutôt que d'en ouvrir un troisième point —
+voir le commentaire d'en-tête de `DarkFooter.tsx`), soit trois occurrences au total : le plafond,
+pas un point de départ pour en ajouter d'autres.
+
 ---
 
 ## 2. Typographies

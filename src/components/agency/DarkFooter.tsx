@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { AmbientGlow } from './AmbientGlow';
 import { Logo } from '@/components/ui/Logo';
 import { agents } from '@/content/agents';
 import { contact } from '@/content/contact';
@@ -85,6 +86,25 @@ import { contact } from '@/content/contact';
  * (nom, ville, identifiant d'URL), aucun chiffre modifié. Fichier :
  * `public/images/app-preview/espace-pro-demandes-desktop.webp` ; l'ancienne capture mobile
  * (`espace-pro-demandes.webp`) est supprimée, plus aucune référence n'y pointe.
+ *
+ * ## Halo d'ambiance en option — 20/09 (troisième retour)
+ *
+ * Dorian compare une capture de `FinalCtaSection` (fond charbon, halo chaud diffus derrière la
+ * carte « Agent Qualifyr ») à une capture du pied de page juste en dessous (fond plat, aucun
+ * halo) et demande de reprendre le fond coloré du premier pour le second — la coupure entre les
+ * deux sections se voyait trop nettement, glow puis noir plat sans transition.
+ *
+ * `AmbientGlow` est déjà le mécanisme du système pour ça (voir `Section.tsx`), réservé à deux ou
+ * trois endroits par page — l'entrée et la sortie. Sur l'accueil, `DarkHero` tient l'entrée
+ * (`glow="top"`) et `FinalCtaSection` tient la sortie (`glow="bottom"`) : ajouter un halo ici
+ * porterait ce total à trois, encore dans le budget documenté, et prolonge le même halo de
+ * sortie au lieu d'en ouvrir un nouveau point de couleur.
+ *
+ * `DarkFooter` est cependant posé sur sept pages, dont six sans `FinalCtaSection` au-dessus —
+ * y activer le halo partout dépasserait le budget sur des pages qui ont déjà leur propre clôture
+ * colorée (`DarkVerticalPage`, `glow="bottom"`). D'où une prop plutôt qu'un comportement fixe :
+ * `glow` reste à `false` par défaut (les six autres pages sont inchangées), et seul
+ * `src/app/page.tsx` la passe à `true`.
  */
 
 const groups = [
@@ -138,14 +158,24 @@ const groups = [
 /** Marchés où le produit est effectivement proposé. */
 const markets = ['France', 'Belgique', 'Suisse', 'Luxembourg'] as const;
 
-export function DarkFooter() {
+export type DarkFooterProps = {
+  /**
+   * Prolonge le halo de sortie de `FinalCtaSection` dans le pied de page.
+   * `false` par défaut : voir le commentaire d'en-tête — seul `src/app/page.tsx`
+   * (la seule page qui pose `FinalCtaSection` juste au-dessus) l'active.
+   */
+  readonly glow?: boolean;
+};
+
+export function DarkFooter({ glow = false }: DarkFooterProps = {}) {
   const year = new Date().getFullYear();
 
   return (
     <footer
       data-theme="dark"
-      className="flex w-full justify-center border-t border-hairline bg-ink"
+      className="relative isolate flex w-full justify-center overflow-hidden border-t border-hairline bg-ink"
     >
+      {glow ? <AmbientGlow position="top" intensity="soft" /> : null}
       <div className="w-full max-w-7xl px-4 pb-12 pt-20 md:px-8 md:pt-24">
         {/* La relance occupe la largeur, au-dessus des liens : elle doit être
             lue avant eux, pas trouvée après.

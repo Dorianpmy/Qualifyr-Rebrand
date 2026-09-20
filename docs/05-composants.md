@@ -1,5 +1,23 @@
 # 05 — Composants
 
+## `DarkFooter` — halo d'ambiance en option (20 septembre 2026, troisième retour)
+
+Dorian compare une capture de `FinalCtaSection` (halo chaud diffus derrière la carte « Agent
+Qualifyr ») à une capture du pied de page juste en dessous (fond plat) et demande de reprendre
+ce fond coloré dans le second : la coupure entre les deux se voyait trop nettement.
+
+`DarkFooter` accepte désormais une prop `glow?: boolean` (défaut `false`) qui pose un
+`AmbientGlow` (`position="top"`, `intensity="soft"`) derrière la relance — le même mécanisme que
+`Section`, réservé à deux ou trois halos par page (voir `docs/03-direction-artistique.md` §1.7,
+mis à jour). `DarkFooter` étant posé sur sept pages, l'activer par défaut aurait dépassé ce budget
+sur les six qui ferment déjà avec leur propre halo (`DarkHero` + `CtaSection`/`DarkVerticalPage`,
+`glow="bottom"`) : seul `src/app/page.tsx` passe `glow` — c'est la seule page où `FinalCtaSection`
+tient déjà le rôle de sortie juste au-dessus, donc le halo du pied de page le prolonge au lieu
+d'ouvrir un troisième point de couleur. Le `<footer>` reçoit `relative isolate overflow-hidden`,
+nécessaires à `AmbientGlow`, que la prop soit activée ou non.
+
+---
+
 ## `DarkFooter` — capture de bureau plutôt que de téléphone (20 septembre 2026, second retour)
 
 Dorian rejette la première version du visuel produit (capture de téléphone en portrait,
