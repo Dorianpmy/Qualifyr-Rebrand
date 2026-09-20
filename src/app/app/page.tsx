@@ -5,6 +5,12 @@ import { LockedModule } from '@/components/app/LockedModule';
 import { landingPathFor } from '@/lib/billing/entitlements';
 import { pageAccess } from '@/lib/billing/page-guard';
 import {
+  SCOPE_DISPLAY_ORDER,
+  calendarDayDescription,
+  monthlyCalendar,
+  scopeLabel,
+} from '@/lib/detailing/calendar';
+import {
   formatDuration,
   formatPrice,
   formatSlot,
@@ -13,7 +19,6 @@ import {
   holdRemaining,
   listBookingsForDetailer,
   locationLabel,
-  scopeLabel,
   soilingLabel,
   statusLabel,
   vehicleLabel,
@@ -61,6 +66,20 @@ function badgeClass(status: string): string {
     return `${base} ${styles.badgeAnnule ?? ''}`.trim();
   }
   return base;
+}
+
+/**
+ * Couleur de puce par prestation — voir la note dans `dashboard.ts`
+ * (`SCOPE_DISPLAY_ORDER`) : reprend le contour tricolore déjà utilisé dans ce
+ * dashboard, elle n'introduit pas une quatrième identité de couleur.
+ */
+function scopeDotClass(scope: string): string {
+  const map: Record<string, string> = {
+    interieur: styles.calDotInterieur ?? '',
+    exterieur: styles.calDotExterieur ?? '',
+    complet: styles.calDotComplet ?? '',
+  };
+  return `${styles.calendarDot ?? ''} ${map[scope] ?? ''}`.trim();
 }
 
 export default async function AppHomePage({
@@ -143,6 +162,8 @@ export default async function AppHomePage({
     .reduce((sum, b) => sum + b.quotedPrice, 0);
 
   const publicPath = `/reservation/${detailer.slug}`;
+  const calendar = monthlyCalendar(all);
+  const weekdayLabels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 
   return (
     <AppShell
@@ -234,6 +255,72 @@ export default async function AppHomePage({
             <div className={styles.kpiValue}>{formatPrice(revenue)}</div>
             <div className={styles.kpiHint}>Confirmé + réalisé</div>
           </div>
+        </div>
+
+        {/*
+          Aperçu du mois (20/09/2026, demande de Dorian). Un mini-calendrier,
+          pas la vue Planning complète : il ne fait que montrer d'un coup
+          d'œil quels jours ont des réservations, et lesquelles — la liste
+          détaillée reste la source, juste en dessous.
+
+          Une puce par prestation plutôt que par statut : le statut se lit
+          déjà sur chaque ligne de la liste (badge), la question à laquelle
+          répond ce calendrier est « qu'est-ce qui est prévu, et quel genre
+          de prestation ». Voir `SCOPE_DISPLAY_ORDER` dans `dashboard.ts`
+          pour le choix des trois couleurs.
+        */}
+        <div className={styles.panel} style={{ marginBottom: '1.15rem' }}>
+          <div className={styles.calendarHead}>
+            <span className={styles.calendarMonth}>{calendar.monthLabel}</span>
+          </div>
+          <div className={styles.calendarWeekdays} aria-hidden="true">
+            {weekdayLabels.map((label) => (
+              <span key={label}>{label}</span>
+            ))}
+          </div>
+          <div className={styles.calendarGrid}>
+            {calendar.weeks.map((week, weekIndex) =>
+              week.map((day, dayIndex) => {
+                if (!day.isCurrentMonth) {
+                  return (
+                    <div
+                      key={`${weekIndex}-${dayIndex}`}
+                      className={`${styles.calendarDay ?? ''} ${styles.calendarDayMuted ?? ''}`}
+                      aria-hidden="true"
+                    />
+                  );
+                }
+                const description = calendarDayDescription(day, calendar.monthLabel);
+                return (
+                  <div
+                    key={day.dateKey}
+                    className={`${styles.calendarDay ?? ''} ${day.isToday ? styles.calendarDayToday ?? '' : ''}`}
+                    title={description}
+                  >
+                    <span className={styles.calendarDayNumber}>{day.dayOfMonth}</span>
+                    {day.scopes.length > 0 ? (
+                      <span className={styles.calendarDots} aria-hidden="true">
+                        {day.scopes.map((scope) => (
+                          <span key={scope} className={scopeDotClass(scope)} />
+                        ))}
+                      </span>
+                    ) : null}
+                    {/* Texte accessible : la couleur des puces ne porte jamais
+                        seule l'information (docs/03 §7). */}
+                    <span className="visually-hidden">{description}</span>
+                  </div>
+                );
+              }),
+            )}
+          </div>
+          <ul className={styles.calendarLegend}>
+            {SCOPE_DISPLAY_ORDER.map((scope) => (
+              <li key={scope}>
+                <span aria-hidden="true" className={scopeDotClass(scope)} />
+                {scopeLabel(scope)}
+              </li>
+            ))}
+          </ul>
         </div>
 
         <div className={styles.filters}>

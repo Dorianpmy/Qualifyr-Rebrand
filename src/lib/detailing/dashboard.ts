@@ -1,4 +1,5 @@
 import 'server-only';
+import { slotStart } from './calendar';
 import { getServiceSupabaseClient } from './supabase-server';
 import type { BookingStatus } from './types';
 
@@ -316,14 +317,16 @@ export function vehicleSizeLabel(size: string): string {
   return map[size] ?? size;
 }
 
-export function scopeLabel(scope: string): string {
-  const map: Record<string, string> = {
-    interieur: 'Intérieur',
-    exterieur: 'Extérieur',
-    complet: 'Complet',
-  };
-  return map[scope] ?? scope;
-}
+/**
+ * `scopeLabel` vit désormais dans `calendar.ts` (logique pure, testable —
+ * voir son en-tête) et est réexportée ici pour ne rien changer aux imports
+ * existants (`app/app/page.tsx`, `app/app/bookings/[id]/page.tsx`, …).
+ * Le calendrier mensuel de la page Demandes (`monthlyCalendar`,
+ * `calendarDayDescription`, `SCOPE_DISPLAY_ORDER`, `CalendarDay`,
+ * `MonthlyCalendar`) vit au même endroit et s'importe directement depuis
+ * `@/lib/detailing/calendar`.
+ */
+export { scopeLabel } from './calendar';
 
 /**
  * État déclaré par le client.
@@ -388,14 +391,6 @@ export function formatSlotTime(slotRaw: string | null): string {
     minute: '2-digit',
     timeZone: 'Europe/Paris',
   }).format(start);
-}
-
-export function slotStart(slotRaw: string | null): Date | null {
-  if (!slotRaw) return null;
-  const match = slotRaw.match(/\["?([^,"\]]+)/);
-  if (!match?.[1]) return null;
-  const date = new Date(match[1].replace(' ', 'T'));
-  return Number.isNaN(date.getTime()) ? null : date;
 }
 
 /**

@@ -881,6 +881,129 @@
   color: #f87171;
 }
 
+/* ---------------------------------------------------------------------------
+   Aperçu du mois — page Demandes (20/09/2026).
+
+   Grille de sept colonnes, alignée sur la semaine française (lundi →
+   dimanche — voir `mondayIndex` dans `dashboard.ts`). Les cases hors mois
+   restent dans la grille (`visibility: hidden`, pas `display: none`) pour
+   que les semaines gardent sept colonnes pleines sans décalage.
+--------------------------------------------------------------------------- */
+.calendarHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.95rem 1.1rem 0.15rem;
+}
+
+.calendarMonth {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-primary);
+  text-transform: capitalize;
+}
+
+.calendarWeekdays {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+  padding: 0.4rem 0.6rem 0;
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-faint);
+  text-align: center;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+  padding: 0.3rem 0.6rem 1rem;
+}
+
+.calendarDay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  min-height: 2.6rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+}
+
+.calendarDayMuted {
+  visibility: hidden;
+}
+
+.calendarDayNumber {
+  font-size: 0.72rem;
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Le jour courant se distingue par un fond et un filet, jamais par la seule
+   couleur d'un texte : quelqu'un qui ne perçoit pas la teinte doit pouvoir le
+   repérer aussi bien. */
+.calendarDayToday {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--color-hairline-strong);
+}
+
+.calendarDayToday .calendarDayNumber {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.calendarDots {
+  display: flex;
+  gap: 0.15rem;
+}
+
+.calendarDot {
+  display: inline-block;
+  inline-size: 5px;
+  block-size: 5px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* Trois teintes chaudes déjà en usage dans ce dashboard (onglet actif, carte
+   de paiement, écran de connexion) — voir la note dans `dashboard.ts`
+   (`SCOPE_DISPLAY_ORDER`). Aucune couleur froide, aucune quatrième identité
+   ajoutée pour ce seul calendrier. */
+.calDotInterieur {
+  background: var(--accent-1);
+}
+
+.calDotExterieur {
+  background: #c9835c;
+}
+
+.calDotComplet {
+  background: #c7a06b;
+}
+
+.calendarLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 1.1rem;
+  margin: 0;
+  padding: 0 1.1rem 1rem;
+  list-style: none;
+  font-size: 0.72rem;
+  color: var(--color-muted);
+}
+
+.calendarLegend li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
 .empty {
   padding: 2.5rem 1.25rem;
   text-align: center;

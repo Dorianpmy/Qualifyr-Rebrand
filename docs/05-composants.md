@@ -1,5 +1,40 @@
 # 05 — Composants
 
+## Aperçu du mois sur la page Demandes (20 septembre 2026)
+
+Demande de Dorian : un calendrier sur la page Demandes, avec une couleur par prestation pour
+les rendez-vous. Deux précisions obtenues avant implémentation : un **mini-calendrier du mois**
+(aperçu, pas la vue Planning complète), et **une couleur par prestation** — pas par statut de
+réservation, déjà couvert par les badges de la liste.
+
+**Palette.** `scope` (`interieur` / `exterieur` / `complet`) est une énumération fixe à trois
+valeurs (`types.ts`), pas un catalogue libre par professionnel — pas besoin d'assignation
+dynamique. Les trois couleurs reprennent le contour « tricolore » déjà utilisé ailleurs dans ce
+dashboard (onglet actif, carte d'activation du paiement, écran de connexion) : pêche
+(`--accent-1`), terracotta (`#c9835c`), laiton (`#c7a06b`) — trois teintes chaudes, aucune
+identité supplémentaire ajoutée pour ce seul composant.
+
+**Accessibilité.** La couleur des puces n'est jamais la seule information : chaque case porte un
+`title` (infobulle) et un texte `visually-hidden` décrivant le jour, le nombre de réservations et
+les prestations concernées (`calendarDayDescription`), et une légende visible sous le calendrier
+associe chaque couleur à son libellé.
+
+**Réservations exclues.** Une réservation `annule` ou `expire` ne représente plus une
+intervention ce jour-là — elle n'apparaît ni dans les puces ni dans le décompte, cohérent avec
+`listBookingsForDay` (tournée du jour, Planning) qui applique la même logique côté statut
+`confirme`.
+
+**Réorganisation technique.** `scopeLabel`, `slotStart` et toute la nouvelle logique de
+calendrier (`monthlyCalendar`, `calendarDayDescription`, `SCOPE_DISPLAY_ORDER`) ont été extraits
+de `dashboard.ts` vers un nouveau fichier `src/lib/detailing/calendar.ts`, sans dépendance à
+Supabase ni à React — même principe que `availability.ts` et `quote.ts`. `dashboard.ts` porte
+`import 'server-only'` (accès base), ce qui interdit d'importer quoi que ce soit du fichier
+depuis un test ; la nouvelle logique, purement calculatoire, devait donc vivre ailleurs pour être
+testée (`tests/monthly-calendar.test.ts`, 12 cas). `dashboard.ts` réexporte `scopeLabel` pour ne
+rien changer aux imports déjà en place ailleurs dans le produit.
+
+---
+
 ## Emoji dans le menu de bureau de l'espace pro — ajustement (20 septembre 2026)
 
 Suite immédiate de l'entrée ci-dessous : la première version affichait le pictogramme
