@@ -8,6 +8,7 @@ import { demoSlotsForDay } from '@/lib/detailing/demo';
 import { uploadDetailerPhoto } from '@/lib/detailing/photos';
 import { WarningBanner } from '@/components/ui/WarningBanner';
 import { AddressPicker, type SelectedAddress } from './AddressPicker';
+import { PayDepositButton } from './PayDepositButton';
 import { formatMoney, profileFor } from '@/lib/detailing/locale';
 import { quote } from '@/lib/detailing/quote';
 import {
@@ -212,10 +213,15 @@ export function BookingFlow({
 
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [bookingSummary, setBookingSummary] = useState<{
+    /** Absent en démonstration : aucune réservation n'est enregistrée. */
+    id?: string;
     quotedPrice: number;
     quotedMinutes: number;
     depositAmount: number;
-    holdExpiresAt: string;
+    /** `null` quand l'acompte ne se paie pas en ligne : pas de délai. */
+    holdExpiresAt: string | null;
+    /** Voir `BookingPayment` dans `lib/detailing/booking.ts`. */
+    payment: 'stripe' | 'manuel' | 'aucun';
   } | null>(null);
 
   const profile = profileFor(detailer.country);
@@ -418,7 +424,8 @@ export function BookingFlow({
           quotedPrice: currentQuote.totalPrice,
           quotedMinutes: currentQuote.totalMinutes,
           depositAmount: currentQuote.depositAmount,
-          holdExpiresAt: new Date(Date.now() + 15 * 60_000).toISOString(),
+          holdExpiresAt: null,
+          payment: 'aucun',
         });
         setPhase('done');
       }, 500);
@@ -542,11 +549,37 @@ export function BookingFlow({
             Dans le vrai parcours, {email ? `un e-mail part à ${email}` : 'un e-mail part au client'} et
             vous recevez la demande dans votre espace pro, prête à confirmer.
           </p>
-        ) : quoteConfig.depositEnabled && bookingSummary.depositAmount > 0 ? (
+        ) : bookingSummary.payment === 'stripe' && bookingSummary.id ? (
+          /*
+           * Acompte en ligne (`docs/13` §2.5) : le paiement s'ouvre tout de
+           * suite, en pleine page, depuis le site du professionnel comme depuis
+           * la page Qualifyr. Le webhook confirme la réservation.
+           */
+          <>
+            <p>
+              Réglez maintenant l’acompte de {formatPrice(bookingSummary.depositAmount)} pour
+              confirmer ce créneau.
+              {bookingSummary.holdExpiresAt
+                ? ` Il vous est réservé jusqu’à ${formatTime(bookingSummary.holdExpiresAt)} ; sans paiement, il sera proposé à d’autres clients.`
+                : null}
+            </p>
+            <PayDepositButton
+              bookingId={bookingSummary.id}
+              label={`Payer l’acompte de ${formatPrice(bookingSummary.depositAmount)}`}
+              tone="dark"
+            />
+          </>
+        ) : bookingSummary.payment === 'manuel' && bookingSummary.id ? (
           <p>
-            {detailer.name} vous recontacte pour l’acompte de{' '}
-            {formatPrice(bookingSummary.depositAmount)} avant{' '}
-            {formatTime(bookingSummary.holdExpiresAt)} — au-delà, le créneau est libéré.
+            Pour confirmer ce créneau, réglez l’acompte de{' '}
+            {formatPrice(bookingSummary.depositAmount)} selon les indications de {detailer.name} :{' '}
+            <a
+              href={`/reservation/${detailer.slug}/confirmation?booking=${bookingSummary.id}`}
+              target="_top"
+            >
+              voir comment régler l’acompte
+            </a>
+            .
           </p>
         ) : (
           <p>{detailer.name} vous recontacte pour confirmer définitivement ce créneau.</p>
