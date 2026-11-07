@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 import { MessageBubble } from './MessageBubble';
 import { Section } from './Section';
 import { SocialProof, type SocialProofProps } from './SocialProof';
@@ -55,6 +56,14 @@ export type DarkHeroProps = {
    * défaut.
    */
   readonly messages?: readonly string[];
+  /**
+   * Visuel de la colonne de droite (7 novembre 2026, accueil uniquement —
+   * `HeroPhone`). Présent : deux colonnes à partir de 768px, texte aligné à
+   * gauche, visuel à droite ; une seule colonne en dessous, texte d'abord.
+   * Le nuage de `messages` n'est pas rendu dans ce cas : les cartes du
+   * visuel le remplacent. Absent : mise en page centrée inchangée.
+   */
+  readonly visual?: ReactNode;
 };
 
 /**
@@ -100,10 +109,23 @@ export function DarkHero({
   proof,
   trust,
   messages,
+  visual,
 }: DarkHeroProps) {
+  const split = Boolean(visual);
+
+  const reassurance = proof ? (
+    <div className="mt-14">
+      <SocialProof {...proof} />
+    </div>
+  ) : trust ? (
+    <div className="mt-14 w-full border-t border-hairline pt-10">
+      <TrustStrip />
+    </div>
+  ) : null;
+
   return (
     <Section glow="top" glowIntensity="soft" className="pb-20 pt-24 sm:pt-32">
-      {messages && messages.length > 0 ? (
+      {!split && messages && messages.length > 0 ? (
         <div
           aria-hidden="true"
           className="relative mx-auto mb-6 w-full max-w-[26rem] overflow-visible"
@@ -139,7 +161,20 @@ export function DarkHero({
       {/* 44 rem : la colonne de lecture. Au-delà, le titre cesse d'être un
           objet et devient un bandeau. Elle vit à l'intérieur du conteneur
           commun, qui gère la largeur de page et le centrage. */}
-      <div className="relative mx-auto flex max-w-[44rem] flex-col items-center text-center">
+      <div
+        className={
+          split
+            ? 'relative grid items-center gap-14 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:gap-8'
+            : undefined
+        }
+      >
+      <div
+        className={
+          split
+            ? 'relative flex min-w-0 flex-col items-start text-left'
+            : 'relative mx-auto flex max-w-[44rem] flex-col items-center text-center'
+        }
+      >
         {/* Bordure en dégradé : le badge est le seul endroit de la page où la
             couleur apparaît en tant que telle.
 
@@ -170,9 +205,14 @@ export function DarkHero({
             de `weight` fixe) : un poids intermédiaire entre 700 et 800
             n'existe dans aucun fichier statique. */}
         <h1
-          className="mb-6 text-primary"
+          /* `hero-title-split` (7 novembre 2026) : en deux colonnes, la règle
+             `h1 { … !important }` de `base.css` écrasait ces styles en ligne
+             (graisse 600 au lieu de 750, 84px) — voir la fin de `tailwind.css`. */
+          className={split ? 'hero-title-split mb-6 text-primary' : 'mb-6 text-primary'}
           style={{
-            fontSize: 'clamp(2.5rem, 6vw, 5rem)',
+            /* En deux colonnes, la colonne fait environ la moitié de la
+               page : le corps plafonne plus bas pour garder trois lignes. */
+            fontSize: split ? 'clamp(2.5rem, 5.2vw, 4.25rem)' : 'clamp(2.5rem, 6vw, 5rem)',
             fontWeight: 750,
             letterSpacing: '-0.055em',
             lineHeight: 0.94,
@@ -194,7 +234,9 @@ export function DarkHero({
           {subtitle}
         </p>
 
-        <div className="flex flex-wrap items-center justify-center gap-3">
+        <div
+          className={`flex flex-wrap items-center gap-3 ${split ? 'justify-start' : 'justify-center'}`}
+        >
           <Link
             href={ctaHref}
             data-analytics-event="cta_hero_clicked"
@@ -234,16 +276,15 @@ export function DarkHero({
 
         {/* Pas de filet séparateur : dans la référence la preuve flotte, elle
             n'est pas posée dans un cadre. */}
-        {proof ? (
-          <div className="mt-14">
-            <SocialProof {...proof} />
-          </div>
-        ) : trust ? (
-          <div className="mt-14 w-full border-t border-hairline pt-10">
-            <TrustStrip />
-          </div>
-        ) : null}
+        {split ? null : reassurance}
       </div>
+
+      {split ? <div className="flex min-w-0 justify-center">{visual}</div> : null}
+      </div>
+
+      {/* En deux colonnes, la réassurance reprend toute la largeur sous la
+          grille plutôt que de s'écraser dans la colonne de texte. */}
+      {split ? reassurance : null}
     </Section>
   );
 }

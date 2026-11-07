@@ -1,5 +1,75 @@
 # 05 — Composants
 
+## Hero de l'accueil en deux colonnes, maquette de téléphone (7 novembre 2026)
+
+Demande de Dorian : passer le hero centré de l'accueil à une mise en page en deux colonnes,
+texte aligné à gauche et maquette de téléphone à droite, entourée de cartes qui sortent de
+l'écran. **Version 2, le soir même** : sur la référence d'un hero de SaaS « avant / maintenant »,
+il veut de la couleur et de la vie — fond d'écran iOS, notification, message, paiement. Les
+couleurs, halos et emoji de cette version relèvent de l'exception
+`docs/03-direction-artistique.md` §7.2, limitée à ce visuel.
+
+**Version 3, même soir**, sur une maquette de référence fournie par Dorian : téléphone plus grand
+et nettement incliné (`rotateX 14°`, `rotateY −24°`, `rotateZ 11°`) avec la tranche du boîtier
+visible (pile d'ombres décalées), fond d'écran chaud orange → rouge → violet, une rangée de
+quatre applications légendées (Météo, Horloge, Photos, Appareil), widget au verre dépoli avec
+la voiture en tête puis « Car detailing booking », points de page au-dessus du dock. La carte de
+messages porte l'en-tête « iMessage » ; la carte de paiement une tuile violette avec un
+pictogramme de carte bancaire générique (pas le logo de Stripe). Les cartes suivent
+l'inclinaison du téléphone.
+
+**Titre du hero en deux colonnes — correctif.** La règle `h1 { … !important }` de `base.css`
+écrasait les styles en ligne de `DarkHero` : le titre sortait en graisse 600 et en 84 px au
+lieu de 750. La classe `hero-title-split`, posée seulement quand un visuel est passé, et sa
+règle en fin de `tailwind.css` (hors couche, `!important`, sélecteur plus précis) rétablissent
+graisse 750 et un corps adapté à une demi-colonne. Le hero centré des autres pages n'est pas
+touché. (`dark.css` n'est importé nulle part : une règle posée là n'a aucun effet.)
+
+**`DarkHero` — prop `visual?: ReactNode`.** Absente, rien ne change : les pages métier et
+`/logiciel-*` gardent le hero centré. Présente, le hero passe en grille deux colonnes à partir de
+`md` (768 px), texte à gauche, visuel à droite ; en dessous, une seule colonne, texte puis
+visuel. Le nuage de `MessageBubble` (`messages`) n'est pas rendu à côté d'un visuel. La bande
+de réassurance (`trust`) reste en dessous, sur toute la largeur.
+
+**`HeroPhone` (`components/agency/HeroPhone.tsx`).** Composant serveur, sans JavaScript client.
+
+- **Téléphone** en CSS pur, type iPhone récent : cadre titane sombre, Dynamic Island, boutons
+  latéraux. Il est **incliné en perspective** (`rotateY` négatif, léger `rotateX`) : le bord
+  droit s'éloigne.
+- **Deux halos diffus**, bleu et violet, derrière le téléphone (§7.2).
+- **Écran** : fond d'écran multicolore en dégradés CSS, barre d'état, une rangée d'icônes
+  d'applications génériques, et au centre le widget de réservation Qualifyr en mode sombre
+  translucide (`backdrop-filter: blur`) : titre « Car detailing booking », silhouette de
+  voiture sombre en SVG, gabarits Citadine / Berline / SUV / break (SUV sélectionné). Dock de
+  quatre icônes génériques : Téléphone, WhatsApp, Safari, Photos (libellés accessibles
+  masqués, pictogrammes non copiés).
+- **Trois cartes qui débordent**, ombre forte, légère rotation :
+  1. en haut, chevauchant l'écran : notification WhatsApp translucide, pastille verte —
+     « Client WhatsApp • maintenant », puis « Salut, dispo ce samedi pour un traitement
+     céramique ? » ;
+  2. à gauche : carte de messages claire, sans avatar — bulle grise « attends… c'est vraiment
+     combien ? », bulle bleue iOS « Tarif calculé : 280 € • Acompte 50 € versé 💳 » ;
+  3. à droite : carte de paiement blanche — tuile violette à pictogramme de carte,
+     « Paiement », pastille « Réussi », « Acompte de 50 € encaissé sur Stripe », « 50,00 € ».
+
+  Les montants de ces cartes sont **un exemple de conversation**, cohérent d'une carte à
+  l'autre (280 €, acompte 50 €) ; le widget de l'écran n'affiche pas de prix, pour ne pas
+  contredire cet exemple.
+
+**Animation sans dépendance.** Framer Motion n'est pas installé et `docs/04` limite les
+dépendances : le flottement est une animation CSS (`translateY` de quelques pixels, six
+secondes, décalée par carte), coupée sous `prefers-reduced-motion`. **Règle WebKit** : la
+transformation (inclinaison, rotation, flottement) est portée par un élément externe qui ne
+peint rien ; le fond, le rayon et l'ombre par un élément interne sans transformation — sinon
+WebKit dessine un rectangle opaque derrière l'élément.
+
+**Accessibilité et débordement.** Le visuel est un `role="img"` avec une description courte ;
+le détail de l'écran et des cartes n'est pas lu un par un. Les cartes débordent du téléphone,
+jamais du conteneur : aucune largeur fixe au-delà de la colonne, `overflow-x` jamais déclenché
+à 360 px. Sous 768 px, l'ensemble est réduit proportionnellement.
+
+---
+
 ## `/creation-site-web` — page restée sur l'ancien système (20 septembre 2026)
 
 Signalée par Dorian depuis le bouton « Créer mon site avec Qualifyr » de la clôture de

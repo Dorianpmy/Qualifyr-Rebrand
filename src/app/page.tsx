@@ -12,6 +12,7 @@ import { DarkHero } from '@/components/agency/DarkHero';
 import { DarkPricing } from '@/components/agency/DarkPricing';
 import { DemoSection } from '@/components/agency/DemoSection';
 import { FinalCtaSection } from '@/components/agency/FinalCtaSection';
+import { HeroPhone } from '@/components/agency/HeroPhone';
 import { HowItWorks } from '@/components/agency/HowItWorks';
 import { ServiceTabs } from '@/components/agency/ServiceTabs';
 import { services } from '@/components/agency/services-content';
@@ -89,7 +90,14 @@ export default function HomePage() {
          * Les trois éléments annoncés sont désormais les trois qui existent
          * réellement — recensement, prix ferme, acompte.
          */
-        subtitle="Qualifyr recense les entreprises de votre secteur à appeler, affiche un prix ferme à vos clients et encaisse l’acompte au clic — pour arrêter d’y passer vos soirées."
+        /*
+         * 7 novembre 2026 (demande explicite, refonte du hero en deux
+         * colonnes) : le sous-titre se recentre sur le parcours client — prix
+         * ferme selon le véhicule et acompte encaissé par Stripe, deux
+         * fonctionnalités réelles (`lib/detailing/quote.ts`, route
+         * `/api/detailing/checkout`). Le recensement reste présenté plus bas.
+         */
+        subtitle="Qualifyr affiche un prix ferme à vos clients selon leur véhicule et encaisse l’acompte automatiquement — pour arrêter d’y passer vos soirées."
         /*
          * CTA : « Tester Qualifyr gratuitement → » demandé, flèche retirée
          * du texte — le bouton porte déjà une flèche SVG animée au survol
@@ -109,26 +117,13 @@ export default function HomePage() {
          */
         trust
         /*
-         * Nuage de bulles bleues (#1683F8) demandé explicitement — voir
-         * `MessageBubble`. Réservé à l'accueil : ce même composant
-         * `DarkHero` sert aussi à `/nettoyage-automobile` et aux pages
-         * `/logiciel-*`, où ce nuage n'a pas été demandé.
-         *
-         * **Textes remplacés le 18/08/2026** (audit copywriting sitewide) :
-         * les cinq messages fournis à l'origine (« Quoi poster cette
-         * semaine ? », « Mes publications sont prêtes »...) décrivaient une
-         * fonctionnalité de suggestions de contenu à publier que Qualifyr
-         * n'a pas — même problème et même correction que pour le sous-titre
-         * et les bénéfices ci-dessus. Remplacés par des messages ancrés sur
-         * les fonctionnalités réelles (prospection, prix ferme, devis).
+         * Colonne de droite : téléphone incliné, fond d'écran iOS et cartes
+         * débordantes (7 novembre 2026) — voir `HeroPhone`,
+         * `docs/05-composants.md` et l'exception `docs/03` §7.2. Remplace le
+         * nuage de bulles `messages`, que `DarkHero` ne rend plus quand un
+         * visuel est passé.
          */
-        messages={[
-          'C’est combien pour une Clio ?',
-          'Prix affiché, acompte encaissé',
-          'Fini les devis écrits le soir',
-          'Un agent démarche pour vous',
-          'Un client de plus cette semaine',
-        ]}
+        visual={<HeroPhone />}
       />
 
       <ServiceTabs

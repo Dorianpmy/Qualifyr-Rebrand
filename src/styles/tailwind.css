@@ -1628,3 +1628,18 @@
   }
 }
 
+
+/*
+ * Titre du hero de l'accueil en deux colonnes (7 novembre 2026,
+ * `docs/05-composants.md`). Hors de toute `@layer`, comme `base.css` : sa
+ * règle `h1 { … !important }` l'emportait sur les styles en ligne de
+ * `DarkHero` (graisse 600 au lieu de 750, corps de 84px trop grand pour une
+ * demi-colonne). Ce sélecteur, plus précis et lui aussi en `!important`,
+ * rétablit l'intention — uniquement pour le hero en deux colonnes.
+ */
+[data-theme='dark'] h1.hero-title-split {
+  font-size: clamp(2.5rem, 4.6vw, 4.1rem) !important;
+  font-weight: 750 !important;
+  letter-spacing: -0.04em !important;
+  line-height: 1 !important;
+}
