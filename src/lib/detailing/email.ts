@@ -360,13 +360,15 @@ export async function sendAbandonedBookingEmail(
   const from = requireFromAddress('relance');
   if (!from) return false;
 
-  const subject = `Votre créneau avec ${payload.detailerName} est encore disponible`;
+  // Pas de « créneau encore disponible » : l'e-mail part sans vérifier
+  // l'agenda, et le créneau a pu être repris (`docs/13` §2.5).
+  const subject = `Votre demande auprès de ${payload.detailerName} n’est pas encore confirmée`;
   const text = [
     subject,
     '',
     `Vous avez commencé une demande auprès de ${payload.detailerName} (${payload.quotedPriceLabel}), mais le créneau n’a pas été confirmé.`,
     '',
-    `Réglez l’acompte de ${payload.depositLabel} pour le garder : ${payload.recoveryUrl}`,
+    `Réglez l’acompte de ${payload.depositLabel} pour réserver ce créneau s’il est toujours libre : ${payload.recoveryUrl}`,
     '',
     'Si vous n’êtes plus intéressé, ignorez simplement ce message — rien ne sera débité.',
     '',
@@ -380,10 +382,11 @@ export async function sendAbandonedBookingEmail(
   const safeRecoveryUrl = escapeHtml(payload.recoveryUrl);
 
   const html = `<!DOCTYPE html><html><body style="font-family:system-ui,-apple-system,sans-serif;line-height:1.5;color:#111;max-width:560px;margin:0 auto;padding:24px">
-  <h1 style="font-size:20px;margin:0 0 12px">Votre créneau est encore disponible</h1>
+  <h1 style="font-size:20px;margin:0 0 12px">Votre demande n’est pas encore confirmée</h1>
   <p style="margin:0 0 20px;color:#333">
     Vous avez commencé une demande auprès de <strong>${safeDetailerName}</strong>
     (${escapeHtml(payload.quotedPriceLabel)}), mais le créneau n’a pas été confirmé.
+    Réglez l’acompte pour le réserver s’il est toujours libre.
   </p>
   <p style="margin:0 0 24px">
     <a href="${safeRecoveryUrl}" style="display:inline-block;padding:12px 24px;border-radius:999px;background:#0e0e0f;color:#fff;text-decoration:none;font-weight:600">

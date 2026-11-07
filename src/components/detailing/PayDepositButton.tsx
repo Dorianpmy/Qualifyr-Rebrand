@@ -11,17 +11,76 @@ import { useState } from 'react';
  * reste du site change entre-temps. Un bouton de paiement invisible à cause
  * d'un conflit de spécificité CSS coûterait une vente, pas juste un défaut
  * visuel.
+ *
+ * **Paiement en pleine page (07/11/2026).** Le bouton apparaît aussi à la fin
+ * du formulaire intégré sur le site d'un professionnel, dans une iframe. Or
+ * Stripe Checkout refuse de s'afficher dans une iframe. Le bouton remplace donc
+ * la page entière (`window.top`), ou ouvre un nouvel onglet si le navigateur
+ * l'interdit. Comme aucun navigateur ne signale de façon fiable un blocage,
+ * un lien de secours s'affiche toujours après la tentative (`docs/13` §2.5).
+ *
+ * `tone` adapte les couleurs au fond : clair sur la page de confirmation,
+ * sombre dans le parcours de réservation.
  */
+
+type Tone = 'light' | 'dark';
+
+const palette: Record<
+  Tone,
+  { readonly background: string; readonly color: string; readonly error: string; readonly muted: string }
+> = {
+  light: { background: '#0e0e0f', color: '#ffffff', error: '#9a3b1d', muted: '#4b5563' },
+  // Terre cuite claire pour l'erreur : lisible sur fond charbon, sans rouge vif.
+  dark: { background: '#ffffff', color: '#0e0e0f', error: '#f0b49a', muted: 'rgba(255, 255, 255, 0.72)' },
+};
+
+function isFramed(): boolean {
+  try {
+    return window.self !== window.top;
+  } catch {
+    // Accès à `window.top` refusé : on est forcément dans une iframe.
+    return true;
+  }
+}
+
+/**
+ * Navigue vers `url` au niveau de la page entière.
+ *
+ * Hors iframe : navigation normale. Dans une iframe : tentative sur
+ * `window.top` (autorisée par les navigateurs sur un clic), puis nouvel onglet.
+ */
+function openPayment(url: string): void {
+  if (!isFramed()) {
+    window.location.href = url;
+    return;
+  }
+
+  try {
+    if (window.top) {
+      window.top.location.href = url;
+      return;
+    }
+  } catch {
+    // Navigation de la page parente refusée : on tente l'onglet.
+  }
+
+  const tab = window.open(url, '_blank');
+  if (tab) tab.opener = null;
+}
 
 export function PayDepositButton({
   bookingId,
   label,
+  tone = 'light',
 }: {
   readonly bookingId: string;
   readonly label: string;
+  readonly tone?: Tone;
 }) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fallbackUrl, setFallbackUrl] = useState<string | null>(null);
+  const colors = palette[tone];
 
   async function onClick() {
     setPending(true);
@@ -41,7 +100,8 @@ export function PayDepositButton({
         return;
       }
 
-      window.location.href = data.url;
+      setFallbackUrl(data.url);
+      openPayment(data.url);
     } catch {
       setError('Erreur réseau. Réessayez dans un instant.');
       setPending(false);
@@ -62,8 +122,8 @@ export function PayDepositButton({
           padding: '0 1.5rem',
           borderRadius: '999px',
           border: 'none',
-          backgroundColor: '#0e0e0f',
-          color: '#ffffff',
+          backgroundColor: colors.background,
+          color: colors.color,
           fontSize: '1rem',
           fontWeight: 600,
           cursor: pending ? 'default' : 'pointer',
@@ -72,8 +132,23 @@ export function PayDepositButton({
       >
         {pending ? 'Ouverture du paiement…' : label}
       </button>
+      {fallbackUrl ? (
+        <p style={{ marginTop: '0.75rem', fontSize: '0.9rem', color: colors.muted }}>
+          Le paiement ne s’est pas ouvert ?{' '}
+          <a
+            href={fallbackUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: 'inherit', textDecoration: 'underline' }}
+          >
+            Ouvrir la page de paiement
+          </a>
+        </p>
+      ) : null}
       {error ? (
-        <p style={{ marginTop: '0.75rem', color: '#b3261e', fontSize: '0.9rem' }}>{error}</p>
+        <p role="alert" style={{ marginTop: '0.75rem', color: colors.error, fontSize: '0.9rem' }}>
+          {error}
+        </p>
       ) : null}
     </div>
   );

@@ -9,11 +9,15 @@ import { siteUrl } from '@/lib/env';
  * Relance des devis abandonnés.
  *
  * Une réservation dont le blocage de créneau (`hold_expires_at`) est dépassé
- * sans paiement reste en `en_attente_paiement` indéfiniment — rien ne la fait
- * expirer ailleurs dans le code. Cette route ne change pas ce statut : le lien
- * de paiement envoyé ici doit continuer à fonctionner (`/api/detailing/checkout`
- * refuse tout statut différent de `en_attente_paiement`), donc le créneau reste
- * réservable par le même client jusqu'à ce qu'un autre le prenne.
+ * sans paiement passe en `expire` (`booking-expire-cron`, `docs/13` §2.5) : le
+ * créneau redevient libre pour les autres clients. La relance vise donc les
+ * deux statuts, `en_attente_paiement` (expiration pas encore passée) et
+ * `expire`. Le lien envoyé reste utilisable : à l'ouverture du paiement,
+ * `/api/detailing/checkout` remet la réservation en attente si le créneau est
+ * encore libre, et le refuse proprement sinon.
+ *
+ * Seules les réservations à blocage limité sont relancées (`lte` exclut les
+ * blocages nuls) : ce sont celles dont l'acompte se paie en ligne.
  *
  * Même principe que `review-dispatch` : secret en en-tête, plafond par
  * passage, marquage `abandon_reminder_sent_at` pour ne jamais relancer deux
@@ -45,8 +49,10 @@ export async function POST(request: Request) {
   const { data: rows, error } = await supabase
     .from('detailer_bookings')
     .select('id, detailer_id, email, quoted_price, deposit_amount, hold_expires_at')
-    .eq('status', 'en_attente_paiement')
+    .in('status', ['en_attente_paiement', 'expire'])
     .is('abandon_reminder_sent_at', null)
+    // Un acompte déjà réglé ne se relance jamais, quel que soit le statut.
+    .is('deposit_paid_at', null)
     .lte('hold_expires_at', threshold)
     .limit(BATCH);
 

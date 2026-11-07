@@ -38,7 +38,15 @@ export default async function ConfirmationPage({ params, searchParams }: Confirm
   if (!summary) notFound();
 
   const paid = PAID_STATUSES.has(summary.status);
-  const cancelled = summary.status === 'annule' || summary.status === 'expire';
+  /*
+   * Une réservation `expire` (blocage de paiement dépassé) reste payable en
+   * ligne : l'ouverture du paiement la remet en attente si le créneau est
+   * encore libre, et le refuse sinon (`docs/13` §2.5). C'est le cas du client
+   * qui revient par l'e-mail de relance.
+   */
+  const retryable =
+    summary.status === 'expire' && summary.paymentMode === 'stripe' && summary.paymentAvailable;
+  const cancelled = summary.status === 'annule' || (summary.status === 'expire' && !retryable);
 
   return (
     <main
@@ -126,11 +134,16 @@ export default async function ConfirmationPage({ params, searchParams }: Confirm
               Dernière étape
             </p>
             <h1 style={{ fontSize: '1.75rem', fontWeight: 700, marginBottom: '1rem' }}>
-              Réglez l’acompte pour garder votre créneau.
+              {retryable
+                ? 'Votre créneau est peut-être encore libre.'
+                : 'Réglez l’acompte pour garder votre créneau.'}
             </h1>
             <p style={{ fontSize: '1rem', color: '#4b5563', lineHeight: 1.6, marginBottom: '2rem' }}>
               Estimation {summary.quotedPriceLabel} · Acompte à régler maintenant :{' '}
               <strong>{summary.depositLabel}</strong>
+              {retryable
+                ? '. Le délai de paiement est dépassé : si quelqu’un a réservé ce créneau entre-temps, vous serez invité à en choisir un autre.'
+                : null}
             </p>
             {summary.paymentMode === 'stripe' ? (
               summary.paymentAvailable ? (
