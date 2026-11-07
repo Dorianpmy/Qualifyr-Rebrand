@@ -1,5 +1,5 @@
 /*
- * Maquette de téléphone du hero — `docs/05-composants.md` (version 2) et
+ * Maquette de téléphone du hero — `docs/05-composants.md` (version 3) et
  * l'exception de couleurs `docs/03-direction-artistique.md` §7.2.
  *
  * Toutes les dimensions sont en `em` : la scène fait 34em de large et sa
@@ -22,7 +22,7 @@
   font-size: min(16px, calc(100cqi / 34));
   position: relative;
   width: 34em;
-  height: 45em;
+  height: 46em;
   margin-inline: auto;
 }
 
@@ -31,71 +31,83 @@
 .haloBlue,
 .haloViolet {
   position: absolute;
-  width: 17em;
-  height: 17em;
   border-radius: 50%;
-  filter: blur(3.2em);
-  opacity: 0.5;
+  filter: blur(3.5em);
   pointer-events: none;
 }
 
 .haloBlue {
-  top: 6em;
-  left: 4em;
-  background: radial-gradient(circle, #2f6bff 0%, rgb(47 107 255 / 0) 70%);
+  width: 16em;
+  height: 20em;
+  top: 8em;
+  left: 8em;
+  opacity: 0.45;
+  background: radial-gradient(circle, #3b6dff 0%, rgb(59 109 255 / 0) 70%);
 }
 
 .haloViolet {
-  bottom: 5em;
-  right: 3em;
-  background: radial-gradient(circle, #8b5cf6 0%, rgb(139 92 246 / 0) 70%);
+  width: 18em;
+  height: 24em;
+  bottom: 3em;
+  right: 1.5em;
+  opacity: 0.6;
+  background: radial-gradient(circle, #8f4dff 0%, rgb(143 77 255 / 0) 70%);
 }
 
 /* ---------- Téléphone ---------- */
 
+/* Inclinaison franche : le haut part vers la droite, le bord droit s'éloigne,
+   l'écran se couche légèrement vers l'arrière. */
 .tilt {
   position: absolute;
-  top: 6.5em;
+  top: 3.6em;
   left: 50%;
-  width: 16.5em;
-  margin-left: -8.25em;
-  transform: perspective(90em) rotateY(-16deg) rotateX(5deg) rotateZ(1.5deg);
+  width: 18em;
+  margin-left: -7.6em;
+  transform: perspective(70em) rotateX(14deg) rotateY(-24deg) rotateZ(11deg);
   transform-origin: 50% 50%;
 }
 
 .phone {
   position: relative;
-  width: 16.5em;
+  width: 18em;
   aspect-ratio: 9 / 19.5;
-  border-radius: 2.85em;
-  padding: 0.5em;
-  background: linear-gradient(150deg, #4a4b50 0%, #1b1b1e 22%, #0d0d0f 60%, #2b2b2f 100%);
+  border-radius: 3em;
+  padding: 0.55em;
+  background: linear-gradient(150deg, #55565c 0%, #1d1d20 20%, #0b0b0d 60%, #34343a 100%);
+  /* Épaisseur du boîtier : une pile d'ombres décalées vers la droite et le
+     bas dessine la tranche visible, puis l'ombre portée. */
   box-shadow:
-    inset 0 0 0 0.06em rgb(255 255 255 / 0.18),
-    inset 0 0 0 0.22em #050506,
-    -2.2em 3em 5em -1.5em rgb(0 0 0 / 0.85),
-    0 1.2em 2.5em -1em rgb(0 0 0 / 0.6);
+    inset 0 0 0 0.06em rgb(255 255 255 / 0.22),
+    inset 0 0 0 0.24em #050506,
+    0.08em 0.06em 0 #3a3a40,
+    0.16em 0.12em 0 #2c2c31,
+    0.24em 0.18em 0 #222226,
+    0.32em 0.24em 0 #1a1a1d,
+    0.4em 0.3em 0 #131315,
+    0.48em 0.36em 0 #0d0d0f,
+    1.5em 3.5em 5em -1em rgb(0 0 0 / 0.9);
 }
 
 .buttonLeft,
 .buttonRight {
   position: absolute;
-  width: 0.2em;
+  width: 0.22em;
   background: #2c2c30;
 }
 
 .buttonLeft {
-  left: -0.18em;
+  left: -0.2em;
   top: 21%;
-  height: 11%;
+  height: 10%;
   border-radius: 0.15em 0 0 0.15em;
   box-shadow: 0 -2.4em 0 0 #2c2c30;
 }
 
 .buttonRight {
-  right: -0.18em;
+  right: -0.2em;
   top: 27%;
-  height: 15%;
+  height: 14%;
   border-radius: 0 0.15em 0.15em 0;
 }
 
@@ -103,19 +115,19 @@
   position: relative;
   height: 100%;
   overflow: hidden;
-  border-radius: 2.4em;
+  border-radius: 2.5em;
   display: flex;
   flex-direction: column;
   color: #fff;
-  /* Fond d'écran : dégradés CSS dans l'esprit des fonds récents d'iOS —
-     aucune image d'Apple. */
+  /* Fond d'écran chaud, dans l'esprit des fonds récents d'iOS — dégradés
+     CSS, aucune image d'Apple. */
   background:
-    radial-gradient(60% 45% at 18% 12%, #ffb36b 0%, rgb(255 179 107 / 0) 70%),
-    radial-gradient(55% 40% at 88% 22%, #ff5f8f 0%, rgb(255 95 143 / 0) 70%),
-    radial-gradient(70% 45% at 25% 62%, #7a5cff 0%, rgb(122 92 255 / 0) 72%),
-    radial-gradient(65% 45% at 85% 78%, #2f8bff 0%, rgb(47 139 255 / 0) 72%),
-    radial-gradient(60% 35% at 40% 100%, #ffcf5c 0%, rgb(255 207 92 / 0) 70%),
-    linear-gradient(170deg, #3b1d5e 0%, #20123d 50%, #0f1736 100%);
+    radial-gradient(70% 40% at 30% 0%, #ffc46b 0%, rgb(255 196 107 / 0) 75%),
+    radial-gradient(80% 45% at 85% 25%, #ff6a3d 0%, rgb(255 106 61 / 0) 75%),
+    radial-gradient(90% 45% at 10% 55%, #e8344f 0%, rgb(232 52 79 / 0) 75%),
+    radial-gradient(90% 45% at 90% 78%, #7b3cff 0%, rgb(123 60 255 / 0) 75%),
+    radial-gradient(80% 35% at 20% 100%, #3a5bff 0%, rgb(58 91 255 / 0) 75%),
+    linear-gradient(180deg, #ff9a4a 0%, #e5395a 45%, #6a2bd9 80%, #2a2f9e 100%);
 }
 
 .statusBar {
@@ -123,7 +135,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.85em 1.35em 0;
+  padding: 0.85em 1.4em 0;
   font-size: 0.68em;
   font-weight: 650;
 }
@@ -132,9 +144,9 @@
   position: absolute;
   top: 0.55em;
   left: 50%;
-  width: 7.6em;
-  height: 2.05em;
-  margin-left: -3.8em;
+  width: 7.8em;
+  height: 2.1em;
+  margin-left: -3.9em;
   border-radius: 999px;
   background: #000;
 }
@@ -167,18 +179,31 @@
 .apps {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 0.7em;
-  padding: 1.35em 1.05em 0;
+  padding: 4em 1.1em 0;
   justify-items: center;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3em;
+}
+
+.appLabel {
+  font-size: 0.5em;
+  font-weight: 500;
+  color: rgb(255 255 255 / 0.92);
+  text-shadow: 0 0.1em 0.3em rgb(0 0 0 / 0.35);
 }
 
 .tile {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.75em;
-  height: 2.75em;
-  border-radius: 0.72em;
+  width: 3em;
+  height: 3em;
+  border-radius: 0.78em;
   color: #fff;
   box-shadow:
     inset 0 0.06em 0 rgb(255 255 255 / 0.35),
@@ -186,43 +211,22 @@
 }
 
 .glyph {
-  width: 55%;
-  height: 55%;
+  width: 56%;
+  height: 56%;
+}
+
+.toneWeather {
+  background: linear-gradient(180deg, #5cb8ff, #1f6fe0);
 }
 
 .toneWhite {
   background: linear-gradient(180deg, #ffffff, #e9e9ee);
-  color: #e0463a;
-}
-
-.toneInk {
-  background: linear-gradient(180deg, #2b2b30, #0e0e10);
-}
-
-.toneSky {
-  background: linear-gradient(180deg, #8fd3ff, #3b9cf0);
-}
-
-.toneGrey {
-  background: linear-gradient(180deg, #d9dade, #9c9ea6);
   color: #1d1d20;
 }
 
-.toneSun {
-  background: linear-gradient(180deg, #fff2b8, #ffd34d);
-  color: #5a4300;
-}
-
-.toneBlue {
-  background: linear-gradient(180deg, #5ab0ff, #1f63e0);
-}
-
-.toneCoral {
-  background: linear-gradient(180deg, #ff8a80, #fa3c5a);
-}
-
-.toneSteel {
-  background: linear-gradient(180deg, #a5a8b0, #5c5f68);
+.toneGrey {
+  background: linear-gradient(180deg, #e3e4e8, #a3a5ad);
+  color: #1d1d20;
 }
 
 .tonePhone {
@@ -230,7 +234,7 @@
 }
 
 .toneWhatsapp {
-  background: #25d366;
+  background: linear-gradient(180deg, #4be082, #1fb955);
 }
 
 .toneSafari {
@@ -242,56 +246,50 @@
   background: linear-gradient(135deg, #ffb35c, #ff5f8f 45%, #7a5cff);
 }
 
+.tonePay {
+  background: linear-gradient(180deg, #7f78ff, #5a4fe6);
+}
+
 /* ---------- Widget Qualifyr (verre dépoli) ---------- */
 
 .widget {
-  margin: 1.05em 0.85em 0;
-  padding: 0.85em;
-  border-radius: 1.45em;
-  background: rgb(14 14 16 / 0.58);
-  border: 0.06em solid rgb(255 255 255 / 0.14);
-  -webkit-backdrop-filter: blur(1.1em) saturate(1.4);
-  backdrop-filter: blur(1.1em) saturate(1.4);
+  margin: 1.1em 0.85em 0;
+  padding: 0.75em 0.85em 0.85em;
+  border-radius: 1.5em;
+  background: rgb(24 22 30 / 0.5);
+  border: 0.06em solid rgb(255 255 255 / 0.16);
+  -webkit-backdrop-filter: blur(1.2em) saturate(1.5);
+  backdrop-filter: blur(1.2em) saturate(1.5);
   display: flex;
   flex-direction: column;
-  gap: 0.55em;
-}
-
-.widgetHead {
-  display: flex;
-  align-items: center;
-  gap: 0.45em;
-  font-size: 0.62em;
-  font-weight: 650;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: rgb(255 255 255 / 0.72);
-}
-
-.widgetDot {
-  width: 0.55em;
-  height: 0.55em;
-  border-radius: 50%;
-  background: #f5f2ec;
+  gap: 0.5em;
 }
 
 .carPanel {
-  border-radius: 0.9em;
-  padding: 0.5em 0.4em 0.2em;
-  background: radial-gradient(90% 80% at 50% 30%, #2a2b31 0%, #111114 75%);
-  border: 0.06em solid rgb(255 255 255 / 0.06);
+  margin-top: -0.2em;
 }
 
 .car {
   display: block;
   width: 100%;
   height: auto;
+  filter: drop-shadow(0 0.5em 0.6em rgb(0 0 0 / 0.45));
+}
+
+.widgetTitle {
+  margin: 0;
+  text-align: center;
+  font-size: 0.86em;
+  font-weight: 700;
 }
 
 .widgetLabel {
   margin: 0;
-  font-size: 0.82em;
-  font-weight: 700;
+  font-size: 0.6em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.65);
 }
 
 .sizes {
@@ -302,14 +300,15 @@
 
 .size,
 .sizeActive {
-  border-radius: 0.6em;
-  padding: 0.55em 0.2em;
+  border-radius: 0.65em;
+  padding: 0.6em 0.2em;
   text-align: center;
   font-size: 0.56em;
   font-weight: 650;
   white-space: nowrap;
-  border: 0.1em solid rgb(255 255 255 / 0.14);
-  color: rgb(255 255 255 / 0.78);
+  background: rgb(255 255 255 / 0.08);
+  border: 0.1em solid rgb(255 255 255 / 0.12);
+  color: rgb(255 255 255 / 0.85);
 }
 
 .sizeActive {
@@ -325,22 +324,41 @@
   text-align: center;
   font-size: 0.68em;
   font-weight: 700;
+  background: rgb(255 255 255 / 0.16);
+  border: 0.1em solid rgb(255 255 255 / 0.2);
+}
+
+.pageDots {
+  display: flex;
+  justify-content: center;
+  gap: 0.35em;
+  margin-top: auto;
+  padding-bottom: 0.6em;
+}
+
+.pageDots span {
+  width: 0.4em;
+  height: 0.4em;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.45);
+}
+
+.pageDots span:first-child {
   background: #fff;
-  color: #0e0e10;
 }
 
 /* ---------- Dock ---------- */
 
 .dock {
-  margin: auto 0.65em 0;
-  padding: 0.65em 0.7em;
-  border-radius: 1.6em;
+  margin: 0 0.65em;
+  padding: 0.7em 0.75em;
+  border-radius: 1.7em;
   display: flex;
   justify-content: space-between;
-  background: rgb(255 255 255 / 0.2);
+  background: rgb(255 255 255 / 0.22);
   -webkit-backdrop-filter: blur(1em) saturate(1.5);
   backdrop-filter: blur(1em) saturate(1.5);
-  border: 0.06em solid rgb(255 255 255 / 0.22);
+  border: 0.06em solid rgb(255 255 255 / 0.25);
 }
 
 .homeBar {
@@ -383,38 +401,37 @@
 }
 
 /* Positions dans la scène de 34em : toutes à l'intérieur (left/right ≥ 0),
-   jamais hors du conteneur. Le téléphone occupe 8.75em → 25.25em en largeur, 6.5em → 42.25em en hauteur. */
+   jamais hors du conteneur. */
 .slotNotif {
-  /* Chevauche le haut du cadre, comme une notification qui arrive. */
-  top: 3em;
-  left: 9.25em;
+  /* Sur le haut de l'écran, comme une notification qui arrive. */
+  top: 3.6em;
+  left: 8.5em;
   width: 17.5em;
 }
 
 .slotNotif .lean {
-  transform: perspective(60em) rotateY(-8deg) rotateZ(-1.5deg);
+  transform: perspective(60em) rotateX(10deg) rotateY(-14deg) rotateZ(6deg);
 }
 
 .slotChat {
-  /* À la hauteur des icônes d'applications : le widget et le choix du
-     gabarit restent entièrement visibles. */
-  top: 11.5em;
+  top: 20em;
   left: 0;
   width: 13.5em;
 }
 
 .slotChat .lean {
-  transform: perspective(60em) rotateY(10deg) rotateZ(-4deg);
+  transform: perspective(60em) rotateY(12deg) rotateZ(5deg);
 }
 
 .slotPay {
-  top: 31.5em;
+  /* Au-dessus de la voiture, sur le bord droit : la voiture reste visible. */
+  top: 12.5em;
   right: 0;
-  width: 13em;
+  width: 12.5em;
 }
 
 .slotPay .lean {
-  transform: perspective(60em) rotateY(-12deg) rotateZ(4deg);
+  transform: perspective(60em) rotateY(-14deg) rotateZ(6deg);
 }
 
 /* Notification iOS, translucide. */
@@ -425,12 +442,12 @@
   padding: 0.8em 0.9em;
   border-radius: 1.35em;
   color: #111114;
-  background: rgb(246 246 248 / 0.84);
+  background: rgb(246 246 248 / 0.8);
   -webkit-backdrop-filter: blur(1.2em) saturate(1.6);
   backdrop-filter: blur(1.2em) saturate(1.6);
   border: 0.06em solid rgb(255 255 255 / 0.6);
   box-shadow:
-    0 1.6em 3em -1em rgb(0 0 0 / 0.65),
+    0 1.8em 3.2em -1em rgb(0 0 0 / 0.7),
     0 0.4em 1em -0.4em rgb(0 0 0 / 0.4);
 }
 
@@ -439,9 +456,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.3em;
-  height: 2.3em;
-  border-radius: 0.6em;
+  width: 2.4em;
+  height: 2.4em;
+  border-radius: 0.62em;
   color: #fff;
 }
 
@@ -457,7 +474,7 @@
   display: flex;
   justify-content: space-between;
   gap: 0.5em;
-  font-size: 0.78em;
+  font-size: 0.8em;
 }
 
 .notifHead span {
@@ -465,7 +482,7 @@
 }
 
 .notifText {
-  font-size: 0.8em;
+  font-size: 0.82em;
   line-height: 1.35;
 }
 
@@ -474,18 +491,24 @@
   display: flex;
   flex-direction: column;
   gap: 0.5em;
-  padding: 0.9em;
+  padding: 0.85em 0.9em 0.95em;
   border-radius: 1.4em;
-  background: #fbfbfd;
+  background: #f7f7f9;
   border: 0.06em solid rgb(0 0 0 / 0.06);
   box-shadow:
-    0 1.8em 3.2em -1em rgb(0 0 0 / 0.7),
+    0 2em 3.5em -1em rgb(0 0 0 / 0.75),
     0 0.5em 1em -0.4em rgb(0 0 0 / 0.4);
+}
+
+.chatHead {
+  font-size: 0.78em;
+  font-weight: 700;
+  color: #111114;
 }
 
 .bubbleIn,
 .bubbleOut {
-  max-width: 88%;
+  max-width: 90%;
   padding: 0.55em 0.8em;
   border-radius: 1.1em;
   font-size: 0.8em;
@@ -494,7 +517,7 @@
 
 .bubbleIn {
   align-self: flex-start;
-  background: #e9e9ee;
+  background: #e5e5ea;
   color: #111114;
   border-bottom-left-radius: 0.3em;
 }
@@ -509,16 +532,35 @@
 /* Paiement. */
 .pay {
   display: flex;
-  flex-direction: column;
-  gap: 0.35em;
+  gap: 0.75em;
+  align-items: flex-start;
   padding: 0.95em 1em;
   border-radius: 1.3em;
   background: #fff;
   color: #111114;
   border: 0.06em solid rgb(0 0 0 / 0.06);
   box-shadow:
-    0 1.8em 3.2em -1em rgb(0 0 0 / 0.7),
+    0 2em 3.5em -1em rgb(0 0 0 / 0.75),
     0 0.5em 1em -0.4em rgb(0 0 0 / 0.4);
+}
+
+.payIcon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.3em;
+  height: 2.3em;
+  border-radius: 0.6em;
+  color: #fff;
+}
+
+.payBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+  min-width: 0;
+  flex: 1;
 }
 
 .payHead {
@@ -542,7 +584,7 @@
   gap: 0.25em;
   padding: 0.2em 0.55em;
   border-radius: 999px;
-  font-size: 0.62em;
+  font-size: 0.6em;
   font-weight: 650;
   background: #f1efe9;
   color: #3b2a1d;
@@ -554,18 +596,14 @@
 }
 
 .payText {
-  font-size: 0.8em;
-  line-height: 1.35;
+  font-size: 0.82em;
+  font-weight: 600;
+  line-height: 1.3;
 }
 
 .payAmount {
-  font-size: 1.55em;
+  font-size: 1.35em;
   font-weight: 750;
   letter-spacing: -0.02em;
-}
-
-.payVia {
-  font-size: 0.66em;
-  font-weight: 600;
-  color: #6c6c72;
+  color: #4b4b52;
 }

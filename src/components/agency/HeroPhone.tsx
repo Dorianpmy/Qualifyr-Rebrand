@@ -122,6 +122,17 @@ const glyphs = {
       <path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4 18 18M6 18l1.6-1.6M16.4 7.6 18 6" />
     </Glyph>
   ),
+  cloud: (
+    <Glyph filled>
+      <path d="M8 18.5a4.5 4.5 0 0 1-.6-9 5.5 5.5 0 0 1 10.6 1.6A3.7 3.7 0 0 1 17.3 18.5H8Z" />
+    </Glyph>
+  ),
+  card: (
+    <Glyph>
+      <rect x="3" y="5.5" width="18" height="13" rx="2.5" />
+      <path d="M3 10h18M7 15h3" />
+    </Glyph>
+  ),
   check: (
     <Glyph>
       <path d="m6 12.5 4 4 8-9" />
@@ -132,14 +143,10 @@ const glyphs = {
 type Tile = { readonly glyph: ReactNode; readonly tone: string; readonly label: string };
 
 const homeApps: readonly Tile[] = [
-  { glyph: glyphs.calendar, tone: styles.toneWhite ?? '', label: 'Calendrier' },
-  { glyph: glyphs.clock, tone: styles.toneInk ?? '', label: 'Horloge' },
-  { glyph: glyphs.pin, tone: styles.toneSky ?? '', label: 'Plans' },
-  { glyph: glyphs.camera, tone: styles.toneGrey ?? '', label: 'Appareil photo' },
-  { glyph: glyphs.note, tone: styles.toneSun ?? '', label: 'Notes' },
-  { glyph: glyphs.sun, tone: styles.toneBlue ?? '', label: 'Météo' },
-  { glyph: glyphs.music, tone: styles.toneCoral ?? '', label: 'Musique' },
-  { glyph: glyphs.gear, tone: styles.toneSteel ?? '', label: 'Réglages' },
+  { glyph: glyphs.cloud, tone: styles.toneWeather ?? '', label: 'Météo' },
+  { glyph: glyphs.clock, tone: styles.toneWhite ?? '', label: 'Horloge' },
+  { glyph: glyphs.picture, tone: styles.tonePhotos ?? '', label: 'Photos' },
+  { glyph: glyphs.camera, tone: styles.toneGrey ?? '', label: 'Appareil' },
 ];
 
 const dockApps: readonly Tile[] = [
@@ -149,54 +156,69 @@ const dockApps: readonly Tile[] = [
   { glyph: glyphs.picture, tone: styles.tonePhotos ?? '', label: 'Photos' },
 ];
 
-function AppTile({ tile }: { readonly tile: Tile }) {
+function AppTile({ tile, labelled = false }: { readonly tile: Tile; readonly labelled?: boolean }) {
+  const icon = <span className={`${styles.tile} ${tile.tone}`}>{tile.glyph}</span>;
+  if (!labelled) return icon;
   return (
-    <span className={`${styles.tile} ${tile.tone}`} title={tile.label}>
-      {tile.glyph}
+    <span className={styles.app}>
+      {icon}
+      <span className={styles.appLabel}>{tile.label}</span>
     </span>
   );
 }
 
-/* Silhouette générique de SUV sombre, de profil. */
+/* Silhouette générique de berline sombre, de profil, avec reflets. */
 function CarSilhouette() {
   return (
-    <svg viewBox="0 0 220 84" aria-hidden="true" className={styles.car}>
+    <svg viewBox="0 0 240 92" aria-hidden="true" className={styles.car}>
       <defs>
         <linearGradient id="hero-car-body" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#3a3b40" />
-          <stop offset="0.55" stopColor="#1a1b1e" />
-          <stop offset="1" stopColor="#0c0c0e" />
+          <stop offset="0" stopColor="#4b4d55" />
+          <stop offset="0.35" stopColor="#24252a" />
+          <stop offset="0.7" stopColor="#111114" />
+          <stop offset="1" stopColor="#050506" />
         </linearGradient>
         <linearGradient id="hero-car-glass" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#5b6170" />
-          <stop offset="1" stopColor="#15171c" />
+          <stop offset="0" stopColor="#7a8090" />
+          <stop offset="0.5" stopColor="#262a33" />
+          <stop offset="1" stopColor="#0d0f13" />
+        </linearGradient>
+        <linearGradient id="hero-car-shine" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#fff" stopOpacity="0" />
+          <stop offset="0.45" stopColor="#fff" stopOpacity="0.55" />
+          <stop offset="1" stopColor="#fff" stopOpacity="0" />
         </linearGradient>
         <radialGradient id="hero-car-floor" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0" stopColor="#000" stopOpacity="0.7" />
+          <stop offset="0" stopColor="#000" stopOpacity="0.8" />
           <stop offset="1" stopColor="#000" stopOpacity="0" />
         </radialGradient>
       </defs>
-      <ellipse cx="110" cy="74" rx="100" ry="7" fill="url(#hero-car-floor)" />
+      <ellipse cx="120" cy="80" rx="112" ry="8" fill="url(#hero-car-floor)" />
       <path
-        d="M12 62c0-9 5-14 16-16l30-5c11-12 26-20 46-21h30c17 0 30 8 42 20l24 6c8 2 11 7 11 16H12Z"
+        d="M10 66c0-8 6-12.5 18-14.5l42-6.5C86 31 106 23 132 23c24 0 44 8 64 22l20 4c10 2 14 8 14 17H10Z"
         fill="url(#hero-car-body)"
       />
-      <path d="M66 42c9-9 22-16 38-16h12v16H66Z" fill="url(#hero-car-glass)" />
-      <path d="M122 26h12c13 0 24 6 33 16h-45V26Z" fill="url(#hero-car-glass)" />
-      <path
-        d="M30 47l28-5c11-12 26-20 46-21h30c17 0 30 8 42 20"
-        fill="none"
-        stroke="#fff"
-        strokeOpacity="0.28"
-        strokeWidth="1.2"
-      />
-      <path d="M190 52h12" stroke="#f5f2ec" strokeOpacity="0.8" strokeWidth="2.4" strokeLinecap="round" />
-      <path d="M16 54h8" stroke="#c4553a" strokeOpacity="0.9" strokeWidth="2.4" strokeLinecap="round" />
-      {[52, 166].map((x) => (
+      <path d="M80 45c14-12.5 30-18 50-18l2 18H80Z" fill="url(#hero-car-glass)" />
+      <path d="M137 27c19 1 35 7 49 18h-48l-1-18Z" fill="url(#hero-car-glass)" />
+      <path d="M70 45C86 31 106 23 132 23c24 0 44 8 64 22" fill="none" stroke="url(#hero-car-shine)" strokeWidth="1.6" />
+      <path d="M28 56c40-5 120-6 190-1" fill="none" stroke="#fff" strokeOpacity="0.16" strokeWidth="1" />
+      <path d="M214 55h12" stroke="#f5f2ec" strokeOpacity="0.85" strokeWidth="2.6" strokeLinecap="round" />
+      <path d="M13 58h9" stroke="#d04a3a" strokeWidth="2.6" strokeLinecap="round" />
+      {[58, 190].map((x) => (
         <g key={x}>
-          <circle cx={x} cy="63" r="14" fill="#08080a" />
-          <circle cx={x} cy="63" r="8" fill="#26272b" stroke="#55575e" strokeWidth="1" />
-          <circle cx={x} cy="63" r="2.5" fill="#8a8c93" />
+          <circle cx={x} cy="67" r="15.5" fill="#050506" />
+          <circle cx={x} cy="67" r="10" fill="#1d1e22" stroke="#6b6e76" strokeWidth="1.2" />
+          {[0, 72, 144, 216, 288].map((deg) => (
+            <path
+              key={deg}
+              d={`M${x} 67l0-9`}
+              stroke="#8d9098"
+              strokeWidth="2"
+              strokeLinecap="round"
+              transform={`rotate(${deg} ${x} 67)`}
+            />
+          ))}
+          <circle cx={x} cy="67" r="2.6" fill="#a9acb3" />
         </g>
       ))}
     </svg>
@@ -248,18 +270,15 @@ export function HeroPhone() {
 
               <div className={styles.apps}>
                 {homeApps.map((tile) => (
-                  <AppTile key={tile.label} tile={tile} />
+                  <AppTile key={tile.label} tile={tile} labelled />
                 ))}
               </div>
 
               <div className={styles.widget}>
-                <div className={styles.widgetHead}>
-                  <span className={styles.widgetDot} aria-hidden="true" />
-                  <span>Car detailing booking</span>
-                </div>
                 <div className={styles.carPanel}>
                   <CarSilhouette />
                 </div>
+                <p className={styles.widgetTitle}>Car detailing booking</p>
                 <p className={styles.widgetLabel}>Votre véhicule</p>
                 <div className={styles.sizes}>
                   {SIZES.map((size) => (
@@ -270,6 +289,11 @@ export function HeroPhone() {
                 </div>
                 <span className={styles.widgetButton}>Continuer</span>
               </div>
+
+              <span className={styles.pageDots} aria-hidden="true">
+                <span />
+                <span />
+              </span>
 
               <div className={styles.dock}>
                 {dockApps.map((tile) => (
@@ -300,6 +324,7 @@ export function HeroPhone() {
         {/* 2. Conversation, débordant à gauche. */}
         <FloatingCard slot={styles.slotChat} delay={-2}>
           <div className={styles.chat}>
+            <span className={styles.chatHead}>iMessage</span>
             <span className={styles.bubbleIn}>attends… c’est vraiment combien ?</span>
             <span className={styles.bubbleOut}>Tarif calculé : 280 € • Acompte 50 € versé 💳</span>
           </div>
@@ -308,16 +333,18 @@ export function HeroPhone() {
         {/* 3. Paiement, débordant à droite. */}
         <FloatingCard slot={styles.slotPay} delay={-4}>
           <div className={styles.pay}>
-            <span className={styles.payHead}>
-              <span className={styles.payLabel}>Paiement</span>
-              <span className={styles.payStatus}>
-                {glyphs.check}
-                Réussi
+            <span className={`${styles.payIcon} ${styles.tonePay}`}>{glyphs.card}</span>
+            <span className={styles.payBody}>
+              <span className={styles.payHead}>
+                <span className={styles.payLabel}>Paiement</span>
+                <span className={styles.payStatus}>
+                  {glyphs.check}
+                  Réussi
+                </span>
               </span>
+              <span className={styles.payText}>Acompte de 50 € encaissé sur Stripe</span>
+              <span className={styles.payAmount}>50,00 €</span>
             </span>
-            <span className={styles.payText}>Acompte de 50 € encaissé sur Stripe</span>
-            <span className={styles.payAmount}>50,00 €</span>
-            <span className={styles.payVia}>via Stripe</span>
           </div>
         </FloatingCard>
       </div>

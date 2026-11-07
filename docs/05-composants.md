@@ -9,6 +9,22 @@ il veut de la couleur et de la vie — fond d'écran iOS, notification, message,
 couleurs, halos et emoji de cette version relèvent de l'exception
 `docs/03-direction-artistique.md` §7.2, limitée à ce visuel.
 
+**Version 3, même soir**, sur une maquette de référence fournie par Dorian : téléphone plus grand
+et nettement incliné (`rotateX 14°`, `rotateY −24°`, `rotateZ 11°`) avec la tranche du boîtier
+visible (pile d'ombres décalées), fond d'écran chaud orange → rouge → violet, une rangée de
+quatre applications légendées (Météo, Horloge, Photos, Appareil), widget au verre dépoli avec
+la voiture en tête puis « Car detailing booking », points de page au-dessus du dock. La carte de
+messages porte l'en-tête « iMessage » ; la carte de paiement une tuile violette avec un
+pictogramme de carte bancaire générique (pas le logo de Stripe). Les cartes suivent
+l'inclinaison du téléphone.
+
+**Titre du hero en deux colonnes — correctif.** La règle `h1 { … !important }` de `base.css`
+écrasait les styles en ligne de `DarkHero` : le titre sortait en graisse 600 et en 84 px au
+lieu de 750. La classe `hero-title-split`, posée seulement quand un visuel est passé, et sa
+règle en fin de `tailwind.css` (hors couche, `!important`, sélecteur plus précis) rétablissent
+graisse 750 et un corps adapté à une demi-colonne. Le hero centré des autres pages n'est pas
+touché. (`dark.css` n'est importé nulle part : une règle posée là n'a aucun effet.)
+
 **`DarkHero` — prop `visual?: ReactNode`.** Absente, rien ne change : les pages métier et
 `/logiciel-*` gardent le hero centré. Présente, le hero passe en grille deux colonnes à partir de
 `md` (768 px), texte à gauche, visuel à droite ; en dessous, une seule colonne, texte puis
@@ -33,8 +49,8 @@ de réassurance (`trust`) reste en dessous, sur toute la largeur.
      céramique ? » ;
   2. à gauche : carte de messages claire, sans avatar — bulle grise « attends… c'est vraiment
      combien ? », bulle bleue iOS « Tarif calculé : 280 € • Acompte 50 € versé 💳 » ;
-  3. à droite : carte de paiement blanche — « Paiement », « Acompte de 50 € encaissé sur
-     Stripe », montant « 50,00 € ».
+  3. à droite : carte de paiement blanche — tuile violette à pictogramme de carte,
+     « Paiement », pastille « Réussi », « Acompte de 50 € encaissé sur Stripe », « 50,00 € ».
 
   Les montants de ces cartes sont **un exemple de conversation**, cohérent d'une carte à
   l'autre (280 €, acompte 50 €) ; le widget de l'écran n'affiche pas de prix, pour ne pas

@@ -205,7 +205,10 @@ export function DarkHero({
             de `weight` fixe) : un poids intermédiaire entre 700 et 800
             n'existe dans aucun fichier statique. */}
         <h1
-          className="mb-6 text-primary"
+          /* `hero-title-split` (7 novembre 2026) : en deux colonnes, la règle
+             `h1 { … !important }` de `base.css` écrasait ces styles en ligne
+             (graisse 600 au lieu de 750, 84px) — voir la fin de `tailwind.css`. */
+          className={split ? 'hero-title-split mb-6 text-primary' : 'mb-6 text-primary'}
           style={{
             /* En deux colonnes, la colonne fait environ la moitié de la
                page : le corps plafonne plus bas pour garder trois lignes. */
