@@ -147,9 +147,16 @@ export async function createDepositCheckout(input: {
   readonly clientEmail: string;
   readonly successUrl: string;
   readonly cancelUrl: string;
+  /**
+   * Fin de vie de la session. Stripe impose entre 30 minutes et 24 heures
+   * après la création. Alignée sur le blocage du créneau (`holds.ts`) : un
+   * client ne peut plus payer quand son créneau n'est plus garanti.
+   */
+  readonly expiresAt: Date;
 }): Promise<{ readonly id: string; readonly url: string }> {
   const body = new URLSearchParams({
     mode: 'payment',
+    expires_at: String(Math.floor(input.expiresAt.getTime() / 1000)),
     success_url: input.successUrl,
     cancel_url: input.cancelUrl,
     customer_email: input.clientEmail,
@@ -188,6 +195,45 @@ export async function createDepositCheckout(input: {
   }
 
   return { id: payload.id, url: payload.url };
+}
+
+/**
+ * Rembourse intégralement un acompte encaissé sur le compte du professionnel.
+ *
+ * Utilisé dans un seul cas : un paiement confirmé par Stripe pour une
+ * réservation dont le créneau a été repris entre-temps (webhook très en
+ * retard). Garder l'argent d'un client sans lui garantir de rendez-vous
+ * produirait une réclamation bancaire.
+ *
+ * **Clé d'idempotence dérivée du paiement.** Stripe peut livrer le même
+ * événement plusieurs fois ; avec cette clé, un second appel renvoie le
+ * remboursement déjà créé au lieu d'en créer un autre.
+ */
+export async function refundDeposit(input: {
+  readonly accountId: string;
+  readonly paymentIntentId: string;
+}): Promise<{ readonly id: string }> {
+  const response = await fetch(`${API}/refunds`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${secretKey()}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Stripe-Account': input.accountId,
+      'Idempotency-Key': `refund-slot-taken-${input.paymentIntentId}`,
+    },
+    body: new URLSearchParams({
+      payment_intent: input.paymentIntentId,
+      reason: 'requested_by_customer',
+      'metadata[motif]': 'creneau_repris',
+    }).toString(),
+    cache: 'no-store',
+  });
+
+  const payload = (await response.json()) as { id: string; error?: { message?: string } };
+  if (!response.ok) {
+    throw new Error(payload.error?.message ?? `Stripe a répondu ${response.status}.`);
+  }
+  return { id: payload.id };
 }
 
 /**

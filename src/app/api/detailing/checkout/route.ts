@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { detailerHasCapability } from '@/lib/billing/guard';
 import { getServiceSupabaseClient } from '@/lib/detailing/supabase-server';
 import { createDepositCheckout } from '@/lib/detailing/stripe';
+import { CHECKOUT_HOLD_MINUTES, CHECKOUT_SESSION_MINUTES, holdUntil } from '@/lib/detailing/holds';
 import { profileFor } from '@/lib/detailing/locale';
 
 /**
@@ -71,7 +72,9 @@ export async function POST(request: Request) {
 
   // Une réservation déjà payée ou annulée ne doit pas rouvrir un paiement :
   // sans cette garde, un rafraîchissement de page encaisse deux fois.
-  if (booking.status !== 'en_attente_paiement') {
+  // `expire` est accepté : un client relancé par e-mail peut encore payer si
+  // son créneau est libre (`docs/13` §2.5). Le blocage est reposé plus bas.
+  if (booking.status !== 'en_attente_paiement' && booking.status !== 'expire') {
     return NextResponse.json(
       { error: 'Cette réservation n’attend pas de paiement.' },
       { status: 409 },
@@ -105,6 +108,41 @@ export async function POST(request: Request) {
     );
   }
 
+  /*
+   * Le blocage suit la durée de vie de la session Stripe (trente minutes au
+   * minimum, imposé par Stripe), plus une minute : le client ne peut jamais
+   * payer un créneau déjà rendu. Pour une réservation expirée, la contrainte
+   * d'exclusion refuse la remise en attente si quelqu'un a pris le créneau
+   * entre-temps.
+   */
+  const sessionExpiresAt = new Date(Date.now() + CHECKOUT_SESSION_MINUTES * 60_000);
+  const { data: held, error: holdError } = await supabase
+    .from('detailer_bookings')
+    .update({ status: 'en_attente_paiement', hold_expires_at: holdUntil(CHECKOUT_HOLD_MINUTES) })
+    .eq('id', booking.id)
+    .eq('status', booking.status)
+    .select('id')
+    .maybeSingle();
+
+  if (holdError?.code === '23P01') {
+    return NextResponse.json(
+      {
+        error: 'creneau_pris',
+        message:
+          'Ce créneau a été réservé par un autre client entre-temps. Reprenez une réservation pour en choisir un autre.',
+      },
+      { status: 409 },
+    );
+  }
+  if (holdError || !held) {
+    // Statut changé entre la lecture et l'écriture (paiement confirmé dans un
+    // autre onglet, annulation par le professionnel) : on ne paie pas deux fois.
+    return NextResponse.json(
+      { error: 'Cette réservation n’attend plus de paiement.' },
+      { status: 409 },
+    );
+  }
+
   const profile = profileFor(detailer.country as string);
   const origin = new URL(request.url).origin;
 
@@ -118,6 +156,7 @@ export async function POST(request: Request) {
       clientEmail: booking.email as string,
       successUrl: `${origin}/reservation/${detailer.slug}/confirmation?booking=${booking.id}`,
       cancelUrl: `${origin}/reservation/${detailer.slug}?annule=1`,
+      expiresAt: sessionExpiresAt,
     });
 
     return NextResponse.json({ url: session.url });
