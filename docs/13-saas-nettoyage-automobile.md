@@ -290,22 +290,75 @@ créneau, ce qui est bien pire.
 1. Le client valide       → insert en `en_attente_paiement`,
                             hold_expires_at = maintenant + 15 min
                             (la contrainte d'exclusion s'applique déjà)
-2. Redirection Stripe     → paiement de l'acompte
-3. Webhook `succeeded`    → status = `confirme`, hold_expires_at = null
-4. Abandon ou échec       → une tâche planifiée repasse en `expire`
-                            les lignes dont le hold est dépassé
+2. Ouverture du paiement  → hold_expires_at repoussé à maintenant + 31 min,
+                            session Stripe créée avec expires_at = maintenant + 30 min
+3. Webhook `completed`    → status = `confirme`, hold_expires_at = null
+4. Abandon ou échec       → status = `expire` (voir « Qui fait expirer »)
 ```
 
 Le créneau est donc réservé pendant le paiement, mais jamais indéfiniment.
-Quinze minutes couvrent un paiement avec authentification bancaire sans
-immobiliser l'agenda.
+Quinze minutes suffisent pour atteindre la page de paiement. Une fois celle-ci
+ouverte, le blocage suit la durée de vie de la session Stripe, dont le minimum
+imposé par Stripe est de trente minutes : un client ne peut donc jamais payer
+un créneau déjà rendu à quelqu'un d'autre.
+
+**Le blocage ne concerne que le paiement en ligne.** Il s'applique seulement si
+le professionnel encaisse l'acompte par Stripe : mode de paiement `stripe`,
+compte Stripe actif (`stripe_charges_enabled`), acompte activé et non nul, et
+abonnement qui inclut `payments.deposit`. Dans tous les autres cas (mode manuel,
+pas d'acompte, paiement en ligne pas encore activé), `hold_expires_at` reste
+nul : la demande occupe le créneau jusqu'à ce que le professionnel la confirme
+ou l'annule (`docs/18` §5).
+
+**Qui fait expirer (07/11/2026).** Avant cette date, rien ne passait une
+réservation en `expire` : un panier abandonné bloquait le créneau pour toujours,
+dans les créneaux proposés comme dans la contrainte d'exclusion. Trois
+mécanismes s'en chargent désormais, du plus immédiat au plus lent :
+
+1. **Avant chaque nouvelle réservation**, `createBooking` passe en `expire` les
+   blocages dépassés du même professionnel. Sans ce passage, la contrainte
+   d'exclusion refuserait le nouveau client à cause d'un blocage mort.
+2. **Le webhook `checkout.session.expired`** libère le créneau dès que Stripe
+   abandonne la session.
+3. **Une tâche planifiée** (`booking-expire-cron`, toutes les cinq minutes) fait
+   le ménage pour tous les professionnels.
+
+Les créneaux proposés au client ignorent aussi les blocages dépassés, sans
+attendre ces passages (`lib/detailing/holds.ts`, `isOccupyingSlot`).
+
+**Un client relancé peut encore payer.** L'e-mail de relance d'un devis
+abandonné renvoie vers la page de confirmation. Si la réservation est passée en
+`expire` entre-temps, l'ouverture du paiement tente de la remettre en attente
+avec un nouveau blocage. La contrainte d'exclusion tranche : si le créneau a été
+pris, Postgres refuse et le client est invité à en choisir un autre.
 
 **Le webhook fait foi, pas la page de retour.** Un client qui ferme son
 navigateur après avoir payé ne doit pas perdre sa réservation — c'est
 exactement la situation qui produit une réclamation bancaire.
 
-La tâche d'expiration réutilise le mécanisme de relances déjà en place dans
-`qualifyr-saas` : même route protégée par secret, même planificateur.
+**Le webhook écoute les comptes connectés.** L'acompte est encaissé
+directement sur le compte Stripe du professionnel (en-tête `Stripe-Account`).
+Les événements de ces paiements naissent donc sur son compte, et Stripe ne les
+envoie qu'à un endpoint déclaré « Connect » (« écouter les événements des
+comptes connectés »). Le webhook vérifie que `event.account` est bien le compte
+du professionnel de la réservation et ignore tout autre événement. Il traite :
+
+| Événement | Effet |
+|---|---|
+| `checkout.session.completed` (payé) et `checkout.session.async_payment_succeeded` | `confirme` si la réservation est en `en_attente_paiement` ou `expire` |
+| `checkout.session.expired` | `expire` si la réservation est encore en `en_attente_paiement` |
+| `account.updated` | recopie `charges_enabled` dans `detailers.stripe_charges_enabled` |
+
+Si un paiement arrive pour une réservation dont le créneau a été repris entre
+temps (webhook très en retard), la confirmation est refusée par la contrainte
+d'exclusion : l'acompte est alors remboursé automatiquement, avec une clé
+d'idempotence pour ne jamais rembourser deux fois.
+
+**Le paiement s'ouvre en pleine page.** Stripe Checkout refuse de s'afficher
+dans une iframe. Depuis le formulaire intégré sur le site d'un professionnel,
+le bouton de paiement remplace donc la page entière (`window.top`), ou ouvre un
+nouvel onglet si le navigateur l'interdit, avec un lien de secours si les deux
+échouent.
 
 ### 2.6 Les créneaux proposés
 

@@ -937,6 +937,18 @@ detailer en mode manuel avec une réservation `en_attente_paiement`. Appelle
 PayPal du professionnel avec la mention « pas de confirmation automatique »
 quand `paymentMode === 'manuel'`, à la place du bouton `PayDepositButton`.
 
+**`PayDepositButton` dans le parcours de réservation (7 novembre 2026).** Le
+bouton apparaît aussi à la fin de `BookingFlow`, y compris dans le formulaire
+intégré par iframe (`/embed/[slug]`), quand l'acompte se paie par Stripe
+(`docs/13` §2.5). Deux ajouts :
+
+- prop `tone` (`'light'` par défaut, `'dark'` dans le parcours sombre) : bouton
+  blanc sur fond charbon, message d'erreur en terre cuite claire ;
+- ouverture du paiement en pleine page : Stripe Checkout refuse l'iframe, le
+  bouton navigue donc sur `window.top`, ou ouvre un onglet, et affiche
+  toujours ensuite un lien « Ouvrir la page de paiement » de secours. Le
+  message d'erreur porte `role="alert"`.
+
 ## Boutons d'appel à l'action — retrait du halo lumineux (12 septembre 2026)
 
 `.accent-glow` (halo flouté derrière le bouton, radial-gradient sur `--accent-1`/
