@@ -1,24 +1,24 @@
-import type { Metadata } from "next";
-import { AgentFlow } from "@/components/agency/AgentFlow";
-import { AgentGrid } from "@/components/agency/AgentGrid";
-import { AgentTriad } from "@/components/agency/AgentTriad";
-import { CompareSection } from "@/components/agency/CompareSection";
-import { FaqSection } from "@/components/agency/DarkVerticalPage";
-import { homeFaq } from "@/components/agency/home-faq";
-import { BeforeAfterSection } from "@/components/agency/BeforeAfterSection";
-import { DarkFooter } from "@/components/agency/DarkFooter";
-import { DarkHeader } from "@/components/agency/DarkHeader";
-import { DarkHero } from "@/components/agency/DarkHero";
-import { DarkPricing } from "@/components/agency/DarkPricing";
-import { DemoSection } from "@/components/agency/DemoSection";
-import { FinalCtaSection } from "@/components/agency/FinalCtaSection";
-import { HeroPhone } from "@/components/agency/HeroPhone";
-import { HowItWorks } from "@/components/agency/HowItWorks";
-import { ServiceTabs } from "@/components/agency/ServiceTabs";
-import { services } from "@/components/agency/services-content";
-import { JsonLd } from "@/components/seo/JsonLd";
-import { buildMetadata } from "@/lib/metadata";
-import { softwareApplication, webPage } from "@/lib/structured-data";
+import type { Metadata } from 'next';
+import { AgentFlow } from '@/components/agency/AgentFlow';
+import { AgentGrid } from '@/components/agency/AgentGrid';
+import { AgentTriad } from '@/components/agency/AgentTriad';
+import { CompareSection } from '@/components/agency/CompareSection';
+import { FaqSection } from '@/components/agency/DarkVerticalPage';
+import { homeFaq } from '@/components/agency/home-faq';
+import { BeforeAfterSection } from '@/components/agency/BeforeAfterSection';
+import { DarkFooter } from '@/components/agency/DarkFooter';
+import { DarkHeader } from '@/components/agency/DarkHeader';
+import { DarkHero } from '@/components/agency/DarkHero';
+import { DarkPricing } from '@/components/agency/DarkPricing';
+import { DemoSection } from '@/components/agency/DemoSection';
+import { FinalCtaSection } from '@/components/agency/FinalCtaSection';
+import { HeroPhone } from '@/components/agency/HeroPhone';
+import { HowItWorks } from '@/components/agency/HowItWorks';
+import { ServiceTabs } from '@/components/agency/ServiceTabs';
+import { services } from '@/components/agency/services-content';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { buildMetadata } from '@/lib/metadata';
+import { softwareApplication, webPage } from '@/lib/structured-data';
 
 /**
  * Page d'accueil — charte « Dark Minimalist ».
@@ -42,12 +42,12 @@ import { softwareApplication, webPage } from "@/lib/structured-data";
  * encore un en-tête et un pied de page clairs pour les pages non refondues.
  */
 
-export const metadata: Metadata = buildMetadata("/");
+export const metadata: Metadata = buildMetadata('/');
 
 export default function HomePage() {
   return (
     <div data-theme="dark" className="bg-ink">
-      <JsonLd data={webPage("/")} />
+      <JsonLd data={webPage('/')} />
       {/* Le SaaS lui-même, distinct de l'organisation : voir le commentaire
           de `softwareApplication()` dans `structured-data.ts`. */}
       <JsonLd data={softwareApplication()} />
@@ -117,10 +117,11 @@ export default function HomePage() {
          */
         trust
         /*
-         * Colonne de droite : maquette de téléphone avec le formulaire de
-         * réservation et cinq cartes flottantes (7 novembre 2026) — voir
-         * `HeroPhone` et `docs/05-composants.md`. Remplace le nuage de bulles
-         * `messages`, que `DarkHero` ne rend plus quand un visuel est passé.
+         * Colonne de droite : téléphone incliné, fond d'écran iOS et cartes
+         * débordantes (7 novembre 2026) — voir `HeroPhone`,
+         * `docs/05-composants.md` et l'exception `docs/03` §7.2. Remplace le
+         * nuage de bulles `messages`, que `DarkHero` ne rend plus quand un
+         * visuel est passé.
          */
         visual={<HeroPhone />}
       />

@@ -1,287 +1,364 @@
 /*
- * Maquette de téléphone du hero — `docs/05-composants.md`.
+ * Maquette de téléphone du hero — `docs/05-composants.md` (version 2) et
+ * l'exception de couleurs `docs/03-direction-artistique.md` §7.2.
  *
- * Règle WebKit (voir aussi `MessageBubble`) : un élément transformé ou animé
- * ne peint rien. `.float` bouge, `.card` / `.message` peignent.
+ * Toutes les dimensions sont en `em` : la scène fait 34em de large et sa
+ * taille de police suit la largeur de la colonne (requête de conteneur), donc
+ * l'ensemble se réduit d'un bloc sur mobile.
+ *
+ * Règle WebKit : ce qui est transformé ne peint rien (`.tilt`, `.float`,
+ * `.lean`) ; ce qui peint n'est pas transformé (`.phone`, `.notif`, `.chat`,
+ * `.pay`).
  */
 
-.stage {
-  position: relative;
-  width: min(100%, 22rem);
-  margin-inline: auto;
-  padding-block: 2.5rem 3.25rem;
+.frame {
+  width: 100%;
+  container-type: inline-size;
 }
 
-@media (min-width: 768px) {
-  .stage {
-    width: min(100%, 30rem);
-    padding-block: 3rem 3.5rem;
-  }
+.stage {
+  /* Repli pour un navigateur sans unités de conteneur. */
+  font-size: 10px;
+  font-size: min(16px, calc(100cqi / 34));
+  position: relative;
+  width: 34em;
+  height: 45em;
+  margin-inline: auto;
+}
+
+/* ---------- Halos (exception §7.2) ---------- */
+
+.haloBlue,
+.haloViolet {
+  position: absolute;
+  width: 17em;
+  height: 17em;
+  border-radius: 50%;
+  filter: blur(3.2em);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.haloBlue {
+  top: 6em;
+  left: 4em;
+  background: radial-gradient(circle, #2f6bff 0%, rgb(47 107 255 / 0) 70%);
+}
+
+.haloViolet {
+  bottom: 5em;
+  right: 3em;
+  background: radial-gradient(circle, #8b5cf6 0%, rgb(139 92 246 / 0) 70%);
 }
 
 /* ---------- Téléphone ---------- */
 
-.phone {
-  position: relative;
-  width: 13.5rem;
-  aspect-ratio: 9 / 19.5;
-  margin-inline: auto;
-  border-radius: 2.6rem;
-  padding: 0.55rem;
-  background: linear-gradient(160deg, #2a2a2d 0%, #121214 45%, #1d1d20 100%);
-  box-shadow:
-    inset 0 0 0 1px rgb(255 255 255 / 0.1),
-    inset 0 0 0 3px #0a0a0b,
-    0 40px 80px -30px rgb(0 0 0 / 0.75),
-    0 18px 40px -20px rgb(0 0 0 / 0.6);
+.tilt {
+  position: absolute;
+  top: 6.5em;
+  left: 50%;
+  width: 16.5em;
+  margin-left: -8.25em;
+  transform: perspective(90em) rotateY(-16deg) rotateX(5deg) rotateZ(1.5deg);
+  transform-origin: 50% 50%;
 }
 
-@media (min-width: 768px) {
-  .phone {
-    width: 17rem;
-    border-radius: 3rem;
-    padding: 0.65rem;
-  }
+.phone {
+  position: relative;
+  width: 16.5em;
+  aspect-ratio: 9 / 19.5;
+  border-radius: 2.85em;
+  padding: 0.5em;
+  background: linear-gradient(150deg, #4a4b50 0%, #1b1b1e 22%, #0d0d0f 60%, #2b2b2f 100%);
+  box-shadow:
+    inset 0 0 0 0.06em rgb(255 255 255 / 0.18),
+    inset 0 0 0 0.22em #050506,
+    -2.2em 3em 5em -1.5em rgb(0 0 0 / 0.85),
+    0 1.2em 2.5em -1em rgb(0 0 0 / 0.6);
 }
 
 .buttonLeft,
 .buttonRight {
   position: absolute;
-  width: 3px;
-  background: #2a2a2d;
+  width: 0.2em;
+  background: #2c2c30;
 }
 
 .buttonLeft {
-  left: -3px;
-  top: 22%;
-  height: 12%;
-  border-radius: 2px 0 0 2px;
-  box-shadow: 0 -2.6rem 0 0 #2a2a2d;
+  left: -0.18em;
+  top: 21%;
+  height: 11%;
+  border-radius: 0.15em 0 0 0.15em;
+  box-shadow: 0 -2.4em 0 0 #2c2c30;
 }
 
 .buttonRight {
-  right: -3px;
-  top: 28%;
-  height: 16%;
-  border-radius: 0 2px 2px 0;
+  right: -0.18em;
+  top: 27%;
+  height: 15%;
+  border-radius: 0 0.15em 0.15em 0;
 }
 
 .screen {
   position: relative;
   height: 100%;
   overflow: hidden;
-  border-radius: 2.1rem;
-  background: #0e0e0f;
-  color: #f5f2ec;
+  border-radius: 2.4em;
   display: flex;
   flex-direction: column;
+  color: #fff;
+  /* Fond d'écran : dégradés CSS dans l'esprit des fonds récents d'iOS —
+     aucune image d'Apple. */
+  background:
+    radial-gradient(60% 45% at 18% 12%, #ffb36b 0%, rgb(255 179 107 / 0) 70%),
+    radial-gradient(55% 40% at 88% 22%, #ff5f8f 0%, rgb(255 95 143 / 0) 70%),
+    radial-gradient(70% 45% at 25% 62%, #7a5cff 0%, rgb(122 92 255 / 0) 72%),
+    radial-gradient(65% 45% at 85% 78%, #2f8bff 0%, rgb(47 139 255 / 0) 72%),
+    radial-gradient(60% 35% at 40% 100%, #ffcf5c 0%, rgb(255 207 92 / 0) 70%),
+    linear-gradient(170deg, #3b1d5e 0%, #20123d 50%, #0f1736 100%);
 }
 
-@media (min-width: 768px) {
-  .screen {
-    border-radius: 2.45rem;
-  }
+.statusBar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85em 1.35em 0;
+  font-size: 0.68em;
+  font-weight: 650;
 }
 
 .island {
   position: absolute;
-  top: 0.55rem;
+  top: 0.55em;
   left: 50%;
-  width: 34%;
-  height: 1.35rem;
-  margin-left: -17%;
+  width: 7.6em;
+  height: 2.05em;
+  margin-left: -3.8em;
   border-radius: 999px;
   background: #000;
-}
-
-.statusBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem 1.15rem 0;
-  font-size: 0.62rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
 }
 
 .statusIcons {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.35em;
 }
 
 .signal {
-  width: 0.8rem;
-  height: 0.45rem;
-  background: linear-gradient(90deg, currentColor 0 22%, transparent 22% 26%, currentColor 26% 48%, transparent 48% 52%, currentColor 52% 74%, transparent 74% 78%, currentColor 78%);
+  width: 1.25em;
+  height: 0.75em;
+  background: currentColor;
   clip-path: polygon(0 100%, 100% 0, 100% 100%);
 }
 
 .battery {
-  width: 1.05rem;
-  height: 0.5rem;
-  border-radius: 2px;
-  border: 1px solid currentColor;
-  background: linear-gradient(90deg, currentColor 0 70%, transparent 70%);
+  width: 1.7em;
+  height: 0.8em;
+  border-radius: 0.25em;
+  border: 0.09em solid currentColor;
+  padding: 0.1em;
+  background: linear-gradient(90deg, currentColor 0 75%, transparent 75%);
   background-clip: content-box;
-  padding: 1px;
 }
 
-/* ---------- Écran : widget ---------- */
+/* ---------- Icônes d'applications ---------- */
 
-.app {
-  flex: 1;
+.apps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.7em;
+  padding: 1.35em 1.05em 0;
+  justify-items: center;
+}
+
+.tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75em;
+  height: 2.75em;
+  border-radius: 0.72em;
+  color: #fff;
+  box-shadow:
+    inset 0 0.06em 0 rgb(255 255 255 / 0.35),
+    0 0.3em 0.6em -0.2em rgb(0 0 0 / 0.35);
+}
+
+.glyph {
+  width: 55%;
+  height: 55%;
+}
+
+.toneWhite {
+  background: linear-gradient(180deg, #ffffff, #e9e9ee);
+  color: #e0463a;
+}
+
+.toneInk {
+  background: linear-gradient(180deg, #2b2b30, #0e0e10);
+}
+
+.toneSky {
+  background: linear-gradient(180deg, #8fd3ff, #3b9cf0);
+}
+
+.toneGrey {
+  background: linear-gradient(180deg, #d9dade, #9c9ea6);
+  color: #1d1d20;
+}
+
+.toneSun {
+  background: linear-gradient(180deg, #fff2b8, #ffd34d);
+  color: #5a4300;
+}
+
+.toneBlue {
+  background: linear-gradient(180deg, #5ab0ff, #1f63e0);
+}
+
+.toneCoral {
+  background: linear-gradient(180deg, #ff8a80, #fa3c5a);
+}
+
+.toneSteel {
+  background: linear-gradient(180deg, #a5a8b0, #5c5f68);
+}
+
+.tonePhone {
+  background: linear-gradient(180deg, #6fe08a, #2fb552);
+}
+
+.toneWhatsapp {
+  background: #25d366;
+}
+
+.toneSafari {
+  background: linear-gradient(180deg, #ffffff, #e6eefb);
+  color: #1677ff;
+}
+
+.tonePhotos {
+  background: linear-gradient(135deg, #ffb35c, #ff5f8f 45%, #7a5cff);
+}
+
+/* ---------- Widget Qualifyr (verre dépoli) ---------- */
+
+.widget {
+  margin: 1.05em 0.85em 0;
+  padding: 0.85em;
+  border-radius: 1.45em;
+  background: rgb(14 14 16 / 0.58);
+  border: 0.06em solid rgb(255 255 255 / 0.14);
+  -webkit-backdrop-filter: blur(1.1em) saturate(1.4);
+  backdrop-filter: blur(1.1em) saturate(1.4);
   display: flex;
   flex-direction: column;
-  padding: 1.6rem 0.9rem 1rem;
-  gap: 0.55rem;
+  gap: 0.55em;
 }
 
-@media (min-width: 768px) {
-  .app {
-    padding: 2rem 1.1rem 1.2rem;
-    gap: 0.7rem;
-  }
-}
-
-.appEyebrow {
-  margin: 0;
-  font-size: 0.56rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+.widgetHead {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  font-size: 0.62em;
+  font-weight: 650;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: rgb(245 242 236 / 0.55);
+  color: rgb(255 255 255 / 0.72);
 }
 
-.appTitle {
+.widgetDot {
+  width: 0.55em;
+  height: 0.55em;
+  border-radius: 50%;
+  background: #f5f2ec;
+}
+
+.carPanel {
+  border-radius: 0.9em;
+  padding: 0.5em 0.4em 0.2em;
+  background: radial-gradient(90% 80% at 50% 30%, #2a2b31 0%, #111114 75%);
+  border: 0.06em solid rgb(255 255 255 / 0.06);
+}
+
+.car {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.widgetLabel {
   margin: 0;
-  font-size: 1rem;
+  font-size: 0.82em;
   font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-@media (min-width: 768px) {
-  .appEyebrow {
-    font-size: 0.62rem;
-  }
-
-  .appTitle {
-    font-size: 1.2rem;
-  }
 }
 
 .sizes {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.35rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.35em;
 }
 
 .size,
 .sizeActive {
-  border-radius: 0.6rem;
-  padding: 0.45rem 0.5rem;
-  font-size: 0.6rem;
-  font-weight: 600;
-  border: 1px solid rgb(255 255 255 / 0.1);
-  color: rgb(245 242 236 / 0.7);
+  border-radius: 0.6em;
+  padding: 0.55em 0.2em;
+  text-align: center;
+  font-size: 0.56em;
+  font-weight: 650;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  border: 0.1em solid rgb(255 255 255 / 0.14);
+  color: rgb(255 255 255 / 0.78);
 }
 
 .sizeActive {
-  background: #f5f2ec;
-  border-color: #f5f2ec;
-  color: #0e0e0f;
+  background: #fff;
+  border-color: #fff;
+  color: #0e0e10;
 }
 
-@media (min-width: 768px) {
-  .size,
-  .sizeActive {
-    font-size: 0.68rem;
-    padding: 0.55rem 0.6rem;
-  }
-}
-
-.summary {
-  margin-top: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  border-radius: 0.8rem;
-  padding: 0.65rem 0.7rem;
-  background: #161618;
-  border: 1px solid rgb(255 255 255 / 0.07);
-  font-size: 0.6rem;
-}
-
-@media (min-width: 768px) {
-  .summary {
-    font-size: 0.68rem;
-    padding: 0.75rem 0.85rem;
-  }
-}
-
-.summaryRow,
-.summaryTotal {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-
-.summaryRow {
-  color: rgb(245 242 236 / 0.65);
-}
-
-.summaryTotal {
-  margin-top: 0.2rem;
-  padding-top: 0.4rem;
-  border-top: 1px solid rgb(255 255 255 / 0.08);
-  font-weight: 700;
-  font-size: 1.15em;
-}
-
-.payButton {
+.widgetButton {
   display: block;
   border-radius: 999px;
-  padding: 0.6rem 0.75rem;
-  background: #fff;
-  color: #0e0e0f;
+  padding: 0.6em;
   text-align: center;
-  font-size: 0.66rem;
+  font-size: 0.68em;
   font-weight: 700;
+  background: #fff;
+  color: #0e0e10;
 }
 
-@media (min-width: 768px) {
-  .payButton {
-    font-size: 0.74rem;
-    padding: 0.7rem 0.85rem;
-  }
+/* ---------- Dock ---------- */
+
+.dock {
+  margin: auto 0.65em 0;
+  padding: 0.65em 0.7em;
+  border-radius: 1.6em;
+  display: flex;
+  justify-content: space-between;
+  background: rgb(255 255 255 / 0.2);
+  -webkit-backdrop-filter: blur(1em) saturate(1.5);
+  backdrop-filter: blur(1em) saturate(1.5);
+  border: 0.06em solid rgb(255 255 255 / 0.22);
 }
 
-.appNote {
-  margin: 0;
-  text-align: center;
-  font-size: 0.55rem;
-  color: rgb(245 242 236 / 0.5);
+.homeBar {
+  display: block;
+  width: 6.5em;
+  height: 0.28em;
+  margin: 0.55em auto 0.45em;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.85);
 }
 
-/* ---------- Cartes flottantes ---------- */
+/* ---------- Cartes débordantes ---------- */
 
 .float {
   position: absolute;
-  z-index: 2;
-  /* 46 % : une carte de gauche et une de droite à la même hauteur ne se
-     touchent jamais, quelle que soit la largeur de la colonne. */
-  max-width: min(46%, 9.25rem);
+  z-index: 3;
   animation: heroFloat 6s ease-in-out infinite;
   animation-delay: var(--float-delay, 0s);
-}
-
-@media (min-width: 768px) {
-  .float {
-    max-width: min(46%, 12rem);
-  }
 }
 
 @keyframes heroFloat {
@@ -291,7 +368,7 @@
   }
 
   50% {
-    transform: translateY(-8px);
+    transform: translateY(-0.6em);
   }
 }
 
@@ -301,105 +378,194 @@
   }
 }
 
-/* Positions : toujours `left`/`right` ≥ 0 dans la scène, jamais de débord
-   hors de la colonne — pas de scroll horizontal à 360px. */
-.slotA {
-  top: 0.5rem;
+.lean {
+  transform-origin: 50% 50%;
+}
+
+/* Positions dans la scène de 34em : toutes à l'intérieur (left/right ≥ 0),
+   jamais hors du conteneur. Le téléphone occupe 8.75em → 25.25em en largeur, 6.5em → 42.25em en hauteur. */
+.slotNotif {
+  /* Chevauche le haut du cadre, comme une notification qui arrive. */
+  top: 3em;
+  left: 9.25em;
+  width: 17.5em;
+}
+
+.slotNotif .lean {
+  transform: perspective(60em) rotateY(-8deg) rotateZ(-1.5deg);
+}
+
+.slotChat {
+  /* À la hauteur des icônes d'applications : le widget et le choix du
+     gabarit restent entièrement visibles. */
+  top: 11.5em;
   left: 0;
+  width: 13.5em;
 }
 
-/* B en haut à droite, au niveau de la barre d'état : ne masque ni le titre
-   ni les gabarits. C et D côte à côte dans la bande vide entre les gabarits
-   et le récapitulatif — le prix ferme et le bouton restent lisibles. */
-.slotB {
-  top: 11%;
+.slotChat .lean {
+  transform: perspective(60em) rotateY(10deg) rotateZ(-4deg);
+}
+
+.slotPay {
+  top: 31.5em;
   right: 0;
+  width: 13em;
 }
 
-.slotC {
-  top: 41.5%;
-  left: 0;
+.slotPay .lean {
+  transform: perspective(60em) rotateY(-12deg) rotateZ(4deg);
 }
 
-.slotD {
-  top: 44%;
-  right: 0;
-}
-
-.slotE {
-  bottom: 0;
-  left: 6%;
-}
-
-.message {
-  display: block;
-  border-radius: 1.1rem 1.1rem 1.1rem 0.3rem;
-  padding: 0.55rem 0.8rem;
-  background: #1683f8;
-  color: #fff;
-  font-size: 0.72rem;
-  font-weight: 500;
-  line-height: 1.35;
-  box-shadow: 0 14px 30px -14px rgb(0 0 0 / 0.7);
-}
-
-.card {
+/* Notification iOS, translucide. */
+.notif {
   display: flex;
+  gap: 0.7em;
   align-items: flex-start;
-  gap: 0.55rem;
-  border-radius: 0.95rem;
-  padding: 0.6rem 0.75rem;
-  background: rgb(22 22 24 / 0.94);
-  border: 1px solid rgb(255 255 255 / 0.09);
-  color: #f5f2ec;
-  box-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.8);
+  padding: 0.8em 0.9em;
+  border-radius: 1.35em;
+  color: #111114;
+  background: rgb(246 246 248 / 0.84);
+  -webkit-backdrop-filter: blur(1.2em) saturate(1.6);
+  backdrop-filter: blur(1.2em) saturate(1.6);
+  border: 0.06em solid rgb(255 255 255 / 0.6);
+  box-shadow:
+    0 1.6em 3em -1em rgb(0 0 0 / 0.65),
+    0 0.4em 1em -0.4em rgb(0 0 0 / 0.4);
 }
 
-.cardIcon {
+.notifIcon {
   flex: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.6rem;
-  height: 1.6rem;
-  border-radius: 0.5rem;
-  background: rgb(255 255 255 / 0.07);
-  color: #f5f2ec;
+  width: 2.3em;
+  height: 2.3em;
+  border-radius: 0.6em;
+  color: #fff;
 }
 
-.icon {
-  width: 0.95rem;
-  height: 0.95rem;
-}
-
-.cardBody {
+.notifBody {
   display: flex;
   flex-direction: column;
-  gap: 0.1rem;
+  gap: 0.15em;
   min-width: 0;
+  flex: 1;
 }
 
-.cardLabel {
-  font-size: 0.58rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+.notifHead {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5em;
+  font-size: 0.78em;
+}
+
+.notifHead span {
+  color: #6c6c72;
+}
+
+.notifText {
+  font-size: 0.8em;
+  line-height: 1.35;
+}
+
+/* Conversation claire, sans avatar. */
+.chat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  padding: 0.9em;
+  border-radius: 1.4em;
+  background: #fbfbfd;
+  border: 0.06em solid rgb(0 0 0 / 0.06);
+  box-shadow:
+    0 1.8em 3.2em -1em rgb(0 0 0 / 0.7),
+    0 0.5em 1em -0.4em rgb(0 0 0 / 0.4);
+}
+
+.bubbleIn,
+.bubbleOut {
+  max-width: 88%;
+  padding: 0.55em 0.8em;
+  border-radius: 1.1em;
+  font-size: 0.8em;
+  line-height: 1.35;
+}
+
+.bubbleIn {
+  align-self: flex-start;
+  background: #e9e9ee;
+  color: #111114;
+  border-bottom-left-radius: 0.3em;
+}
+
+.bubbleOut {
+  align-self: flex-end;
+  background: #007aff;
+  color: #fff;
+  border-bottom-right-radius: 0.3em;
+}
+
+/* Paiement. */
+.pay {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+  padding: 0.95em 1em;
+  border-radius: 1.3em;
+  background: #fff;
+  color: #111114;
+  border: 0.06em solid rgb(0 0 0 / 0.06);
+  box-shadow:
+    0 1.8em 3.2em -1em rgb(0 0 0 / 0.7),
+    0 0.5em 1em -0.4em rgb(0 0 0 / 0.4);
+}
+
+.payHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5em;
+}
+
+.payLabel {
+  font-size: 0.66em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgb(245 242 236 / 0.55);
+  color: #6c6c72;
 }
 
-.cardText {
-  font-size: 0.72rem;
-  font-weight: 500;
-  line-height: 1.3;
+.payStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  padding: 0.2em 0.55em;
+  border-radius: 999px;
+  font-size: 0.62em;
+  font-weight: 650;
+  background: #f1efe9;
+  color: #3b2a1d;
 }
 
-@media (min-width: 768px) {
-  .message,
-  .cardText {
-    font-size: 0.8rem;
-  }
+.payStatus .glyph {
+  width: 1.1em;
+  height: 1.1em;
+}
 
-  .cardLabel {
-    font-size: 0.62rem;
-  }
+.payText {
+  font-size: 0.8em;
+  line-height: 1.35;
+}
+
+.payAmount {
+  font-size: 1.55em;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+}
+
+.payVia {
+  font-size: 0.66em;
+  font-weight: 600;
+  color: #6c6c72;
 }

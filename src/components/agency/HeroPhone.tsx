@@ -1,61 +1,46 @@
-import type { CSSProperties, ReactNode } from "react";
-import {
-  optionCopy,
-  scopeCopy,
-  vehicleSizeCopy,
-} from "@/components/detailing/content";
-import { DEMO_QUOTE_CONFIG } from "@/lib/detailing/demo";
-import { formatMoney, profileFor } from "@/lib/detailing/locale";
-import { quote } from "@/lib/detailing/quote";
-import type { VehicleSize } from "@/lib/detailing/types";
-import styles from "./HeroPhone.module.css";
+import type { CSSProperties, ReactNode } from 'react';
+import { vehicleSizeCopy } from '@/components/detailing/content';
+import type { VehicleSize } from '@/lib/detailing/types';
+import styles from './HeroPhone.module.css';
 
 /**
  * Maquette de téléphone du hero de l'accueil — `docs/05-composants.md`,
- * « Hero de l'accueil en deux colonnes » (7 novembre 2026).
+ * « Hero de l'accueil en deux colonnes » (version 2, 7 novembre 2026), et
+ * l'exception de couleurs `docs/03-direction-artistique.md` §7.2.
  *
- * Composant serveur, sans JavaScript côté client : le cadre est en CSS pur et
- * le flottement des cartes est une animation CSS, coupée sous
- * `prefers-reduced-motion`.
+ * Composant serveur, sans JavaScript côté client : téléphone, fond d'écran et
+ * cartes en CSS pur ; le flottement est une animation CSS coupée sous
+ * `prefers-reduced-motion` (Framer Motion n'est pas une dépendance du projet).
  *
- * **Les montants de l'écran ne sont pas inventés.** Ils sortent du vrai moteur
- * de devis (`quote()`) appliqué à la configuration de démonstration
- * (`DEMO_QUOTE_CONFIG`), celle de `/embed/demo` : ce que le visiteur voit ici
- * est ce qu'il obtiendrait en essayant la démo avec les mêmes choix.
+ * **Toutes les dimensions sont en `em`.** La scène prend la taille de police
+ * `min(16px, largeur de la colonne / 34)` : tout le visuel se réduit d'un bloc
+ * avec sa colonne, sans recalculer chaque position par point de rupture, et
+ * sans jamais déborder horizontalement.
  *
- * **Deux éléments par carte, comme `MessageBubble`.** L'externe porte la
- * position et l'animation et ne peint rien ; l'interne porte le fond, le rayon
- * et l'ombre sans aucune transformation. Peindre et transformer le même
- * élément fait apparaître un rectangle opaque derrière la carte sur WebKit.
+ * **Règle WebKit.** Tout ce qui est transformé (inclinaison du téléphone,
+ * rotation et flottement des cartes) est un élément externe qui ne peint rien ;
+ * fond, rayon et ombre sont portés par un élément interne sans
+ * transformation. Peindre et transformer le même élément fait apparaître un
+ * rectangle opaque sur WebKit.
+ *
+ * **Aucun logo ni icône d'application reproduits** (§7.2) : pictogrammes
+ * génériques sur tuiles de couleur, Stripe nommé en texte.
  */
 
-const DEMO_SIZE: VehicleSize = "suv";
-const DEMO_SIZES: readonly VehicleSize[] = [
-  "citadine",
-  "berline",
-  "suv",
-  "prestige",
-];
+const SIZES: readonly VehicleSize[] = ['citadine', 'berline', 'suv'];
+const ACTIVE_SIZE: VehicleSize = 'suv';
 
-function formatDuration(minutes: number): string {
-  const hours = Math.floor(minutes / 60);
-  const rest = minutes % 60;
-  if (hours === 0) return `${rest} min`;
-  if (rest === 0) return `${hours} h`;
-  return `${hours} h ${String(rest).padStart(2, "0")}`;
-}
+/* ---------- Pictogrammes génériques ---------- */
 
-/* Icônes au trait, monochromes, `currentColor` — jamais d'emoji sur le site
-   vitrine (`docs/03-direction-artistique.md` §7). */
-function Icon({ children }: { readonly children: ReactNode }) {
+function Glyph({ children, filled = false }: { readonly children: ReactNode; readonly filled?: boolean }) {
   return (
     <svg
       viewBox="0 0 24 24"
       aria-hidden="true"
-      className={styles.icon}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
+      className={styles.glyph}
+      fill={filled ? 'currentColor' : 'none'}
+      stroke={filled ? 'none' : 'currentColor'}
+      strokeWidth="1.9"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
@@ -64,179 +49,278 @@ function Icon({ children }: { readonly children: ReactNode }) {
   );
 }
 
-const icons = {
-  card: (
-    <Icon>
-      <rect x="3" y="5.5" width="18" height="13" rx="2.5" />
-      <path d="M3 10h18M7 15h3" />
-    </Icon>
+const glyphs = {
+  handset: (
+    <Glyph filled>
+      <path d="M6.6 3.5c.5-.4 1.2-.3 1.6.2l2 2.6c.4.5.3 1.2-.1 1.6l-1.3 1.2c.9 1.9 2.4 3.5 4.3 4.4l1.3-1.3c.4-.4 1.1-.5 1.6-.1l2.6 2c.5.4.6 1.1.2 1.6l-1.4 1.8c-.6.8-1.7 1.1-2.6.8-5-1.6-8.9-5.5-10.5-10.5-.3-.9 0-2 .8-2.6l1.5-1.7Z" />
+    </Glyph>
   ),
-  pen: (
-    <Icon>
-      <path d="M4 20l4.5-1 10-10a2.1 2.1 0 0 0-3-3l-10 10L4 20Z" />
-      <path d="M13.5 7.5l3 3" />
-    </Icon>
+  bubble: (
+    <Glyph filled>
+      <path d="M12 3.5c4.7 0 8.5 3.3 8.5 7.6s-3.8 7.6-8.5 7.6c-1 0-2-.1-2.9-.4L5 20l1-3.4c-1.6-1.4-2.5-3.3-2.5-5.5 0-4.3 3.8-7.6 8.5-7.6Z" />
+    </Glyph>
+  ),
+  compass: (
+    <Glyph>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="m15.5 8.5-2.2 4.8-4.8 2.2 2.2-4.8 4.8-2.2Z" />
+    </Glyph>
+  ),
+  picture: (
+    <Glyph>
+      <rect x="3.5" y="5" width="17" height="14" rx="3" />
+      <circle cx="9" cy="10" r="1.6" />
+      <path d="m4.5 17 4.5-4 3.5 3 3-2.5 4 3.5" />
+    </Glyph>
   ),
   calendar: (
-    <Icon>
-      <rect x="3.5" y="5" width="17" height="15" rx="2.5" />
-      <path d="M3.5 10h17M8 3v4M16 3v4" />
-    </Icon>
+    <Glyph>
+      <rect x="4" y="5.5" width="16" height="14" rx="2.5" />
+      <path d="M4 10h16M8.5 3.5v3M15.5 3.5v3" />
+    </Glyph>
   ),
-  car: (
-    <Icon>
-      <path d="M4 15.5v-3l2-5h12l2 5v3" />
-      <path d="M3 15.5h18v2.5H3z" />
-      <circle cx="7.5" cy="18" r="1.5" />
-      <circle cx="16.5" cy="18" r="1.5" />
-    </Icon>
+  clock: (
+    <Glyph>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M12 7.5V12l3 2" />
+    </Glyph>
+  ),
+  pin: (
+    <Glyph>
+      <path d="M12 20.5s6-5.4 6-10.2a6 6 0 0 0-12 0c0 4.8 6 10.2 6 10.2Z" />
+      <circle cx="12" cy="10.3" r="2.2" />
+    </Glyph>
+  ),
+  camera: (
+    <Glyph>
+      <path d="M4 8.5A2 2 0 0 1 6 6.5h2l1.5-2h5l1.5 2h2a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8.5Z" />
+      <circle cx="12" cy="12.5" r="3.3" />
+    </Glyph>
+  ),
+  note: (
+    <Glyph>
+      <path d="M6.5 4h11A1.5 1.5 0 0 1 19 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 18.5v-13A1.5 1.5 0 0 1 6.5 4Z" />
+      <path d="M8.5 9h7M8.5 12.5h7M8.5 16h4" />
+    </Glyph>
+  ),
+  sun: (
+    <Glyph>
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4" />
+    </Glyph>
+  ),
+  music: (
+    <Glyph>
+      <path d="M9 17.5V6l10-2v11.5" />
+      <circle cx="6.8" cy="17.5" r="2.3" />
+      <circle cx="16.8" cy="15.5" r="2.3" />
+    </Glyph>
+  ),
+  gear: (
+    <Glyph>
+      <circle cx="12" cy="12" r="3" />
+      <path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4 18 18M6 18l1.6-1.6M16.4 7.6 18 6" />
+    </Glyph>
+  ),
+  check: (
+    <Glyph>
+      <path d="m6 12.5 4 4 8-9" />
+    </Glyph>
   ),
 } as const;
 
-type Card =
-  | { readonly kind: "message"; readonly text: string; readonly slot: string }
-  | {
-      readonly kind: "card";
-      readonly label: string;
-      readonly text: string;
-      readonly icon: ReactNode;
-      readonly slot: string;
-    };
+type Tile = { readonly glyph: ReactNode; readonly tone: string; readonly label: string };
 
-const cards: readonly Card[] = [
-  {
-    kind: "message",
-    text: "C’est combien pour un polissage sur une Golf ?",
-    slot: styles.slotA ?? "",
-  },
-  {
-    kind: "card",
-    label: "Paiement",
-    text: "Acompte de 50 € encaissé sur Stripe",
-    icon: icons.card,
-    slot: styles.slotB ?? "",
-  },
-  {
-    kind: "card",
-    label: "Votre soirée",
-    text: "Fini les devis écrits le soir à 21 h",
-    icon: icons.pen,
-    slot: styles.slotC ?? "",
-  },
-  {
-    kind: "card",
-    label: "Nouveau RDV",
-    text: "Céramique SUV, mardi 14 h",
-    icon: icons.calendar,
-    slot: styles.slotD ?? "",
-  },
-  {
-    kind: "card",
-    label: "Devis",
-    text: "Tarif calculé selon le gabarit du véhicule",
-    icon: icons.car,
-    slot: styles.slotE ?? "",
-  },
+const homeApps: readonly Tile[] = [
+  { glyph: glyphs.calendar, tone: styles.toneWhite ?? '', label: 'Calendrier' },
+  { glyph: glyphs.clock, tone: styles.toneInk ?? '', label: 'Horloge' },
+  { glyph: glyphs.pin, tone: styles.toneSky ?? '', label: 'Plans' },
+  { glyph: glyphs.camera, tone: styles.toneGrey ?? '', label: 'Appareil photo' },
+  { glyph: glyphs.note, tone: styles.toneSun ?? '', label: 'Notes' },
+  { glyph: glyphs.sun, tone: styles.toneBlue ?? '', label: 'Météo' },
+  { glyph: glyphs.music, tone: styles.toneCoral ?? '', label: 'Musique' },
+  { glyph: glyphs.gear, tone: styles.toneSteel ?? '', label: 'Réglages' },
 ];
 
-export function HeroPhone() {
-  const profile = profileFor("FR");
-  const demo = quote(
-    {
-      scope: "exterieur",
-      vehicleSize: DEMO_SIZE,
-      soiling: "normal",
-      optionKeys: ["ceramique"],
-      locationMode: "atelier",
-    },
-    DEMO_QUOTE_CONFIG,
-  );
+const dockApps: readonly Tile[] = [
+  { glyph: glyphs.handset, tone: styles.tonePhone ?? '', label: 'Téléphone' },
+  { glyph: glyphs.bubble, tone: styles.toneWhatsapp ?? '', label: 'WhatsApp' },
+  { glyph: glyphs.compass, tone: styles.toneSafari ?? '', label: 'Safari' },
+  { glyph: glyphs.picture, tone: styles.tonePhotos ?? '', label: 'Photos' },
+];
 
+function AppTile({ tile }: { readonly tile: Tile }) {
   return (
-    <div
-      className={styles.stage}
-      role="img"
-      aria-label="Aperçu du formulaire de réservation Qualifyr sur un téléphone : le client choisit son véhicule, voit un prix ferme et règle l’acompte."
-    >
-      <div className={styles.phone}>
-        <span className={styles.buttonLeft} aria-hidden="true" />
-        <span className={styles.buttonRight} aria-hidden="true" />
-        <div className={styles.screen}>
-          <span className={styles.island} aria-hidden="true" />
+    <span className={`${styles.tile} ${tile.tone}`} title={tile.label}>
+      {tile.glyph}
+    </span>
+  );
+}
 
-          <div className={styles.statusBar}>
-            <span>9:41</span>
-            <span className={styles.statusIcons} aria-hidden="true">
-              <span className={styles.signal} />
-              <span className={styles.battery} />
-            </span>
-          </div>
+/* Silhouette générique de SUV sombre, de profil. */
+function CarSilhouette() {
+  return (
+    <svg viewBox="0 0 220 84" aria-hidden="true" className={styles.car}>
+      <defs>
+        <linearGradient id="hero-car-body" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#3a3b40" />
+          <stop offset="0.55" stopColor="#1a1b1e" />
+          <stop offset="1" stopColor="#0c0c0e" />
+        </linearGradient>
+        <linearGradient id="hero-car-glass" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#5b6170" />
+          <stop offset="1" stopColor="#15171c" />
+        </linearGradient>
+        <radialGradient id="hero-car-floor" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stopColor="#000" stopOpacity="0.7" />
+          <stop offset="1" stopColor="#000" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <ellipse cx="110" cy="74" rx="100" ry="7" fill="url(#hero-car-floor)" />
+      <path
+        d="M12 62c0-9 5-14 16-16l30-5c11-12 26-20 46-21h30c17 0 30 8 42 20l24 6c8 2 11 7 11 16H12Z"
+        fill="url(#hero-car-body)"
+      />
+      <path d="M66 42c9-9 22-16 38-16h12v16H66Z" fill="url(#hero-car-glass)" />
+      <path d="M122 26h12c13 0 24 6 33 16h-45V26Z" fill="url(#hero-car-glass)" />
+      <path
+        d="M30 47l28-5c11-12 26-20 46-21h30c17 0 30 8 42 20"
+        fill="none"
+        stroke="#fff"
+        strokeOpacity="0.28"
+        strokeWidth="1.2"
+      />
+      <path d="M190 52h12" stroke="#f5f2ec" strokeOpacity="0.8" strokeWidth="2.4" strokeLinecap="round" />
+      <path d="M16 54h8" stroke="#c4553a" strokeOpacity="0.9" strokeWidth="2.4" strokeLinecap="round" />
+      {[52, 166].map((x) => (
+        <g key={x}>
+          <circle cx={x} cy="63" r="14" fill="#08080a" />
+          <circle cx={x} cy="63" r="8" fill="#26272b" stroke="#55575e" strokeWidth="1" />
+          <circle cx={x} cy="63" r="2.5" fill="#8a8c93" />
+        </g>
+      ))}
+    </svg>
+  );
+}
 
-          <div className={styles.app}>
-            <p className={styles.appEyebrow}>Réservation en ligne</p>
-            <p className={styles.appTitle}>Votre véhicule</p>
+/* Une carte = trois niveaux (règle WebKit) : position + flottement, rotation
+   fixe, puis la carte qui peint. */
+function FloatingCard({
+  slot,
+  delay,
+  children,
+}: {
+  readonly slot: string | undefined;
+  readonly delay: number;
+  readonly children: ReactNode;
+}) {
+  return (
+    <div className={`${styles.float} ${slot ?? ''}`} style={{ '--float-delay': `${delay}s` } as CSSProperties}>
+      <div className={styles.lean}>{children}</div>
+    </div>
+  );
+}
 
-            <div className={styles.sizes}>
-              {DEMO_SIZES.map((size) => (
-                <span
-                  key={size}
-                  className={
-                    size === DEMO_SIZE ? styles.sizeActive : styles.size
-                  }
-                >
-                  {vehicleSizeCopy[size].label}
+export function HeroPhone() {
+  return (
+    <div className={styles.frame}>
+      <div
+        className={styles.stage}
+        role="img"
+        aria-label="Aperçu de Qualifyr sur un téléphone : un client demande un créneau sur WhatsApp, choisit son véhicule dans le formulaire de réservation, reçoit un tarif calculé et règle un acompte de 50 € par Stripe."
+      >
+        <span className={styles.haloBlue} aria-hidden="true" />
+        <span className={styles.haloViolet} aria-hidden="true" />
+
+        <div className={styles.tilt}>
+          <div className={styles.phone}>
+            <span className={styles.buttonLeft} aria-hidden="true" />
+            <span className={styles.buttonRight} aria-hidden="true" />
+            <div className={styles.screen}>
+              <div className={styles.statusBar}>
+                <span>9:41</span>
+                <span className={styles.island} aria-hidden="true" />
+                <span className={styles.statusIcons} aria-hidden="true">
+                  <span className={styles.signal} />
+                  <span className={styles.battery} />
                 </span>
-              ))}
-            </div>
+              </div>
 
-            <div className={styles.summary}>
-              <div className={styles.summaryRow}>
-                <span>{scopeCopy.exterieur.label}</span>
-                <span>{formatMoney(demo.basePrice, profile)}</span>
+              <div className={styles.apps}>
+                {homeApps.map((tile) => (
+                  <AppTile key={tile.label} tile={tile} />
+                ))}
               </div>
-              <div className={styles.summaryRow}>
-                <span>{optionCopy.ceramique.label}</span>
-                <span>{formatMoney(demo.optionsPrice, profile)}</span>
-              </div>
-              <div className={styles.summaryRow}>
-                <span>Durée</span>
-                <span>{formatDuration(demo.totalMinutes)}</span>
-              </div>
-              <div className={styles.summaryTotal}>
-                <span>Prix ferme</span>
-                <span>{formatMoney(demo.totalPrice, profile)}</span>
-              </div>
-            </div>
 
-            <span className={styles.payButton}>
-              Payer l’acompte de {formatMoney(demo.depositAmount, profile)}
-            </span>
-            <p className={styles.appNote}>Créneau confirmé dès le paiement</p>
+              <div className={styles.widget}>
+                <div className={styles.widgetHead}>
+                  <span className={styles.widgetDot} aria-hidden="true" />
+                  <span>Car detailing booking</span>
+                </div>
+                <div className={styles.carPanel}>
+                  <CarSilhouette />
+                </div>
+                <p className={styles.widgetLabel}>Votre véhicule</p>
+                <div className={styles.sizes}>
+                  {SIZES.map((size) => (
+                    <span key={size} className={size === ACTIVE_SIZE ? styles.sizeActive : styles.size}>
+                      {vehicleSizeCopy[size].label}
+                    </span>
+                  ))}
+                </div>
+                <span className={styles.widgetButton}>Continuer</span>
+              </div>
+
+              <div className={styles.dock}>
+                {dockApps.map((tile) => (
+                  <AppTile key={tile.label} tile={tile} />
+                ))}
+              </div>
+              <span className={styles.homeBar} aria-hidden="true" />
+            </div>
           </div>
         </div>
-      </div>
 
-      {cards.map((card, index) => (
-        <div
-          key={card.text}
-          className={`${styles.float} ${card.slot}`}
-          style={
-            { ["--float-delay" as string]: `${index * -1.2}s` } as CSSProperties
-          }
-        >
-          {card.kind === "message" ? (
-            <span className={styles.message}>{card.text}</span>
-          ) : (
-            <span className={styles.card}>
-              <span className={styles.cardIcon}>{card.icon}</span>
-              <span className={styles.cardBody}>
-                <span className={styles.cardLabel}>{card.label}</span>
-                <span className={styles.cardText}>{card.text}</span>
+        {/* 1. Notification WhatsApp, à cheval sur le haut de l'écran. */}
+        <FloatingCard slot={styles.slotNotif} delay={0}>
+          <div className={styles.notif}>
+            <span className={`${styles.notifIcon} ${styles.toneWhatsapp}`}>{glyphs.bubble}</span>
+            <span className={styles.notifBody}>
+              <span className={styles.notifHead}>
+                <strong>Client WhatsApp</strong>
+                <span>maintenant</span>
+              </span>
+              <span className={styles.notifText}>
+                Salut, dispo ce samedi pour un traitement céramique ?
               </span>
             </span>
-          )}
-        </div>
-      ))}
+          </div>
+        </FloatingCard>
+
+        {/* 2. Conversation, débordant à gauche. */}
+        <FloatingCard slot={styles.slotChat} delay={-2}>
+          <div className={styles.chat}>
+            <span className={styles.bubbleIn}>attends… c’est vraiment combien ?</span>
+            <span className={styles.bubbleOut}>Tarif calculé : 280 € • Acompte 50 € versé 💳</span>
+          </div>
+        </FloatingCard>
+
+        {/* 3. Paiement, débordant à droite. */}
+        <FloatingCard slot={styles.slotPay} delay={-4}>
+          <div className={styles.pay}>
+            <span className={styles.payHead}>
+              <span className={styles.payLabel}>Paiement</span>
+              <span className={styles.payStatus}>
+                {glyphs.check}
+                Réussi
+              </span>
+            </span>
+            <span className={styles.payText}>Acompte de 50 € encaissé sur Stripe</span>
+            <span className={styles.payAmount}>50,00 €</span>
+            <span className={styles.payVia}>via Stripe</span>
+          </div>
+        </FloatingCard>
+      </div>
     </div>
   );
 }

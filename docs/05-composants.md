@@ -3,46 +3,54 @@
 ## Hero de l'accueil en deux colonnes, maquette de téléphone (7 novembre 2026)
 
 Demande de Dorian : passer le hero centré de l'accueil à une mise en page en deux colonnes,
-texte aligné à gauche et maquette de téléphone à droite, entourée de bulles qui reprennent la
-proposition de valeur (prix ferme selon le véhicule, acompte encaissé).
+texte aligné à gauche et maquette de téléphone à droite, entourée de cartes qui sortent de
+l'écran. **Version 2, le soir même** : sur la référence d'un hero de SaaS « avant / maintenant »,
+il veut de la couleur et de la vie — fond d'écran iOS, notification, message, paiement. Les
+couleurs, halos et emoji de cette version relèvent de l'exception
+`docs/03-direction-artistique.md` §7.2, limitée à ce visuel.
 
 **`DarkHero` — prop `visual?: ReactNode`.** Absente, rien ne change : les pages métier et
 `/logiciel-*` gardent le hero centré. Présente, le hero passe en grille deux colonnes à partir de
 `md` (768 px), texte à gauche, visuel à droite ; en dessous, une seule colonne, texte puis
-visuel. Le nuage de `MessageBubble` (`messages`) n'est pas rendu à côté d'un visuel : les bulles
-vivent désormais dans le visuel lui-même. La bande de réassurance (`trust`) reste en dessous,
-sur toute la largeur.
+visuel. Le nuage de `MessageBubble` (`messages`) n'est pas rendu à côté d'un visuel. La bande
+de réassurance (`trust`) reste en dessous, sur toute la largeur.
 
-**`HeroPhone` (nouveau, `components/agency/HeroPhone.tsx`).** Maquette de téléphone en CSS
-pur : cadre sombre aux bords nets, Dynamic Island, boutons latéraux. L'écran reproduit le devis
-du formulaire de réservation, calculé par le vrai moteur (`quote()`) avec la configuration de
-démonstration (`DEMO_QUOTE_CONFIG`, la même que `/embed/demo`) : les montants affichés sont
-ceux qu'un visiteur obtiendrait dans la démo, pas des prix inventés. Cinq cartes flottent
-autour, sur les deux côtés, en se chevauchant légèrement avec le cadre :
+**`HeroPhone` (`components/agency/HeroPhone.tsx`).** Composant serveur, sans JavaScript client.
 
-1. « C'est combien pour un polissage sur une Golf ? » — bulle de message client, même bleu
-   que `MessageBubble` (exception déjà documentée pour ces bulles) ;
-2. « Acompte de 50 € encaissé sur Stripe » ;
-3. « Fini les devis écrits le soir à 21 h » ;
-4. « Nouveau RDV : Céramique SUV (mardi 14 h) » ;
-5. « Tarif calculé selon le gabarit du véhicule ».
+- **Téléphone** en CSS pur, type iPhone récent : cadre titane sombre, Dynamic Island, boutons
+  latéraux. Il est **incliné en perspective** (`rotateY` négatif, léger `rotateX`) : le bord
+  droit s'éloigne.
+- **Deux halos diffus**, bleu et violet, derrière le téléphone (§7.2).
+- **Écran** : fond d'écran multicolore en dégradés CSS, barre d'état, une rangée d'icônes
+  d'applications génériques, et au centre le widget de réservation Qualifyr en mode sombre
+  translucide (`backdrop-filter: blur`) : titre « Car detailing booking », silhouette de
+  voiture sombre en SVG, gabarits Citadine / Berline / SUV / break (SUV sélectionné). Dock de
+  quatre icônes génériques : Téléphone, WhatsApp, Safari, Photos (libellés accessibles
+  masqués, pictogrammes non copiés).
+- **Trois cartes qui débordent**, ombre forte, légère rotation :
+  1. en haut, chevauchant l'écran : notification WhatsApp translucide, pastille verte —
+     « Client WhatsApp • maintenant », puis « Salut, dispo ce samedi pour un traitement
+     céramique ? » ;
+  2. à gauche : carte de messages claire, sans avatar — bulle grise « attends… c'est vraiment
+     combien ? », bulle bleue iOS « Tarif calculé : 280 € • Acompte 50 € versé 💳 » ;
+  3. à droite : carte de paiement blanche — « Paiement », « Acompte de 50 € encaissé sur
+     Stripe », montant « 50,00 € ».
 
-**Pas d'emoji.** La demande en plaçait un par bulle ; le §7 de `docs/03-direction-artistique.md`
-les interdit sur le site vitrine, et un essai précédent dans l'espace pro avait été abandonné.
-Chaque carte porte à la place une icône au trait, monochrome (`aria-hidden`), de la même famille
-que le reste du site.
+  Les montants de ces cartes sont **un exemple de conversation**, cohérent d'une carte à
+  l'autre (280 €, acompte 50 €) ; le widget de l'écran n'affiche pas de prix, pour ne pas
+  contredire cet exemple.
 
 **Animation sans dépendance.** Framer Motion n'est pas installé et `docs/04` limite les
 dépendances : le flottement est une animation CSS (`translateY` de quelques pixels, six
-secondes, décalée par carte), coupée sous `prefers-reduced-motion`. Comme pour `MessageBubble`,
-la transformation est portée par un élément externe qui ne peint rien, et le fond, le rayon et
-l'ombre par un élément interne sans transformation : c'est la condition pour éviter le rectangle
-opaque de WebKit documenté plus bas.
+secondes, décalée par carte), coupée sous `prefers-reduced-motion`. **Règle WebKit** : la
+transformation (inclinaison, rotation, flottement) est portée par un élément externe qui ne
+peint rien ; le fond, le rayon et l'ombre par un élément interne sans transformation — sinon
+WebKit dessine un rectangle opaque derrière l'élément.
 
-**Accessibilité.** Le visuel est décoratif pour un lecteur d'écran : un `role="img"` avec une
-description courte, le contenu de l'écran et des cartes n'étant pas lu un par un. Aucune carte
-ne déborde du conteneur, sur mobile comme sur ordinateur, pour ne jamais créer de défilement
-horizontal.
+**Accessibilité et débordement.** Le visuel est un `role="img"` avec une description courte ;
+le détail de l'écran et des cartes n'est pas lu un par un. Les cartes débordent du téléphone,
+jamais du conteneur : aucune largeur fixe au-delà de la colonne, `overflow-x` jamais déclenché
+à 360 px. Sous 768 px, l'ensemble est réduit proportionnellement.
 
 ---
 

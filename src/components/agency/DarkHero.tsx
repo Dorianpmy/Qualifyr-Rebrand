@@ -1,9 +1,9 @@
-import Link from "next/link";
-import type { ReactNode } from "react";
-import { MessageBubble } from "./MessageBubble";
-import { Section } from "./Section";
-import { SocialProof, type SocialProofProps } from "./SocialProof";
-import { TrustStrip } from "./TrustStrip";
+import Link from 'next/link';
+import type { ReactNode } from 'react';
+import { MessageBubble } from './MessageBubble';
+import { Section } from './Section';
+import { SocialProof, type SocialProofProps } from './SocialProof';
+import { TrustStrip } from './TrustStrip';
 
 /**
  * Hero du site vitrine.
@@ -89,11 +89,11 @@ export type DarkHeroProps = {
  * 11.25rem pour loger la troisième rangée.
  */
 const heroCloudPositions = [
-  { left: 0, top: 0, rotate: "-5deg" },
-  { right: 0, top: "0.25rem", rotate: "4deg" },
-  { left: "4%", top: "4rem", rotate: "-3deg" },
-  { right: "2%", top: "4rem", rotate: "5deg" },
-  { left: 0, top: "7.5rem", rotate: "3deg" },
+  { left: 0, top: 0, rotate: '-5deg' },
+  { right: 0, top: '0.25rem', rotate: '4deg' },
+  { left: '4%', top: '4rem', rotate: '-3deg' },
+  { right: '2%', top: '4rem', rotate: '5deg' },
+  { left: 0, top: '7.5rem', rotate: '3deg' },
 ] as const;
 
 export function DarkHero({
@@ -129,7 +129,7 @@ export function DarkHero({
         <div
           aria-hidden="true"
           className="relative mx-auto mb-6 w-full max-w-[26rem] overflow-visible"
-          style={{ height: "11.25rem" }}
+          style={{ height: '11.25rem' }}
         >
           {messages.map((text, index) => {
             const { rotate, ...placement } =
@@ -164,18 +164,18 @@ export function DarkHero({
       <div
         className={
           split
-            ? "relative grid items-center gap-14 md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] md:gap-10"
+            ? 'relative grid items-center gap-14 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:gap-8'
             : undefined
         }
       >
-        <div
-          className={
-            split
-              ? "relative flex min-w-0 flex-col items-start text-left"
-              : "relative mx-auto flex max-w-[44rem] flex-col items-center text-center"
-          }
-        >
-          {/* Bordure en dégradé : le badge est le seul endroit de la page où la
+      <div
+        className={
+          split
+            ? 'relative flex min-w-0 flex-col items-start text-left'
+            : 'relative mx-auto flex max-w-[44rem] flex-col items-center text-center'
+        }
+      >
+        {/* Bordure en dégradé : le badge est le seul endroit de la page où la
             couleur apparaît en tant que telle.
 
             Le texte, lui, n'est plus en dégradé. `accent-text` s'appuie sur
@@ -187,19 +187,16 @@ export function DarkHero({
             qui reste affiché, orange en plein hero. Un gris neutre, comme
             tous les autres sur-titres du site, ne laisse plus cette
             possibilité. */}
-          <p className="accent-ring mb-7 inline-flex items-center gap-2 rounded-full py-1.5 pl-2.5 pr-3.5 text-[0.8125rem] font-medium">
-            <span
-              aria-hidden="true"
-              className="size-1.5 rounded-full"
-              style={{
-                background:
-                  "linear-gradient(100deg, var(--accent-1), var(--accent-2))",
-              }}
-            />
-            <span className="text-faint">{eyebrow}</span>
-          </p>
+        <p className="accent-ring mb-7 inline-flex items-center gap-2 rounded-full py-1.5 pl-2.5 pr-3.5 text-[0.8125rem] font-medium">
+          <span
+            aria-hidden="true"
+            className="size-1.5 rounded-full"
+            style={{ background: 'linear-gradient(100deg, var(--accent-1), var(--accent-2))' }}
+          />
+          <span className="text-faint">{eyebrow}</span>
+        </p>
 
-          {/* Configuration du 18/08/2026 (demande explicite) : taille, graisse,
+        {/* Configuration du 18/08/2026 (demande explicite) : taille, graisse,
             crénage et interligne en `style`, pas en classes Tailwind — même
             précaution que partout ailleurs dans ce projet face aux
             `!important` de la charte historique (voir `globals.css`, section
@@ -207,89 +204,79 @@ export function DarkHero({
             que parce que `fonts.ts` charge Manrope en graisse variable (pas
             de `weight` fixe) : un poids intermédiaire entre 700 et 800
             n'existe dans aucun fichier statique. */}
-          <h1
-            className="mb-6 text-primary"
-            style={{
-              /* En deux colonnes, la colonne fait environ la moitié de la
+        <h1
+          className="mb-6 text-primary"
+          style={{
+            /* En deux colonnes, la colonne fait environ la moitié de la
                page : le corps plafonne plus bas pour garder trois lignes. */
-              fontSize: split
-                ? "clamp(2.5rem, 5.2vw, 4.25rem)"
-                : "clamp(2.5rem, 6vw, 5rem)",
-              fontWeight: 750,
-              letterSpacing: "-0.055em",
-              lineHeight: 0.94,
-            }}
-          >
-            {title}
-            {highlight ? (
-              <>
-                {" "}
-                <span className="text-faint">{highlight}</span>
-              </>
-            ) : null}
-          </h1>
-
-          <p
-            className="mb-9 max-w-[34rem] text-[1.0625rem] text-muted"
-            style={{
-              fontWeight: 400,
-              lineHeight: 1.6,
-              letterSpacing: "-0.01em",
-            }}
-          >
-            {subtitle}
-          </p>
-
-          <div
-            className={`flex flex-wrap items-center gap-3 ${split ? "justify-start" : "justify-center"}`}
-          >
-            <Link
-              href={ctaHref}
-              data-analytics-event="cta_hero_clicked"
-              data-cta-id={ctaLabel}
-              className="cta-solid group inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full bg-white px-6 text-[0.9375rem] font-semibold text-ink no-underline transition-colors duration-150 hover:bg-white/90"
-            >
-              {ctaLabel}
-              <svg
-                viewBox="0 0 20 20"
-                aria-hidden="true"
-                className="size-4 transition-transform duration-150 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
-              >
-                <path
-                  d="M4 10h11M11 5.5L15.5 10 11 14.5"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </Link>
-
-            {secondaryLabel && secondaryHref ? (
-              <Link
-                href={secondaryHref}
-                data-analytics-event="cta_secondary_clicked"
-                data-cta-id={secondaryLabel}
-                className="inline-flex min-h-[48px] items-center surface-pill px-6 text-[0.9375rem] font-medium !text-muted no-underline transition-colors duration-150 hover:!text-white"
-              >
-                {secondaryLabel}
-              </Link>
-            ) : null}
-          </div>
-
-          {ctaNote ? (
-            <p className="mt-4 text-[0.8125rem] text-faint">{ctaNote}</p>
+            fontSize: split ? 'clamp(2.5rem, 5.2vw, 4.25rem)' : 'clamp(2.5rem, 6vw, 5rem)',
+            fontWeight: 750,
+            letterSpacing: '-0.055em',
+            lineHeight: 0.94,
+          }}
+        >
+          {title}
+          {highlight ? (
+            <>
+              {' '}
+              <span className="text-faint">{highlight}</span>
+            </>
           ) : null}
+        </h1>
 
-          {/* Pas de filet séparateur : dans la référence la preuve flotte, elle
-            n'est pas posée dans un cadre. */}
-          {split ? null : reassurance}
+        <p
+          className="mb-9 max-w-[34rem] text-[1.0625rem] text-muted"
+          style={{ fontWeight: 400, lineHeight: 1.6, letterSpacing: '-0.01em' }}
+        >
+          {subtitle}
+        </p>
+
+        <div
+          className={`flex flex-wrap items-center gap-3 ${split ? 'justify-start' : 'justify-center'}`}
+        >
+          <Link
+            href={ctaHref}
+            data-analytics-event="cta_hero_clicked"
+            data-cta-id={ctaLabel}
+            className="cta-solid group inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full bg-white px-6 text-[0.9375rem] font-semibold text-ink no-underline transition-colors duration-150 hover:bg-white/90"
+          >
+            {ctaLabel}
+            <svg
+              viewBox="0 0 20 20"
+              aria-hidden="true"
+              className="size-4 transition-transform duration-150 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
+            >
+              <path
+                d="M4 10h11M11 5.5L15.5 10 11 14.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </Link>
+
+          {secondaryLabel && secondaryHref ? (
+            <Link
+              href={secondaryHref}
+              data-analytics-event="cta_secondary_clicked"
+              data-cta-id={secondaryLabel}
+              className="inline-flex min-h-[48px] items-center surface-pill px-6 text-[0.9375rem] font-medium !text-muted no-underline transition-colors duration-150 hover:!text-white"
+            >
+              {secondaryLabel}
+            </Link>
+          ) : null}
         </div>
 
-        {split ? (
-          <div className="flex min-w-0 justify-center">{visual}</div>
-        ) : null}
+        {ctaNote ? <p className="mt-4 text-[0.8125rem] text-faint">{ctaNote}</p> : null}
+
+        {/* Pas de filet séparateur : dans la référence la preuve flotte, elle
+            n'est pas posée dans un cadre. */}
+        {split ? null : reassurance}
+      </div>
+
+      {split ? <div className="flex min-w-0 justify-center">{visual}</div> : null}
       </div>
 
       {/* En deux colonnes, la réassurance reprend toute la largeur sous la

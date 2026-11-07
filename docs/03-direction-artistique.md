@@ -428,6 +428,34 @@ reçoit un visiteur une fois.
 
 ---
 
+### 7.2 Exception — maquette de téléphone du hero de l'accueil (7 novembre 2026)
+
+Demande explicite de Dorian, sur la référence d'un hero de SaaS avec téléphone et cartes
+débordantes : « j'ai besoin de couleur, un fond d'écran iOS, de la vie ». Le hero centré et
+sobre de l'accueil ne montrait pas assez concrètement ce que vit le client du laveur.
+
+**Périmètre strict : la colonne de droite du hero de l'accueil (`HeroPhone`), rien d'autre.**
+Le reste du site vitrine, y compris la colonne de texte du même hero, garde la palette du §1
+et l'iconographie du §7.
+
+Dans ce périmètre seulement :
+
+- **Couleurs d'interface iOS.** Le fond d'écran du téléphone est un dégradé multicolore dans
+  l'esprit des fonds d'écran récents d'iOS (dessiné en CSS, aucune image d'Apple). La bulle
+  d'envoi d'un message prend le bleu système d'iOS `#007AFF` ; la pastille de la notification
+  WhatsApp prend le vert `#25D366`. Ce sont des couleurs d'objets reconnaissables, pas une
+  nouvelle palette de marque : elles ne sortent jamais du téléphone et de ses cartes.
+- **Halos diffus bleu et violet derrière le téléphone.** Exception assumée au §1.7, limitée à
+  deux taches très floues et peu opaques qui détachent le téléphone du fond noir. Jamais sur
+  un texte, un bouton ou un autre composant.
+- **Emoji dans les messages simulés.** Un message de client réel en contient ; les cartes de
+  messages du téléphone peuvent donc en porter. Partout ailleurs, l'interdiction du §7
+  reste entière.
+- **Pas de logo ni d'icône d'application reproduits.** Les icônes de l'écran d'accueil et du
+  dock sont des pictogrammes génériques (combiné, bulle, boussole, image) sur des tuiles de
+  couleur — elles évoquent un téléphone sans copier les icônes d'Apple ou de WhatsApp. Stripe
+  est nommé en texte, comme partout sur le site, sans reproduire son logotype.
+
 ## 8. Traitement des images
 
 - **Sujets** : véhicules en cours de soin, gestes de travail, matières et détails ; pour la
