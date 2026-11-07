@@ -86,6 +86,24 @@ abonnements proposés), ce qui les rend probables — mais « probable » n'est 
 et ce document ne transforme pas l'un en l'autre. **[à vérifier]** : lister ces 15 variables
 dans Netlify (Site configuration → Environment variables) et confirmer chacune.
 
+### Vérification directe dans Netlify — 7 novembre 2026 **[Netlify, lu par Claude]**
+
+La liste des variables du projet `qualifyragence` a été lue directement (noms et portées, pas
+les valeurs). Résultat, comparé à `.env.example` :
+
+- **Présentes** : Supabase (×3), `STRIPE_SECRET_KEY`, `STRIPE_BILLING_WEBHOOK_SECRET`, les six
+  `STRIPE_PRICE_*`, `RESEND_API_KEY`, `RESEND_WEBHOOK_SECRET`, les adresses d'envoi, contact.
+- **`CRON_SECRET` absente jusqu'au 7 novembre 2026.** Les journaux Netlify montraient toutes
+  les tâches planifiées en échec (« CRON_SECRET manquant — appel annulé ») : aucune relance,
+  aucun avis, aucune analyse, aucune prospection ne tournait. **Posée le 7 novembre 2026**
+  (valeur aléatoire de 256 bits, marquée secrète, contexte production), avec l'accord explicite
+  de Dorian, Hermès compris.
+- **Toujours absentes** :
+  - `STRIPE_WEBHOOK_SECRET` — les acomptes payés ne sont pas confirmés tant qu'elle manque
+    (le webhook répond 503 et Stripe réessaie pendant trois jours) ;
+  - `INSEE_API_KEY` — l'analyse de secteur échoue explicitement ;
+  - `MISTRAL_API_KEY` — le classement par pertinence ne s'applique pas.
+
 ### Domaines d'envoi Resend
 
 Deux domaines distincts existent chez Resend, à des fins différentes — le principe (deux
