@@ -1,5 +1,51 @@
 # 05 — Composants
 
+## Hero de l'accueil en deux colonnes, maquette de téléphone (7 novembre 2026)
+
+Demande de Dorian : passer le hero centré de l'accueil à une mise en page en deux colonnes,
+texte aligné à gauche et maquette de téléphone à droite, entourée de bulles qui reprennent la
+proposition de valeur (prix ferme selon le véhicule, acompte encaissé).
+
+**`DarkHero` — prop `visual?: ReactNode`.** Absente, rien ne change : les pages métier et
+`/logiciel-*` gardent le hero centré. Présente, le hero passe en grille deux colonnes à partir de
+`md` (768 px), texte à gauche, visuel à droite ; en dessous, une seule colonne, texte puis
+visuel. Le nuage de `MessageBubble` (`messages`) n'est pas rendu à côté d'un visuel : les bulles
+vivent désormais dans le visuel lui-même. La bande de réassurance (`trust`) reste en dessous,
+sur toute la largeur.
+
+**`HeroPhone` (nouveau, `components/agency/HeroPhone.tsx`).** Maquette de téléphone en CSS
+pur : cadre sombre aux bords nets, Dynamic Island, boutons latéraux. L'écran reproduit le devis
+du formulaire de réservation, calculé par le vrai moteur (`quote()`) avec la configuration de
+démonstration (`DEMO_QUOTE_CONFIG`, la même que `/embed/demo`) : les montants affichés sont
+ceux qu'un visiteur obtiendrait dans la démo, pas des prix inventés. Cinq cartes flottent
+autour, sur les deux côtés, en se chevauchant légèrement avec le cadre :
+
+1. « C'est combien pour un polissage sur une Golf ? » — bulle de message client, même bleu
+   que `MessageBubble` (exception déjà documentée pour ces bulles) ;
+2. « Acompte de 50 € encaissé sur Stripe » ;
+3. « Fini les devis écrits le soir à 21 h » ;
+4. « Nouveau RDV : Céramique SUV (mardi 14 h) » ;
+5. « Tarif calculé selon le gabarit du véhicule ».
+
+**Pas d'emoji.** La demande en plaçait un par bulle ; le §7 de `docs/03-direction-artistique.md`
+les interdit sur le site vitrine, et un essai précédent dans l'espace pro avait été abandonné.
+Chaque carte porte à la place une icône au trait, monochrome (`aria-hidden`), de la même famille
+que le reste du site.
+
+**Animation sans dépendance.** Framer Motion n'est pas installé et `docs/04` limite les
+dépendances : le flottement est une animation CSS (`translateY` de quelques pixels, six
+secondes, décalée par carte), coupée sous `prefers-reduced-motion`. Comme pour `MessageBubble`,
+la transformation est portée par un élément externe qui ne peint rien, et le fond, le rayon et
+l'ombre par un élément interne sans transformation : c'est la condition pour éviter le rectangle
+opaque de WebKit documenté plus bas.
+
+**Accessibilité.** Le visuel est décoratif pour un lecteur d'écran : un `role="img"` avec une
+description courte, le contenu de l'écran et des cartes n'étant pas lu un par un. Aucune carte
+ne déborde du conteneur, sur mobile comme sur ordinateur, pour ne jamais créer de défilement
+horizontal.
+
+---
+
 ## `/creation-site-web` — page restée sur l'ancien système (20 septembre 2026)
 
 Signalée par Dorian depuis le bouton « Créer mon site avec Qualifyr » de la clôture de
