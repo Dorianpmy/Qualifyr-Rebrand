@@ -123,15 +123,19 @@ silencieusement côté Resend.
 `STRIPE_SECRET_KEY` (secrète) et `STRIPE_BILLING_WEBHOOK_SECRET` /
 `STRIPE_WEBHOOK_SECRET` (secrètes, deux webhooks distincts — abonnements Qualifyr d'un côté,
 acomptes clients des professionnels via Stripe Connect de l'autre, voir
-`src/lib/billing/stripe.ts` et `src/lib/detailing/stripe.ts`). Les six `STRIPE_PRICE_*`
+`src/lib/billing/stripe.ts` et `src/lib/detailing/stripe.ts`). Le webhook des acomptes
+(`/api/detailing/stripe-webhook`) doit être un endpoint **Connect**, qui écoute les comptes
+connectés : `checkout.session.completed`, `checkout.session.async_payment_succeeded`,
+`checkout.session.expired` et `account.updated` (`docs/13` §2.5). Un endpoint ordinaire ne
+reçoit aucun de ces événements, et aucun acompte n'est jamais confirmé. Les six `STRIPE_PRICE_*`
 attendent chacune un identifiant de Price Stripe (`price_...`) — détail complet, y compris
 les montants attendus, dans `docs/15-etude-extension-verticale.md` si renseigné, sinon à
 établir séparément.
 
 ### `CRON_SECRET` — **[dépôt]** pour le rôle, **[Dorian]** pour hermes-outreach-cron uniquement
 
-Secret partagé entre les cinq fonctions planifiées Netlify (`netlify/functions/*.ts`) et les
-routes qu'elles appellent : `agent-process-cron`, `booking-recovery-cron`,
+Secret partagé entre les six fonctions planifiées Netlify (`netlify/functions/*.ts`) et les
+routes qu'elles appellent : `agent-process-cron`, `booking-recovery-cron`, `booking-expire-cron`,
 `review-dispatch-cron`, `hermes-outreach-cron`, `agent-relevance-cron`. Sans lui, chaque route
 répond `401` et la fonction planifiée elle-même répond `500` sans jamais journaliser le
 secret — voir le commentaire d'en-tête de chaque fichier `netlify/functions/*-cron.ts`.

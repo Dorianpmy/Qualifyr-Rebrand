@@ -26,12 +26,13 @@ mais il ne décrit plus l'état courant.
 
 Netlify, pas Vercel. `netlify.toml` définit les variables par contexte de déploiement
 (`production`, `deploy-preview`, `branch-deploy`) et les redirections du sous-domaine `app.` ;
-cinq fonctions planifiées vivent dans `netlify/functions/` :
+six fonctions planifiées vivent dans `netlify/functions/` :
 
 | Fonction | Route appelée | Fréquence |
 |---|---|---|
 | `agent-process-cron.ts` | `POST /api/agent/process` | `*/15 * * * *` |
 | `booking-recovery-cron.ts` | `POST /api/detailing/booking-recovery` | `*/15 * * * *` |
+| `booking-expire-cron.ts` | `POST /api/detailing/expire-holds` | `*/5 * * * *` |
 | `review-dispatch-cron.ts` | `POST /api/detailing/review-dispatch` | `0 * * * *` |
 | `hermes-outreach-cron.ts` | `POST /api/agent/outreach` | `*/30 7-16 * * 1-5` |
 | `agent-relevance-cron.ts` | `POST /api/agent/relevance` | `*/15 * * * *` |

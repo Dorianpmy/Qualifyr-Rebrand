@@ -1,7 +1,9 @@
 import { vehicleSizeCopy, scopeCopy } from '@/components/detailing/content';
 import { site } from '@/content/site';
+import { detailerHasCapability } from '@/lib/billing/guard';
 import { loadDetailerBySlug } from './config';
 import { notifyBookingEmails } from './email';
+import { expireStaleHolds, holdUntil, HOLD_MINUTES, onlineDepositApplies } from './holds';
 import { formatMoney, profileFor } from './locale';
 import { quote } from './quote';
 import { getServiceSupabaseClient } from './supabase-server';
@@ -78,12 +80,20 @@ export type CreateBookingResult =
         readonly quotedPrice: number;
         readonly quotedMinutes: number;
         readonly depositAmount: number;
-        readonly holdExpiresAt: string;
+        /** `null` quand l'acompte ne se paie pas en ligne : pas de délai. */
+        readonly holdExpiresAt: string | null;
+        /**
+         * Comment le client règle l'acompte : en ligne tout de suite
+         * (`stripe`), selon les instructions du professionnel (`manuel`), ou
+         * pas d'acompte du tout (`aucun`).
+         */
+        readonly payment: BookingPayment;
       };
     }
   | { readonly ok: false; readonly reason: CreateBookingFailureReason; readonly message: string };
 
-const HOLD_MINUTES = 15;
+export type BookingPayment = 'stripe' | 'manuel' | 'aucun';
+
 const EXCLUSION_VIOLATION = '23P01';
 
 export async function createBooking(input: CreateBookingInput): Promise<CreateBookingResult> {
@@ -142,7 +152,40 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
     };
   }
 
-  const holdExpiresAt = new Date(Date.now() + HOLD_MINUTES * 60_000);
+  /*
+   * Le blocage limité dans le temps n'existe que si l'acompte se paie en
+   * ligne (`docs/13` §2.5). En mode manuel, ou sans acompte, la demande occupe
+   * le créneau jusqu'à la décision du professionnel : un délai de quinze
+   * minutes l'annulerait avant même qu'il ait pu lire son e-mail.
+   */
+  const { data: paymentRow } = await client
+    .from('detailers')
+    .select('payment_mode, stripe_charges_enabled')
+    .eq('id', detailer.id)
+    .maybeSingle();
+
+  const depositAmount = computed.depositAmount;
+  const depositDue = detailer.quoteConfig.depositEnabled && depositAmount > 0;
+  const paymentMode = paymentRow?.payment_mode === 'manuel' ? 'manuel' : 'stripe';
+  const online = depositDue
+    ? onlineDepositApplies({
+        paymentMode,
+        stripeChargesEnabled: Boolean(paymentRow?.stripe_charges_enabled),
+        depositEnabled: detailer.quoteConfig.depositEnabled,
+        depositAmount,
+        depositCapability: await detailerHasCapability(detailer.id, 'payments.deposit'),
+      })
+    : false;
+  const payment: BookingPayment = !depositDue ? 'aucun' : online ? 'stripe' : 'manuel';
+  const holdExpiresAt = online ? holdUntil(HOLD_MINUTES) : null;
+
+  /*
+   * Les blocages morts de ce professionnel passent en `expire` avant
+   * l'insertion. Sans ce passage, la contrainte d'exclusion refuserait ce
+   * client à cause d'un panier abandonné par un autre, que la liste des
+   * créneaux lui présentait pourtant comme libre.
+   */
+  await expireStaleHolds(client, { detailerId: detailer.id });
 
   const { data, error } = await client
     .from('detailer_bookings')
@@ -169,7 +212,7 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
       photos: input.photos,
       slot: `[${slotStart.toISOString()},${slotEnd.toISOString()})`,
       status: 'en_attente_paiement',
-      hold_expires_at: holdExpiresAt.toISOString(),
+      hold_expires_at: holdExpiresAt,
     })
     .select('id, status')
     .single();
@@ -267,7 +310,8 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
       quotedPrice: computed.totalPrice,
       quotedMinutes: computed.totalMinutes,
       depositAmount: computed.depositAmount,
-      holdExpiresAt: holdExpiresAt.toISOString(),
+      holdExpiresAt,
+      payment,
     },
   };
 }

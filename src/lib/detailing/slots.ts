@@ -1,5 +1,6 @@
 import { availableSlots } from './availability';
 import { loadDetailerBySlug } from './config';
+import { isOccupyingSlot } from './holds';
 import { getServiceSupabaseClient } from './supabase-server';
 import type { TimeRange } from './types';
 
@@ -51,12 +52,25 @@ export async function slotsForDay(
 
   const { data } = await client
     .from('detailer_bookings')
-    .select('slot')
+    .select('slot, status, hold_expires_at')
     .eq('detailer_id', detailer.id)
     .in('status', ACTIVE_STATUSES)
     .filter('slot', 'ov', `[${dayStart.toISOString()},${dayEnd.toISOString()})`);
 
-  const booked = (data ?? []).map((row) => parsePgRange(row.slot as string));
+  // Un blocage de paiement dépassé ne compte plus, même si la tâche
+  // d'expiration n'est pas encore passée (`docs/13` §2.5).
+  const now = new Date();
+  const booked = (data ?? [])
+    .filter((row) =>
+      isOccupyingSlot(
+        {
+          status: row.status as string,
+          holdExpiresAt: (row.hold_expires_at as string | null) ?? null,
+        },
+        now,
+      ),
+    )
+    .map((row) => parsePgRange(row.slot as string));
 
   const slots = availableSlots(dayStart, durationMinutes, detailer.availabilityConfig, booked);
   return { ok: true, slots };
